@@ -1,0 +1,15 @@
+{
+  "scheming_presets_version": 1,
+  "about": "these are the default scheming field presets plus some custom ones.",
+  "about_url": "http://github.com/ckan/ckanext-scheming#preset",
+  "presets": [
+    {
+      "preset_name": "select_ajax",
+      "values": {
+        "form_snippet": "form_snippet_select.html",
+        "display_snippet": "select_link.html",
+        "validators": "scheming_required"
+      }
+    }
+  ]
+}

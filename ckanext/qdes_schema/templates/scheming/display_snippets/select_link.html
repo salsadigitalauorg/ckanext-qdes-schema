@@ -1,0 +1,40 @@
+{#
+    Edmond Chuc, edmond.chuc@csiro.au
+
+    This file is part of the ckanext-scheming extension. It is required to enable hyperlinks for the "select" form snippet view.
+
+    This template should be named "select-link.html" and should reside in the directory
+    /usr/lib/ckan/default/src/ckanext-scheming/ckanext/scheming/templates/scheming/display_snippets/
+
+    To enable this template, be sure to modify the presets.json file and add in:
+
+        {
+            "preset_name": "select-link",
+            "values": {
+            "form_snippet": "select.html",
+            "display_snippet": "select-link.html",
+            "validators": "scheming_required scheming_choices"
+            }
+        },
+
+    then to use it, simply set the preset to "select-link" in the JSON schema file.
+#}
+
+{% if data[field.field_name]|length > 0 %}
+    {# temporary generation of labels from URI or from a lookup list if the URIs are from BFO #}
+    {% set label = data[field.field_name].split('/')[-1] %}
+    {% if label is not none %}
+      {% if label == 'BFO_0000009' %}
+        {% set label = '2D space' %}
+      {% elif label == 'BFO_0000028' %}
+        {% set label = '3D space' %}
+      {% else%}
+        {% set label = data[field.field_name].split('/')[-1] %}
+      {% endif %}
+
+      <a href="{{ data[field.field_name] }}" style="border-bottom-style: dotted; border-width: 1px;">{{ label }}</a>
+    {% else %}
+      {# if we really can't generate a sensible label, just use the whole URI #}
+      <a href="{{ data[field.field_name] }}">{{ data[field.field_name] }}</a>
+    {% endif %}
+{% endif %}

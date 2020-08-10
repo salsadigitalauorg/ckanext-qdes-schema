@@ -1,0 +1,144 @@
+{
+  "scheming_version": 1,
+  "dataset_type": "dataset",
+  "about": "A reimplementation of the default CKAN dataset schema",
+  "about_url": "http://github.com/ckan/ckanext-scheming",
+  "dataset_fields": [
+    {
+      "field_name": "title",
+      "label": "Title",
+      "preset": "title",
+      "form_placeholder": "eg. A descriptive title",
+      "display_group": "general"
+    },
+    {
+      "field_name": "extra:theme",
+      "label": "Dataset theme",
+      "display_property": "dcat:theme",
+      "preset": "select_ajax",
+      "resource_url": "https://run.mocky.io/v3/63646dda-f1fc-4548-afb7-c0d83fad6cca",
+      "choices": []
+    },
+    {
+      "field_name": "name",
+      "label": "URL",
+      "preset": "dataset_slug",
+      "form_placeholder": "eg. my-dataset",
+      "display_group": "general"
+    },
+    {
+      "field_name": "alt_title",
+      "label": "Alternative title",
+      "display_property": "qdcat:altTitle",
+      "form_placeholder": "eg. Vegetation management regional ecosystem map",
+      "display_group": "general"
+    },
+    {
+      "field_name": "identifier",
+      "label": "Identifier",
+      "display_property": "dcterms:identifier",
+      "form_placeholder": "doi:10.25901/5e3ba30f141b7",
+      "display_group": "general"
+    },
+    {
+      "field_name": "classification",
+      "label": "General classification of dataset type",
+      "display_property": "dcterms:type",
+      "form_placeholder": "eg. 'image', 'map', 'section', 'gridded data', etc.",
+      "display_group": "description"
+    },
+    {
+      "field_name": "notes",
+      "label": "Description or abstract",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "eg. Some useful notes about the data",
+      "display_property": "dcterms:description",
+      "display_group": "description",
+      "required": true
+    },
+    {
+      "field_name": "purpose",
+      "label": "Purpose",
+      "display_property": "qdcat:purpose",
+      "form_placeholder": "This map provides supporting information for assessments under the Vegetation Management Act.",
+      "display_group": "description"
+    },
+    {
+      "field_name": "additional_info",
+      "label": "Additional information",
+      "form_snippet": "qdes_multi_textarea.html",
+      "display_property": "rdfs:comment",
+      "form_placeholder": "e.g. warnings",
+      "display_group": "description"
+    },
+    {
+      "field_name": "dataset_language",
+      "label": "Dataset language",
+      "form_snippet": "qdes_to_be_implemented.html",
+      "display_property": "dcterms:language",
+      "display_group": "description"
+    },
+    {
+      "field_name": "topic",
+      "label": "Topic or theme",
+      "form_snippet": "qdes_to_be_implemented.html",
+      "display_property": "dcat:theme",
+      "display_group": "description"
+    },
+    {
+      "field_name": "tag_string",
+      "label": "Tags",
+      "preset": "tag_string_autocomplete",
+      "form_placeholder": "eg. economy, mental health, government",
+      "display_group": "description"
+    },
+    {
+      "field_name": "license_id",
+      "label": "License",
+      "form_snippet": "license.html",
+      "help_text": "License definitions and additional information can be found at http://opendefinition.org/",
+      "display_group": "license"
+    },
+    {
+      "field_name": "owner_org",
+      "label": "Organization",
+      "preset": "dataset_organization"
+    },
+    {
+      "field_name": "url",
+      "label": "Source",
+      "form_placeholder": "http://example.com/dataset.json",
+      "display_property": "foaf:homepage",
+      "display_snippet": "link.html"
+    },
+    {
+      "field_name": "version",
+      "label": "Version",
+      "validators": "ignore_missing unicode package_version_validator",
+      "form_placeholder": "1.0"
+    }
+  ],
+  "resource_fields": [
+    {
+      "field_name": "url",
+      "label": "URL",
+      "preset": "resource_url_upload"
+    },
+    {
+      "field_name": "name",
+      "label": "Name",
+      "form_placeholder": "eg. January 2011 Gold Prices"
+    },
+    {
+      "field_name": "description",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "Some useful notes about the data"
+    },
+    {
+      "field_name": "format",
+      "label": "Format",
+      "preset": "resource_format_autocomplete"
+    }
+  ]
+}

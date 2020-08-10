@@ -1,0 +1,38 @@
+{% ckan_extends %}
+
+{% block basic_fields %}
+
+  {% resource 'qdes_schema/jquery.repeater.js' %}
+
+  {%- if not dataset_type -%}
+    <p>
+    dataset_type not passed to template. your version of CKAN
+    might not be compatible with ckanext-scheming
+    </p>
+  {%- endif -%}
+  {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
+
+  {%- for field in schema.dataset_fields -%}
+    {%- if not display_group -%}
+        {%- set display_group = None -%}
+    {%- endif -%}
+    {%- if field.display_group is not none and field.display_group != display_group -%}
+        {%- set display_group = field.display_group -%}
+        {%- if display_group not in ['general'] -%}
+            <h2>{{ field.display_group|capitalize }}</h2>
+        {%- endif -%}
+    {%- endif -%}
+    {%- if field.form_snippet is not none -%}
+      {%- snippet 'scheming/snippets/form_field.html',
+        field=field, data=data, errors=errors, licenses=c.licenses,
+        entity_type='dataset', object_type=dataset_type -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if 'resource_fields' not in schema -%}
+    <!-- force controller to skip resource-editing step for this type -->
+    <input type="hidden" name="_ckan_phase" value="" />
+  {%- endif -%}
+{% endblock %}
+
+{% block metadata_fields %}
+{% endblock %}
