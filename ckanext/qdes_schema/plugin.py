@@ -2,6 +2,8 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import json
 
+from ckanext.qdes_schema import helpers
+
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
@@ -17,7 +19,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     # ITemplateHelpers
     def get_helpers(self):
         return {
-            'get_multi_textarea_values': self.get_multi_textarea_values,
+            'get_multi_textarea_values': self.get_multi_textarea_values
         }
 
     def get_multi_textarea_values(self, value):

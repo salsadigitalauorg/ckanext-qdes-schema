@@ -2,7 +2,11 @@
 
 {% block basic_fields %}
 
-  {% resource 'qdes_schema/jquery.repeater.js' %}
+  {% if h.ckan_version() > '2.9' %}
+    {% asset 'qdes_schema/repeater' %}
+  {% else %}
+    {% resource 'qdes_schema/jquery.repeater.js' %}
+  {% endif %}
 
   {%- if not dataset_type -%}
     <p>
@@ -12,13 +16,15 @@
   {%- endif -%}
   {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
 
+  {#
+      "namespace" is only available in Jinja2 v 2.10+
+      therefore this approach won't work in CKAN < 2.9
+  #}
+  {%- set ns = namespace(display_group=None) -%}
   {%- for field in schema.dataset_fields -%}
-    {%- if not display_group -%}
-        {%- set display_group = None -%}
-    {%- endif -%}
-    {%- if field.display_group is not none and field.display_group != display_group -%}
-        {%- set display_group = field.display_group -%}
-        {%- if display_group not in ['general'] -%}
+    {%- if field.display_group is not none and field.display_group != ns.display_group -%}
+        {%- set ns.display_group = field.display_group -%}
+        {%- if ns.display_group not in ['general'] -%}
             <h2>{{ field.display_group|capitalize }}</h2>
         {%- endif -%}
     {%- endif -%}

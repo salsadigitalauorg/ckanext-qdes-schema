@@ -17,14 +17,7 @@ jQuery(document).ready(function () {
         isFirstItemUndeletable: true
     });
 
-    jQuery('.collate-inputs').on('click', function() {
-
-        var repeater_id = jQuery(this).data('repeater-id');
-        var target_field_id = jQuery(this).data('target-field-id');
-        var field_type = jQuery(this).data('field-type');
-
-        // var all = $('#' + repeater_id).repeaterVal();
-
+    function collate_inputs(repeater_id, target_field_id, field_type) {
         var collated_values = [];
 
         jQuery('#' + repeater_id + ' ' + field_type).each(function() {
@@ -32,8 +25,14 @@ jQuery(document).ready(function () {
         });
 
         jQuery('#' + target_field_id).val(JSON.stringify(collated_values));
+    }
 
-        return false;
+    jQuery(document).on('blur', ".repeating-field textarea", function() {
+        var repeater_id = jQuery(this).attr('id').replace('field-item-', '') + '-repeater';
+        var target_field_id = jQuery(this).attr('id').replace('-item-', '-');
+        var field_type = jQuery('#' + repeater_id).data('field-type');
+
+        collate_inputs(repeater_id, target_field_id, field_type);
     });
 
 });

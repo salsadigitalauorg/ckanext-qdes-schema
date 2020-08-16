@@ -1,0 +1,17 @@
+repeater:
+  contents:
+    - jquery.repeater.js
+  extra:
+    preload:
+      - vendor/jquery
+#  filters: rjsmin
+#  output: qdes_schema/jquery.repeater.js
+
+repeating-fields:
+  extra:
+    preload:
+      - qdes_schema/repeater
+  contents:
+    - repeating-fields.js
+#  filters: rjsmin
+#  output: qdes_schema/repeating-fields.js

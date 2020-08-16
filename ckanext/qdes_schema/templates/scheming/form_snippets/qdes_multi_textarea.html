@@ -1,8 +1,17 @@
 {% import 'macros/form.html' as form %}
 
-{% resource 'qdes_schema/repeating-fields.js' %}
+{% if h.ckan_version() > '2.9' %}
+    {#
+        CKAN 2.9+ has changed how resources are added through template files
+        see: https://docs.ckan.org/en/latest/contributing/frontend/assets.html
+    #}
+    {% asset 'qdes_schema/repeating-fields' %}
+{% else %}
+    {% resource 'qdes_schema/repeating-fields.js' %}
+{% endif %}
 
-<div id="{{ field.field_name }}-repeater" class="repeating-field">
+
+<div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="textarea">
 
     <div data-repeater-list="{{ field.field_name }}">
 
@@ -10,10 +19,6 @@
 
         {% for value in values %}
         <div data-repeater-item class="row">
-            <div class="col-lg-1">
-                <br /><br />
-                <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
-            </div>
             <div class="col-lg-11">
                 {% call form.textarea(
                     'item-' + field.field_name,
@@ -27,6 +32,10 @@
                 %}
                 {% endcall %}
             </div>
+            <div class="col-lg-1">
+                <br /><br />
+                <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
+            </div>
         </div>
         {% endfor %}
 
@@ -36,14 +45,7 @@
     </div>
 </div>
 
-	<button class="collate-inputs"
-            data-repeater-id="{{ field.field_name }}-repeater"
-            data-target-field-id="{{ 'field-' + field.field_name }}"
-            data-field-type="textarea">
-        collate-inputs
-    </button>
-
-{# BEGIN: The actual field the multiple values will be capture & submitted in #}
+{# BEGIN: The actual form field the multiple values will be captured & submitted in #}
 {% call form.textarea(
     field.field_name,
     id='field-' + field.field_name,
@@ -57,4 +59,4 @@
 %}
     {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
 {% endcall %}
-{# END: The actual field the multiple values will be capture & submitted in #}
+{# END: The actual form field the multiple values will be captured & submitted in #}
