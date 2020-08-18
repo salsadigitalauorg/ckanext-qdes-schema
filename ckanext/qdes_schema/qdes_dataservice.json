@@ -1,0 +1,34 @@
+{
+  "scheming_version": 1,
+  "dataset_type": "dataservice",
+  "about": "An external Data Service for the QDES Data Catalogue",
+  "about_url": "http://github.com/ckan/ckanext-scheming",
+  "dataset_fields": [
+    {
+      "field_name": "title",
+      "label": "Title",
+      "preset": "title",
+      "form_placeholder": "eg. A descriptive title",
+      "display_group": "general"
+    },
+    {
+      "field_name": "name",
+      "label": "URL",
+      "preset": "dataset_slug",
+      "form_placeholder": "eg. my-dataset",
+      "display_group": "general"
+    },
+    {
+      "field_name": "alt_title",
+      "label": "Alternative title",
+      "display_property": "qdcat:altTitle",
+      "form_placeholder": "eg. Vegetation management regional ecosystem map",
+      "display_group": "general"
+    },
+    {
+      "field_name": "owner_org",
+      "label": "Organization",
+      "preset": "dataset_organization"
+    }
+  ]
+}
