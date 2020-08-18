@@ -10,6 +10,14 @@
         "display_snippet": "select_link.html",
         "validators": "scheming_required"
       }
+    },
+    {
+      "preset_name": "controlled_vocabulary_single_select",
+      "values": {
+        "form_snippet": "select.html",
+        "display_snippet": "controlled_vocabulary_single_select.html",
+        "validators": "scheming_required scheming_choices"
+      }
     }
   ]
 }

@@ -100,6 +100,14 @@
       "display_group": "license"
     },
     {
+      "field_name": "spatial_representation",
+      "label": "Spatial representation",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_id": "7f11adc6-c6f1-4f7c-bb8e-6b8c8bd5307a",
+      "display_group": "spatial details"
+    },
+    {
       "field_name": "owner_org",
       "label": "Organization",
       "preset": "dataset_organization"
