@@ -4,8 +4,10 @@
 
   {% if h.ckan_version() > '2.9' %}
     {% asset 'qdes_schema/repeater' %}
+    {% asset 'qdes_schema/repeating-fields' %}
   {% else %}
     {% resource 'qdes_schema/jquery.repeater.js' %}
+    {% resource 'qdes_schema/repeating-fields.js' %}
   {% endif %}
 
   {%- if not dataset_type -%}

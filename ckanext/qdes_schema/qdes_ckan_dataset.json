@@ -34,11 +34,14 @@
       "display_group": "general"
     },
     {
-      "field_name": "identifier",
+      "field_name": "identifiers",
       "label": "Identifier",
       "display_property": "dcterms:identifier",
+      "display_snippet": "qdes_multi_text.html",
+      "form_snippet": "qdes_multi_text.html",
       "form_placeholder": "doi:10.25901/5e3ba30f141b7",
-      "display_group": "general"
+      "display_group": "general",
+      "required": true
     },
     {
       "field_name": "classification",
@@ -68,6 +71,7 @@
       "label": "Additional information",
       "form_snippet": "qdes_multi_textarea.html",
       "display_property": "rdfs:comment",
+      "display_snippet": "qdes_multi_textarea.html",
       "form_placeholder": "e.g. warnings",
       "display_group": "description"
     },
