@@ -8,8 +8,15 @@ from ckanext.qdes_schema import helpers
 class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
+    plugins.implements(plugins.IValidators)
 
     # IConfigurer
+
+    # IValidators
+    def get_validators(self):
+        return {
+            'qdes_temporal_start_end_date': self.qdes_temporal_start_end_date
+        }
 
     def update_config(self, config_):
         toolkit.add_template_directory(config_, 'templates')
@@ -24,3 +31,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
     def get_multi_textarea_values(self, value):
         return json.loads(value) if value else ['']
+
+    def qdes_temporal_start_end_date(self, field, value):
+        if len(value) > 300:
+            raise Invalid("Max chars should be 3 characters")
+        return value
