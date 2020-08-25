@@ -90,6 +90,21 @@
       "display_group": "description"
     },
     {
+      "field_name": "temporal_start",
+      "label": "Start",
+      "display_property": "dcat:startDate",
+      "display_group": "temporal content",
+      "preset": "date"
+    },
+    {
+      "field_name": "temporal_end",
+      "label": "End",
+      "display_property": "dcat:endDate",
+      "display_group": "temporal content",
+      "preset": "date",
+      "validators": "qdes_temporal_start_end_date"
+    },
+    {
       "field_name": "tag_string",
       "label": "Tags",
       "preset": "tag_string_autocomplete",
