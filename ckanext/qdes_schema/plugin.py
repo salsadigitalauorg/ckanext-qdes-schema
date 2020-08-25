@@ -2,7 +2,7 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import json
 
-from ckanext.qdes_schema import helpers
+from ckanext.qdes_schema import helpers, validators
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
@@ -15,7 +15,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     # IValidators
     def get_validators(self):
         return {
-            'qdes_temporal_start_end_date': self.qdes_temporal_start_end_date
+            'qdes_temporal_start_end_date': validators.qdes_temporal_start_end_date
         }
 
     def update_config(self, config_):
@@ -31,8 +31,3 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
     def get_multi_textarea_values(self, value):
         return json.loads(value) if value else ['']
-
-    def qdes_temporal_start_end_date(self, field, value):
-        if len(value) > 300:
-            raise Invalid("Max chars should be 3 characters")
-        return value
