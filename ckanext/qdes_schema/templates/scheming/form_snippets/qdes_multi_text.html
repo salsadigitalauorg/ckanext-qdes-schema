@@ -1,46 +1,56 @@
 {% import 'macros/form.html' as form %}
 
-<style>
-    .to-be-implemented {
-        border: 1px solid #ebccd1;
-        border-radius: 5px;
-        background-color: #f2dede;
-        padding: 1em;
-        position: relative;
-    }
-    .to-be-implemented span {
-        display: none;
-        position: absolute;
-        top: .75em;
-        right: 1em;
-        color: white;
-        font-size: 80%;
-        font-weight: bold;
-        background-color: #a94442;
-        padding: 3px;
-    }
-    .to-be-implemented:hover span {
-        display: block;
-    }
+<div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="input">
 
-</style>
+    <div data-repeater-list="{{ field.field_name }}">
 
-<div class="to-be-implemented">
+        {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 
-    <span>To be implemented</span>
+        {% for value in values %}
+            <div data-repeater-item class="row">
+                <div class="col-xs-11">
+                    {%
+                        call form.input(
+                            'item-' + field.field_name,
+                            id='field-item-' + field.field_name,
+                            label=h.scheming_language_text(field.label),
+                            placeholder=h.scheming_language_text(field.form_placeholder),
+                            attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
+                            is_required=h.scheming_field_required(field),
+                            value=value,
+                            error=errors[field.field_name]
+                        )
+                    %}
+                    {% endcall %}
+                </div>
+                <div class="col-xs-1">
+                    <label class="invisible">&nbsp;</label>
+                    <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
+                </div>
+            </div>
+        {% endfor %}
 
-{% call form.input(
-    field.field_name,
-    id='field-' + field.field_name,
-    label=h.scheming_language_text(field.label),
-    placeholder=h.scheming_language_text(field.form_placeholder),
-    value=data[field.field_name],
-    error=errors[field.field_name],
-    classes=field.classes if 'classes' in field else ['control-medium'],
-    attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
-    is_required=h.scheming_field_required(field)
+    </div>
+    <div class="row" align="center">
+        <input data-repeater-create type="button" class="btn" value="+" />
+    </div>
+</div>
+
+{% set visibility = [] if g.debug else ['hidden'] %}
+{% set default_classes = field.classes if 'classes' in field else ['control-medium'] %}
+
+{%
+    call form.input(
+        field.field_name,
+        id='field-' + field.field_name,
+        label=h.scheming_language_text(field.label),
+        placeholder=h.scheming_language_text(field.form_placeholder),
+        value=data[field.field_name],
+        error=errors[field.field_name],
+        classes=default_classes + visibility,
+        attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
+        is_required=h.scheming_field_required(field)
     )
 %}
     {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
 {% endcall %}
-</div>

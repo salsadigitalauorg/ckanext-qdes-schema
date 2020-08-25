@@ -1,0 +1,4 @@
+{% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
+{% for value in values %}
+    <div>{{ value }}</div>
+{% endfor %}
