@@ -38,7 +38,6 @@
 
 {% set visibility = [] if g.debug else ['hidden'] %}
 {% set default_classes = field.classes if 'classes' in field else ['control-medium'] %}
-{% set ns = namespace(field_classes=default_classes + visibility) %}
 
 {%
     call form.input(
@@ -48,7 +47,7 @@
         placeholder=h.scheming_language_text(field.form_placeholder),
         value=data[field.field_name],
         error=errors[field.field_name],
-        classes=ns.field_classes,
+        classes=field_classes,
         attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
         is_required=h.scheming_field_required(field)
     )
