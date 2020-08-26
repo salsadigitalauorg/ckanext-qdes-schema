@@ -90,6 +90,24 @@
       "display_group": "description"
     },
     {
+      "field_name": "temporal_start",
+      "label": "Temporal coverage start",
+      "display_property": "dcat:startDate",
+      "preset": "date",
+      "validators": "qdes_temporal_start_end_date",
+      "display_group": "temporal content",
+      "sub_heading": "temporal coverage"
+    },
+    {
+      "field_name": "temporal_end",
+      "label": "Temporal coverage end",
+      "display_property": "dcat:endDate",
+      "preset": "date",
+      "validators": "qdes_temporal_start_end_date",
+      "display_group": "temporal content",
+      "sub_heading": "temporal coverage"
+    },
+    {
       "field_name": "tag_string",
       "label": "Tags",
       "preset": "tag_string_autocomplete",
