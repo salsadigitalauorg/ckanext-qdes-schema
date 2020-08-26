@@ -2,14 +2,21 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import json
 
-from ckanext.qdes_schema import helpers
+from ckanext.qdes_schema import helpers, validators
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
+    plugins.implements(plugins.IValidators)
 
     # IConfigurer
+
+    # IValidators
+    def get_validators(self):
+        return {
+            'qdes_temporal_start_end_date': validators.qdes_temporal_start_end_date
+        }
 
     def update_config(self, config_):
         toolkit.add_template_directory(config_, 'templates')

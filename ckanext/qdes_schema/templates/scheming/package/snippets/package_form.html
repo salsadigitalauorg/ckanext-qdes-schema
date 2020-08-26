@@ -30,6 +30,12 @@
             <h2>{{ field.display_group|capitalize }}</h2>
         {%- endif -%}
     {%- endif -%}
+
+    {%- if field.sub_heading is not none and field.sub_heading != ns.sub_heading -%}
+        {%- set ns.sub_heading = field.sub_heading -%}
+        <h3>{{ field.sub_heading|capitalize }}</h3>
+    {%- endif -%}
+
     {%- if field.form_snippet is not none -%}
       {%- snippet 'scheming/snippets/form_field.html',
         field=field, data=data, errors=errors, licenses=c.licenses,
