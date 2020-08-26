@@ -93,16 +93,19 @@
       "field_name": "temporal_start",
       "label": "Start",
       "display_property": "dcat:startDate",
+      "preset": "date",
+      "validators": "qdes_temporal_start_end_date",
       "display_group": "temporal content",
-      "preset": "date"
+      "sub_heading": "temporal coverage"
     },
     {
       "field_name": "temporal_end",
       "label": "End",
       "display_property": "dcat:endDate",
-      "display_group": "temporal content",
       "preset": "date",
-      "validators": "qdes_temporal_start_end_date"
+      "validators": "qdes_temporal_start_end_date",
+      "display_group": "temporal content",
+      "sub_heading": "temporal coverage"
     },
     {
       "field_name": "tag_string",
