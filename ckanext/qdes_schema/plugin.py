@@ -17,6 +17,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_temporal_start_end_date': validators.qdes_temporal_start_end_date,
             'qdes_dataset_creation_date': validators.qdes_dataset_creation_date,
             'qdes_dataset_current_date_later_than_creation': validators.qdes_dataset_current_date_later_than_creation,
+            'qdes_uri_validator': validators.qdes_uri_validator,
         }
 
     def update_config(self, config_):
