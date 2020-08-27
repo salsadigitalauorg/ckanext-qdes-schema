@@ -41,7 +41,7 @@
         value=time,
         error=errors[field.field_name],
         classes=['control-medium', 'col-sm-4'],
-        attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
+        attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {'step': '1'}))),
         is_required=h.scheming_field_required(field)
         )
     %}
