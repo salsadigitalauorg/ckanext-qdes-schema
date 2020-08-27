@@ -27,7 +27,7 @@ def qdes_dataset_creation_date(value):
     Return current datetime in UTC when value is empty.
     """
     if value is None:
-        return dt.utcnow().strftime('%Y-%m-%dT%H:%M')
+        return dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
 
     return value
 
