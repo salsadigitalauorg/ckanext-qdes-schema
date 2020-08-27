@@ -154,6 +154,20 @@
       "display_group": "status"
     },
     {
+      "field_name": "rights_statement",
+      "label": "Rights statement",
+      "form_snippet": "textarea.html",
+      "display_property": "dcterms:rights",
+      "display_group": "rights & licensing"
+    },
+    {
+      "field_name": "landing_page",
+      "label": "Web-page (landing page) for this dataset",
+      "display_property": "dcat:landingPage",
+      "display_group": "data access",
+      "validators": "url_validator qdes_uri_validator"
+    },
+    {
       "field_name": "owner_org",
       "label": "Organization",
       "preset": "dataset_organization"
