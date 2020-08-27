@@ -49,3 +49,12 @@ def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, c
 
             if dt_release < dt_creation:
                 raise toolkit.Invalid("Must be later than creation date.")
+
+def qdes_uri_validator(value):
+    """
+    Validate the uri either it is accessible or not.
+    @TODO https://it-partners.atlassian.net/browse/DDCI-122
+
+    For now it will return the value.
+    """
+    return value
