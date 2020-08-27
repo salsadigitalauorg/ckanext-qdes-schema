@@ -130,6 +130,30 @@
       "display_group": "spatial details"
     },
     {
+      "field_name": "dataset_creation_date",
+      "label": "Creation date",
+      "display_property": "dcterms:created",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_creation_date",
+      "display_group": "status"
+    },
+    {
+      "field_name": "dataset_release_date",
+      "label": "Release date",
+      "display_property": "dcterms:issued",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_current_date_later_than_creation",
+      "display_group": "status"
+    },
+    {
+      "field_name": "dataset_last_modified_date",
+      "label": "Last modified date",
+      "display_property": "dcterms:modified",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_current_date_later_than_creation",
+      "display_group": "status"
+    },
+    {
       "field_name": "owner_org",
       "label": "Organization",
       "preset": "dataset_organization"

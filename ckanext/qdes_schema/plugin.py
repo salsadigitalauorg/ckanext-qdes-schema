@@ -4,7 +4,6 @@ import json
 
 from ckanext.qdes_schema import helpers, validators
 
-
 class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
@@ -15,7 +14,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     # IValidators
     def get_validators(self):
         return {
-            'qdes_temporal_start_end_date': validators.qdes_temporal_start_end_date
+            'qdes_temporal_start_end_date': validators.qdes_temporal_start_end_date,
+            'qdes_dataset_creation_date': validators.qdes_dataset_creation_date,
+            'qdes_dataset_current_date_later_than_creation': validators.qdes_dataset_current_date_later_than_creation,
         }
 
     def update_config(self, config_):
