@@ -7,14 +7,12 @@
         {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 
         {% for value in values %}
-        <div data-repeater-item class="row">
+        <div data-repeater-item class="row vertical-align">
             <div class="col-lg-11">
                 {% call form.textarea(
-                    'item-' + field.field_name,
-                    id='field-item-' + field.field_name,
                     label=h.scheming_language_text(field.label),
                     placeholder=h.scheming_language_text(field.form_placeholder),
-                    attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
+                    attrs=dict({"class": "form-control", "data-field-name": field.field_name}, **(field.get('form_attrs', {}))),
                     is_required=h.scheming_field_required(field),
                     value=value
                     )
@@ -22,7 +20,6 @@
                 {% endcall %}
             </div>
             <div class="col-lg-1">
-                <br /><br />
                 <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
             </div>
         </div>
