@@ -130,6 +130,16 @@
       "display_group": "spatial details"
     },
     {
+      "field_name": "publication_status",
+      "label": "Publication status",
+      "display_property": "adms:status",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "publication_status",
+      "display_group": "status",
+      "required": true
+    },
+    {
       "field_name": "dataset_creation_date",
       "label": "Creation date",
       "display_property": "dcterms:created",
@@ -151,6 +161,15 @@
       "display_property": "dcterms:modified",
       "preset": "datetime_tz",
       "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_current_date_later_than_creation",
+      "display_group": "status"
+    },
+    {
+      "field_name": "update_schedule",
+      "label": "Update schedule",
+      "display_property": "dcterms:accrualPeriodicity",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "update_schedule",
       "display_group": "status"
     },
     {
