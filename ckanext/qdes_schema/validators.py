@@ -48,4 +48,4 @@ def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, c
             dt_release = dt.strptime(current_date_value, '%Y-%m-%dT%H:%M:%S')
 
             if dt_release < dt_creation:
-                raise toolkit.Invalid("Must be later than start date.")
+                raise toolkit.Invalid("Must be later than creation date.")
