@@ -1,0 +1,8 @@
+{% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
+{% for value in values %}
+    <div>
+        <a href="{{ value }}">
+            {{ h.scheming_choices_label(h.scheming_field_choices(field), value) }}
+        </a>
+    </div>
+{% endfor %}

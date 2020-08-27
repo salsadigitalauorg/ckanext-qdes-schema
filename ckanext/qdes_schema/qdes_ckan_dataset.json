@@ -48,7 +48,14 @@
       "label": "General classification of dataset type",
       "display_property": "dcterms:type",
       "form_placeholder": "eg. 'image', 'map', 'section', 'gridded data', etc.",
-      "display_group": "description"
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "classification",
+      "validators": "scheming_required",
+      "form_attrs": {
+        "data-module": "autocomplete"
+      },
+      "required": true
     },
     {
       "field_name": "notes",
@@ -78,15 +85,32 @@
     {
       "field_name": "dataset_language",
       "label": "Dataset language",
-      "form_snippet": "qdes_to_be_implemented.html",
       "display_property": "dcterms:language",
-      "display_group": "description"
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "dataset_language",
+      "form_attrs": {
+        "data-module": "autocomplete"
+      }
     },
     {
       "field_name": "topic",
       "label": "Topic or theme",
-      "form_snippet": "qdes_to_be_implemented.html",
       "display_property": "dcat:theme",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "topic",
+      "validators": "scheming_required",
+      "form_attrs": {
+        "data-module": "autocomplete"
+      },
+      "required": true
+    },
+    {
+      "field_name": "tag_string",
+      "label": "Keyword",
+      "preset": "tag_string_autocomplete",
+      "form_placeholder": "eg. economy, mental health, government",
       "display_group": "description"
     },
     {
@@ -106,13 +130,6 @@
       "validators": "qdes_temporal_start_end_date",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage"
-    },
-    {
-      "field_name": "tag_string",
-      "label": "Tags",
-      "preset": "tag_string_autocomplete",
-      "form_placeholder": "eg. economy, mental health, government",
-      "display_group": "description"
     },
     {
       "field_name": "license_id",

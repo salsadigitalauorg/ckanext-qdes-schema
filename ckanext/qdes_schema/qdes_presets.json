@@ -18,6 +18,14 @@
         "display_snippet": "controlled_vocabulary_single_select.html",
         "validators": "scheming_required scheming_choices"
       }
+    },
+    {
+      "preset_name": "controlled_vocabulary_multi_select",
+      "values": {
+        "form_snippet": "qdes_multi_select.html",
+        "display_snippet": "qdes_multi_select.html",
+        "choices_helper": "scheming_vocabulary_service_choices"
+      }
     }
   ]
 }
