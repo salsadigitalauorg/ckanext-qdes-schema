@@ -9,8 +9,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IValidators)
 
-    # IConfigurer
-
     # IValidators
     def get_validators(self):
         return {
@@ -18,7 +16,24 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_dataset_creation_date': validators.qdes_dataset_creation_date,
             'qdes_dataset_current_date_later_than_creation': validators.qdes_dataset_current_date_later_than_creation,
             'qdes_uri_validator': validators.qdes_uri_validator,
+            'qdes_validate_decimal': validators.qdes_validate_decimal,
+            'qdes_validate_geojson': validators.qdes_validate_geojson,
+            'qdes_validate_geojson_point': validators.qdes_validate_geojson_point,
+            'qdes_validate_geojson_polygon': validators.qdes_validate_geojson_polygon,
+            'qdes_within_au_bounding_box': validators.qdes_within_au_bounding_box,
+            'qdes_spatial_points_pair': validators.qdes_spatial_points_pair,
         }
+
+    # IConfigurer
+    def update_config_schema(self, schema):
+        ignore_missing = toolkit.get_validator('ignore_missing')
+        qdes_validate_geojson = toolkit.get_validator('qdes_validate_geojson')
+
+        schema.update({
+            'ckanext.qdes_schema.au_bounding_box': [ignore_missing, qdes_validate_geojson],
+        })
+
+        return schema
 
     def update_config(self, config_):
         toolkit.add_template_directory(config_, 'templates')
