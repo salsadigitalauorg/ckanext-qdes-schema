@@ -4,7 +4,14 @@
   padding: 0px;
 }
 
+/* Vertical align of repeater row in dataset form for remove item button */
 .vertical-align {
   display: flex;
   align-items: center;
+}
+
+/* HR in dataset addition info table */
+.dataset-details>hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
