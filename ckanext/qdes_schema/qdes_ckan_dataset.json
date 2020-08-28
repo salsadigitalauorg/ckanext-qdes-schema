@@ -108,6 +108,57 @@
       "sub_heading": "temporal coverage"
     },
     {
+      "field_name": "spatial_lower_left",
+      "label": "Lower left",
+      "preset": "json_object",
+      "validators": "qdes_spatial_points_pair qdes_validate_geojson qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "display_property": "qdcat:lowerLeft",
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
+    },
+    {
+      "field_name": "spatial_upper_right",
+      "label": "Upper right",
+      "preset": "json_object",
+      "validators": "qdes_spatial_points_pair qdes_validate_geojson qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "display_property": "qdcat:upperRight",
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
+    },
+    {
+      "field_name": "spatial_centroid",
+      "label": "Centroid",
+      "preset": "json_object",
+      "validators": "qdes_validate_geojson qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "display_property": "dcat:centroid",
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
+    },
+    {
+      "field_name": "spatial_geometry",
+      "label": "Geometry",
+      "preset": "json_object",
+      "validators": "qdes_validate_geojson qdes_validate_geojson_polygon",
+      "display_property": "qdcat:asGeoJSON",
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
+    },
+    {
+      "field_name": "spatial_content_resolution",
+      "label": "Spatial resolution in meters",
+      "validators": "qdes_validate_decimal",
+      "display_property": "dcat:spatialResolutionInMeters",
+      "display_group": "spatial content"
+    },
+    {
+      "field_name": "spatial",
+      "label": "Spatial",
+      "preset": "json_object",
+      "validators": "scheming_load_json",
+      "display_property": "dcat:spatialResolutionInMeters",
+      "display_group": "spatial content"
+    },
+    {
       "field_name": "tag_string",
       "label": "Tags",
       "preset": "tag_string_autocomplete",
