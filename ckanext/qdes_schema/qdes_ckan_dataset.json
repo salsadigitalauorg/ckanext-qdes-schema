@@ -52,10 +52,10 @@
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "classification",
       "validators": "scheming_required",
+      "required": true,
       "form_attrs": {
-        "data-module": "autocomplete"
-      },
-      "required": true
+        "class": "form-control"
+      }
     },
     {
       "field_name": "notes",
@@ -69,6 +69,8 @@
     {
       "field_name": "purpose",
       "label": "Purpose",
+      "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
       "display_property": "qdcat:purpose",
       "form_placeholder": "This map provides supporting information for assessments under the Vegetation Management Act.",
       "display_group": "description"
@@ -76,9 +78,9 @@
     {
       "field_name": "additional_info",
       "label": "Additional information",
-      "form_snippet": "qdes_multi_textarea.html",
+      "form_snippet": "qdes_multi_markdown.html",
       "display_property": "rdfs:comment",
-      "display_snippet": "qdes_multi_textarea.html",
+      "display_snippet": "qdes_multi_markdown.html",
       "form_placeholder": "e.g. warnings",
       "display_group": "description"
     },
@@ -91,7 +93,8 @@
       "vocabulary_service_name": "dataset_language",
       "form_attrs": {
         "data-module": "autocomplete"
-      }
+      },
+      "first_choice": "English"
     },
     {
       "field_name": "topic",

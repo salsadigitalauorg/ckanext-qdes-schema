@@ -5,4 +5,7 @@
             {{ h.scheming_choices_label(h.scheming_field_choices(field), value) }}
         </a>
     </div>
+    {% if values.index(value) < values|length - 1 %}
+        <hr>
+    {% endif %}
 {% endfor %}

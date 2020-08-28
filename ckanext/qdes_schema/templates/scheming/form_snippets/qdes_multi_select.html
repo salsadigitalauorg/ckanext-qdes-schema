@@ -26,6 +26,9 @@
                     {%- if field.get('sorted_choices') -%}
                       {%- set options = options|sort(case_sensitive=false, attribute='text') -%}
                     {%- endif -%}
+                    {%- if field.get('first_choice') -%}
+                      {%- set options = h.set_first_option(options, field.get('first_choice')) -%}
+                    {%- endif -%}
                     {%- if value -%}
                       {%- set option_selected = value|string -%}
                     {%- else -%}
