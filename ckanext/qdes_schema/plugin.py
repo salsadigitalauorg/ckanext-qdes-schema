@@ -21,6 +21,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_validate_geojson_point': validators.qdes_validate_geojson_point,
             'qdes_validate_geojson_polygon': validators.qdes_validate_geojson_polygon,
             'qdes_within_au_bounding_box': validators.qdes_within_au_bounding_box,
+            'qdes_validate_geojson_spatial': validators.qdes_validate_geojson_spatial,
             'qdes_spatial_points_pair': validators.qdes_spatial_points_pair,
         }
 

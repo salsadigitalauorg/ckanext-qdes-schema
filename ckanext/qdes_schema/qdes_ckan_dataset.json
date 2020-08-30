@@ -111,7 +111,7 @@
       "field_name": "spatial_lower_left",
       "label": "Lower left",
       "preset": "json_object",
-      "validators": "qdes_spatial_points_pair qdes_validate_geojson qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "validators": "qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "qdcat:lowerLeft",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage"
@@ -120,7 +120,7 @@
       "field_name": "spatial_upper_right",
       "label": "Upper right",
       "preset": "json_object",
-      "validators": "qdes_spatial_points_pair qdes_validate_geojson qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "validators": "qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "qdcat:upperRight",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage"
@@ -129,7 +129,7 @@
       "field_name": "spatial_centroid",
       "label": "Centroid",
       "preset": "json_object",
-      "validators": "qdes_validate_geojson qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "validators": "qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "dcat:centroid",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage"
@@ -138,7 +138,7 @@
       "field_name": "spatial_geometry",
       "label": "Geometry",
       "preset": "json_object",
-      "validators": "qdes_validate_geojson qdes_validate_geojson_polygon",
+      "validators": "qdes_validate_geojson_polygon",
       "display_property": "qdcat:asGeoJSON",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage"
@@ -154,8 +154,8 @@
       "field_name": "spatial",
       "label": "Spatial",
       "preset": "json_object",
-      "validators": "scheming_load_json",
-      "display_property": "dcat:spatialResolutionInMeters",
+      "form_snippet": "qdes_hidden_json.html",
+      "validators": "qdes_validate_geojson_spatial",
       "display_group": "spatial content"
     },
     {
