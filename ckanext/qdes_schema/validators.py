@@ -3,8 +3,6 @@ import geojson
 import json
 from datetime import datetime as dt
 from ckan.common import config
-# from shapely.geometry import Point
-# from shapely.geometry.polygon import Polygon
 
 def qdes_temporal_start_end_date(key, flattened_data, errors, context):
     """
@@ -88,7 +86,7 @@ def qdes_validate_geojson(value):
             if (not 'is_valid' in dir(geojson_obj)) or (not geojson_obj.is_valid):
                 raise toolkit.Invalid('GeoJSON is not valid.')
         except:
-            raise toolkit.Invalid('Not a valid JSON string.')
+            raise toolkit.Invalid('GeoJSON is not valid.')
 
     return value
 
@@ -139,7 +137,7 @@ def qdes_spatial_points_pair(key, flattened_data, errors, context):
 
 def qdes_within_au_bounding_box(value):
     """
-    Validate the point is within Australia Bounding Box.
+    Validate the point is within Australia Bounding Box, only support rectangle.
     """
     if len(value) > 0:
         # Load AU bounding box.
@@ -151,13 +149,42 @@ def qdes_within_au_bounding_box(value):
             aubb_geojson_obj = geojson.loads(aubb)
 
             if (aubb_geojson_obj.__class__.__name__ == 'Polygon') and (geojson_obj.__class__.__name__ == 'Point'):
-                # @TODO try to uncomment below.
                 point_coord = list(geojson.utils.coords(geojson_obj))[0]
                 aubb_coord = list(geojson.utils.coords(aubb_geojson_obj))
 
-                # point = Point(*point_coord)
-                # polygon = Polygon(aubb_coord)
-                # if not polygon.contains(point):
-                    #raise toolkit.Invalid('Point is not within an Australia bounding box.')
+                p1 = aubb_coord[0]
+                p2 = aubb_coord[2]
+
+                if not ((point_coord[0] > p1[0]) and (point_coord[0] < p2[0]) and (point_coord[1] > p1[1]) and (point_coord[1] < p2[1])):
+                    raise toolkit.Invalid('This Point is not within Australia bounding box')
 
     return value
+
+def qdes_validate_geojson_spatial(key, flattened_data, errors, context):
+    """
+    Generate box based on the lower left and upper right Points.
+    """
+    try:
+        spatial_lower_left_value = flattened_data[('spatial_lower_left',)]
+        spatial_upper_right_value = flattened_data[('spatial_upper_right',)]
+
+        if (len(spatial_lower_left_value) > 0) and (len(spatial_upper_right_value) > 0):
+            # Get coordinates.
+            point_lower_left = geojson.loads(spatial_lower_left_value)
+            point_lower_left_coord = list(geojson.utils.coords(point_lower_left))[0]
+
+            point_upper_right = geojson.loads(spatial_upper_right_value)
+            point_upper_right_coord = list(geojson.utils.coords(point_upper_right))[0]
+
+            # Create box.
+            box = geojson.Polygon([[
+                [point_lower_left_coord[0], point_upper_right_coord[1]],
+                [point_upper_right_coord[0], point_upper_right_coord[1]],
+                [point_upper_right_coord[0], point_lower_left_coord[1]],
+                [point_lower_left_coord[0], point_lower_left_coord[1]],
+                [point_lower_left_coord[0], point_upper_right_coord[1]],
+            ]])
+
+            flattened_data[key] = geojson.dumps(box)
+    finally:
+        pass
