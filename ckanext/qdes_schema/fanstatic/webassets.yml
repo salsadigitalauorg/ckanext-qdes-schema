@@ -15,3 +15,7 @@ repeating-fields:
     - repeating-fields.js
 #  filters: rjsmin
 #  output: qdes_schema/repeating-fields.js
+
+q_des:
+  contents:
+    - q_des.css
