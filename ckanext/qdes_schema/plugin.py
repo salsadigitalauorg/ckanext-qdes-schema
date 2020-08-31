@@ -28,7 +28,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     # ITemplateHelpers
     def get_helpers(self):
         return {
-            'get_multi_textarea_values': self.get_multi_textarea_values
+            'get_multi_textarea_values': self.get_multi_textarea_values,
+            'set_first_option': helpers.set_first_option
         }
 
     def get_multi_textarea_values(self, value):
