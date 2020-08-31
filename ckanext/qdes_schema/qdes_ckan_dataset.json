@@ -217,13 +217,6 @@
       "display_group": "spatial details"
     },
     {
-      "field_name": "tag_string",
-      "label": "Tags",
-      "preset": "tag_string_autocomplete",
-      "form_placeholder": "eg. economy, mental health, government",
-      "display_group": "description"
-    },
-    {
       "field_name": "license_id",
       "label": "License",
       "form_snippet": "license.html",
