@@ -9,7 +9,7 @@
         {% for value in values %}
         <div data-repeater-item class="row vertical-align">
             <div class="col-lg-11">
-                {% call form.textarea(
+                {% call form.markdown(
                     label=h.scheming_language_text(field.label),
                     placeholder=h.scheming_language_text(field.form_placeholder),
                     attrs=dict({"class": "form-control", "data-field-name": field.field_name}, **(field.get('form_attrs', {}))),
@@ -42,9 +42,7 @@
     label=h.scheming_language_text(field.label),
     placeholder=h.scheming_language_text(field.form_placeholder),
     value=data[field.field_name],
-    error=errors[field.field_name],
     classes=ns.field_classes,
-    attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
     is_required=h.scheming_field_required(field),
     )
 %}
