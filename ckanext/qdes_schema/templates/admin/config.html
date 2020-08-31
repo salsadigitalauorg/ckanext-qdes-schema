@@ -1,0 +1,35 @@
+{% ckan_extends %}
+
+{% import 'macros/form.html' as form %}
+
+{% block admin_form %}
+    {{ super() }}
+    {{ form.textarea(
+        'ckanext.qdes_schema.au_bounding_box',
+        id='field-ckanext.qdes_schema.au_bounding_box',
+        label=_('Australia Bounding Box'),
+        placeholder='GeoJSON polygon',
+        value=data['ckanext.qdes_schema.au_bounding_box'],
+        error=errors['ckanext.qdes_schema.au_bounding_box']) }}
+{% endblock %}
+
+{% block admin_form_help %}
+    {{ super() }}
+    <p>
+        <strong>Australia Bounding Box:</strong> Example:<br/>
+        <pre>
+{
+    "type": "Polygon",
+    "coordinates": [
+        [
+            [100.0, 0.0],
+            [101.0, 0.0],
+            [101.0, 1.0],
+            [100.0, 1.0],
+            [100.0, 0.0]
+        ]
+    ]
+}
+        </pre>
+    </p>
+{% endblock %}
