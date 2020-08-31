@@ -12,14 +12,6 @@
       "display_group": "general"
     },
     {
-      "field_name": "extra:theme",
-      "label": "Dataset theme",
-      "display_property": "dcat:theme",
-      "preset": "select_ajax",
-      "resource_url": "https://run.mocky.io/v3/63646dda-f1fc-4548-afb7-c0d83fad6cca",
-      "choices": []
-    },
-    {
       "field_name": "name",
       "label": "URL",
       "preset": "dataset_slug",
@@ -186,6 +178,45 @@
       "display_group": "spatial content"
     },
     {
+      "field_name": "spatial_name_code",
+      "label": "Name or code",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "spatial_name_code",
+      "form_attrs": {
+        "data-module": "autocomplete"
+      },
+      "display_property": "dcterms:spatial",
+      "display_group": "spatial coverage"
+    },
+    {
+      "field_name": "spatial_representation",
+      "label": "Representation",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "spatial_representation",
+      "display_property": "qdcat:hasSpatialRepresentation",
+      "display_group": "spatial details"
+    },
+    {
+      "field_name": "spatial_datum_crs",
+      "label": "Datum & CRS",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "spatial_datum_crs",
+      "display_property": "qeox:inCRS",
+      "display_group": "spatial details"
+    },
+    {
+      "field_name": "spatial_resolution",
+      "label": "Resolution",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "spatial_resolution",
+      "display_property": "qdcat:spatialResolution",
+      "display_group": "spatial details"
+    },
+    {
       "field_name": "tag_string",
       "label": "Tags",
       "preset": "tag_string_autocomplete",
@@ -198,14 +229,6 @@
       "form_snippet": "license.html",
       "help_text": "License definitions and additional information can be found at http://opendefinition.org/",
       "display_group": "license"
-    },
-    {
-      "field_name": "spatial_representation",
-      "label": "Spatial representation",
-      "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
-      "vocabulary_service_id": "7f11adc6-c6f1-4f7c-bb8e-6b8c8bd5307a",
-      "display_group": "spatial details"
     },
     {
       "field_name": "publication_status",
