@@ -109,6 +109,33 @@
       "display_group": "description"
     },
     {
+      "field_name": "parameter",
+      "label": "Parameter",
+      "display_property": "dcat:property",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_group_select",
+      "field_group": [
+        {
+          "field_name": "observed-property",
+          "label": "Observed property",
+          "vocabulary_service_name": "observed-property",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "data-module": "autocomplete"
+          }
+        },
+        {
+          "field_name": "unit-of-measure",
+          "label": "Unit of measure",
+          "vocabulary_service_name": "unit-of-measure",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "data-module": "autocomplete"
+          }
+        }
+      ]
+    },
+    {
       "field_name": "temporal_start",
       "label": "Temporal coverage start",
       "display_property": "dcat:startDate",

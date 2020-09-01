@@ -1,0 +1,20 @@
+{% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
+
+{% for row in range(values['count'] or 1)  %}             
+    <div>
+        {% for field_group in field.get('field_group') or [] %}      
+            {% set value = values[field_group.field_name][row]|string %}
+            <span>
+                <a href="{{ value }}">
+                    {{ h.scheming_choices_label(h.scheming_field_choices(field_group), value) }}
+                </a>
+            </span>
+            {% if not loop.last %}
+                <span> - </span>            
+            {% endif %}
+        {% endfor %}
+    <div>
+    {% if not loop.last %}
+        <hr>           
+    {% endif %}
+{% endfor %}
