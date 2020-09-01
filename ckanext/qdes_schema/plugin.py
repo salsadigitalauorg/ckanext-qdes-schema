@@ -23,6 +23,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_within_au_bounding_box': validators.qdes_within_au_bounding_box,
             'qdes_validate_geojson_spatial': validators.qdes_validate_geojson_spatial,
             'qdes_spatial_points_pair': validators.qdes_spatial_points_pair,
+            'qdes_validate_multi_groups': validators.qdes_validate_multi_groups
         }
 
     # IConfigurer

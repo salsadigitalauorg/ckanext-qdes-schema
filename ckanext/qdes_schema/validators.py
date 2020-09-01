@@ -1,8 +1,14 @@
 import ckan.plugins.toolkit as toolkit
 import geojson
 import json
+import logging
+
 from datetime import datetime as dt
 from ckan.common import config
+from ckanext.scheming.validation import scheming_validator
+
+log = logging.getLogger(__name__)
+
 
 def qdes_temporal_start_end_date(key, flattened_data, errors, context):
     """
@@ -25,6 +31,7 @@ def qdes_temporal_start_end_date(key, flattened_data, errors, context):
             elif key == ('temporal_end',):
                 raise toolkit.Invalid('Must be later than start date.')
 
+
 def qdes_dataset_creation_date(value):
     """
     Return current datetime in UTC when value is empty.
@@ -33,6 +40,7 @@ def qdes_dataset_creation_date(value):
         return dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
 
     return value
+
 
 def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, context):
     """
@@ -53,6 +61,7 @@ def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, c
             if dt_release < dt_creation:
                 raise toolkit.Invalid('Must be later than creation date.')
 
+
 def qdes_uri_validator(value):
     """
     Validate the uri either it is accessible or not.
@@ -61,6 +70,7 @@ def qdes_uri_validator(value):
     For now it will return the value.
     """
     return value
+
 
 def qdes_validate_decimal(value):
     """
@@ -73,6 +83,7 @@ def qdes_validate_decimal(value):
             raise toolkit.Invalid('Not a valid decimal value.')
 
     return value
+
 
 def qdes_validate_geojson(value):
     """
@@ -90,6 +101,7 @@ def qdes_validate_geojson(value):
 
     return value
 
+
 def qdes_validate_geojson_point(value):
     """
     Validate the format of GeoJSON point.
@@ -105,6 +117,7 @@ def qdes_validate_geojson_point(value):
             raise toolkit.Invalid('Not a valid JSON string.')
 
     return value
+
 
 def qdes_validate_geojson_polygon(value):
     """
@@ -122,6 +135,7 @@ def qdes_validate_geojson_polygon(value):
 
     return value
 
+
 def qdes_spatial_points_pair(key, flattened_data, errors, context):
     """
     Validate lower left and upper right.
@@ -134,6 +148,7 @@ def qdes_spatial_points_pair(key, flattened_data, errors, context):
 
     if ((len(spatial_lower_left_value) > 0) != (len(spatial_upper_right_value) > 0)) and (len(flattened_data.get(key)) == 0):
         raise toolkit.Invalid('This field should not be empty')
+
 
 def qdes_within_au_bounding_box(value):
     """
@@ -159,6 +174,7 @@ def qdes_within_au_bounding_box(value):
                     raise toolkit.Invalid('This Point is not within Australia bounding box')
 
     return value
+
 
 def qdes_validate_geojson_spatial(key, flattened_data, errors, context):
     """
@@ -188,3 +204,22 @@ def qdes_validate_geojson_spatial(key, flattened_data, errors, context):
             flattened_data[key] = geojson.dumps(box)
     finally:
         pass
+
+
+@scheming_validator
+def qdes_validate_multi_groups(field, schema):
+    """
+    Validates each multi group has no empty values
+    """
+
+    def validator(key, data, errors, context):
+
+        values = toolkit.h.get_multi_textarea_values(data.get(key))
+
+        for field_group in field.get('field_group') or []:
+            group_values = values.get(field_group.get('field_name'))
+            # Check if there are any missing empty values in the group
+            if any(values for value in group_values if value == None or value.strip() == ''):
+                errors[key].append(toolkit._('{0} field should not be empty'.format(field_group.get('label'))))
+
+    return validator
