@@ -49,4 +49,10 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         }
 
     def get_multi_textarea_values(self, value):
-        return json.loads(value) if value else ['']
+        try:
+            if len(value) > 0:
+                return json.loads(value)
+        except:
+            pass
+
+        return ['']
