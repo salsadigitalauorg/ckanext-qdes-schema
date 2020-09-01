@@ -57,6 +57,7 @@ def qdes_uri_validator(value):
     """
     Validate the uri either it is accessible or not.
     @TODO https://it-partners.atlassian.net/browse/DDCI-122
+    This should work for repeatable field as well.
 
     For now it will return the value.
     """
