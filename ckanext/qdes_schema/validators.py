@@ -140,23 +140,26 @@ def qdes_within_au_bounding_box(value):
     Validate the point is within Australia Bounding Box, only support rectangle.
     """
     if len(value) > 0:
-        # Load AU bounding box.
-        aubb = config.get('ckanext.qdes_schema.au_bounding_box', False)
+        try:
+            # Load AU bounding box.
+            aubb = config.get('ckanext.qdes_schema.au_bounding_box', False)
 
-        if len(aubb) > 0:
-            # Load JSON string to geojson object.
-            geojson_obj = geojson.loads(value)
-            aubb_geojson_obj = geojson.loads(aubb)
+            if len(aubb) > 0:
+                # Load JSON string to geojson object.
+                geojson_obj = geojson.loads(value)
+                aubb_geojson_obj = geojson.loads(aubb)
 
-            if (aubb_geojson_obj.__class__.__name__ == 'Polygon') and (geojson_obj.__class__.__name__ == 'Point'):
-                point_coord = list(geojson.utils.coords(geojson_obj))[0]
-                aubb_coord = list(geojson.utils.coords(aubb_geojson_obj))
+                if (aubb_geojson_obj.__class__.__name__ == 'Polygon') and (geojson_obj.__class__.__name__ == 'Point'):
+                    point_coord = list(geojson.utils.coords(geojson_obj))[0]
+                    aubb_coord = list(geojson.utils.coords(aubb_geojson_obj))
 
-                p1 = aubb_coord[0]
-                p2 = aubb_coord[2]
+                    p1 = aubb_coord[0]
+                    p2 = aubb_coord[2]
 
-                if not ((point_coord[0] > p1[0]) and (point_coord[0] < p2[0]) and (point_coord[1] > p1[1]) and (point_coord[1] < p2[1])):
-                    raise toolkit.Invalid('This Point is not within Australia bounding box')
+                    if not ((point_coord[0] > p1[0]) and (point_coord[0] < p2[0]) and (point_coord[1] > p1[1]) and (point_coord[1] < p2[1])):
+                        raise toolkit.Invalid('This Point is not within Australia bounding box')
+        except:
+            raise toolkit.Invalid('Not a valid JSON string.')
 
     return value
 
