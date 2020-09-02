@@ -15,3 +15,9 @@
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+/* Added recommended field style */
+.recommended-field label:after {
+  content: " (recommended):";
+  color: blue;
+}
