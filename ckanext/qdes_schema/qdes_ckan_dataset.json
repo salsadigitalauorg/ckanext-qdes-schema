@@ -84,9 +84,10 @@
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "dataset_language",
       "form_attrs": {
-        "data-module": "autocomplete"
+        "data-module": "qdes_autocomplete"
       },
-      "first_choice": "English"
+      "first_choice": "English",
+      "form_include_blank_choice": true
     },
     {
       "field_name": "topic",
@@ -97,9 +98,10 @@
       "vocabulary_service_name": "topic",
       "validators": "scheming_required",
       "form_attrs": {
-        "data-module": "autocomplete"
+        "data-module": "qdes_autocomplete"
       },
-      "required": true
+      "required": true,
+      "form_include_blank_choice": true
     },
     {
       "field_name": "tag_string",
@@ -121,8 +123,9 @@
           "vocabulary_service_name": "observed-property",
           "choices_helper": "scheming_vocabulary_service_choices",
           "form_attrs": {
-            "data-module": "autocomplete"
-          }
+            "data-module": "qdes_autocomplete"
+          },
+          "form_include_blank_choice": true
         },
         {
           "field_name": "unit-of-measure",
@@ -130,8 +133,9 @@
           "vocabulary_service_name": "unit-of-measure",
           "choices_helper": "scheming_vocabulary_service_choices",
           "form_attrs": {
-            "data-module": "autocomplete"
-          }
+            "data-module": "qdes_autocomplete"
+          },
+          "form_include_blank_choice": true
         }
       ]
     },

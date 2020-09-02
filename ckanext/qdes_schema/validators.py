@@ -213,13 +213,14 @@ def qdes_validate_multi_groups(field, schema):
     """
 
     def validator(key, data, errors, context):
-
-        values = toolkit.h.get_multi_textarea_values(data.get(key))
-
-        for field_group in field.get('field_group') or []:
-            group_values = values.get(field_group.get('field_name'))
-            # Check if there are any missing empty values in the group
-            if any(values for value in group_values if value == None or value.strip() == ''):
-                errors[key].append(toolkit._('{0} field should not be empty'.format(field_group.get('label'))))
+        key_data = data.get(key)
+        field_groups = field.get('field_group')
+        if key_data and field_groups:
+            values = toolkit.h.get_multi_textarea_values(key_data)
+            for field_group in field_groups:
+                group_values = values.get(field_group.get('field_name', ''), [])
+                # Check if there are any missing empty values in the group
+                if any(values for value in group_values if value == None or value.strip() == ''):
+                    errors[key].append(toolkit._('{0} field should not be empty'.format(field_group.get('label'))))
 
     return validator
