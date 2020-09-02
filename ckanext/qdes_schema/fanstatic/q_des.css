@@ -25,3 +25,9 @@ select[data-module="qdes_autocomplete"] {
 .select2-container .select2-search-choice-close {
   left: auto;
 }
+
+/* Added recommended field style */
+.recommended-field label:after {
+  content: " (recommended):";
+  color: blue;
+}

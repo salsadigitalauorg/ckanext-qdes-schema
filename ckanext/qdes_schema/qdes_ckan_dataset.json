@@ -332,25 +332,117 @@
   ],
   "resource_fields": [
     {
-      "field_name": "url",
-      "label": "URL",
-      "preset": "resource_url_upload"
+      "field_name": "schema_standards",
+      "label": "Schema, standard(s)",
+      "display_property": "dcterms:conformsTo",
+      "display_snippet": "qdes_multi_text.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "qdes_uri_validator"
     },
     {
-      "field_name": "name",
-      "label": "Name",
-      "form_placeholder": "eg. January 2011 Gold Prices"
+      "field_name": "format",
+      "label": "Primary format",
+      "display_property": "dcterms:format",
+      "display_snippet": "controlled_vocabulary_single_select.html",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "format",
+      "form_attrs": {
+        "data-module": "autocomplete"
+      },
+      "required": true
+    },
+    {
+      "field_name": "compression",
+      "label": "Compression",
+      "display_property": "dcat:compressFormat",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "compression",
+      "form_attrs": {
+        "data-module": "autocomplete"
+      }
+    },
+    {
+      "field_name": "packaging",
+      "label": "Packaging",
+      "display_property": "dcat:packageFormat",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "packaging",
+      "form_attrs": {
+        "data-module": "autocomplete"
+      }
+    },
+    {
+      "field_name": "size",
+      "label": "Size",
+      "display_property": "dcat:byteSize",
+      "display_snippet": "qdes_byte_size.html",
+      "validators": "ignore_missing int_validator",
+      "form_placeholder": "Enter exact or approximate file size in bytes (integer)",
+      "recommended": true
+    },
+    {
+      "field_name": "url",
+      "label": "Download address",
+      "display_property": "dcat:downloadURL",
+      "validators": "url_validator qdes_uri_validator",
+      "recommended": true
+    },
+    {
+      "field_name": "service_api_endpoint",
+      "label": "Service API end-point",
+      "display_property": "dcterms:conformsTo",
+      "display_snippet": "qdes_multi_text.html",
+      "form_snippet": "qdes_multi_text.html"
+    },
+    {
+      "field_name": "data_services",
+      "label": "Data service",
+      "display_property": "dcat:accessService",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "packaging",
+      "form_attrs": {
+        "data-module": "autocomplete"
+      }
     },
     {
       "field_name": "description",
       "label": "Description",
       "form_snippet": "markdown.html",
-      "form_placeholder": "Some useful notes about the data"
+      "form_placeholder": "Some useful notes about the data",
+      "display_property": "dcterms:description"
     },
     {
-      "field_name": "format",
-      "label": "Format",
-      "preset": "resource_format_autocomplete"
+      "field_name": "additional_info",
+      "label": "Additional information",
+      "form_snippet": "qdes_multi_markdown.html",
+      "display_snippet": "qdes_multi_markdown.html"
+    },
+    {
+      "field_name": "rights_statement",
+      "label": "Rights statement",
+      "form_snippet": "textarea.html",
+      "display_property": "dcterms:rights",
+      "default_value": "© State of Queensland (Department of Environment and Science) 2020"
+    },
+    {
+      "field_name": "license",
+      "label": "License",
+      "display_property": "dcterms:license",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "license",
+      "form_attrs": {
+        "data-module": "autocomplete"
+      }
+    },
+    {
+      "field_name": "name",
+      "label": "Name",
+      "form_placeholder": "eg. January 2011 Gold Prices"
     }
   ]
 }
