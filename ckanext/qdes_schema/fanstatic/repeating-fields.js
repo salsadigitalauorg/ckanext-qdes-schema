@@ -74,6 +74,7 @@ jQuery(document).ready(function () {
         collate_inputs(repeater_id, target_field_id, field_type);
     }
 
+    // Listen to repeatable fields.
     jQuery(document).on('blur', ".repeating-field .form-control", function () {
         update_repeater_fields(this);
     });
@@ -82,4 +83,8 @@ jQuery(document).ready(function () {
         update_repeater_fields(this);
     });
 
+    // On load trigger the on change/blur for repeatable fields,
+    // otherwise required fields won't have value by default.
+    jQuery(".repeating-field .form-control").blur();
+    jQuery(".repeating-field select[data-module='autocomplete']").change();
 });
