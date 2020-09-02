@@ -6,8 +6,8 @@
     <div data-repeater-list="{{ field.field_name }}">
 
         {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
-
-        {% for row in range(values['count'] or 1)  %}   
+        {% set count = values['count']|int if values['count']|int > 0 else 1 %}
+        {% for row in range(count)  %}   
 
           <div data-repeater-item class="row vertical-align">
             {% for field_group in field.get('field_group') or [] %}          
@@ -44,7 +44,7 @@
                       selected=option_selected,
                       error=errors[field_group.field_name],
                       classes=['control-medium'],
-                      attrs=dict({"data-group": true, "data-field-name": field_group.field_name, "data-parent-field-name": field.field_name}, **(field_group.get('form_attrs', {}))),
+                      attrs=dict({"data-group": true, "data-field-name": field_group.field_name, "data-parent-field-name": field.field_name, "data-placeholder":"Select a {0}".format(field.label)}, **(field_group.get('form_attrs', {}))),
                       is_required=h.scheming_field_required(field_group)
                       )
                   %}

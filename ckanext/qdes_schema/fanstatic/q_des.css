@@ -15,3 +15,13 @@
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+/* qdes autocomplete styles */
+input[data-module="qdes_autocomplete"] ,
+select[data-module="qdes_autocomplete"] {
+  width: 100%;
+}
+
+.select2-container .select2-search-choice-close {
+  left: auto;
+}

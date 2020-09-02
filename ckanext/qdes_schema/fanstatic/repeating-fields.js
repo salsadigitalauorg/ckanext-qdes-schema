@@ -5,7 +5,7 @@ jQuery(document).ready(function () {
 
         show: function () {
             // Check to see if there is any select elements with an autocomplete data module
-            jQuery(this).find('select[data-module="autocomplete"]').map(function (index, select) {
+            jQuery(this).find('select[data-module="qdes_autocomplete"]').map(function (index, select) {
                 // Initialize autocomplete data for select element
                 ckan.module.initializeElement(select);
             });
@@ -15,7 +15,7 @@ jQuery(document).ready(function () {
             if (confirm('Are you sure you want to remove this item?')) {
                 // Remove value and trigger events
                 jQuery(this).hide();
-                jQuery(this).find('.form-control, select[data-module="autocomplete"]').val('').blur().change();
+                jQuery(this).find('.form-control, select[data-module="qdes_autocomplete"]').val('').blur().change();
             }
         },
         ready: function (setIndexes) {
@@ -36,11 +36,18 @@ jQuery(document).ready(function () {
                 field.push(value)
                 collated_values[field_name] = field
             });
-            // Count the number of visible data-repeater-item rows
-            collated_values['count'] = jQuery('#' + repeater_id + ' [data-repeater-item]:visible').length;
+            // Check if all values are empty
+            if (Object.values(collated_values).every(value => Object.values(value).every(x => x === null || x === ''))) {
+                // Reset
+                collated_values = {};
+            }
+            else {
+                // Count the number of visible data-repeater-item rows
+                collated_values['count'] = jQuery('#' + repeater_id + ' [data-repeater-item]:visible').length;
+            }
         }
         else {
-            jQuery('#' + repeater_id + ' ' + field_type + '.form-control, #' + repeater_id + ' ' + field_type + '[data-module="autocomplete"]').each(function () {
+            jQuery('#' + repeater_id + ' ' + field_type + '.form-control, #' + repeater_id + ' ' + field_type + '[data-module="qdes_autocomplete"]').each(function () {
                 var value = jQuery(this).val();
 
                 if (value && value.trim().length > 0) {
@@ -71,7 +78,7 @@ jQuery(document).ready(function () {
         update_repeater_fields(this);
     });
 
-    jQuery(document).on('change', ".repeating-field select[data-module='autocomplete']", function () {
+    jQuery(document).on('change', ".repeating-field select[data-module='qdes_autocomplete']", function () {
         update_repeater_fields(this);
     });
 

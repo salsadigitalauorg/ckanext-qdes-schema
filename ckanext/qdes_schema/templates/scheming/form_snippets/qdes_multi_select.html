@@ -41,7 +41,7 @@
                         selected=option_selected,
                         error=errors[field.field_name],
                         classes=['control-medium'],
-                        attrs=dict({"data-field-name": field.field_name}, **(field.get('form_attrs', {}))),
+                        attrs=dict({"data-field-name": field.field_name, "data-placeholder":"Select a {0}".format(field.label)}, **(field.get('form_attrs', {}))),
                         is_required=h.scheming_field_required(field)
                         )
                     %}
