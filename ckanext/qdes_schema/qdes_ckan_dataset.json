@@ -215,7 +215,7 @@
       "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "spatial_name_code",
       "form_attrs": {
-        "data-module": "autocomplete"
+        "data-module": "qdes_autocomplete"
       },
       "display_property": "dcterms:spatial",
       "display_group": "spatial coverage"
@@ -348,7 +348,7 @@
       "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "format",
       "form_attrs": {
-        "data-module": "autocomplete"
+        "data-module": "qdes_autocomplete"
       },
       "required": true
     },
@@ -360,7 +360,7 @@
       "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "compression",
       "form_attrs": {
-        "data-module": "autocomplete"
+        "data-module": "qdes_autocomplete"
       }
     },
     {
@@ -371,7 +371,7 @@
       "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "packaging",
       "form_attrs": {
-        "data-module": "autocomplete"
+        "data-module": "qdes_autocomplete"
       }
     },
     {
@@ -405,7 +405,7 @@
       "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "packaging",
       "form_attrs": {
-        "data-module": "autocomplete"
+        "data-module": "qdes_autocomplete"
       }
     },
     {
@@ -436,7 +436,7 @@
       "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "license",
       "form_attrs": {
-        "data-module": "autocomplete"
+        "data-module": "qdes_autocomplete"
       }
     },
     {
