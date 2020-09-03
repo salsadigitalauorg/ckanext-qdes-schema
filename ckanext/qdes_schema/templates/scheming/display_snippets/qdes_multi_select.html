@@ -4,9 +4,10 @@
         {% set text_to_diplay = h.scheming_choices_label(h.scheming_field_choices(field), value) %}
 
         {% if field.preset == 'controlled_vocabulary_multi_select' %}
+            {# This is the same as the else condition, but left as is for future development #}
             {% set url = value %}
         {% else %}
-            {% set url = '/dataservice/' ~ value %}
+            {% set url = value %}
         {% endif %}
 
         <a href="{{ url }}">
