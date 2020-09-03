@@ -1,8 +1,16 @@
 {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 {% for value in values %}
     <div>
-        <a href="{{ value }}">
-            {{ h.scheming_choices_label(h.scheming_field_choices(field), value) }}
+        {% set text_to_diplay = h.scheming_choices_label(h.scheming_field_choices(field), value) %}
+
+        {% if field.preset == 'controlled_vocabulary_multi_select' %}
+            {% set url = value %}
+        {% else %}
+            {% set url = '/dataservice/' ~ value %}
+        {% endif %}
+
+        <a href="{{ url }}">
+            {{text_to_diplay}}
         </a>
     </div>
     {% if values.index(value) < values|length - 1 %}
