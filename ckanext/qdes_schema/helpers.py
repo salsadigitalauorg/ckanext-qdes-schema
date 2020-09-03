@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from ckan.common import config
@@ -17,6 +18,13 @@ def set_first_option(options, first_option):
         old_index = options.index(option)
         options.insert(0, options.pop(old_index))
     return options
+
+
+def get_current_datetime():
+    """
+    Returns current datetime.
+    """
+    return datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
 
 
 def qdes_dataservice_choices(field):

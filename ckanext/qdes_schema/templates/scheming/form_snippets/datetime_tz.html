@@ -7,6 +7,10 @@
 {% if not date is string and not time is string %}
     {% set date = data.get(field.field_name) %}
 
+    {% if not date and field.default_value and data['id']|length == 0 %}
+        {% set date = h.get_current_datetime() %}
+    {% endif %}
+
     {% if date %}
         {% set tz = h.get_display_timezone().zone %}
         {% set localdate = h.scheming_datetime_to_tz(h.date_str_to_datetime(date), tz).isoformat() %}

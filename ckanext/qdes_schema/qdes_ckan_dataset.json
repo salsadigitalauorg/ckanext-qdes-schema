@@ -238,8 +238,9 @@
       "label": "Creation date",
       "display_property": "dcterms:created",
       "preset": "datetime_tz",
-      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_creation_date",
-      "display_group": "status"
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime",
+      "display_group": "status",
+      "default_value": true
     },
     {
       "field_name": "dataset_release_date",
