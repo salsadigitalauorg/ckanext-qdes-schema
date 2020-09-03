@@ -1,5 +1,10 @@
-from ckan.plugins.toolkit import h
+import logging
 
+from ckan.common import config
+from ckan.plugins.toolkit import h
+from ckan.plugins.toolkit import get_action
+
+log = logging.getLogger(__name__)
 
 def is_legacy_ckan():
     return False if h.ckan_version() > '2.9' else True
@@ -12,3 +17,21 @@ def set_first_option(options, first_option):
         old_index = options.index(option)
         options.insert(0, options.pop(old_index))
     return options
+
+
+def qdes_dataservice_choices(field):
+    """
+    Return choices for dataservice dropdown.
+    """
+    choices = []
+
+    try:
+        for data in get_action('get_dataservice')({}):
+            choices.append({
+                'value': config.get('ckan.site_url', None) + '/dataservice/' + data.name,
+                'label': data.title
+            })
+    except Exception as e:
+        log.error(str(e))
+
+    return choices
