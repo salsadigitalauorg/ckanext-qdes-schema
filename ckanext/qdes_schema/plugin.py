@@ -15,7 +15,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     def get_validators(self):
         return {
             'qdes_temporal_start_end_date': validators.qdes_temporal_start_end_date,
-            'qdes_dataset_creation_date': validators.qdes_dataset_creation_date,
             'qdes_dataset_current_date_later_than_creation': validators.qdes_dataset_current_date_later_than_creation,
             'qdes_uri_validator': validators.qdes_uri_validator,
             'qdes_validate_decimal': validators.qdes_validate_decimal,
@@ -48,7 +47,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         return {
             'get_multi_textarea_values': self.get_multi_textarea_values,
             'set_first_option': helpers.set_first_option,
-            'qdes_dataservice_choices': helpers.qdes_dataservice_choices
+            'get_current_datetime': helpers.get_current_datetime,
+            'qdes_dataservice_choices': helpers.qdes_dataservice_choices,
         }
 
     def get_multi_textarea_values(self, value):
