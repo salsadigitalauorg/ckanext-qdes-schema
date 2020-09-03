@@ -3,11 +3,13 @@ import ckan.plugins.toolkit as toolkit
 import json
 
 from ckanext.qdes_schema import helpers, validators
+from ckanext.qdes_schema.logic.action import get
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IValidators)
+    plugins.implements(plugins.IActions)
 
     # IValidators
     def get_validators(self):
@@ -45,7 +47,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     def get_helpers(self):
         return {
             'get_multi_textarea_values': self.get_multi_textarea_values,
-            'set_first_option': helpers.set_first_option
+            'set_first_option': helpers.set_first_option,
+            'qdes_dataservice_choices': helpers.qdes_dataservice_choices
         }
 
     def get_multi_textarea_values(self, value):
@@ -56,3 +59,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             pass
 
         return ['']
+
+    # IActions
+    def get_actions(self):
+        return {
+            'get_dataservice': get.dataservice
+        }

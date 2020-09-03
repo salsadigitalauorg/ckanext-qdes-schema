@@ -370,9 +370,7 @@
       "field_name": "data_services",
       "label": "Data service",
       "display_property": "dcat:accessService",
-      "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
-      "vocabulary_service_name": "packaging",
+      "preset": "controlled_dataservice_multi_select",
       "form_attrs": {
         "data-module": "autocomplete"
       }
