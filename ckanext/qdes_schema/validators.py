@@ -25,15 +25,6 @@ def qdes_temporal_start_end_date(key, flattened_data, errors, context):
             elif key == ('temporal_end',):
                 raise toolkit.Invalid('Must be later than start date.')
 
-def qdes_dataset_creation_date(value):
-    """
-    Return current datetime in UTC when value is empty.
-    """
-    if value is None:
-        return dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
-
-    return value
-
 def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, context):
     """
     Validate current date field against dataset_creation_date field.
@@ -57,6 +48,7 @@ def qdes_uri_validator(value):
     """
     Validate the uri either it is accessible or not.
     @TODO https://it-partners.atlassian.net/browse/DDCI-122
+    This should work for repeatable field as well.
 
     For now it will return the value.
     """
