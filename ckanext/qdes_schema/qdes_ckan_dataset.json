@@ -163,7 +163,6 @@
       "label": "Point of contact",
       "display_property": "dcat:contactPoint",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "contact_point",
       "display_group": "contacts",
       "required": true,
@@ -174,7 +173,6 @@
       "label": "Publisher",
       "display_property": "dcterms:publisher",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "contact_publisher",
       "display_group": "contacts",
       "required": true,
@@ -286,7 +284,6 @@
       "field_name": "spatial_name_code",
       "label": "Name or code",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "spatial_name_code",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
@@ -298,7 +295,6 @@
       "field_name": "spatial_representation",
       "label": "Representation",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "spatial_representation",
       "display_property": "qdcat:hasSpatialRepresentation",
       "display_group": "spatial details"
@@ -307,7 +303,6 @@
       "field_name": "spatial_datum_crs",
       "label": "Datum & CRS",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "spatial_datum_crs",
       "display_property": "qeox:inCRS",
       "display_group": "spatial details"
@@ -316,7 +311,6 @@
       "field_name": "spatial_resolution",
       "label": "Resolution",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "spatial_resolution",
       "display_property": "qdcat:spatialResolution",
       "display_group": "spatial details"
@@ -333,7 +327,6 @@
       "label": "Publication status",
       "display_property": "adms:status",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "publication_status",
       "display_group": "status",
       "required": true
@@ -368,7 +361,6 @@
       "label": "Update schedule",
       "display_property": "dcterms:accrualPeriodicity",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "update_schedule",
       "display_group": "status"
     },
@@ -420,7 +412,6 @@
       "display_property": "dcterms:format",
       "display_snippet": "controlled_vocabulary_single_select.html",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "format",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
@@ -432,7 +423,6 @@
       "label": "Compression",
       "display_property": "dcat:compressFormat",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "compression",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
@@ -443,7 +433,6 @@
       "label": "Packaging",
       "display_property": "dcat:packageFormat",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "packaging",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
@@ -506,7 +495,6 @@
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "license",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
