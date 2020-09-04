@@ -269,8 +269,9 @@
       "label": "Creation date",
       "display_property": "dcterms:created",
       "preset": "datetime_tz",
-      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_creation_date",
-      "display_group": "status"
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime",
+      "display_group": "status",
+      "default_value": true
     },
     {
       "field_name": "dataset_release_date",
@@ -401,9 +402,7 @@
       "field_name": "data_services",
       "label": "Data service",
       "display_property": "dcat:accessService",
-      "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
-      "vocabulary_service_name": "packaging",
+      "preset": "controlled_dataservice_multi_select",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
       }
