@@ -47,7 +47,8 @@
       "required": true,
       "form_attrs": {
         "class": "form-control"
-      }
+      },
+      "form_include_blank_choice": true
     },
     {
       "field_name": "notes",
