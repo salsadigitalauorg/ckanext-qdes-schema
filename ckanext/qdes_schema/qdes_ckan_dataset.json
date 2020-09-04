@@ -159,6 +159,79 @@
       "sub_heading": "temporal coverage"
     },
     {
+      "field_name": "contact_point",
+      "label": "Point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "contact_point",
+      "display_group": "contacts",
+      "required": true,
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "contact_publisher",
+      "label": "Publisher",
+      "display_property": "dcterms:publisher",
+      "preset": "controlled_vocabulary_single_select",
+      "choices_helper": "scheming_vocabulary_service_choices",
+      "vocabulary_service_name": "contact_publisher",
+      "display_group": "contacts",
+      "required": true,
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "contact_creator",
+      "label": "Creator",
+      "display_property": "dcterms:creator",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "contact_creator",
+      "display_group": "contacts",
+      "required": false,
+      "form_include_blank_choice": true,
+      "form_attrs": {
+        "class": "form-control"
+      }
+    },
+    {
+      "field_name": "contact_other_party",
+      "label": "Other responsible party",
+      "display_property": "prov:qualifiedAttribution",
+      "preset": "controlled_vocabulary_multi_group_select",
+      "display_group": "contacts",
+      "field_group": [
+        {
+          "field_name": "the-party",
+          "label": "The party",
+          "display_property": "prov:agent",
+          "vocabulary_service_name": "the-party",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        },
+        {
+          "field_name": "nature-of-their-responsibility",
+          "label": "Nature of their responsibility",
+          "display_property": "dcat:hadRole",
+          "vocabulary_service_name": "nature-of-their-responsibility",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        }
+      ]
+    },
+    {
+      "field_name": "acknowledgements",
+      "label": "Acknowledgements",
+      "display_property": "qdcat:acknowledgements",
+      "display_group": "contacts",
+      "form_snippet": "textarea.html"
+    },
+    {
       "field_name": "spatial_lower_left",
       "label": "Lower left",
       "preset": "json_object",
