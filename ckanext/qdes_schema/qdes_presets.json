@@ -16,6 +16,7 @@
       "values": {
         "form_snippet": "select.html",
         "display_snippet": "controlled_vocabulary_single_select.html",
+        "choices_helper": "scheming_vocabulary_service_choices",
         "validators": "scheming_required scheming_choices"
       }
     },
