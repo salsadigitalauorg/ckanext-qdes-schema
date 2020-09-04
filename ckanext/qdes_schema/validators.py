@@ -1,6 +1,7 @@
 import ckan.plugins.toolkit as toolkit
 import geojson
 import json
+import re
 from datetime import datetime as dt
 from ckan.common import config
 
@@ -183,3 +184,26 @@ def qdes_validate_geojson_spatial(key, flattened_data, errors, context):
             flattened_data[key] = geojson.dumps(box)
     finally:
         pass
+
+def qdes_iso_8601_durations(key, flattened_data, errors, context):
+    """
+    Validate the value against iso 8601 duration.
+    """
+    has_error = False
+    result = re.split("(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?", flattened_data[key])
+
+    for index, value in enumerate(result):
+        if (index > 1) and (index < 10):
+            try:
+                if (value is None) or len(value) == 0:
+                    value = 0
+
+                float_value = float(value)
+
+                if float_value < 0:
+                    has_error = True
+            except:
+                has_error = True
+
+    if has_error:
+        raise toolkit.Invalid('The value in each field needs to be positive number.')
