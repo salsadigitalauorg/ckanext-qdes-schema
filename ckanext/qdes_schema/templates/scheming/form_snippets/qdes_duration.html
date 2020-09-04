@@ -4,6 +4,7 @@
     <div class="row">
         <div class="col-sm-12">
             <h2>Time precission or spacing</h2>
+            {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ') }}</span>{% endif %}
         </div>
     </div>
 
@@ -18,8 +19,7 @@
                     field.field_name + '_years',
                     id='field-' + field.field_name +  '-years',
                     label= 'Years',
-                    value=data[field.field_name +  '-years'],
-                    error=errors[field.field_name],
+                    value=data[field.field_name +  '_years'],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
                     is_required=h.scheming_field_required(field)
@@ -32,8 +32,7 @@
                     field.field_name + '_months',
                     id='field-' + field.field_name +  '-months',
                     label= 'Months',
-                    value=data[field.field_name +  '-months'],
-                    error=errors[field.field_name],
+                    value=data[field.field_name +  '_months'],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
                     is_required=h.scheming_field_required(field)
@@ -46,8 +45,7 @@
                     field.field_name + '_weeks',
                     id='field-' + field.field_name +  '-weeks',
                     label= 'Weeks',
-                    value=data[field.field_name +  '-weeks'],
-                    error=errors[field.field_name],
+                    value=data[field.field_name +  '_weeks'],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
                     is_required=h.scheming_field_required(field)
@@ -60,8 +58,7 @@
                     field.field_name + '_days',
                     id='field-' + field.field_name +  '-days',
                     label= 'Days',
-                    value=data[field.field_name +  '-days'],
-                    error=errors[field.field_name],
+                    value=data[field.field_name +  '_days'],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
                     is_required=h.scheming_field_required(field)
@@ -82,8 +79,7 @@
                     field.field_name + '_hours',
                     id='field-' + field.field_name +  '-hours',
                     label= 'Hours',
-                    value=data[field.field_name +  '-hours'],
-                    error=errors[field.field_name],
+                    value=data[field.field_name +  '_hours'],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
                     is_required=h.scheming_field_required(field)
@@ -96,8 +92,7 @@
                     field.field_name + '_minutes',
                     id='field-' + field.field_name +  '-minutes',
                     label= 'Minutes',
-                    value=data[field.field_name +  '-minutes'],
-                    error=errors[field.field_name],
+                    value=data[field.field_name +  '_minutes'],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
                     is_required=h.scheming_field_required(field)
@@ -110,8 +105,7 @@
                     field.field_name + '_seconds',
                     id='field-' + field.field_name +  '-seconds',
                     label= 'Seconds',
-                    value=data[field.field_name +  '-seconds'],
-                    error=errors[field.field_name],
+                    value=data[field.field_name +  '_seconds'],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
                     is_required=h.scheming_field_required(field)
