@@ -1,13 +1,13 @@
 {% import 'macros/form.html' as form %}
 
-<div class="iso-8601-duration-field">
+<div class="iso-8601-duration-field-wrapper" data-duration-fieldname="{{ field.field_name }}">
     <div class="row">
         <div class="col-sm-12">
             <h2>Time precission or spacing</h2>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row iso-8601-duration-field">
         <div class="col-sm-6">
             <div class="row">
                 <div class="col-sm-12">Period</div>
@@ -15,10 +15,10 @@
 
             <div class="row">
                 {% call form.input(
-                    field.field_name + '_year',
+                    field.field_name + '_years',
                     id='field-' + field.field_name +  '-years',
                     label= 'Years',
-                    value=0,
+                    value=data[field.field_name +  '-years'],
                     error=errors[field.field_name],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
@@ -32,7 +32,7 @@
                     field.field_name + '_months',
                     id='field-' + field.field_name +  '-months',
                     label= 'Months',
-                    value=0,
+                    value=data[field.field_name +  '-months'],
                     error=errors[field.field_name],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
@@ -46,7 +46,7 @@
                     field.field_name + '_weeks',
                     id='field-' + field.field_name +  '-weeks',
                     label= 'Weeks',
-                    value=0,
+                    value=data[field.field_name +  '-weeks'],
                     error=errors[field.field_name],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
@@ -60,7 +60,7 @@
                     field.field_name + '_days',
                     id='field-' + field.field_name +  '-days',
                     label= 'Days',
-                    value=0,
+                    value=data[field.field_name +  '-days'],
                     error=errors[field.field_name],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
@@ -82,7 +82,7 @@
                     field.field_name + '_hours',
                     id='field-' + field.field_name +  '-hours',
                     label= 'Hours',
-                    value=0,
+                    value=data[field.field_name +  '-hours'],
                     error=errors[field.field_name],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
@@ -96,7 +96,7 @@
                     field.field_name + '_minutes',
                     id='field-' + field.field_name +  '-minutes',
                     label= 'Minutes',
-                    value=0,
+                    value=data[field.field_name +  '-minutes'],
                     error=errors[field.field_name],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
@@ -110,7 +110,7 @@
                     field.field_name + '_seconds',
                     id='field-' + field.field_name +  '-seconds',
                     label= 'Seconds',
-                    value=0,
+                    value=data[field.field_name +  '-seconds'],
                     error=errors[field.field_name],
                     classes=['control-medium', 'col-sm-3'],
                     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
