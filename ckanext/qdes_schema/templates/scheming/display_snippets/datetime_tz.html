@@ -1,1 +1,4 @@
-{{ h.render_datetime(data[field.field_name], date_format='%Y-%m-%d %H:%M:%S %Z') }}
+{% if data[field.field_name] %}
+    {% set offset = h.render_datetime(data[field.field_name], date_format='%z') %}
+    {{ h.render_datetime(data[field.field_name], date_format='%Y-%m-%dT%H:%M:%S') }}{{ offset[:3] }}:{{ offset[-2:] }}
+{% endif %}
