@@ -161,6 +161,12 @@
       "sub_heading": "temporal coverage"
     },
     {
+      "field_name": "temporal_precision_spacing",
+      "label": "Time precision or spacing",
+      "preset": "iso_8601_durations",
+      "display_group": "temporal content"
+    },
+    {
       "field_name": "spatial_lower_left",
       "label": "Lower left",
       "preset": "json_object",
