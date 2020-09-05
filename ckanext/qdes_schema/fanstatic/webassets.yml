@@ -26,3 +26,7 @@ iso-8601-duration:
 q_des:
   contents:
     - q_des.css
+
+autocomplete:
+  contents:
+    - autocomplete.js
