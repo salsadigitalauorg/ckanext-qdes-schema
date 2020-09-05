@@ -121,6 +121,7 @@
         {
           "field_name": "observed-property",
           "label": "Observed property",
+          "display_property": "qudt:hasQuantityKind",
           "vocabulary_service_name": "observed-property",
           "choices_helper": "scheming_vocabulary_service_choices",
           "form_attrs": {
@@ -131,6 +132,7 @@
         {
           "field_name": "unit-of-measure",
           "label": "Unit of measure",
+          "display_property": "qudt:unit",
           "vocabulary_service_name": "unit-of-measure",
           "choices_helper": "scheming_vocabulary_service_choices",
           "form_attrs": {
