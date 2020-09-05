@@ -3,7 +3,7 @@
     <div>
         {{ value }}
     </div>
-    {% if values.index(value) < values|length - 1 %}
+    {% if not loop.last %}
         <hr>
     {% endif %}
 {% endfor %}
