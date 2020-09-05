@@ -28,6 +28,15 @@
       }
     },
     {
+      "preset_name": "controlled_vocabulary_multi_group_select",
+      "values": {
+        "form_snippet": "qdes_multi_group_select.html",
+        "display_snippet": "qdes_multi_group_select.html",
+        "choices_helper": "scheming_vocabulary_service_choices",
+        "validators": "qdes_validate_multi_groups"
+      }
+    },
+    {
       "preset_name": "controlled_dataservice_multi_select",
       "values": {
         "form_snippet": "qdes_multi_select.html",
