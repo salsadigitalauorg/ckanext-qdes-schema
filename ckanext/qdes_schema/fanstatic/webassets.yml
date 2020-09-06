@@ -16,6 +16,13 @@ repeating-fields:
 #  filters: rjsmin
 #  output: qdes_schema/repeating-fields.js
 
+iso-8601-duration:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - iso-8601-duration.js
+
 q_des:
   contents:
     - q_des.css

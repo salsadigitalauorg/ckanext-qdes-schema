@@ -44,6 +44,14 @@
         "display_snippet": "qdes_multi_select.html",
         "choices_helper": "qdes_dataservice_choices"
       }
+    },
+    {
+      "preset_name": "iso_8601_durations",
+      "values": {
+        "form_snippet": "qdes_duration.html",
+        "display_snippet": "qdes_duration.html",
+        "validators": "qdes_iso_8601_durations"
+      }
     }
   ]
 }
