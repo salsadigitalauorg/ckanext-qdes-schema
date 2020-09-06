@@ -167,6 +167,77 @@
       "display_group": "temporal content"
     },
     {
+      "field_name": "contact_point",
+      "label": "Point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "contact_point",
+      "display_group": "contacts",
+      "required": true,
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "contact_publisher",
+      "label": "Publisher",
+      "display_property": "dcterms:publisher",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "contact_publisher",
+      "display_group": "contacts",
+      "required": true,
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "contact_creator",
+      "label": "Creator",
+      "display_property": "dcterms:creator",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "contact_creator",
+      "display_group": "contacts",
+      "required": false,
+      "form_include_blank_choice": true,
+      "form_attrs": {
+        "class": "form-control"
+      }
+    },
+    {
+      "field_name": "contact_other_party",
+      "label": "Other responsible party",
+      "display_property": "prov:qualifiedAttribution",
+      "preset": "controlled_vocabulary_multi_group_select",
+      "display_group": "contacts",
+      "field_group": [
+        {
+          "field_name": "the-party",
+          "label": "The party",
+          "display_property": "prov:agent",
+          "vocabulary_service_name": "the-party",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        },
+        {
+          "field_name": "nature-of-their-responsibility",
+          "label": "Nature of their responsibility",
+          "display_property": "dcat:hadRole",
+          "vocabulary_service_name": "nature-of-their-responsibility",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        }
+      ]
+    },
+    {
+      "field_name": "acknowledgements",
+      "label": "Acknowledgements",
+      "display_property": "qdcat:acknowledgements",
+      "display_group": "contacts",
+      "form_snippet": "textarea.html"
+    },
+    {
       "field_name": "spatial_lower_left",
       "label": "Lower left",
       "preset": "json_object",
@@ -221,7 +292,6 @@
       "field_name": "spatial_name_code",
       "label": "Name or code",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "spatial_name_code",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
@@ -233,7 +303,6 @@
       "field_name": "spatial_representation",
       "label": "Representation",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "spatial_representation",
       "display_property": "qdcat:hasSpatialRepresentation",
       "display_group": "spatial details"
@@ -242,7 +311,6 @@
       "field_name": "spatial_datum_crs",
       "label": "Datum & CRS",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "spatial_datum_crs",
       "display_property": "qeox:inCRS",
       "display_group": "spatial details"
@@ -251,7 +319,6 @@
       "field_name": "spatial_resolution",
       "label": "Resolution",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "spatial_resolution",
       "display_property": "qdcat:spatialResolution",
       "display_group": "spatial details"
@@ -268,7 +335,6 @@
       "label": "Publication status",
       "display_property": "adms:status",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "publication_status",
       "display_group": "status",
       "required": true
@@ -303,7 +369,6 @@
       "label": "Update schedule",
       "display_property": "dcterms:accrualPeriodicity",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "update_schedule",
       "display_group": "status"
     },
@@ -355,7 +420,6 @@
       "display_property": "dcterms:format",
       "display_snippet": "controlled_vocabulary_single_select.html",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "format",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
@@ -367,7 +431,6 @@
       "label": "Compression",
       "display_property": "dcat:compressFormat",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "compression",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
@@ -378,7 +441,6 @@
       "label": "Packaging",
       "display_property": "dcat:packageFormat",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "packaging",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
@@ -441,7 +503,6 @@
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "choices_helper": "scheming_vocabulary_service_choices",
       "vocabulary_service_name": "license",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
