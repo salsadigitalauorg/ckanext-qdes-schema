@@ -1,0 +1,7 @@
+{%- set display_as_link = ['url'] -%}
+
+{% if field.field_name in display_as_link %}
+    <a href="{{ data[field.field_name] }}">{{ data[field.field_name] }}</a>
+{% else %}
+    {{ data[field.field_name] }}
+{% endif %}

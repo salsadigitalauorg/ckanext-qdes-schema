@@ -1,6 +1,16 @@
+{%- set display_as_link = [
+    'schema_standards',
+    'service_api_endpoint',
+    ] -%}
+
 {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 {% for value in values %}
-    <div>{{ value }}</div>
+    {% if field.field_name in display_as_link %}
+        <div><a href="{{ value }}">{{ value }}</a></div>
+    {% else %}
+        <div>{{ value }}</div>
+    {% endif %}
+
     {% if not loop.last %}
         <hr>
     {% endif %} 
