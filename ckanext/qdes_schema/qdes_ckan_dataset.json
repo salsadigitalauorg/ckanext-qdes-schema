@@ -32,8 +32,7 @@
       "display_snippet": "qdes_multi_text.html",
       "form_snippet": "qdes_multi_text.html",
       "form_placeholder": "doi:10.25901/5e3ba30f141b7",
-      "display_group": "general",
-      "required": true
+      "display_group": "general"
     },
     {
       "field_name": "classification",
