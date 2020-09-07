@@ -84,10 +84,10 @@ def qdes_validate_geojson(value):
         try:
             # Load JSON string to geojson object.
             geojson_obj = geojson.loads(value)
-
-            if (not 'is_valid' in dir(geojson_obj)) or (not geojson_obj.is_valid):
-                raise toolkit.Invalid('GeoJSON is not valid.')
         except:
+            raise toolkit.Invalid('GeoJSON is not valid.')
+
+        if (not 'is_valid' in dir(geojson_obj)) or (not geojson_obj.is_valid):
             raise toolkit.Invalid('GeoJSON is not valid.')
 
     return value
@@ -101,11 +101,11 @@ def qdes_validate_geojson_point(value):
         try:
             # Load JSON string to geojson object.
             geojson_obj = geojson.loads(value)
-
-            if geojson_obj.__class__.__name__ != 'Point':
-                raise toolkit.Invalid('GeoJSON Point is needed.')
         except:
             raise toolkit.Invalid('Not a valid JSON string.')
+
+        if geojson_obj.__class__.__name__ != 'Point':
+            raise toolkit.Invalid('GeoJSON Point is needed.')
 
     return value
 
@@ -118,11 +118,11 @@ def qdes_validate_geojson_polygon(value):
         try:
             # Load JSON string to geojson object.
             geojson_obj = geojson.loads(value)
-
-            if geojson_obj.__class__.__name__ != 'Polygon':
-                raise toolkit.Invalid('GeoJSON Polygon is needed.')
         except:
             raise toolkit.Invalid('Not a valid JSON string.')
+
+        if geojson_obj.__class__.__name__ != 'Polygon':
+            raise toolkit.Invalid('GeoJSON Polygon is needed.')
 
     return value
 
@@ -146,26 +146,27 @@ def qdes_within_au_bounding_box(value):
     Validate the point is within Australia Bounding Box, only support rectangle.
     """
     if len(value) > 0:
-        try:
-            # Load AU bounding box.
-            aubb = config.get('ckanext.qdes_schema.au_bounding_box', False)
+        # Load AU bounding box.
+        aubb = config.get('ckanext.qdes_schema.au_bounding_box', False)
 
-            if len(aubb) > 0:
+        if len(aubb) > 0:
+            try:
                 # Load JSON string to geojson object.
                 geojson_obj = geojson.loads(value)
                 aubb_geojson_obj = geojson.loads(aubb)
+            except:
+                raise toolkit.Invalid('Not a valid JSON string.')
 
-                if (aubb_geojson_obj.__class__.__name__ == 'Polygon') and (geojson_obj.__class__.__name__ == 'Point'):
-                    point_coord = list(geojson.utils.coords(geojson_obj))[0]
-                    aubb_coord = list(geojson.utils.coords(aubb_geojson_obj))
+            if (aubb_geojson_obj.__class__.__name__ == 'Polygon') and (geojson_obj.__class__.__name__ == 'Point'):
+                point_coord = list(geojson.utils.coords(geojson_obj))[0]
+                aubb_coord = list(geojson.utils.coords(aubb_geojson_obj))
 
-                    p1 = aubb_coord[0]
-                    p2 = aubb_coord[2]
+                p1 = aubb_coord[0]
+                p2 = aubb_coord[2]
 
-                    if not ((point_coord[0] > p1[0]) and (point_coord[0] < p2[0]) and (point_coord[1] > p1[1]) and (point_coord[1] < p2[1])):
-                        raise toolkit.Invalid('This Point is not within Australia bounding box')
-        except:
-            raise toolkit.Invalid('Not a valid JSON string.')
+                if not ((point_coord[0] > p1[0]) and (point_coord[0] < p2[0]) and (point_coord[1] > p1[1]) and (
+                        point_coord[1] < p2[1])):
+                    raise toolkit.Invalid('This Point is not within Australia bounding box')
 
     return value
 
@@ -174,12 +175,12 @@ def qdes_validate_geojson_spatial(key, flattened_data, errors, context):
     """
     Generate box based on the lower left and upper right Points.
     """
-    try:
-        spatial_lower_left_value = flattened_data[('spatial_lower_left',)]
-        spatial_upper_right_value = flattened_data[('spatial_upper_right',)]
+    spatial_lower_left_value = flattened_data[('spatial_lower_left',)]
+    spatial_upper_right_value = flattened_data[('spatial_upper_right',)]
 
-        if (len(spatial_lower_left_value) > 0) and (len(spatial_upper_right_value) > 0):
-            # Get coordinates.
+    if (len(spatial_lower_left_value) > 0) and (len(spatial_upper_right_value) > 0):
+        # Get coordinates.
+        try:
             point_lower_left = geojson.loads(spatial_lower_left_value)
             point_lower_left_coord = list(geojson.utils.coords(point_lower_left))[0]
 
@@ -196,8 +197,8 @@ def qdes_validate_geojson_spatial(key, flattened_data, errors, context):
             ]])
 
             flattened_data[key] = geojson.dumps(box)
-    finally:
-        pass
+        except Exception as e:
+            log.error(str(e))
 
 
 def qdes_iso_8601_durations(key, flattened_data, errors, context):
