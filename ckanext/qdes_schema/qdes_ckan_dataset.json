@@ -323,13 +323,6 @@
       "display_group": "spatial details"
     },
     {
-      "field_name": "license_id",
-      "label": "License",
-      "form_snippet": "license.html",
-      "help_text": "License definitions and additional information can be found at http://opendefinition.org/",
-      "display_group": "license"
-    },
-    {
       "field_name": "publication_status",
       "label": "Publication status",
       "display_property": "adms:status",
@@ -372,11 +365,42 @@
       "display_group": "status"
     },
     {
+      "field_name": "classification_and_access_restrictions",
+      "label": "Classification and access restrictions",
+      "display_property": "dcterms:accessRights",
+      "display_group": "rights & licensing",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "classification_and_access_restrictions",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete"
+      },
+      "form_include_blank_choice": true,
+      "required": true
+    },
+    {
       "field_name": "rights_statement",
       "label": "Rights statement",
       "form_snippet": "textarea.html",
       "display_property": "dcterms:rights",
       "display_group": "rights & licensing"
+    },
+    {
+      "field_name": "license_id",
+      "label": "License",
+      "display_property": "dcterms:license",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "license_id",
+      "display_group": "rights & licensing",
+      "required": true
+    },
+    {
+      "field_name": "specialized_license",
+      "label": "Specialized license",
+      "display_property": "odrl:hasPolicy",
+      "display_snippet": "qdes_multi_text.html",
+      "form_snippet": "qdes_multi_text.html",
+      "display_group": "rights & licensing",
+      "validators": "qdes_uri_validator"
     },
     {
       "field_name": "landing_page",
