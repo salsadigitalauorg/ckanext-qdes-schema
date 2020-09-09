@@ -398,6 +398,7 @@
       "field_name": "specialized_license",
       "label": "Specialized license",
       "display_property": "odrl:hasPolicy",
+      "display_snippet": "qdes_text_url.html",
       "display_group": "rights & licensing",
       "validators": "url_validator qdes_uri_validator"
     },
@@ -443,7 +444,7 @@
     {
       "field_name": "lineage_inputs",
       "label": "Inputs",
-      "display_snippet": "qdes_multi_text.html",
+      "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
       "validators": "qdes_uri_validator",
       "display_group": "related and lineage",
@@ -472,7 +473,7 @@
       "field_name": "schema_standards",
       "label": "Schema, standard(s)",
       "display_property": "dcterms:conformsTo",
-      "display_snippet": "qdes_multi_text.html",
+      "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
       "validators": "qdes_uri_validator"
     },
@@ -521,6 +522,7 @@
       "field_name": "url",
       "label": "Download address",
       "display_property": "dcat:downloadURL",
+      "display_snippet": "qdes_text_url.html",
       "validators": "url_validator qdes_uri_validator",
       "recommended": true
     },
@@ -528,7 +530,7 @@
       "field_name": "service_api_endpoint",
       "label": "Service API end-point",
       "display_property": "dcterms:conformsTo",
-      "display_snippet": "qdes_multi_text.html",
+      "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html"
     },
     {
