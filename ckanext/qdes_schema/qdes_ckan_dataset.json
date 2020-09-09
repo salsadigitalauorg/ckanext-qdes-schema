@@ -382,7 +382,8 @@
       "label": "Rights statement",
       "form_snippet": "textarea.html",
       "display_property": "dcterms:rights",
-      "display_group": "rights & licensing"
+      "display_group": "rights & licensing",
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
     },
     {
       "field_name": "license_id",
@@ -397,10 +398,8 @@
       "field_name": "specialized_license",
       "label": "Specialized license",
       "display_property": "odrl:hasPolicy",
-      "display_snippet": "qdes_multi_text.html",
-      "form_snippet": "qdes_multi_text.html",
       "display_group": "rights & licensing",
-      "validators": "qdes_uri_validator"
+      "validators": "url_validator qdes_uri_validator"
     },
     {
       "field_name": "landing_page",
@@ -559,7 +558,7 @@
       "label": "Rights statement",
       "form_snippet": "textarea.html",
       "display_property": "dcterms:rights",
-      "default_value": "© State of Queensland (Department of Environment and Science) 2020"
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
     },
     {
       "field_name": "license",
