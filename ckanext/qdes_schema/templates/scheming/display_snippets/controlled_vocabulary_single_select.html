@@ -1,6 +1,6 @@
 {% if data[field.field_name]|length > 0 %}
-{# temporary generation of labels from URI or from a lookup list if the URIs are from BFO #}
-{% set label = data[field.field_name].split('/')[-1] %}
+    {# temporary generation of labels from URI or from a lookup list if the URIs are from BFO #}
+    {% set label = data[field.field_name].split('/')[-1] %}
     {% if label is not none %}
       {# <a href="{{ data[field.field_name] }}">{{ label }}</a> #}
         <a href="{{ data[field.field_name] }}">{{ h.scheming_choices_label(
