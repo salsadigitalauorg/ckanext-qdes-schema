@@ -2,14 +2,25 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import json
 
+from ckan.plugins.toolkit import get_action
 from ckanext.qdes_schema import helpers, validators
-from ckanext.qdes_schema.logic.action import get
+from ckanext.qdes_schema.logic.action import get, update
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IActions)
+    plugins.implements(plugins.IPackageController, inherit=True)
+
+    # IPackageController
+    def after_update(self, context, pkg_dict):
+        pass
+        get_action('update_datasets_available')(context, pkg_dict)
+
+    def after_create(self, context, pkg_dict):
+        pass
+        get_action('update_datasets_available')(context, pkg_dict)
 
     # IValidators
     def get_validators(self):
@@ -65,5 +76,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     # IActions
     def get_actions(self):
         return {
-            'get_dataservice': get.dataservice
+            'get_dataservice': get.dataservice,
+            'update_datasets_available': update.update_datasets_available
         }
