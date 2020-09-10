@@ -26,6 +26,259 @@
       "display_group": "general"
     },
     {
+      "field_name": "identifiers",
+      "label": "Identifier",
+      "display_property": "dcterms:identifier",
+      "display_snippet": "qdes_multi_text.html",
+      "form_snippet": "qdes_multi_text.html",
+      "form_placeholder": "doi:10.25901/5e3ba30f141b7",
+      "display_group": "general"
+    },
+    {
+      "field_name": "classification",
+      "label": "General classification of service type",
+      "display_property": "dcterms:type",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "classification",
+      "validators": "scheming_required",
+      "recommended": true,
+      "form_attrs": {
+        "class": "form-control"
+      },
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "notes",
+      "label": "Description or abstract",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "eg. Some useful notes about the data",
+      "display_property": "dcterms:description",
+      "display_group": "description",
+      "required": true
+    },
+    {
+      "field_name": "additional_info",
+      "label": "Additional information",
+      "form_snippet": "qdes_multi_markdown.html",
+      "display_property": "rdfs:comment",
+      "display_snippet": "qdes_multi_markdown.html",
+      "form_placeholder": "e.g. warnings",
+      "display_group": "description"
+    },
+    {
+      "field_name": "dataset_language",
+      "label": "Service language",
+      "display_property": "dcterms:language",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "dataset_language",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete"
+      },
+      "first_choice": "English",
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "topic",
+      "label": "Topic or theme",
+      "display_property": "dcat:theme",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "topic",
+      "validators": "scheming_required",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete"
+      },
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "tag_string",
+      "label": "Keyword",
+      "preset": "tag_string_autocomplete",
+      "form_placeholder": "eg. economy, mental health, government",
+      "display_group": "description"
+    },
+    {
+      "field_name": "datasets_available",
+      "label": "datasets available",
+      "display_snippet": "qdes_multi_text.html",
+      "form_snippet": "qdes_multi_text.html",
+      "display_group": "description"
+    },
+    {
+      "field_name": "standards",
+      "label": "Standard(s) the service implements",
+      "display_group": "description",
+      "display_property": "dcterms:conformsTo",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "standards",
+      "form_attrs": {
+        "class": "form-control"
+      },
+      "recommended": true,
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "endpoint_details",
+      "label": "Details of the endpoint",
+      "display_property": "dcat:endpointDetails",
+      "display_group": "access",
+      "recommended": true,
+      "validators": "url_validator qdes_uri_validator"
+    },
+    {
+      "field_name": "api_address",
+      "label": "Address of the API",
+      "display_property": "dcat:endpointURL",
+      "display_group": "access",
+      "recommended": true,
+      "validators": "url_validator qdes_uri_validator"
+    },
+    {
+      "field_name": "service_uri",
+      "label": "URI for the service",
+      "display_property": "dcat:landingPage",
+      "display_group": "access",
+      "recommended": true,
+      "validators": "url_validator qdes_uri_validator"
+    },
+    {
+      "field_name": "service_status",
+      "label": "Service status",
+      "display_property": "adms:status",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "service_status",
+      "display_group": "status"
+    },
+    {
+      "field_name": "service_creation_date",
+      "label": "Creation date",
+      "display_property": "dcterms:created",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime",
+      "display_group": "status",
+      "default_value": true
+    },
+    {
+      "field_name": "service_launch_date",
+      "label": "Launch date",
+      "display_property": "dcterms:issued",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_current_date_later_than_creation",
+      "display_group": "status"
+    },
+    {
+      "field_name": "service_last_modified_date",
+      "label": "Last modified date",
+      "display_property": "dcterms:modified",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_current_date_later_than_creation",
+      "display_group": "status"
+    },
+    {
+      "field_name": "contact_point",
+      "label": "Point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "contact_point",
+      "display_group": "contacts",
+      "required": true,
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "contact_publisher",
+      "label": "Publisher",
+      "display_property": "dcterms:publisher",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "contact_publisher",
+      "display_group": "contacts",
+      "required": true,
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "contact_creator",
+      "label": "Creator",
+      "display_property": "dcterms:creator",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "contact_creator",
+      "display_group": "contacts",
+      "required": false,
+      "form_include_blank_choice": true,
+      "form_attrs": {
+        "class": "form-control"
+      }
+    },
+    {
+      "field_name": "contact_other_party",
+      "label": "Other responsible party",
+      "display_property": "prov:qualifiedAttribution",
+      "preset": "controlled_vocabulary_multi_group_select",
+      "display_group": "contacts",
+      "field_group": [
+        {
+          "field_name": "the-party",
+          "label": "The party",
+          "display_property": "prov:agent",
+          "vocabulary_service_name": "the-party",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        },
+        {
+          "field_name": "nature-of-their-responsibility",
+          "label": "Nature of their responsibility",
+          "display_property": "dcat:hadRole",
+          "vocabulary_service_name": "nature-of-their-responsibility",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        }
+      ]
+    },
+    {
+      "field_name": "classification_and_access_restrictions",
+      "label": "Classification and access restrictions",
+      "display_property": "dcterms:accessRights",
+      "display_group": "rights & licensing",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "classification_and_access_restrictions",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete"
+      },
+      "form_include_blank_choice": true,
+      "recommended": true
+    },
+    {
+      "field_name": "rights_statement",
+      "label": "Rights statement",
+      "form_snippet": "textarea.html",
+      "display_property": "dcterms:rights",
+      "display_group": "rights & licensing",
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
+    },
+    {
+      "field_name": "license_id",
+      "label": "License",
+      "display_property": "dcterms:license",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "license_id",
+      "display_group": "rights & licensing",
+      "required": true
+    },
+    {
+      "field_name": "specialized_license",
+      "label": "Specialized license",
+      "display_property": "odrl:hasPolicy",
+      "display_snippet": "qdes_text_url.html",
+      "display_group": "rights & licensing",
+      "validators": "url_validator qdes_uri_validator"
+    },
+    {
       "field_name": "owner_org",
       "label": "Organization",
       "preset": "dataset_organization"
