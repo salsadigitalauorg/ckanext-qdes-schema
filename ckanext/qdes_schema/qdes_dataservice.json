@@ -102,7 +102,7 @@
     {
       "field_name": "datasets_available",
       "label": "datasets available",
-      "display_snippet": "qdes_multi_text.html",
+      "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
       "display_group": "description"
     },
@@ -123,6 +123,7 @@
       "field_name": "endpoint_details",
       "label": "Details of the endpoint",
       "display_property": "dcat:endpointDetails",
+      "display_snippet": "qdes_text_url.html",
       "display_group": "access",
       "recommended": true,
       "validators": "url_validator qdes_uri_validator"
@@ -131,6 +132,7 @@
       "field_name": "api_address",
       "label": "Address of the API",
       "display_property": "dcat:endpointURL",
+      "display_snippet": "qdes_text_url.html",
       "display_group": "access",
       "recommended": true,
       "validators": "url_validator qdes_uri_validator"
@@ -139,6 +141,7 @@
       "field_name": "service_uri",
       "label": "URI for the service",
       "display_property": "dcat:landingPage",
+      "display_snippet": "qdes_text_url.html",
       "display_group": "access",
       "recommended": true,
       "validators": "url_validator qdes_uri_validator"
