@@ -5,6 +5,7 @@ import json
 from ckanext.qdes_schema import helpers, validators
 from ckanext.qdes_schema.logic.action import get
 
+
 class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
@@ -25,7 +26,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_validate_geojson_spatial': validators.qdes_validate_geojson_spatial,
             'qdes_spatial_points_pair': validators.qdes_spatial_points_pair,
             'qdes_iso_8601_durations': validators.qdes_iso_8601_durations,
-            'qdes_validate_multi_groups': validators.qdes_validate_multi_groups
+            'qdes_validate_multi_groups': validators.qdes_validate_multi_groups,
+            'qdes_validate_related_dataset': validators.qdes_validate_related_dataset,
+            'qdes_validate_related_resources': validators.qdes_validate_related_resources
         }
 
     # IConfigurer
@@ -51,6 +54,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'set_first_option': helpers.set_first_option,
             'get_current_datetime': helpers.get_current_datetime,
             'qdes_dataservice_choices': helpers.qdes_dataservice_choices,
+            'qdes_relationship_types_choices': helpers.qdes_relationship_types_choices
         }
 
     def get_multi_textarea_values(self, value):
@@ -65,5 +69,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     # IActions
     def get_actions(self):
         return {
-            'get_dataservice': get.dataservice
+            'get_dataservice': get.dataservice,
+            'package_autocomplete': get.package_autocomplete
         }

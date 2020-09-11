@@ -428,6 +428,48 @@
       "form_placeholder": "1.0"
     },
     {
+      "field_name": "series_or_collection",
+      "label": "Series or collection",
+      "preset": "dataset_related_multi_text"
+    },
+    {
+      "field_name": "related_datasets",
+      "label": "Related dataset",
+      "preset": "dataset_related_multi_text"
+    },
+    {
+      "field_name": "related_resources",
+      "label": "Related resource",
+      "display_group": "related and lineage",
+      "sub_heading": "related",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_empty qdes_validate_related_resources",
+      "field_group": [
+        {
+          "field_name": "resources",
+          "label": "Resource",
+          "form_snippet": "text.html",
+          "form_attrs": {
+            "data-module": "qdes_autocomplete",
+            "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
+            "data-module-create-search-choice": true,
+            "class": "form-control"
+          }
+        },
+        {
+          "field_name": "relationships",
+          "label": "Relationship",
+          "form_snippet": "select.html",
+          "choices_helper": "qdes_relationship_types_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        }
+      ]
+    },
+    {
       "field_name": "lineage_description",
       "label": "Description",
       "form_snippet": "markdown.html",
@@ -465,6 +507,15 @@
       "label": "Responsible party",
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "creator",
+      "display_group": "related and lineage",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "cited_in",
+      "label": "Cited in",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "qdes_uri_validator",
       "display_group": "related and lineage",
       "sub_heading": "lineage"
     }

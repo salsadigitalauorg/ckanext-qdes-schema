@@ -52,6 +52,21 @@
         "display_snippet": "qdes_duration.html",
         "validators": "qdes_iso_8601_durations"
       }
+    },
+    {
+      "preset_name": "dataset_related_multi_text",
+      "values": {
+        "display_group": "related and lineage",
+        "sub_heading": "related",
+        "display_snippet": "qdes_multi_text.html",
+        "form_snippet": "qdes_multi_text.html",
+        "validators": "ignore_empty qdes_validate_related_dataset",
+        "form_attrs": {
+          "data-module": "qdes_autocomplete",
+          "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
+          "data-module-create-search-choice": true
+        }
+      }
     }
   ]
 }
