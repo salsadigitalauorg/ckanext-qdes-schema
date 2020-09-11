@@ -31,7 +31,9 @@ jQuery(document).ready(function () {
         interval: 300,
         dropdownClass: '',
         containerClass: '',
-        allowClear: true
+        allowClear: true,
+        createSearchChoice: false,
+        id: ''
       },
 
       /* Sets up the module, binding methods, creating elements etc. Called
@@ -60,6 +62,11 @@ jQuery(document).ready(function () {
           allowClear: this.options.allowClear
         };
 
+        // If source is set for API, replace the id placeholder with id passed in
+        if (this.options.source && this.options.id) {
+          this.options.source = this.options.source.replace('<id>', this.options.id);
+        }
+
         // Different keys are required depending on whether the select is
         // tags or generic completion.
         if (!this.el.is('select')) {
@@ -68,21 +75,30 @@ jQuery(document).ready(function () {
 
             // Disable creating new tags
             if (!this.options.createtags) {
-              settings.createSearchChoice = function(params) {
+              settings.createSearchChoice = function (params) {
                 return undefined;
               }
             }
           } else {
             settings.query = this._onQuery;
-            settings.createSearchChoice = this.formatTerm;
+            // If there is no match from search results, allow user to create new choice option
+            if (this.options.createSearchChoice) {
+              settings.createSearchChoice = this.formatTerm;
+            }
+            else {
+              // Search needs to find a match to be selected
+              settings.createSearchChoice = function (params) {
+                return undefined;
+              }
+            }
           }
           settings.initSelection = this.formatInitialValue;
         }
         else {
           if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)) {
-              var ieversion=new Number(RegExp.$1);
-              if (ieversion<=7) {return}
-           }
+            var ieversion = new Number(RegExp.$1);
+            if (ieversion <= 7) { return }
+          }
         }
 
         var select2 = this.el.select2(settings).data('select2');
@@ -95,7 +111,7 @@ jQuery(document).ready(function () {
 
         // This prevents Internet Explorer from causing a window.onbeforeunload
         // even from firing unnecessarily
-        $('.select2-choice', select2.container).on('click', function() {
+        $('.select2-choice', select2.container).on('click', function () {
           return false;
         });
 
@@ -119,13 +135,13 @@ jQuery(document).ready(function () {
        * Returns a jqXHR promise.
        */
       getCompletions: function (string, fn) {
-        var parts  = this.options.source.split('?');
-        var end    = parts.pop();
+        var parts = this.options.source.split('?');
+        var end = parts.pop();
         var source = parts.join('?') + encodeURIComponent(string) + end;
         var client = this.sandbox.client;
         var options = {
-          format: function(data) {
-            var completion_options = jQuery.extend(options, {objects: true});
+          format: function (data) {
+            var completion_options = jQuery.extend(options, { objects: true });
             return {
               results: client.parseCompletions(data, completion_options)
             }
@@ -158,7 +174,7 @@ jQuery(document).ready(function () {
         clearTimeout(this._debounced);
 
         // OK, wipe the dropdown before we start ajaxing the completions
-        fn({results:[]});
+        fn({ results: [] });
 
         if (string) {
           // Set a timer to prevent the search lookup occurring too often.
@@ -198,7 +214,7 @@ jQuery(document).ready(function () {
         }
 
         var result = [];
-        $(state.text.split(term)).each(function() {
+        $(state.text.split(term)).each(function () {
           result.push(escapeMarkup ? escapeMarkup(this) : this);
         });
 
@@ -238,7 +254,7 @@ jQuery(document).ready(function () {
 
         // Need to replace comma with a unicode character to trick the plugin
         // as it won't split this into multiple items.
-        return {id: term.replace(/,/g, '\u002C'), text: term};
+        return { id: term.replace(/,/g, '\u002C'), text: term };
       },
 
       /* Callback function that parses the initial field value.
