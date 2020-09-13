@@ -1,5 +1,7 @@
 {% import 'macros/form.html' as form %}
 
+{% set default_classes = field.classes if 'classes' in field else [] %}
+
 <div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="select">
 
     <div data-repeater-list="{{ field.field_name }}">
@@ -40,7 +42,7 @@
                         options=options,
                         selected=option_selected,
                         error=errors[field.field_name],
-                        classes=['control-medium'],
+                        classes=['control-medium'] + default_classes,
                         attrs=dict({"data-field-name": field.field_name, "data-placeholder":"Select a {0}".format(field.label)}, **(field.get('form_attrs', {}))),
                         is_required=h.scheming_field_required(field)
                         )
@@ -61,8 +63,7 @@
 </div>
 
 {% set visibility = [] if g.debug else ['hidden'] %}
-{% set default_classes = field.classes if 'classes' in field else [] %}
-{% set ns = namespace(field_classes=default_classes + visibility) %}
+
 
 {# BEGIN: The actual form field the multiple values will be captured & submitted in #}
 {% call form.textarea(
@@ -70,7 +71,7 @@
     id='field-' + field.field_name,
     label=h.scheming_language_text(field.label),
     value=data[field.field_name],
-    classes=ns.field_classes,
+    classes=default_classes + visibility,
     )
 %}
     {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}

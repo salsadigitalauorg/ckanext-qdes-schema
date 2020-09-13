@@ -3,7 +3,8 @@ import ckan.plugins.toolkit as toolkit
 import json
 
 from ckanext.qdes_schema import helpers, validators
-from ckanext.qdes_schema.logic.action import get
+from ckanext.qdes_schema.logic.action import get, update
+
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
@@ -11,6 +12,14 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IActions)
+    plugins.implements(plugins.IPackageController, inherit=True)
+
+    # IPackageController
+    def after_update(self, context, pkg_dict):
+        pass
+
+    def after_create(self, context, pkg_dict):
+        pass
 
     # IValidators
     def get_validators(self):
@@ -71,4 +80,5 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         return {
             'get_dataservice': get.dataservice,
             'package_autocomplete': get.package_autocomplete
+            'update_dataservice_datasets_available': update.dataservice_datasets_available
         }

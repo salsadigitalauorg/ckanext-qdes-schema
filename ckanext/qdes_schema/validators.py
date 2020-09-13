@@ -35,22 +35,30 @@ def qdes_temporal_start_end_date(key, flattened_data, errors, context):
 
 def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, context):
     """
-    Validate current date field against dataset_creation_date field.
+    Validate current date field against dataset_creation_date/service_creation_date field.
 
     It will raise an error, when current date value < dataset_creation_date.
     """
     # Get date values.
-    dataset_creation_date_value = flattened_data[('dataset_creation_date',)]
+    creation_date_value = None
+    if key == ('dataset_creation_date',):
+        creation_date_value = flattened_data[('dataset_creation_date',)]
+    elif key == ('service_creation_date',):
+        creation_date_value = flattened_data[('service_creation_date',)]
     current_date_value = flattened_data[key]
 
     # Need to make sure current date date >= creation date.
-    if (dataset_creation_date_value is not None) and (current_date_value is not None):
+    if (creation_date_value is not None) and (current_date_value is not None):
         if len(current_date_value) > 0:
-            dt_creation = dt.strptime(dataset_creation_date_value, '%Y-%m-%dT%H:%M:%S')
+            dt_creation = dt.strptime(creation_date_value, '%Y-%m-%dT%H:%M:%S')
             dt_release = dt.strptime(current_date_value, '%Y-%m-%dT%H:%M:%S')
 
             if dt_release < dt_creation:
                 raise toolkit.Invalid('Must be later than creation date.')
+
+
+def qdes_dataservice_current_date_later_than_creation(key, flattened_data, errors, context):
+    qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, context)
 
 
 def qdes_uri_validator(value):
