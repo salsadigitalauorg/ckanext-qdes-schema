@@ -1,56 +1,44 @@
 import logging
-import requests
 import json
 
-from pprint import pformat
-from ckan.plugins.toolkit import get_action
-from ckan import model
-from ckan.lib import helpers
-from ckan.model import meta
+from ckan.plugins.toolkit import get_action, h
+from ckanext.qdes_schema.logic.helpers import (
+    dataservice_helpers as ds_helpers,
+    resource_helpers as res_helpers)
 
 log = logging.getLogger(__name__)
 
-def update_datasets_available(context, pkg_dict):
+
+def dataservice_datasets_available(context, resource):
     """
-    Update datasets_available field on dataservice,
-    this will be triggered on after_update and after_create of datsaset.
+    Update datasets_available field for a dataservice.
+    This will be triggered by the following events:
+    - dataset resource created
+    - dataset resource updated
+    - @TODO: dataset resource deleted
+    - @TODO: data service updated
+    - @TODO: data service deleted
     """
-    # Check if current package is dataset.
-    type = context['package'].type if 'package' in context else None
+    pkg_dict = res_helpers.get_resource_package(context, resource['package_id'])
 
-    if (type is not None) and (type == 'dataset') and ('resources' in pkg_dict):
-        # Load the resources.
-        dataset_resources = pkg_dict['resources'] if len(pkg_dict['resources']) > 0 else ''
+    if pkg_dict.get('type', None) == 'dataset':
+        try:
+            for dataservice in res_helpers.data_services_as_list(resource):
 
-        if len(dataset_resources) > 0:
-            # Get current dataset url.
-            host = helpers.get_site_protocol_and_host()
-            dataset_url = host[0] + '://' + host[1] + '/dataset/' + pkg_dict['name'] if len(host) > 0 else ''
+                dataservice_dict = ds_helpers.get_dataservice_from_uri(context, dataservice)
 
-            for resource in dataset_resources:
-                if len(resource['data_services']) > 0:
-                    # Load the dataservice json.
-                    dataservices = None
-                    try:
-                        dataservices = json.loads(resource['data_services'])
-                    except Exception as e:
-                        log.error('Not able to load json from data_services.')
+                if dataservice_dict:
+                    datasets_available = ds_helpers.datasets_available_as_list(dataservice_dict)
 
-                    if dataservices is not None and len(dataservices) > 0:
-                        for dataservice in dataservices:
-                            # Load dataservice.
-                            dataservice_name = dataservice.split('/')[-1]
-                            dataservice_dict = get_action('package_show')(context, {'name_or_id': dataservice_name})
+                    dataset_url = h.url_for('dataset.read', id=pkg_dict['name'], _external=True)
 
-                            if len(dataservice_dict) > 0:
-                                # Update dataservice.
-                                current_datasets_available = []
-                                try:
-                                    if len(dataservice_dict['datasets_available']) > 0:
-                                        current_datasets_available = json.loads(dataservice_dict['datasets_available'])
-                                except Exception as e:
-                                    log.error('Not able to load json from datasets_available.')
+                    # Update dataservice.
+                    dataservice_dict['datasets_available'] = json.dumps(list(set([dataset_url] + datasets_available)))
 
-                                dataservice_dict['datasets_available'] = json.dumps(list(set([dataset_url] + current_datasets_available)))
-                                get_action('package_update')(context, dataservice_dict)
-
+                    # ref.: https://docs.ckan.org/en/2.9/api/#ckan.logic.action.patch.package_update
+                    # "You must be authorized to edit the dataset and the groups that it belongs to."
+                    context['ignore_auth'] = True
+                    # package_patch seems to be failing validation here
+                    get_action('package_update')(context, dataservice_dict)
+        except Exception as e:
+            log.error(str(e))
