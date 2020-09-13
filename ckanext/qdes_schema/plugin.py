@@ -79,6 +79,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     def get_actions(self):
         return {
             'get_dataservice': get.dataservice,
-            'package_autocomplete': get.package_autocomplete
+            'package_autocomplete': get.package_autocomplete,
             'update_dataservice_datasets_available': update.dataservice_datasets_available
         }
