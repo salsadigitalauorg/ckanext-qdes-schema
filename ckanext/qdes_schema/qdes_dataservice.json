@@ -19,13 +19,6 @@
       "display_group": "general"
     },
     {
-      "field_name": "alt_title",
-      "label": "Alternative title",
-      "display_property": "qdcat:altTitle",
-      "form_placeholder": "eg. Vegetation management regional ecosystem map",
-      "display_group": "general"
-    },
-    {
       "field_name": "identifiers",
       "label": "Identifier",
       "display_property": "dcterms:identifier",
@@ -101,7 +94,7 @@
     },
     {
       "field_name": "datasets_available",
-      "label": "datasets available",
+      "label": "Datasets available",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
       "display_group": "description"
@@ -265,11 +258,11 @@
       "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
     },
     {
-      "field_name": "license_id",
+      "field_name": "license",
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "license_id",
+      "vocabulary_service_name": "license",
       "display_group": "rights & licensing",
       "required": true
     },
