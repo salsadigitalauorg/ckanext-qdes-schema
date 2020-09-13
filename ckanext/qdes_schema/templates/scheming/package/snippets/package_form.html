@@ -28,6 +28,10 @@
   #}
   {%- set ns = namespace(display_group=None) -%}
   {%- for field in schema.dataset_fields -%}
+    {% if field.recommended %}
+      {% do field.update({'classes': ['recommended-field'] }) %}
+    {% endif %}
+
     {%- if field.display_group is not none and field.display_group != ns.display_group -%}
         {%- set ns.display_group = field.display_group -%}
         {%- if ns.display_group not in ['general'] -%}
