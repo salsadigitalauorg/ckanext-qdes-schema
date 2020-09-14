@@ -4,7 +4,7 @@ import json
 
 from ckanext.qdes_schema import helpers, validators
 from ckanext.qdes_schema.logic.action import get, update
-
+from ckanext.relationships import helpers as ckanext_relationships_helpers
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
@@ -20,6 +20,17 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
     def after_create(self, context, pkg_dict):
         pass
+
+    def before_index(self, pkg_dict):
+        # Remove the relationship type fields from the pkg_dict to prevent indexing from breaking
+        # because we removed the relationship type fields from solr schema.xml
+        relationship_types = ckanext_relationships_helpers.get_relationship_types_as_flat_list()
+
+        for relationship_type in relationship_types:
+            if pkg_dict.get(relationship_type, None):
+                pkg_dict.pop(relationship_type)
+
+        return pkg_dict
 
     # IValidators
     def get_validators(self):
