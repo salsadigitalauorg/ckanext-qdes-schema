@@ -252,3 +252,55 @@ def qdes_validate_multi_groups(field, schema):
                     errors[key].append(toolkit._('{0} field should not be empty'.format(field_group.get('label'))))
 
     return validator
+
+
+@scheming_validator
+def qdes_validate_related_resources(field, schema):
+    """
+    Validates each multi group for related_resources
+    Must not have empty values in group
+    Must be either a valid CKAN dataset name or valid URL to external dataset
+    """
+
+    def validator(key, data, errors, context):
+        key_data = data.get(key)
+        field_groups = field.get('field_group')
+        if key_data and field_groups:
+            values = toolkit.h.get_multi_textarea_values(key_data)
+            for field_group in field_groups:
+                group_values = values.get(field_group.get('field_name', ''), [])
+                # Check if there are any missing empty values in the group
+                if any(values for value in group_values if value == None or value.strip() == ''):
+                    errors[key].append(toolkit._('{0} field should not be empty'.format(field_group.get('label'))))
+                elif field_group.get('field_name') == 'resources':
+                    # Check if dataset name exists or is a valid URL
+                    try:
+                        qdes_validate_related_dataset(group_values, context)
+                    except toolkit.Invalid as e:
+                        errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
+
+    return validator
+
+
+def qdes_validate_related_dataset(value, context):
+    """
+    Validates each dataset name exists in CKAN or is a valid URL to external dataset
+    """
+    log.debug('qdes_dataset_related - {0}'.format(value))
+    datasets = related_resources = toolkit.get_converter('json_or_string')(value)
+    if datasets and isinstance(datasets, list):
+        for dataset in datasets:
+            try:
+                toolkit.get_validator('package_name_exists')(dataset, context)
+            except toolkit.Invalid:
+                # Package does not exists so lets check to see if there is a valid URI entereds
+                data = {'url': dataset}
+                errors = {'url': []}
+                toolkit.get_validator('url_validator')('url', data, errors, context)
+                if(len(errors['url']) > 0):
+                    raise toolkit.Invalid(errors['url'][0])
+
+                if not toolkit.get_validator('qdes_uri_validator')(dataset):
+                    raise toolkit.Invalid('Unsuccessful connecting to URI "{}'.format(dataset))
+
+    return value

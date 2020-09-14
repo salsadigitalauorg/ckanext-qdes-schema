@@ -166,77 +166,6 @@
       "display_group": "temporal content"
     },
     {
-      "field_name": "contact_point",
-      "label": "Point of contact",
-      "display_property": "dcat:contactPoint",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_point",
-      "display_group": "contacts",
-      "required": true,
-      "form_include_blank_choice": true
-    },
-    {
-      "field_name": "contact_publisher",
-      "label": "Publisher",
-      "display_property": "dcterms:publisher",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_publisher",
-      "display_group": "contacts",
-      "required": true,
-      "form_include_blank_choice": true
-    },
-    {
-      "field_name": "contact_creator",
-      "label": "Creator",
-      "display_property": "dcterms:creator",
-      "preset": "controlled_vocabulary_multi_select",
-      "vocabulary_service_name": "contact_creator",
-      "display_group": "contacts",
-      "required": false,
-      "form_include_blank_choice": true,
-      "form_attrs": {
-        "class": "form-control"
-      }
-    },
-    {
-      "field_name": "contact_other_party",
-      "label": "Other responsible party",
-      "display_property": "prov:qualifiedAttribution",
-      "preset": "controlled_vocabulary_multi_group_select",
-      "display_group": "contacts",
-      "field_group": [
-        {
-          "field_name": "the-party",
-          "label": "The party",
-          "display_property": "prov:agent",
-          "vocabulary_service_name": "the-party",
-          "choices_helper": "scheming_vocabulary_service_choices",
-          "form_attrs": {
-            "class": "form-control"
-          },
-          "form_include_blank_choice": true
-        },
-        {
-          "field_name": "nature-of-their-responsibility",
-          "label": "Nature of their responsibility",
-          "display_property": "dcat:hadRole",
-          "vocabulary_service_name": "nature-of-their-responsibility",
-          "choices_helper": "scheming_vocabulary_service_choices",
-          "form_attrs": {
-            "class": "form-control"
-          },
-          "form_include_blank_choice": true
-        }
-      ]
-    },
-    {
-      "field_name": "acknowledgements",
-      "label": "Acknowledgements",
-      "display_property": "qdcat:acknowledgements",
-      "display_group": "contacts",
-      "form_snippet": "textarea.html"
-    },
-    {
       "field_name": "spatial_lower_left",
       "label": "Lower left",
       "form_snippet": "textarea.html",
@@ -321,6 +250,169 @@
       "vocabulary_service_name": "spatial_resolution",
       "display_property": "qdcat:spatialResolution",
       "display_group": "spatial details"
+    },
+    {
+      "field_name": "series_or_collection",
+      "label": "Series or collection",
+      "preset": "dataset_related_multi_text"
+    },
+    {
+      "field_name": "related_datasets",
+      "label": "Related dataset",
+      "preset": "dataset_related_multi_text"
+    },
+    {
+      "field_name": "related_resources",
+      "label": "Related resource",
+      "display_group": "related and lineage",
+      "sub_heading": "related",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_empty qdes_validate_related_resources",
+      "field_group": [
+        {
+          "field_name": "resources",
+          "label": "Resource",
+          "form_snippet": "text.html",
+          "form_attrs": {
+            "data-module": "qdes_autocomplete",
+            "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
+            "data-module-create-search-choice": true,
+            "class": "form-control"
+          }
+        },
+        {
+          "field_name": "relationships",
+          "label": "Relationship",
+          "form_snippet": "select.html",
+          "choices_helper": "qdes_relationship_types_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        }
+      ]
+    },
+    {
+      "field_name": "lineage_description",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
+      "display_group": "related and lineage",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "lineage_plan",
+      "label": "Plan",
+      "display_snippet": "qdes_text_url.html",
+      "display_group": "related and lineage",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "lineage_inputs",
+      "label": "Inputs",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "qdes_uri_validator",
+      "display_group": "related and lineage",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "lineage_sensor",
+      "label": "Sensor",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "qdes_uri_validator",
+      "display_group": "related and lineage",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "lineage_responsible_party",
+      "label": "Responsible party",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "creator",
+      "display_group": "related and lineage",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "cited_in",
+      "label": "Cited in",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "qdes_uri_validator",
+      "display_group": "related and lineage",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "contact_point",
+      "label": "Point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "contact_point",
+      "display_group": "contacts",
+      "required": true,
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "contact_publisher",
+      "label": "Publisher",
+      "display_property": "dcterms:publisher",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "contact_publisher",
+      "display_group": "contacts",
+      "required": true,
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "contact_creator",
+      "label": "Creator",
+      "display_property": "dcterms:creator",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "contact_creator",
+      "display_group": "contacts",
+      "required": false,
+      "form_include_blank_choice": true,
+      "form_attrs": {
+        "class": "form-control"
+      }
+    },
+    {
+      "field_name": "contact_other_party",
+      "label": "Other responsible party",
+      "display_property": "prov:qualifiedAttribution",
+      "preset": "controlled_vocabulary_multi_group_select",
+      "display_group": "contacts",
+      "field_group": [
+        {
+          "field_name": "the-party",
+          "label": "The party",
+          "display_property": "prov:agent",
+          "vocabulary_service_name": "the-party",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        },
+        {
+          "field_name": "nature-of-their-responsibility",
+          "label": "Nature of their responsibility",
+          "display_property": "dcat:hadRole",
+          "vocabulary_service_name": "nature-of-their-responsibility",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        }
+      ]
+    },
+    {
+      "field_name": "acknowledgements",
+      "label": "Acknowledgements",
+      "display_property": "qdcat:acknowledgements",
+      "display_group": "contacts",
+      "form_snippet": "textarea.html"
     },
     {
       "field_name": "publication_status",
@@ -426,47 +518,6 @@
       "label": "Version",
       "validators": "ignore_missing unicode package_version_validator",
       "form_placeholder": "1.0"
-    },
-    {
-      "field_name": "lineage_description",
-      "label": "Description",
-      "form_snippet": "markdown.html",
-      "display_snippet": "markdown.html",
-      "display_group": "related and lineage",
-      "sub_heading": "lineage"
-    },
-    {
-      "field_name": "lineage_plan",
-      "label": "Plan",
-      "display_snippet": "qdes_text_url.html",
-      "display_group": "related and lineage",
-      "sub_heading": "lineage"
-    },
-    {
-      "field_name": "lineage_inputs",
-      "label": "Inputs",
-      "display_snippet": "qdes_multi_text_url.html",
-      "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator",
-      "display_group": "related and lineage",
-      "sub_heading": "lineage"
-    },
-    {
-      "field_name": "lineage_sensor",
-      "label": "Sensor",
-      "display_snippet": "qdes_multi_text_url.html",
-      "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator",
-      "display_group": "related and lineage",
-      "sub_heading": "lineage"
-    },
-    {
-      "field_name": "lineage_responsible_party",
-      "label": "Responsible party",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "creator",
-      "display_group": "related and lineage",
-      "sub_heading": "lineage"
     }
   ],
   "resource_fields": [

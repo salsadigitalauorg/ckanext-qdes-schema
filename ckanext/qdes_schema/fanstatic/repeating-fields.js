@@ -5,7 +5,7 @@ jQuery(document).ready(function () {
 
         show: function () {
             // Check to see if there is any select elements with an autocomplete data module
-            jQuery(this).find('select[data-module="qdes_autocomplete"]').map(function (index, select) {
+            jQuery(this).find('[data-module="qdes_autocomplete"]').map(function (index, select) {
                 // Initialize autocomplete data for select element
                 ckan.module.initializeElement(select);
             });
@@ -15,7 +15,7 @@ jQuery(document).ready(function () {
             if (confirm('Are you sure you want to remove this item?')) {
                 // Remove value and trigger events
                 jQuery(this).hide();
-                jQuery(this).find('.form-control, select[data-module="qdes_autocomplete"]').val('').blur().change();
+                jQuery(this).find('.form-control, [data-module="qdes_autocomplete"]').val('').blur().change();
             }
         },
         ready: function (setIndexes) {
@@ -25,7 +25,7 @@ jQuery(document).ready(function () {
     });
 
     function collate_inputs(repeater_id, target_field_id, field_type) {
-        var multi_groups = jQuery('#' + repeater_id + ' [data-repeater-item]:visible' + ' ' + field_type + '[data-group="True"]')
+        var multi_groups = jQuery('#' + repeater_id + ' [data-repeater-item]:visible' + ' [data-group="True"]')
         var collated_values = multi_groups.length > 0 ? {} : [];
 
         if (multi_groups.length > 0) {
@@ -79,12 +79,12 @@ jQuery(document).ready(function () {
         update_repeater_fields(this);
     });
 
-    jQuery(document).on('change', ".repeating-field select[data-module='qdes_autocomplete']", function () {
+    jQuery(document).on('change', ".repeating-field [data-module='qdes_autocomplete']", function () {
         update_repeater_fields(this);
     });
 
     // On load trigger the on change/blur for repeatable fields,
     // otherwise required fields won't have value by default.
     jQuery(".repeating-field .form-control").blur();
-    jQuery(".repeating-field select[data-module='qdes_autocomplete']").change();
+    jQuery(".repeating-field [data-module='qdes_autocomplete']").change();
 });
