@@ -53,7 +53,7 @@ def qdes_relationship_types_choices(field):
 
     try:
         for data in h.get_relationship_types():
-            log.debug('qdes_relationship_types_choices: {0}'.format(data))
+            #log.debug('qdes_relationship_types_choices: {0}'.format(data))
             choices.append({
                 'value': data[0],
                 'label': data[0]
