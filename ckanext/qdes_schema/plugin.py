@@ -4,6 +4,7 @@ import json
 
 from ckanext.qdes_schema import helpers, validators
 from ckanext.qdes_schema.logic.action import get, update
+from ckanext.relationships import helpers as ckanext_relationships_helpers
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
@@ -20,6 +21,17 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     def after_create(self, context, pkg_dict):
         pass
 
+    def before_index(self, pkg_dict):
+        # Remove the relationship type fields from the pkg_dict to prevent indexing from breaking
+        # because we removed the relationship type fields from solr schema.xml
+        relationship_types = ckanext_relationships_helpers.get_relationship_types_as_flat_list()
+
+        for relationship_type in relationship_types:
+            if pkg_dict.get(relationship_type, None):
+                pkg_dict.pop(relationship_type)
+
+        return pkg_dict
+
     # IValidators
     def get_validators(self):
         return {
@@ -34,7 +46,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_validate_geojson_spatial': validators.qdes_validate_geojson_spatial,
             'qdes_spatial_points_pair': validators.qdes_spatial_points_pair,
             'qdes_iso_8601_durations': validators.qdes_iso_8601_durations,
-            'qdes_validate_multi_groups': validators.qdes_validate_multi_groups
+            'qdes_validate_multi_groups': validators.qdes_validate_multi_groups,
+            'qdes_validate_related_dataset': validators.qdes_validate_related_dataset,
+            'qdes_validate_related_resources': validators.qdes_validate_related_resources
         }
 
     # IConfigurer
@@ -60,6 +74,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'set_first_option': helpers.set_first_option,
             'get_current_datetime': helpers.get_current_datetime,
             'qdes_dataservice_choices': helpers.qdes_dataservice_choices,
+            'qdes_relationship_types_choices': helpers.qdes_relationship_types_choices
         }
 
     def get_multi_textarea_values(self, value):
@@ -75,5 +90,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     def get_actions(self):
         return {
             'get_dataservice': get.dataservice,
+            'package_autocomplete': get.package_autocomplete,
             'update_dataservice_datasets_available': update.dataservice_datasets_available
         }
