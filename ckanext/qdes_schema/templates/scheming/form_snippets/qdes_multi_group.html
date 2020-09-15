@@ -7,23 +7,25 @@
 
         {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
         {% set count = values['count']|int if values['count']|int > 0 else 1 %}
-        {% for row in range(count)  %}   
+        {% for row in range(count)  %}
+            <div data-repeater-item class="repeater-wrapper">
+                <div class="row vertical-align">
+                    {% for field_group in field.get('field_group') or [] %}
+                        <div class="col-lg-{{ 12 // field.get('field_group')|length }}">
+                            {% if field_group.form_snippet %}
+                                {%- snippet 'scheming/form_snippets/field_groups/{0}'.format(field_group.form_snippet), field=field, field_group=field_group, values=values, row=row, errors=errors, data=data or {} -%}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <div class="col-lg-1">
+                        <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
+                    </div>
+                </div>
 
-          <div data-repeater-item class="row vertical-align">
-            {% for field_group in field.get('field_group') or [] %}          
-
-              <div class="col-lg-{{ 12 // field.get('field_group')|length }}">              
-                {% if field_group.form_snippet %}
-                  {%- snippet 'scheming/form_snippets/field_groups/{0}'.format(field_group.form_snippet), field=field, field_group=field_group, values=values, row=row, errors=errors, data=data or {} -%}
-                {% endif %}
-              </div>
-            {% endfor %}            
-            <div class="col-lg-1">
-                  <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
+                <div class="supersede-alert hidden alert alert-warning">Please update the publication status of the version being replaced to "superseded"</div>
             </div>
-          </div>
-        {% endfor %}
 
+        {% endfor %}
     </div>
     <div class="row" align="center">
         <input data-repeater-create type="button" class="btn" value="+" />
