@@ -15,11 +15,21 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IPackageController, inherit=True)
 
     # IPackageController
-    def after_update(self, context, pkg_dict):
-        pass
-
     def after_create(self, context, pkg_dict):
-        pass
+        u'''
+        Extensions will receive the validated data dict after the dataset
+        has been created (Note that the create method will return a dataset
+        domain object, which may not include all fields). Also the newly
+        created dataset id will be added to the dict.
+        '''
+        helpers.update_related_resources(context, pkg_dict, False)
+
+    def after_update(self, context, pkg_dict):
+        u'''
+        Extensions will receive the validated data dict after the dataset
+        has been updated.
+        '''
+        helpers.update_related_resources(context, pkg_dict, True)
 
     def before_index(self, pkg_dict):
         # Remove the relationship type fields from the pkg_dict to prevent indexing from breaking
@@ -91,5 +101,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         return {
             'get_dataservice': get.dataservice,
             'package_autocomplete': get.package_autocomplete,
-            'update_dataservice_datasets_available': update.dataservice_datasets_available
+            'update_dataservice_datasets_available': update.dataservice_datasets_available,
+            'update_related_resources': update.update_related_resources,
         }
