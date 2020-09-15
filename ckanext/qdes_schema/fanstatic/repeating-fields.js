@@ -1,6 +1,17 @@
 jQuery(document).ready(function () {
     'use strict';
 
+    // Show superseded alert.
+    function related_resource_replaces_relationship(element) {
+        if (jQuery(element).data('field-name') === 'relationships') {
+            if (jQuery(element).val() === 'replaces') {
+                jQuery(element).parents('.repeater-wrapper').find('.supersede-alert').removeClass('hidden');
+            } else {
+                jQuery(element).parents('.repeater-wrapper').find('.supersede-alert').addClass('hidden');
+            }
+        }
+    }
+
     jQuery('.repeating-field').repeater({
 
         show: function () {
@@ -72,11 +83,15 @@ jQuery(document).ready(function () {
         var field_type = jQuery('#' + repeater_id).data('field-type');
 
         collate_inputs(repeater_id, target_field_id, field_type);
+        related_resource_replaces_relationship(element);
     }
 
     // Listen to repeatable fields.
     jQuery(document).on('blur', ".repeating-field .form-control", function () {
         update_repeater_fields(this);
+    });
+    jQuery(document).on('change', ".repeating-field .form-control", function () {
+        related_resource_replaces_relationship(this);
     });
 
     jQuery(document).on('change', ".repeating-field [data-module='qdes_autocomplete']", function () {
