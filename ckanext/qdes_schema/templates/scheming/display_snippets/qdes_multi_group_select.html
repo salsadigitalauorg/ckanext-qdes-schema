@@ -1,9 +1,7 @@
-{% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
-
-{% for row in range(values['count']|int)  %}             
+{% for group_data in data[field.field_name] or []  %}           
     <div>
         {% for field_group in field.get('field_group') or [] %}      
-            {% set value = values[field_group.field_name][row]|string %}
+            {% set value = group_data[field_group.field_name]|string %}
             {% set display_property = field_group.display_property|default(None) %}
             <span>
                 <a href="{{ value }}"{% if display_property %} property="{{ display_property }}"{% endif %}>

@@ -4,7 +4,9 @@
     <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
     {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ') }}</span>{% endif %}
     <div data-repeater-list="{{ field.field_name }}">
-        {% for group_data in data[field.field_name] or ['']  %}
+        <!-- When there is an error the data[field.field_name] is returned as string and has not called the output_validator which converts it into a list of dict  -->
+        {% set group_values = data[field.field_name] if data[field.field_name] is not string else h.get_multi_textarea_values(data[field.field_name]) %}
+        {% for group_data in group_values or [''] %}
             <div data-repeater-item class="repeater-wrapper">
                 <div class="row vertical-align">
                     {% for field_group in field.get('field_group') or [] %}

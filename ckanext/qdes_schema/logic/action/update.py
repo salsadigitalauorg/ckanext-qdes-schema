@@ -57,9 +57,13 @@ def update_related_resources(context, data_dict):
             dataset = model.Package.get(dataset_id)
             if dataset:
                 current_related_resources = dataset._extras.get('related_resources', None)
-                new_related_resources_value = json.dumps(data_dict.get('related_resources', None)) if isinstance(
-                    data_dict.get('related_resources', None), dict) else data_dict.get('related_resources', None)
-                if current_related_resources and current_related_resources.value != new_related_resources_value:
+                new_related_resources_value = json.dumps(data_dict.get('related_resources', None)) \
+                    if isinstance(data_dict.get('related_resources', None), list) else data_dict.get('related_resources', None)
+
+                if not current_related_resources:
+                    # Create a new PackageExtra object for related_resources
+                    dataset._extras['related_resources'] = model.PackageExtra(key='related_resources', value=new_related_resources_value)
+                else:
                     current_related_resources.value = new_related_resources_value
                 # Always set the below values to None as they should have been included above in related_resources
                 series_or_collection = dataset._extras.get('series_or_collection', None)

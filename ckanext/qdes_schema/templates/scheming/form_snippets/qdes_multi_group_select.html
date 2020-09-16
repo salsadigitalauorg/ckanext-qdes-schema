@@ -5,9 +5,9 @@
     {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ') }}</span>{% endif %}
     <div data-repeater-list="{{ field.field_name }}">
 
-        {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
-        {% set count = values['count']|int if values['count']|int > 0 else 1 %}
-        {% for row in range(count)  %}   
+        <!-- When there is an error the data[field.field_name] is returned as string and has not called the output_validator which converts it into a list of dict  -->
+        {% set group_values = data[field.field_name] if data[field.field_name] is not string else h.get_multi_textarea_values(data[field.field_name]) %}
+        {% for group_data in group_values or [''] %}
 
           <div data-repeater-item class="row vertical-align">
             {% for field_group in field.get('field_group') or [] %}          
@@ -32,8 +32,8 @@
                   {%- if field_group.get('first_choice') -%}
                     {%- set options = h.set_first_option(options, field_group.get('first_choice')) -%}
                   {%- endif -%}
-                  {%- if values[field_group.field_name] -%}
-                    {%- set option_selected = values[field_group.field_name][row]|string -%}
+                  {%- if field_group.field_name in group_data -%}
+                    {%- set option_selected = group_data.get(field_group.field_name, '')|string -%}
                   {%- else -%}
                     {%- set option_selected = None -%}
                   {%- endif -%}
