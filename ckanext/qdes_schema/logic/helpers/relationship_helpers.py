@@ -42,3 +42,32 @@ def convert_related_resources_to_dict_list(related_resources):
             dict_list.append(data_dict)
 
     return dict_list
+
+
+def get_superseded_versions(pkg_id, related_resources, versions):
+    superseded_versions = []
+
+    if 'replaces' in related_resources:
+        related_resources_dict = convert_related_resources_to_dict_list(related_resources)
+
+        superseded_resource_name = None
+
+        # Find the related resource that has been superseded
+        for related_resource in related_resources_dict:
+            if related_resource['relationship'] == 'replaces':
+                superseded_resource_name = related_resource['resource']
+                break
+
+        if superseded_resource_name:
+            # Loop through versions and get the details for display
+            for version in versions:
+                if version['name'] == superseded_resource_name:
+                    superseded_versions.append({
+                        'id': version['id'],
+                        'name': version['name'],
+                        'title': version['title'],
+                        'publication_status': version['publication_status'],
+                    })
+                    break
+
+    return superseded_versions

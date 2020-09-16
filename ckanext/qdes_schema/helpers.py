@@ -64,6 +64,7 @@ def qdes_relationship_types_choices(field):
 
     return choices
 
+
 def get_related_versions(id):
     """
     Get related versions of dataset, index 0 is the current version.
@@ -80,6 +81,5 @@ def get_related_versions(id):
         versions = successors + [package_dict] + predecessors
     except Exception as e:
         log.error(str(e))
-
 
     return list(version for version in versions if version.get('state') != 'deleted')
