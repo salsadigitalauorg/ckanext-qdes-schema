@@ -31,8 +31,8 @@ def convert_related_resources_to_dict_list(related_resources):
 
         for i in range(0, related_resources.get('count', 0)):
             data_dict = {
-                'resource': related_resources['resources'][i],
-                'relationship': related_resources['relationships'][i],
+                'resource': related_resources['resource'][i],
+                'relationship': related_resources['relationship'][i],
                 'source': 'ckan'
             }
 

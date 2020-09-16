@@ -1,9 +1,7 @@
-{% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
-
-{% for row in range(values['count']|int)  %}             
+{% for group_data in data[field.field_name] or []  %}
     <div>
-        {% for field_group in field.get('field_group') or [] %}      
-            {% set value = values[field_group.field_name][row]|string %}
+        {% for field_group in field.get('field_group') or [] %}
+            {% set value = group_data.get(field_group.field_name, '')|string %}
             <span>{{ value }}</span>
             {% if not loop.last %}
                 <span> - </span>            

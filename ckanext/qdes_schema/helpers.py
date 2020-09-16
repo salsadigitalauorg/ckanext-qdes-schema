@@ -95,12 +95,12 @@ def add_related_resources(pkg_dict, datasets, relationship_type):
     related_resources = pkg_dict.get('related_resources', {})
     related_resources = get_converter('json_or_string')(related_resources)
     if not related_resources:
-        related_resources = {"resources": [], "relationships": [], "count": 0}
+        related_resources = {"resource": [], "relationship": [], "count": 0}
 
     for dataset in datasets:
-        if not any(resource for resource in related_resources.get("resources", []) if resource == dataset):
-            related_resources["resources"].append(dataset)
-            related_resources["relationships"].append(relationship_type)
+        if not any(resource for resource in related_resources.get("resource", []) if resource == dataset):
+            related_resources["resource"].append(dataset)
+            related_resources["relationship"].append(relationship_type)
             related_resources["count"] += 1
 
     pkg_dict['related_resources'] = related_resources
@@ -111,8 +111,8 @@ def create_related_resource_relationships(context, pkg_dict):
     related_resources = get_converter('json_or_string')(related_resources)
     if related_resources and isinstance(related_resources, dict):
         dataset_id = pkg_dict.get('id')
-        resources = related_resources.get('resources', [])
-        relationships = related_resources.get('relationships', [])
+        resources = related_resources.get('resource', [])
+        relationships = related_resources.get('relationship', [])
 
         create_relationships(context, dataset_id, resources, relationships)
 

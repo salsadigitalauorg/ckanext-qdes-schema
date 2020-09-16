@@ -5,15 +5,13 @@
     {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ') }}</span>{% endif %}
     <div data-repeater-list="{{ field.field_name }}">
 
-        {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
-        {% set count = values['count']|int if values['count']|int > 0 else 1 %}
-        {% for row in range(count)  %}
+        {% for group_data in data[field.field_name] or []  %}
             <div data-repeater-item class="repeater-wrapper">
                 <div class="row vertical-align">
                     {% for field_group in field.get('field_group') or [] %}
                         <div class="col-lg-{{ 12 // field.get('field_group')|length }}">
                             {% if field_group.form_snippet %}
-                                {%- snippet 'scheming/form_snippets/field_groups/{0}'.format(field_group.form_snippet), field=field, field_group=field_group, values=values, row=row, errors=errors, data=data or {} -%}
+                                {%- snippet 'scheming/form_snippets/field_groups/{0}'.format(field_group.form_snippet), field=field, field_group=field_group, group_data=group_data, errors=errors, data=data or {} -%}
                             {% endif %}
                         </div>
                     {% endfor %}
