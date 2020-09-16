@@ -29,6 +29,42 @@
     </div>
 </div>
 
+{% if field.field_name == 'related_resources' and g.controller == 'dataset' and g.action == 'edit' %}
+    <h4>Existing related resources</h4>
+    {% set relationships = h.get_relationships(data['id']) %}
+{{ relationships }}
+    {% if relationships %}
+        <table id="existing-related-resources" class="table">
+            <thead>
+            <th>Resource</th>
+            <th>Nature</th>
+            <th>&nbsp;</th>
+            </thead>
+            <tbody>
+            {% for relationship in relationships %}
+                {% if relationship.type %}
+                    <tr>
+                        <td>
+                            {% set resource = relationship.title if relationship.object else relationship.comment %}
+                            {{ resource }}
+                        </td>
+                        <td>{{ relationship.type }}</td>
+                        <td>
+                            <a href="" class="remove btn btn-xs btn-danger"
+                               data-resource="{{ resource }}"
+                               data-relationship="{{ relationship.type }}"
+                            >
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endif %}
+
 {% set visibility = [] if g.debug else ['hidden'] %}
 {% set default_classes = field.classes if 'classes' in field else [] %}
 {% set ns = namespace(field_classes=default_classes + visibility) %}

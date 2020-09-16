@@ -102,4 +102,18 @@ jQuery(document).ready(function () {
     // otherwise required fields won't have value by default.
     jQuery(".repeating-field .form-control").blur();
     jQuery(".repeating-field [data-module='qdes_autocomplete']").change();
+
+
+    // Separate logic for existing related resources
+    jQuery("#existing-related-resources a.remove").on('click', function(e) {
+        e.preventDefault();
+        // get the data-resource and data-relationship values from the remove button
+        console.log(this);
+
+        // iterate through the `related_resources` field and remove the item
+
+        // remove the table rows from existing related resources table
+
+        return false;
+    });
 });
