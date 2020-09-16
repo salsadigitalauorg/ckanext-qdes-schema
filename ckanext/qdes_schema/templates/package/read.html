@@ -7,6 +7,21 @@
       This version has been superseded - <a href="{{ h.url_for('dataset.read', id=versions[0].id) }}">click here to see the latest version</a>.
   </div>
 
+    {% if versions|length > 1 %}
+        {% set superseded_versions = h.get_superseded_versions(pkg.id, pkg.related_resources, versions) %}
+
+        {% for superseded_version in superseded_versions %}
+            {% if not 'superseded' in superseded_version.publication_status %}
+                <div class="alert alert-danger">
+                    This dataset replaces
+                    <strong><a href="{{ h.url_for('dataset.read', id=superseded_version.id) }}">
+                        {{ superseded_version.title }}</a></strong>
+                    - please update the <strong>Publication status</strong> of that dataset to "superseded".
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
   {{ super() }}
 
   {% snippet "/package/snippets/dataset_versions.html", versions=versions, pkg=pkg %}
