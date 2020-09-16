@@ -299,6 +299,7 @@
       "form_snippet": "markdown.html",
       "display_snippet": "markdown.html",
       "display_group": "related and lineage",
+      "display_property": "dcterms:description",
       "sub_heading": "lineage"
     },
     {
@@ -306,6 +307,7 @@
       "label": "Plan",
       "display_snippet": "qdes_text_url.html",
       "display_group": "related and lineage",
+      "display_property": "prov:hadPlan",
       "sub_heading": "lineage"
     },
     {
@@ -315,6 +317,7 @@
       "form_snippet": "qdes_multi_text.html",
       "validators": "qdes_uri_validator",
       "display_group": "related and lineage",
+      "display_property": "prov:used",
       "sub_heading": "lineage"
     },
     {
@@ -324,6 +327,7 @@
       "form_snippet": "qdes_multi_text.html",
       "validators": "qdes_uri_validator",
       "display_group": "related and lineage",
+      "display_property": "sosa:madeBySensor",
       "sub_heading": "lineage"
     },
     {
@@ -332,6 +336,7 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "creator",
       "display_group": "related and lineage",
+      "display_property": "prov:wasAssociatedWith",
       "sub_heading": "lineage"
     },
     {
