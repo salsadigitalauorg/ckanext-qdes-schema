@@ -60,7 +60,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_validate_multi_groups': validators.qdes_validate_multi_groups,
             'qdes_validate_related_dataset': validators.qdes_validate_related_dataset,
             'qdes_validate_related_resources': validators.qdes_validate_related_resources,
-            'qdes_convert_related_resources_to_dict_list': relationship_helpers.convert_related_resources_to_dict_list
+            'qdes_convert_related_resources': relationship_helpers.convert_related_resources
         }
 
     # IConfigurer

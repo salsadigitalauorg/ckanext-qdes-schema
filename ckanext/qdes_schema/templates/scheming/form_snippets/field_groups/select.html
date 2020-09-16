@@ -31,7 +31,13 @@
     selected=option_selected,
     error=errors[field_group.field_name],
     classes=['control-medium'],
-    attrs=dict({"data-group": true, "data-field-name": field_group.field_name, "data-parent-field-name": field.field_name, "data-placeholder":"Select a {0}".format(field_group.label)}, **(field_group.get('form_attrs', {}))),
+    attrs=dict(
+      {"data-group": true, 
+      "data-field-name": field_group.field_name, 
+      "data-parent-field-name": field.field_name, 
+      "data-placeholder":"Select a {0}".format(field_group.label)
+      }, 
+      **(field_group.get('form_attrs', {}))),
     is_required=h.scheming_field_required(field_group)
     )
 %}

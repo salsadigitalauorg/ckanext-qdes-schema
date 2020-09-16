@@ -37,25 +37,22 @@ jQuery(document).ready(function () {
 
     function collate_inputs(repeater_id, target_field_id, field_type) {
         var multi_groups = jQuery('#' + repeater_id + ' [data-repeater-item]:visible' + ' [data-group="True"]')
-        var collated_values = multi_groups.length > 0 ? {} : [];
+        var collated_values = [];
 
         if (multi_groups.length > 0) {
             multi_groups.each(function () {
-                var value = jQuery(this).val();
-                var field_name = jQuery(this).data('field-name');
-                var field = collated_values[field_name] || []
-                field.push(value)
-                collated_values[field_name] = field
+                var value = jQuery(this).val().trim();
+                if (value && value.length > 0) {
+                    var field_name = jQuery(this).data('field-name');
+                    // Find the parent element index
+                    var parentElement = jQuery(this).parents('#' + repeater_id + ' [data-repeater-item]:visible').first()
+                    var parentIndex = jQuery('#' + repeater_id + ' [data-repeater-item]:visible').index(parentElement);
+                    // Get multi_group or initialize a new one if it does not exist
+                    var multi_group = collated_values[parentIndex] || {};
+                    multi_group[field_name] = value;
+                    collated_values[parentIndex] = multi_group;
+                }
             });
-            // Check if all values are empty
-            if (Object.values(collated_values).every(value => Object.values(value).every(x => x === null || x === ''))) {
-                // Reset
-                collated_values = {};
-            }
-            else {
-                // Count the number of visible data-repeater-item rows
-                collated_values['count'] = jQuery('#' + repeater_id + ' [data-repeater-item]:visible').length;
-            }
         }
         else {
             jQuery('#' + repeater_id + ' ' + field_type + '.form-control, #' + repeater_id + ' ' + field_type + '[data-module="qdes_autocomplete"]').each(function () {
@@ -67,7 +64,7 @@ jQuery(document).ready(function () {
             });
         }
 
-        if (Array.isArray(collated_values) && collated_values.length > 0 || Object.keys(collated_values).length > 0) {
+        if (Array.isArray(collated_values) && collated_values.length > 0) {
             jQuery('#' + target_field_id).val(JSON.stringify(collated_values));
         }
         else {

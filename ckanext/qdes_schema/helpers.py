@@ -76,15 +76,13 @@ def update_related_resources(context, pkg_dict, reconcile_relationships=False):
 
 
 def create_series_or_collection_relationships(context, pkg_dict):
-    series_or_collection = pkg_dict.get('series_or_collection', [])
-    datasets = get_converter('json_or_string')(series_or_collection)
+    datasets = get_converter('json_or_string')(pkg_dict.get('series_or_collection', []))
     relationship_type = 'isPartOf'
     add_related_resources(pkg_dict, datasets, relationship_type)
 
 
 def create_related_datasets_relationships(context, pkg_dict):
-    related_datasets = pkg_dict.get('related_datasets', [])
-    datasets = get_converter('json_or_string')(related_datasets)
+    datasets = get_converter('json_or_string')(pkg_dict.get('related_datasets', []))
     relationship_type = 'unspecified relationship'
     add_related_resources(pkg_dict, datasets, relationship_type)
 
@@ -92,36 +90,32 @@ def create_related_datasets_relationships(context, pkg_dict):
 def add_related_resources(pkg_dict, datasets, relationship_type):
     if not datasets or not isinstance(datasets, list):
         return
-    related_resources = pkg_dict.get('related_resources', {})
-    related_resources = get_converter('json_or_string')(related_resources)
+    related_resources = get_converter('json_or_string')(pkg_dict.get('related_resources', []))
     if not related_resources:
-        related_resources = {"resource": [], "relationship": [], "count": 0}
+        related_resources = []
 
     for dataset in datasets:
-        if not any(resource for resource in related_resources.get("resource", []) if resource == dataset):
-            related_resources["resource"].append(dataset)
-            related_resources["relationship"].append(relationship_type)
-            related_resources["count"] += 1
+        if not any(resource for resource in related_resources if resource.get('resource', '') == dataset):
+            related_resource = {}
+            related_resource["resource"] = dataset
+            related_resource["relationship"] = relationship_type
+            related_resources.append(related_resource)
 
     pkg_dict['related_resources'] = related_resources
 
 
 def create_related_resource_relationships(context, pkg_dict):
-    related_resources = pkg_dict.get('related_resources', {})
-    related_resources = get_converter('json_or_string')(related_resources)
-    if related_resources and isinstance(related_resources, dict):
+    related_resources = get_converter('json_or_string')(pkg_dict.get('related_resources', []))
+    if related_resources and isinstance(related_resources, list):
         dataset_id = pkg_dict.get('id')
-        resources = related_resources.get('resource', [])
-        relationships = related_resources.get('relationship', [])
-
-        create_relationships(context, dataset_id, resources, relationships)
+        create_relationships(context, dataset_id, related_resources)
 
 
-def create_relationships(context, dataset_id, datasets, relationships):
+def create_relationships(context, dataset_id, datasets):
     try:
-        for index, dataset in enumerate(datasets):
-            relationship_type = relationships[index]
-            relationship_dataset, relationship_url = get_dataset_relationship(context, dataset)
+        for dataset in datasets:
+            relationship_type = dataset.get('relationship')
+            relationship_dataset, relationship_url = get_dataset_relationship(context, dataset.get('resource'))
 
             if relationship_dataset or relationship_url:
                 relationship = get_action('package_relationship_create')(context, {
@@ -173,8 +167,7 @@ def reconcile_package_relationships(context, pkg_id, related_resources):
         get_action('package_relationship_delete_all')(context, {'id': pkg_id})
     else:
         # Convert the `related_resources` JSON string into a more usable structure
-        related_resources = relationship_helpers.convert_related_resources_to_dict_list(related_resources)
-
+        related_resources = get_converter('json_or_string')(related_resources)
         # Check each existing relationship to see if it still exists in the dataset's related_resources
         # if not, delete it.
         for relationship in existing_relationships:
@@ -186,14 +179,10 @@ def reconcile_package_relationships(context, pkg_id, related_resources):
                                              if resource['relationship'] == relationship.type
                                              and resource['resource'] == relationship.comment]
             else:
-                # If it's a CKAN dataset we need to fetch the package first to get the package name
-                # @TODO: this seems kind of messy, i.e. should we be storing the CKAN package UUID?
                 try:
-                    related_pkg_dict = get_action('package_show')(context, {'id': relationship.object_package_id})
-
                     matching_related_resource = [resource for resource in related_resources
                                                  if resource['relationship'] == relationship.type
-                                                 and resource['resource'] == related_pkg_dict['name']]
+                                                 and resource['resource'] == relationship.object_package_id]
                 except Exception as e:
                     log.error(str(e))
 
