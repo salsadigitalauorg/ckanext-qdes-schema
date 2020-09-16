@@ -4,8 +4,7 @@
     <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
     {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ') }}</span>{% endif %}
     <div data-repeater-list="{{ field.field_name }}">
-
-        {% for group_data in data[field.field_name] or []  %}
+        {% for group_data in data[field.field_name] or ['']  %}
             <div data-repeater-item class="repeater-wrapper">
                 <div class="row vertical-align">
                     {% for field_group in field.get('field_group') or [] %}
