@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from ckan.plugins.toolkit import config, h, get_action
+from pprint import pformat
 
 
 log = logging.getLogger(__name__)
@@ -62,3 +63,23 @@ def qdes_relationship_types_choices(field):
         log.error(str(e))
 
     return choices
+
+def get_related_versions(id):
+    """
+    Get related versions of dataset, index 0 is the current version.
+    """
+    successors = get_action('get_all_successor_versions')({}, {'id': id})
+    predecessors = get_action('get_all_predecessor_versions')({}, {'id': id})
+
+    versions = []
+    try:
+        # Load provided version.
+        package_dict = get_action('package_show')({}, {'id': id})
+
+        # Build versions list.
+        versions = successors + [package_dict] + predecessors
+    except Exception as e:
+        log.error(str(e))
+
+
+    return list(version for version in versions if version.get('state') != 'deleted')
