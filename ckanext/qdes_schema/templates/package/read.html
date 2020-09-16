@@ -3,7 +3,7 @@
 {% set versions = h.get_related_versions(pkg.id) %}
 
 {% block package_description %}
-  <div class="alert alert-warning {{ '' if pkg.publication_status.split('/')|last == 'superseded' else 'hidden' }}">
+  <div class="alert alert-warning {{ '' if pkg.publication_status.split('/')|last == 'superseded' or versions[0].id != pkg.id else 'hidden' }}">
       This is not latest, <a href="{{ h.url_for('dataset.read', id=versions[0].id) }}">click here</a> to see the latest version.
   </div>
 
