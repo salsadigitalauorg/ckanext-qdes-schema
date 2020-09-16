@@ -139,7 +139,7 @@ def get_dataset_relationship(context, dataset):
     relationship_dataset = None
     relationship_url = None
     try:
-        get_validator('package_name_exists')(dataset, context)
+        get_validator('package_id_exists')(dataset, context)
         relationship_dataset = dataset
     except Invalid:
         # Dataset does not exist so must be an external dataset URL
