@@ -1,11 +1,17 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import json
+import logging
 
 from ckanext.qdes_schema import helpers, validators
-from ckanext.qdes_schema.logic.action import get, update
+from ckanext.qdes_schema.logic.action import (
+    get,
+    update as update_actions
+)
 from ckanext.relationships import helpers as ckanext_relationships_helpers
 from ckanext.qdes_schema.logic.helpers import relationship_helpers
+
+log = logging.getLogger(__name__)
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
@@ -24,6 +30,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         created dataset id will be added to the dict.
         '''
         helpers.update_related_resources(context, pkg_dict, False)
+        return pkg_dict
 
     def after_update(self, context, pkg_dict):
         u'''
@@ -31,6 +38,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         has been updated.
         '''
         helpers.update_related_resources(context, pkg_dict, True)
+        return pkg_dict
 
     def before_index(self, pkg_dict):
         # Remove the relationship type fields from the pkg_dict to prevent indexing from breaking
@@ -103,6 +111,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         return {
             'get_dataservice': get.dataservice,
             'package_autocomplete': get.package_autocomplete,
-            'update_dataservice_datasets_available': update.dataservice_datasets_available,
-            'update_related_resources': update.update_related_resources,
+            'update_dataservice_datasets_available': update_actions.dataservice_datasets_available,
+            'update_related_resources': update_actions.update_related_resources,
         }
