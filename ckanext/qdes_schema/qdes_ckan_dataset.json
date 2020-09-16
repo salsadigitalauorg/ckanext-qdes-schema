@@ -268,21 +268,24 @@
       "sub_heading": "related",
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
-      "validators": "ignore_empty qdes_validate_related_resources",
+      "validators": "ignore_empty qdes_validate_related_resources ",
+      "output_validators" : "qdes_convert_related_resources_to_dict_list",
       "field_group": [
         {
-          "field_name": "resources",
+          "field_name": "resource",
           "label": "Resource",
           "form_snippet": "text.html",
           "form_attrs": {
             "data-module": "qdes_autocomplete",
             "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
             "data-module-create-search-choice": true,
+            "data-module-key": "id",
+            "data-module-label": "title",
             "class": "form-control"
           }
         },
         {
-          "field_name": "relationships",
+          "field_name": "relationship",
           "label": "Relationship",
           "form_snippet": "select.html",
           "choices_helper": "qdes_relationship_types_choices",

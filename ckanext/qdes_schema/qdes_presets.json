@@ -72,7 +72,9 @@
         "form_attrs": {
           "data-module": "qdes_autocomplete",
           "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
-          "data-module-create-search-choice": true
+          "data-module-create-search-choice": true,
+          "data-module-key": "id",
+          "data-module-label": "title"
         }
       }
     }

@@ -5,6 +5,7 @@ import json
 from ckanext.qdes_schema import helpers, validators
 from ckanext.qdes_schema.logic.action import get, update
 from ckanext.relationships import helpers as ckanext_relationships_helpers
+from ckanext.qdes_schema.logic.helpers import relationship_helpers
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
@@ -58,7 +59,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_iso_8601_durations': validators.qdes_iso_8601_durations,
             'qdes_validate_multi_groups': validators.qdes_validate_multi_groups,
             'qdes_validate_related_dataset': validators.qdes_validate_related_dataset,
-            'qdes_validate_related_resources': validators.qdes_validate_related_resources
+            'qdes_validate_related_resources': validators.qdes_validate_related_resources,
+            'qdes_convert_related_resources_to_dict_list': relationship_helpers.convert_related_resources_to_dict_list
         }
 
     # IConfigurer

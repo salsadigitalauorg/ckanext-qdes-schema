@@ -1,7 +1,7 @@
 {% import 'macros/form.html' as form %}
 
-{%- if values[field_group.field_name] -%}
-    {%- set value = values[field_group.field_name][row]|string -%}
+{%- if field_group.field_name in group_data -%}
+    {%- set value = group_data.get(field_group.field_name, '')|string -%}
 {%- else -%}
     {%- set value = None -%}
 {%- endif -%}
