@@ -1,0 +1,21 @@
+<div class="version-list">
+    <h2>Versions</h2>
+
+    <table class="table table-striped">
+        {% for version in versions %}
+        <tr>
+            <td>
+                <a href="{{ h.url_for('dataset.read', id=version.id) }}">
+                    {% if version.id == pkg.id %}
+                        <strong>{{ version.title }}</strong>
+                    {% elif versions[0].id == version.id %}
+                        <strong>{{ version.title }} (Latest version)</strong>
+                    {% else %}
+                        {{ version.title }}
+                    {% endif %}
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
