@@ -66,11 +66,17 @@
             </tbody>
         </table>
     {% endif %}
+    <label>Existing related resources</label>
+    <textarea name="existing_related_resources">{{ data[field.field_name]|safe|replace('"', "'") }}</textarea>
 {% endif %}
 
 {% set visibility = [] if g.debug else ['hidden'] %}
 {% set default_classes = field.classes if 'classes' in field else [] %}
 {% set ns = namespace(field_classes=default_classes + visibility) %}
+
+{{ field.field_name }}
+
+{{ data[field.field_name] }}
 
 {# BEGIN: The actual form field the multiple values will be captured & submitted in #}
 {% call form.textarea(

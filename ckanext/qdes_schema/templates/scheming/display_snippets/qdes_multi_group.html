@@ -1,4 +1,5 @@
-{% for group_data in data[field.field_name] or []  %}
+{% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
+{% for group_data in values  %}
     <div>
         {% for field_group in field.get('field_group') or [] %}
             {% set value = group_data.get(field_group.field_name, '')|string %}

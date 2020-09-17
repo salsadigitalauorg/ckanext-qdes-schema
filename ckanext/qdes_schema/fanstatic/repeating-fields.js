@@ -100,6 +100,8 @@ jQuery(document).ready(function () {
     jQuery(".repeating-field .form-control").blur();
     jQuery(".repeating-field [data-module='qdes_autocomplete']").change();
 
+    // jQuery('.repeating-field .form-control').not('[data-parent-field-name="related_resources"]').blur();
+    // jQuery(".repeating-field [data-module='qdes_autocomplete']").not('[data-parent-field-name="related_resources"]').change();
 
     // Separate logic for existing related resources
     jQuery("#existing-related-resources a.remove").on('click', function (e) {
@@ -108,7 +110,7 @@ jQuery(document).ready(function () {
         console.log(this);
 
         // iterate through the `related_resources` field and remove the item
-        var related_resources = JSON.parse(jQuery('#field-related_resources').val())
+        var related_resources = JSON.parse(jQuery('textarea[name="existing_related_resources"]').val())
         var resource = jQuery(this).data('resource');
         var relationship = jQuery(this).data('relationship');
 
@@ -122,10 +124,10 @@ jQuery(document).ready(function () {
         }
 
         if (Array.isArray(related_resources) && related_resources.length > 0) {
-            jQuery('#field-related_resources').val(JSON.stringify(related_resources));
+            jQuery('textarea[name="existing_related_resources"]').val(JSON.stringify(related_resources));
         }
         else {
-            jQuery('#field-related_resources').val('');
+            jQuery('textarea[name="existing_related_resources"]').val('');
         }
 
 
