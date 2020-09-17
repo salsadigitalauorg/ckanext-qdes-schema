@@ -102,15 +102,35 @@ jQuery(document).ready(function () {
 
 
     // Separate logic for existing related resources
-    jQuery("#existing-related-resources a.remove").on('click', function(e) {
+    jQuery("#existing-related-resources a.remove").on('click', function (e) {
         e.preventDefault();
         // get the data-resource and data-relationship values from the remove button
         console.log(this);
 
         // iterate through the `related_resources` field and remove the item
+        var related_resources = JSON.parse(jQuery('#field-related_resources').val())
+        var resource = jQuery(this).data('resource');
+        var relationship = jQuery(this).data('relationship');
+
+        for (let index = 0; index < related_resources.length; index++) {
+            const item = related_resources[index];
+            console.log(item);
+            if (item['resource'] == resource && item['relationship'] == relationship) {
+                related_resources.splice(index, 1);
+                console.log(related_resources);
+            }
+        }
+
+        if (Array.isArray(related_resources) && related_resources.length > 0) {
+            jQuery('#field-related_resources').val(JSON.stringify(related_resources));
+        }
+        else {
+            jQuery('#field-related_resources').val('');
+        }
+
 
         // remove the table rows from existing related resources table
-
+        jQuery(this).closest('tr').remove();
         return false;
     });
 });
