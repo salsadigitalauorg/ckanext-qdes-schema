@@ -4,6 +4,7 @@ import json
 
 from ckanext.qdes_schema import helpers, validators
 from ckanext.qdes_schema.logic.action import get, update
+from ckanext.qdes_schema.logic.helpers import relationship_helpers
 from ckanext.relationships import helpers as ckanext_relationships_helpers
 
 
@@ -74,7 +75,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'set_first_option': helpers.set_first_option,
             'get_current_datetime': helpers.get_current_datetime,
             'qdes_dataservice_choices': helpers.qdes_dataservice_choices,
-            'qdes_relationship_types_choices': helpers.qdes_relationship_types_choices
+            'qdes_relationship_types_choices': helpers.qdes_relationship_types_choices,
+            'get_related_versions': helpers.get_related_versions,
+            'get_superseded_versions': relationship_helpers.get_superseded_versions,
         }
 
     def get_multi_textarea_values(self, value):
@@ -91,5 +94,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         return {
             'get_dataservice': get.dataservice,
             'package_autocomplete': get.package_autocomplete,
-            'update_dataservice_datasets_available': update.dataservice_datasets_available
+            'update_dataservice_datasets_available': update.dataservice_datasets_available,
+            'get_all_successor_versions': get.all_successor_versions,
+            'get_all_predecessor_versions': get.all_predecessor_versions
         }
