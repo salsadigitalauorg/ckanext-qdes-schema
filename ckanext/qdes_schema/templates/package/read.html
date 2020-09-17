@@ -8,7 +8,7 @@
   </div>
 
     {% if versions|length > 1 %}
-        {% set superseded_versions = h.get_superseded_versions(pkg.id, pkg.related_resources, versions) %}
+        {% set superseded_versions = h.get_superseded_versions(pkg.related_resources, versions) %}
 
         {% for superseded_version in superseded_versions %}
             {% if not 'superseded' in superseded_version.publication_status %}
