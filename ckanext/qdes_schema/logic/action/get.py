@@ -5,6 +5,9 @@ import ckan.authz as authz
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.search as search
 
+from ckan.plugins.toolkit import get_action
+from pprint import pformat
+
 log = logging.getLogger(__name__)
 _check_access = toolkit.check_access
 
@@ -82,3 +85,66 @@ def package_autocomplete(original_action, context, data_dict):
         pkg_list.append(result_dict)
 
     return pkg_list
+
+def build_versions(tree):
+    versions = []
+    for version in tree:
+        try:
+            package_dict = get_action('package_show')({}, {'id': version.get('object')})
+            versions.append(package_dict)
+        except Exception as e:
+            log.error(str(e))
+
+    return versions
+
+def all_successor_versions(context, id):
+    """
+    Load all the successor versions from provided dataset.
+    """
+    def load_successor_versions(data, id):
+        """
+        Recursively load the successor dataset.
+        """
+        try:
+            # Load the relationship.
+            relationships = get_action('package_relationships_list')(context, {'id': id})
+        except Exception as e:
+            log.error(str(e))
+            return []
+
+        # Load successor, this can be multiple items, let's use the index 0.
+        successor_version = list(item for item in relationships if item.get('type') == 'isReplacedBy')
+        if successor_version:
+            return load_successor_versions([successor_version[0]] + data, successor_version[0].get('object'))
+        else:
+            return data
+
+    successors = load_successor_versions([], id)
+
+    return build_versions(successors)
+
+def all_predecessor_versions(context, id):
+    """
+    Load all the predecessor versions from provided dataset.
+    """
+    def load_predecessor_versions(data, id):
+        """
+        Recursively load the predecessor dataset.
+        """
+        try:
+            # Load the relationship.
+            relationships = get_action('package_relationships_list')(context, {'id': id})
+        except Exception as e:
+            log.error(str(e))
+            return []
+
+        # Load predecessor, this can be multiple items, let's use the index 0.
+        predecessor_version = list(item for item in relationships if item.get('type') == 'replaces')
+        if predecessor_version:
+            return load_predecessor_versions(data + [predecessor_version[0]], predecessor_version[0].get('object'))
+        else:
+            return data
+
+    predecessors = load_predecessor_versions([], id)
+
+    return build_versions(predecessors)
