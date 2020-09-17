@@ -116,7 +116,6 @@
       "display_property": "dcat:property",
       "display_group": "description",
       "preset": "controlled_vocabulary_multi_group_select",
-      "output_validators" : "json_or_string",
       "field_group": [
         {
           "field_name": "observed-property",
@@ -270,7 +269,6 @@
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
       "validators": "ignore_empty qdes_validate_related_resources ",
-      "output_validators" : "qdes_convert_related_resources",
       "field_group": [
         {
           "field_name": "resource",
@@ -386,7 +384,6 @@
       "display_property": "prov:qualifiedAttribution",
       "preset": "controlled_vocabulary_multi_group_select",
       "display_group": "contacts",
-      "output_validators" : "json_or_string",
       "field_group": [
         {
           "field_name": "the-party",
