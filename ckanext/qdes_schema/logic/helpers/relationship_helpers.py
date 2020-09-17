@@ -1,4 +1,5 @@
 import ckan.plugins.toolkit as toolkit
+import json
 import logging
 
 log = logging.getLogger(__name__)
@@ -44,30 +45,45 @@ def convert_related_resources_to_dict_list(related_resources):
     return dict_list
 
 
-def get_superseded_versions(pkg_id, related_resources, versions):
+def get_superseded_versions(related_resources, versions):
     superseded_versions = []
 
     if 'replaces' in related_resources:
-        related_resources_dict = convert_related_resources_to_dict_list(related_resources)
+        # Adding a check here for when the JSON format of `related_resources` changes
+        # from:
+        #   {"resources": ["one", "two"], "relationships": ["isPartOf", "replaces"], "count": 2}
+        # to:
+        #   [
+        #       {"resource": "one", "relationship": "isPartOf"},
+        #       {"resource": "two", "relationship": "replaces"},
+        #   ]
+        try:
+            if related_resources.startswith('{'):
+                related_resources_dict = convert_related_resources_to_dict_list(related_resources)
+            else:
+                related_resources_dict = json.loads(related_resources)
 
-        superseded_resource_name = None
+            superseded_dataset_id = None
 
-        # Find the related resource that has been superseded
-        for related_resource in related_resources_dict:
-            if related_resource['relationship'] == 'replaces':
-                superseded_resource_name = related_resource['resource']
-                break
-
-        if superseded_resource_name:
-            # Loop through versions and get the details for display
-            for version in versions:
-                if version['name'] == superseded_resource_name:
-                    superseded_versions.append({
-                        'id': version['id'],
-                        'name': version['name'],
-                        'title': version['title'],
-                        'publication_status': version['publication_status'],
-                    })
+            # Find the related resource that has been superseded
+            for related_resource in related_resources_dict:
+                if related_resource['relationship'] == 'replaces':
+                    superseded_dataset_id = related_resource['resource']
                     break
+
+            if superseded_dataset_id:
+                # Loop through versions and get the details for display
+                for version in versions:
+                    if version['name'] == superseded_dataset_id \
+                            or version['id'] == superseded_dataset_id:
+                        superseded_versions.append({
+                            'id': version['id'],
+                            'name': version['name'],
+                            'title': version['title'],
+                            'publication_status': version['publication_status'],
+                        })
+                        break
+        except Exception as e:
+            log.error(str(e))
 
     return superseded_versions
