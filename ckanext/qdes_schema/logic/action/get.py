@@ -4,8 +4,10 @@ import ckan.logic as logic
 import ckan.authz as authz
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.search as search
+import psycopg2
 
 from ckan.plugins.toolkit import get_action
+from ckanext.relationships import constants
 from pprint import pformat
 
 log = logging.getLogger(__name__)
@@ -148,3 +150,136 @@ def all_predecessor_versions(context, id):
     predecessors = load_predecessor_versions([], id)
 
     return build_versions(predecessors)
+
+
+def all_relationships(context, id):
+    """
+    Return all relationships with correct order and its nature.
+    """
+    # @Todo: Use environment variables for DB connection settings.
+    def get_connection():
+        try:
+            return psycopg2.connect(
+                user="ckan",
+                password="ckan",
+                host="postgres",
+                port="5432",
+                database="ckan"
+            )
+        except (Exception, psycopg2.Error) as e:
+            log.error(str(e))
+
+    connection = None
+    cursor = None
+    result = []
+
+    # Build query.
+    """
+        Example query as below:
+        select 
+            case 
+                when pr.subject_package_id != <provided_pkg_id>
+                    then 
+                        case
+                            when pr.type = 'hasPart' then 'isPartOf'
+                            when pr.type = 'isPartOf' then 'hasPart'
+                            when pr.type = 'isFormatOf' then 'hasFormat'
+                            when pr.type = 'hasFormat' then 'isFormatOf'
+                            when pr.type = 'isVersionOf' then 'hasVersion'
+                            when pr.type = 'replaces' then 'isReplacedBy'
+                            when pr.type = 'isReplacedBy' then 'replaces'
+                            when pr.type = 'references' then 'isReferencedBy'
+                            when pr.type = 'isReferencedBy' then 'references'
+                            when pr.type = 'requires' then 'isRequiredBy'
+                            when pr.type = 'isRequiredBy' then 'requires'
+                        end
+                    else pr.type 
+            end "type",
+            pr.comment,
+            pr.state,
+            pkg.id,
+            pkg.title,
+            pe."value" as dataset_creation_date
+
+        from 
+            package_relationship pr
+
+        left join package pkg 
+            on 
+                case
+                    when pr.subject_package_id != <provided_pkg_id>
+                        then pkg.id = pr.subject_package_id
+                        else pkg.id = pr.object_package_id
+                end
+
+        left join package_extra as pe
+            on pe.package_id = pkg.id
+            and pe."key" = 'dataset_creation_date'
+
+        where
+            pr.subject_package_id = <provided_pkg_id>
+            or
+            pr.object_package_id =  <provided_pkg_id>
+
+        order by
+            "type" asc,
+            dataset_creation_date desc
+    """
+    query_type_case = ''
+    for relationship in constants.RELATIONSHIP_TYPES:
+        if relationship[0] != 'unspecified relationship':
+            query_type_case += """WHEN pr.type = '""" + relationship[0] + """' THEN '""" + relationship[1] + """' """
+
+    query_select_type = """
+        CASE 
+            WHEN pr.subject_package_id != '{0}'
+                THEN case {1} end
+                ELSE pr.type
+        END "type"
+    """
+    query_select_type = query_select_type.format(id, query_type_case)
+
+    query_select = """SELECT {0}, pr.comment, pr.state, pkg.id, pkg.title, pe."value" AS dataset_creation_date
+        FROM package_relationship pr
+
+        LEFT JOIN package pkg 
+            ON 
+                CASE
+                    WHEN pr.subject_package_id != '{1}'
+                        THEN pkg.id = pr.subject_package_id
+                        ELSE pkg.id = pr.object_package_id
+                END
+        
+        LEFT JOIN package_extra as pe
+            ON pe.package_id = pkg.id AND pe."key" = 'dataset_creation_date'
+        
+        WHERE
+            pr.subject_package_id = '{1}' OR pr.object_package_id =  '{1}'
+        
+        ORDER BY "type" ASC, dataset_creation_date DESC;
+        """
+    query_select = query_select.format(query_select_type, id)
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute(query_select)
+        rows = cursor.fetchall()
+        for row in rows:
+            result.append({
+                'type': row[0] or None,
+                'comment': row[1] or None,
+                'state': row[2] or None,
+                'pkg_id': row[3] or None,
+                'pkg_title': row[4] or None,
+                'dataset_creation_date': row[5] or None,
+            })
+    except (Exception, psycopg2.Error) as e:
+        log.error(str(e))
+    finally:
+        # Closing database connection.
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return result
