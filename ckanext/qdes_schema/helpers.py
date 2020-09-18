@@ -1,7 +1,7 @@
 import datetime
 import logging
 
-from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid
+from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
 from ckanext.qdes_schema.logic.helpers import relationship_helpers
 
 
@@ -67,7 +67,15 @@ def qdes_relationship_types_choices(field):
 
 def update_related_resources(context, pkg_dict, reconcile_relationships=False):
     if reconcile_relationships:
+        # Combine existing related_resources and new related_resources together
+        existing_related_resources = get_converter('json_or_string')(request.form.get('existing_related_resources', '')) or []
+        new_related_resources =  get_converter('json_or_string')(pkg_dict.get('related_resources', '')) or []
+        combined_related_resources = existing_related_resources + new_related_resources
+        pkg_dict['related_resources'] = h.dump_json(combined_related_resources)
+        log.debug('related_resources: {}'.format(pkg_dict['related_resources']))
+
         reconcile_package_relationships(context, pkg_dict['id'], pkg_dict.get('related_resources', None))
+
     create_series_or_collection_relationships(context, pkg_dict)
     create_related_datasets_relationships(context, pkg_dict)
     create_related_resource_relationships(context, pkg_dict)
