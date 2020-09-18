@@ -1,11 +1,34 @@
 {% import 'macros/form.html' as form %}
 
+{#
+    NOTE:
+    This dummy field is added here so that we detect that the form has been posted
+    back to the server, but has resulted in a validation error that would cause the
+    form to be displayed again - this way we know if we need to re-populate the
+    related resources inputs
+#}
+{% if field.field_name == 'related_resources' %}
+    <input type="hidden" name="related_resources_postback" value="random_string" />
+{% endif %}
+
+
 <div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="select">
     <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
     {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ') }}</span>{% endif %}
     <div data-repeater-list="{{ field.field_name }}">
-        
-        {% set group_values = [''] if field.field_name == 'related_resources' else h.get_multi_textarea_values(data[field.field_name])  %}
+
+        {# Default behaviour to re-populate all existing inputs #}
+        {% set group_values = h.get_multi_textarea_values(data[field.field_name])  %}
+
+        {# Conditions to only re-populate related resources inputs if there was a postback that results in a validation error #}
+        {% if field.field_name == 'related_resources' %}
+            {% if data['related_resources_postback'] %}
+                {% set group_values = h.get_multi_textarea_values(data[field.field_name])  %}
+            {% else %}
+                {% set group_values = [''] %}
+            {% endif %}
+        {% endif %}
+
         {% for group_data in group_values or [''] %}
         
             <div data-repeater-item class="repeater-wrapper">
@@ -56,7 +79,7 @@
         <table id="existing-related-resources" class="table">
             <thead>
             <th>Resource</th>
-            <th>Nature</th>
+            <th>Nature of relationship</th>
             <th>&nbsp;</th>
             </thead>
             <tbody>
@@ -83,10 +106,18 @@
             </tbody>
         </table>
     {% endif %}
+
+    {#
+        In cases where the edit dataset form is submitted and there are errors/mandatory fields missing
+        we need to re-populate the `existing_related_resources`
+        with the value from the form submission, otherwise we loose the value
+    #}
+    {% set existing_related_resources = data['existing_related_resources']|default(data[field.field_name]) %}
+
     {% call form.textarea(
         name="existing_related_resources",
         label="Existing related resources",
-        value=data[field.field_name],
+        value=existing_related_resources,
         classes=ns.field_classes,
         )
     %}
