@@ -78,6 +78,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_relationship_types_choices': helpers.qdes_relationship_types_choices,
             'get_related_versions': helpers.get_related_versions,
             'get_superseded_versions': relationship_helpers.get_superseded_versions,
+            'get_all_relationships': helpers.get_all_relationships
         }
 
     def get_multi_textarea_values(self, value):
@@ -94,7 +95,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         return {
             'get_dataservice': get.dataservice,
             'package_autocomplete': get.package_autocomplete,
-            'update_dataservice_datasets_available': update.dataservice_datasets_available,
             'get_all_successor_versions': get.all_successor_versions,
-            'get_all_predecessor_versions': get.all_predecessor_versions
+            'get_all_predecessor_versions': get.all_predecessor_versions,
+            'get_all_relationships': get.all_relationships,
+            'update_dataservice_datasets_available': update.dataservice_datasets_available
         }
