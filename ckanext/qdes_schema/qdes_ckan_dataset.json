@@ -333,8 +333,7 @@
     {
       "field_name": "lineage_responsible_party",
       "label": "Responsible party",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "creator",
+      "display_snippet": "qdes_text_url.html",
       "display_group": "related and lineage",
       "display_property": "prov:wasAssociatedWith",
       "sub_heading": "lineage"
