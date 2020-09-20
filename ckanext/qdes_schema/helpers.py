@@ -83,3 +83,7 @@ def get_related_versions(id):
         log.error(str(e))
 
     return list(version for version in versions if version.get('state') != 'deleted')
+
+
+def get_all_relationships(id):
+    return get_action('get_all_relationships')({}, id)
