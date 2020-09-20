@@ -5,7 +5,7 @@
 {% block package_description %}
 
     {% if pkg.type == 'dataset' %}
-        <div class="alert alert-warning {{ '' if pkg.publication_status.split('/')|last == 'superseded' or versions[0].id != pkg.id else 'hidden' }}">
+        <div class="alert alert-warning {{ '' if pkg.publication_status.split('/')|last|lower == 'superseded' else 'hidden' }}">
           This version has been superseded - <a href="{{ h.url_for('dataset.read', id=versions[0].id) }}">click here to see the latest version</a>.
         </div>
     {% endif %}
