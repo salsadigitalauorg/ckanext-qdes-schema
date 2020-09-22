@@ -307,7 +307,7 @@
       "field_name": "lineage_plan",
       "label": "Plan",
       "display_snippet": "qdes_text_url.html",
-      "validators": "qdes_uri_validator",
+      "validators": "url_validator qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "prov:hadPlan",
       "sub_heading": "lineage"
