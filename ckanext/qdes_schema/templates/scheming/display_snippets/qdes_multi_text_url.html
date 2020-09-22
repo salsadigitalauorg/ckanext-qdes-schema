@@ -1,6 +1,12 @@
 {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 {% for value in values %}
-    <div><a href="{{ value }}">{{ value }}</a></div>
+    <div>
+        {% if h.is_url(value) %}
+            <a href="{{ value }}">{{ value }}</a>
+        {% else %}
+            {{ value }}
+        {% endif %}
+    </div>
     {% if not loop.last %}
         <hr>
     {% endif %} 
