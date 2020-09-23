@@ -1,8 +1,9 @@
+from pprint import pformat
+from ckan.plugins.toolkit import config, h, get_action
+from ckanext.qdes_schema.logic.helpers import relationship_helpers
+from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
 import datetime
 import logging
-
-from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
-from ckanext.qdes_schema.logic.helpers import relationship_helpers
 
 
 log = logging.getLogger(__name__)
@@ -69,7 +70,7 @@ def update_related_resources(context, pkg_dict, reconcile_relationships=False):
     if reconcile_relationships:
         # Combine existing related_resources and new related_resources together
         existing_related_resources = get_converter('json_or_string')(request.form.get('existing_related_resources', '')) or []
-        new_related_resources =  get_converter('json_or_string')(pkg_dict.get('related_resources', '')) or []
+        new_related_resources = get_converter('json_or_string')(pkg_dict.get('related_resources', '')) or []
         combined_related_resources = existing_related_resources + new_related_resources
         pkg_dict['related_resources'] = h.dump_json(combined_related_resources)
         log.debug('related_resources: {}'.format(pkg_dict['related_resources']))
@@ -198,3 +199,27 @@ def reconcile_package_relationships(context, pkg_id, related_resources):
                 # Delete the existing relationship from `package_relationships` as it no longer exists in the dataset
                 relationship.purge()
                 model.meta.Session.commit()
+
+
+def get_related_versions(id):
+    """
+    Get related versions of dataset, index 0 is the current version.
+    """
+    successors = get_action('get_all_successor_versions')({}, {'id': id})
+    predecessors = get_action('get_all_predecessor_versions')({}, {'id': id})
+
+    versions = []
+    try:
+        # Load provided version.
+        package_dict = get_action('package_show')({}, {'id': id})
+
+        # Build versions list.
+        versions = successors + [package_dict] + predecessors
+    except Exception as e:
+        log.error(str(e))
+
+    return list(version for version in versions if version.get('state') != 'deleted')
+
+
+def get_all_relationships(id):
+    return get_action('get_all_relationships')({}, id)
