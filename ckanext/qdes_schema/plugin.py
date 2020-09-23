@@ -94,7 +94,10 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'set_first_option': helpers.set_first_option,
             'get_current_datetime': helpers.get_current_datetime,
             'qdes_dataservice_choices': helpers.qdes_dataservice_choices,
-            'qdes_relationship_types_choices': helpers.qdes_relationship_types_choices
+            'qdes_relationship_types_choices': helpers.qdes_relationship_types_choices,
+            'get_related_versions': helpers.get_related_versions,
+            'get_superseded_versions': relationship_helpers.get_superseded_versions,
+            'get_all_relationships': helpers.get_all_relationships
         }
 
     def get_multi_textarea_values(self, value):
@@ -113,4 +116,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'package_autocomplete': get.package_autocomplete,
             'update_dataservice_datasets_available': update_actions.dataservice_datasets_available,
             'update_related_resources': update_actions.update_related_resources,
+            'get_all_successor_versions': get.all_successor_versions,
+            'get_all_predecessor_versions': get.all_predecessor_versions,
+            'get_all_relationships': get.all_relationships,
+            'update_dataservice_datasets_available': update_actions.dataservice_datasets_available
         }
