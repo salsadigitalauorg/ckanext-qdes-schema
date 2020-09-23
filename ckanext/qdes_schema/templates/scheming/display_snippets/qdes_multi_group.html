@@ -4,12 +4,12 @@
     <div>
         {% for field_group in field.get('field_group') or [] %}      
             {% set value = values[field_group.field_name][row]|string %}
-            <span>{{ value }}</span>
+            <span {% if field_group.display_property %} property="{{ field_group.display_property }}"{% endif %}>{{ value }}</span>
             {% if not loop.last %}
                 <span> - </span>            
             {% endif %}
         {% endfor %}
-    <div>
+    </div>
     {% if not loop.last %}
         <hr>           
     {% endif %}
