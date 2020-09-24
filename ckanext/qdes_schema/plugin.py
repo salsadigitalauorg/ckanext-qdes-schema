@@ -49,7 +49,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_iso_8601_durations': validators.qdes_iso_8601_durations,
             'qdes_validate_multi_groups': validators.qdes_validate_multi_groups,
             'qdes_validate_related_dataset': validators.qdes_validate_related_dataset,
-            'qdes_validate_related_resources': validators.qdes_validate_related_resources
+            'qdes_validate_related_resources': validators.qdes_validate_related_resources,
+            'qdes_validate_metadata_review_date': validators.qdes_validate_metadata_review_date
         }
 
     # IConfigurer
