@@ -19,13 +19,6 @@
       "display_group": "general"
     },
     {
-      "field_name": "alt_title",
-      "label": "Alternative title",
-      "display_property": "qdcat:altTitle",
-      "form_placeholder": "eg. Vegetation management regional ecosystem map",
-      "display_group": "general"
-    },
-    {
       "field_name": "identifiers",
       "label": "Identifier",
       "display_property": "dcterms:identifier",
@@ -164,6 +157,14 @@
       "label": "Time precision or spacing",
       "preset": "iso_8601_durations",
       "display_group": "temporal content"
+    },
+    {
+      "field_name": "temporal_resolution_range",
+      "label": "Temporal resolution range",
+      "display_group": "temporal content",
+      "display_property": "tempqdcat:temporalRange",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "temporal_resolution_ranges"
     },
     {
       "field_name": "spatial_lower_left",
@@ -308,6 +309,7 @@
       "field_name": "lineage_plan",
       "label": "Plan",
       "display_snippet": "qdes_text_url.html",
+      "validators": "url_validator qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "prov:hadPlan",
       "sub_heading": "lineage"
@@ -529,6 +531,12 @@
   ],
   "resource_fields": [
     {
+      "field_name": "name",
+      "label": "Title",
+      "form_placeholder": "eg. January 2011 Gold Prices",
+      "display_property": "dcterms:title"
+    },
+    {
       "field_name": "schema_standards",
       "label": "Schema, standard(s)",
       "display_property": "dcterms:conformsTo",
@@ -630,11 +638,6 @@
       "form_attrs": {
         "data-module": "qdes_autocomplete"
       }
-    },
-    {
-      "field_name": "name",
-      "label": "Name",
-      "form_placeholder": "eg. January 2011 Gold Prices"
     }
   ]
 }

@@ -118,6 +118,5 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'update_related_resources': update_actions.update_related_resources,
             'get_all_successor_versions': get.all_successor_versions,
             'get_all_predecessor_versions': get.all_predecessor_versions,
-            'get_all_relationships': get.all_relationships,
-            'update_dataservice_datasets_available': update_actions.dataservice_datasets_available
+            'get_all_relationships': get.all_relationships
         }
