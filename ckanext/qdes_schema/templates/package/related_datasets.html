@@ -1,0 +1,35 @@
+{% extends 'package/read_base.html' %}
+
+{% block primary_content_inner %}
+    {% macro relationship_row(data, property) %}
+        {% for row in data %}
+                <tr>
+                    <td property="{{property}}">
+                        {% if row.pkg_id %}
+                            <a href="{{ h.url_for('dataset_read', id=row.pkg_id) }}">{{ row.pkg_title }}</a>
+                        {% else %}
+                            <a href="{{ row.comment }}">{{ row.comment }}</a>
+                        {% endif %}
+                    </td>
+                    <td property="dcat:hadRole">
+                        {{ row.type }}
+                    </td>
+                </tr>
+        {% endfor %}
+    {% endmacro %}
+
+    {% if related %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Dataset Name</th>
+                    <th>Nature of Relationship</th>
+                </tr>
+            </thead>
+
+            {{ relationship_row(related, 'dcterms:relation') }}
+        </table>
+    {% else %}
+        <h4>This dataset has no related dataset.</h4>
+    {% endif %}
+{% endblock %}
