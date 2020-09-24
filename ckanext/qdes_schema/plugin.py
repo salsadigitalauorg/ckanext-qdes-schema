@@ -3,7 +3,7 @@ import ckan.plugins.toolkit as toolkit
 import json
 import logging
 
-from ckanext.qdes_schema import helpers, validators
+from ckanext.qdes_schema import blueprint, helpers, validators
 from ckanext.qdes_schema.logic.action import (
     get,
     update as update_actions
@@ -15,11 +15,17 @@ log = logging.getLogger(__name__)
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
+    plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
+
+    # IBlueprint
+
+    def get_blueprint(self):
+        return blueprint.qdes_schema
 
     # IPackageController
     def after_create(self, context, pkg_dict):
