@@ -29,11 +29,10 @@
       }
     },
     {
-      "preset_name": "controlled_vocabulary_multi_group_select",
+      "preset_name": "controlled_vocabulary_multi_group",
       "values": {
-        "form_snippet": "qdes_multi_group_select.html",
-        "display_snippet": "qdes_multi_group_select.html",
-        "choices_helper": "scheming_vocabulary_service_choices",
+        "form_snippet": "qdes_multi_group.html",
+        "display_snippet": "qdes_multi_group.html",
         "validators": "qdes_validate_multi_groups"
       }
     },
