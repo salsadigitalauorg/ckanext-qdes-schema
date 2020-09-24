@@ -2,18 +2,24 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import json
 
-from ckanext.qdes_schema import helpers, validators
+from ckanext.qdes_schema import blueprint, helpers, validators
 from ckanext.qdes_schema.logic.action import get, update
 from ckanext.qdes_schema.logic.helpers import relationship_helpers
 from ckanext.relationships import helpers as ckanext_relationships_helpers
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
+    plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
+
+    # IBlueprint
+
+    def get_blueprint(self):
+        return blueprint.qdes_schema
 
     # IPackageController
     def after_update(self, context, pkg_dict):
