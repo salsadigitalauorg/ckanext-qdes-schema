@@ -209,12 +209,13 @@
       "field_name": "contact_other_party",
       "label": "Other responsible party",
       "display_property": "prov:qualifiedAttribution",
-      "preset": "controlled_vocabulary_multi_group_select",
+      "preset": "controlled_vocabulary_multi_group",
       "display_group": "contacts",
       "field_group": [
         {
           "field_name": "the-party",
           "label": "The party",
+          "form_snippet": "select.html",
           "display_property": "prov:agent",
           "vocabulary_service_name": "the-party",
           "choices_helper": "scheming_vocabulary_service_choices",
@@ -226,6 +227,7 @@
         {
           "field_name": "nature-of-their-responsibility",
           "label": "Nature of their responsibility",
+          "form_snippet": "select.html",
           "display_property": "dcat:hadRole",
           "vocabulary_service_name": "nature-of-their-responsibility",
           "choices_helper": "scheming_vocabulary_service_choices",
