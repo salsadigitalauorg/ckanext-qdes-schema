@@ -42,7 +42,17 @@ jQuery(document).ready(function () {
         if (multi_groups.length > 0) {
             multi_groups.each(function () {
                 var value = jQuery(this).val().trim();
-                if (value && value.length > 0) {
+                if (jQuery(this).data('module') == "qdes_autocomplete" && jQuery(this).data('module-source') == "/api/2/util/dataset/autocomplete?incomplete=?") {
+                    // Check to see if select2 has been initialised
+                    if (jQuery(this).data('select2')) {
+                        // Get the selected option data object eg. {"id":dataset_id, "text":dataset_title}
+                        value = $(this).select2('data');
+                    } else if (value) {
+                        // This will be the value set from a post back error eg. {"id":dataset_id, "text":dataset_title}
+                        value = JSON.parse(value)
+                    }
+                }
+                if (value) {
                     var field_name = jQuery(this).data('field-name');
                     // Find the parent element index
                     var parentElement = jQuery(this).parents('#' + repeater_id + ' [data-repeater-item]:visible').first()
@@ -56,10 +66,24 @@ jQuery(document).ready(function () {
         }
         else {
             jQuery('#' + repeater_id + ' ' + field_type + '.form-control, #' + repeater_id + ' ' + field_type + '[data-module="qdes_autocomplete"]').each(function () {
-                var value = jQuery(this).val();
-
-                if (value && value.trim().length > 0) {
-                    collated_values.push(jQuery(this).val());
+                var value = jQuery(this).val().trim();
+                if (jQuery(this).data('module') == "qdes_autocomplete" && jQuery(this).data('module-source') == "/api/2/util/dataset/autocomplete?incomplete=?") {
+                    // Check to see if select2 has been initialised
+                    if (jQuery(this).data('select2')) {
+                        // Get the selected option data object eg. {"id":dataset_id, "text":dataset_title}
+                        value = $(this).select2('data');
+                    } else if (value) {
+                        // This will be the value set from a post back error eg. {"id":dataset_id, "text":dataset_title}
+                        value = JSON.parse(value)
+                    }
+                    if (value) {
+                        collated_values.push(value);
+                    }
+                }
+                else {
+                    if (value && value.length > 0) {
+                        collated_values.push(value);
+                    }
                 }
             });
         }
@@ -117,7 +141,7 @@ jQuery(document).ready(function () {
         for (let index = 0; index < related_resources.length; index++) {
             const item = related_resources[index];
             console.log(item);
-            if (item['resource'] == resource && item['relationship'] == relationship) {
+            if (item['resource']['id'] == resource && item['relationship'] == relationship) {
                 related_resources.splice(index, 1);
                 console.log(related_resources);
             }

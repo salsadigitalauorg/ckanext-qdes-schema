@@ -1,10 +1,7 @@
-from pprint import pformat
-from ckan.plugins.toolkit import config, h, get_action
-from ckanext.qdes_schema.logic.helpers import relationship_helpers
-from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
 import datetime
 import logging
 
+from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
 
 log = logging.getLogger(__name__)
 
@@ -73,8 +70,8 @@ def update_related_resources(context, pkg_dict, reconcile_relationships=False):
         new_related_resources = get_converter('json_or_string')(pkg_dict.get('related_resources', '')) or []
         combined_related_resources = existing_related_resources + new_related_resources
         pkg_dict['related_resources'] = h.dump_json(combined_related_resources)
-        log.debug('related_resources: {}'.format(pkg_dict['related_resources']))
 
+        remove_duplicate_related_resources(pkg_dict)
         reconcile_package_relationships(context, pkg_dict['id'], pkg_dict.get('related_resources', None))
 
     create_series_or_collection_relationships(context, pkg_dict)
@@ -104,16 +101,21 @@ def add_related_resources(pkg_dict, datasets, relationship_type):
         related_resources = []
 
     for dataset in datasets:
-        if not any(resource for resource in related_resources if resource.get('resource', '') == dataset):
+        # Only add related_resource if it does not already exist
+        if not any(resource for resource in related_resources
+                   if resource.get('resource', {}).get('id', '') == dataset.get('id', '')
+                   and resource.get('relationship', '') == relationship_type):
             related_resource = {}
             related_resource["resource"] = dataset
             related_resource["relationship"] = relationship_type
             related_resources.append(related_resource)
+            log.debug('add_related_resources: {}'.format(related_resource))
 
-    pkg_dict['related_resources'] = related_resources
+    pkg_dict['related_resources'] =  h.dump_json(related_resources)
 
 
 def create_related_resource_relationships(context, pkg_dict):
+    remove_duplicate_related_resources(pkg_dict)
     related_resources = get_converter('json_or_string')(pkg_dict.get('related_resources', []))
     if related_resources and isinstance(related_resources, list):
         dataset_id = pkg_dict.get('id')
@@ -141,13 +143,14 @@ def create_relationships(context, dataset_id, datasets):
 def get_dataset_relationship(context, dataset):
     relationship_dataset = None
     relationship_url = None
+    dataset_id = dataset.get('id', '')
     try:
-        get_validator('package_id_exists')(dataset, context)
-        relationship_dataset = dataset
+        get_validator('package_id_exists')(dataset_id, context)
+        relationship_dataset = dataset_id
     except Invalid:
         # Dataset does not exist so must be an external dataset URL
         # Validation should have already happened in validator 'qdes_validate_related_dataset' so the dataset should be a URL to external dataset
-        relationship_url = dataset
+        relationship_url = dataset_id
 
     return (relationship_dataset, relationship_url)
 
@@ -199,6 +202,22 @@ def reconcile_package_relationships(context, pkg_id, related_resources):
                 # Delete the existing relationship from `package_relationships` as it no longer exists in the dataset
                 relationship.purge()
                 model.meta.Session.commit()
+
+
+def remove_duplicate_related_resources(pkg_dict):
+    related_resources = get_converter('json_or_string')(pkg_dict.get('related_resources', []))
+    if related_resources and isinstance(related_resources, list):
+        distinct_list = []
+        for related_resource in related_resources:
+            dataset_id = related_resource.get('resource', {}).get('id', '')
+            relationship_type = related_resource.get('relationship', '')
+
+            if not any(distinct_dataset for distinct_dataset in distinct_list
+                       if distinct_dataset.get('resource', {}).get('id', '') == dataset_id
+                       and distinct_dataset.get('relationship', '') == relationship_type):
+                distinct_list.append(related_resource)
+       
+        pkg_dict['related_resources'] = h.dump_json(distinct_list)
 
 
 def get_related_versions(id):

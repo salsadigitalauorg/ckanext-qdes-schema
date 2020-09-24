@@ -2,7 +2,8 @@
 {% for group_data in values  %}
     <div>
         {% for field_group in field.get('field_group') or [] %}
-            {% set value = group_data.get(field_group.field_name, '')|string %}
+            {% set value_data = group_data.get(field_group.field_name, '') %}
+            {% set value = value_data.get('text', '') if 'text' in value_data else value_data|string %}
             <span>{{ value }}</span>
             {% if not loop.last %}
                 <span> - </span>            
