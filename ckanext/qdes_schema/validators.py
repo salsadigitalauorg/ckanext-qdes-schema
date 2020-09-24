@@ -7,6 +7,7 @@ import re
 from datetime import datetime as dt
 from ckan.common import config
 from ckanext.scheming.validation import scheming_validator
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -304,3 +305,16 @@ def qdes_validate_related_dataset(value, context):
                     raise toolkit.Invalid('Unsuccessful connecting to URI "{}'.format(dataset))
 
     return value
+
+def qdes_validate_metadata_review_date(key, flattened_data, errors, context):
+    """
+    Set metadata_review_date value.
+    """
+    extras = flattened_data.get(('__extras',), {}) or None
+    metadata_review_date_reviewed = extras.get('metadata_review_date_reviewed', {}) or None
+    package = context.get('package', {}) or {}
+    type = package.type if package else None
+
+    if (type in ['dataset', 'dataservice']) and (metadata_review_date_reviewed or len(flattened_data.get(key)) == 0):
+        # If empty OR checkbox ticked.
+        flattened_data[key] = dt.today().strftime('%Y-%m-%d')
