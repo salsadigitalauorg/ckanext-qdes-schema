@@ -317,4 +317,4 @@ def qdes_validate_metadata_review_date(key, flattened_data, errors, context):
 
     if (type in ['dataset', 'dataservice']) and (metadata_review_date_reviewed or len(flattened_data.get(key)) == 0):
         # If empty OR checkbox ticked.
-        flattened_data[key] = dt.today().strftime('%Y-%m-%d')
+        flattened_data[key] = dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')

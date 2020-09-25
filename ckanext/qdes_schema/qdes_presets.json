@@ -80,7 +80,7 @@
       "preset_name": "qdes_metadata_review_date",
       "values": {
         "form_snippet": "qdes_metadata_review_date.html",
-        "display_snippet": "text.html",
+        "display_snippet": "qdes_metadata_review_date.html",
         "validators": "qdes_validate_metadata_review_date"
       }
     }
