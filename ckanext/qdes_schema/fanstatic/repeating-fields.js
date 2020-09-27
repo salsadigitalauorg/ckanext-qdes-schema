@@ -37,37 +37,58 @@ jQuery(document).ready(function () {
 
     function collate_inputs(repeater_id, target_field_id, field_type) {
         var multi_groups = jQuery('#' + repeater_id + ' [data-repeater-item]:visible' + ' [data-group="True"]')
-        var collated_values = multi_groups.length > 0 ? {} : [];
+        var collated_values = [];
 
         if (multi_groups.length > 0) {
             multi_groups.each(function () {
-                var value = jQuery(this).val();
-                var field_name = jQuery(this).data('field-name');
-                var field = collated_values[field_name] || []
-                field.push(value)
-                collated_values[field_name] = field
+                var value = jQuery(this).val().trim();
+                if (jQuery(this).data('module') == "qdes_autocomplete" && jQuery(this).data('module-source') == "/api/2/util/dataset/autocomplete?incomplete=?") {
+                    // Check to see if select2 has been initialised
+                    if (jQuery(this).data('select2')) {
+                        // Get the selected option data object eg. {"id":dataset_id, "text":dataset_title}
+                        value = $(this).select2('data');
+                    } else if (value) {
+                        // This will be the value set from a post back error eg. {"id":dataset_id, "text":dataset_title}
+                        value = JSON.parse(value)
+                    }
+                }
+                if (value) {
+                    var field_name = jQuery(this).data('field-name');
+                    // Find the parent element index
+                    var parentElement = jQuery(this).parents('#' + repeater_id + ' [data-repeater-item]:visible').first()
+                    var parentIndex = jQuery('#' + repeater_id + ' [data-repeater-item]:visible').index(parentElement);
+                    // Get multi_group or initialize a new one if it does not exist
+                    var multi_group = collated_values[parentIndex] || {};
+                    multi_group[field_name] = value;
+                    collated_values[parentIndex] = multi_group;
+                }
             });
-            // Check if all values are empty
-            if (Object.values(collated_values).every(value => Object.values(value).every(x => x === null || x === ''))) {
-                // Reset
-                collated_values = {};
-            }
-            else {
-                // Count the number of visible data-repeater-item rows
-                collated_values['count'] = jQuery('#' + repeater_id + ' [data-repeater-item]:visible').length;
-            }
         }
         else {
             jQuery('#' + repeater_id + ' ' + field_type + '.form-control, #' + repeater_id + ' ' + field_type + '[data-module="qdes_autocomplete"]').each(function () {
-                var value = jQuery(this).val();
-
-                if (value && value.trim().length > 0) {
-                    collated_values.push(jQuery(this).val());
+                var value = jQuery(this).val().trim();
+                if (jQuery(this).data('module') == "qdes_autocomplete" && jQuery(this).data('module-source') == "/api/2/util/dataset/autocomplete?incomplete=?") {
+                    // Check to see if select2 has been initialised
+                    if (jQuery(this).data('select2')) {
+                        // Get the selected option data object eg. {"id":dataset_id, "text":dataset_title}
+                        value = $(this).select2('data');
+                    } else if (value) {
+                        // This will be the value set from a post back error eg. {"id":dataset_id, "text":dataset_title}
+                        value = JSON.parse(value)
+                    }
+                    if (value) {
+                        collated_values.push(value);
+                    }
+                }
+                else {
+                    if (value && value.length > 0) {
+                        collated_values.push(value);
+                    }
                 }
             });
         }
 
-        if (Array.isArray(collated_values) && collated_values.length > 0 || Object.keys(collated_values).length > 0) {
+        if (Array.isArray(collated_values) && collated_values.length > 0) {
             jQuery('#' + target_field_id).val(JSON.stringify(collated_values));
         }
         else {
@@ -102,4 +123,40 @@ jQuery(document).ready(function () {
     // otherwise required fields won't have value by default.
     jQuery(".repeating-field .form-control").blur();
     jQuery(".repeating-field [data-module='qdes_autocomplete']").change();
+
+    // jQuery('.repeating-field .form-control').not('[data-parent-field-name="related_resources"]').blur();
+    // jQuery(".repeating-field [data-module='qdes_autocomplete']").not('[data-parent-field-name="related_resources"]').change();
+
+    // Separate logic for existing related resources
+    jQuery("#existing-related-resources a.remove").on('click', function (e) {
+        e.preventDefault();
+        // get the data-resource and data-relationship values from the remove button
+        console.log(this);
+
+        // iterate through the `related_resources` field and remove the item
+        var related_resources = JSON.parse(jQuery('textarea[name="existing_related_resources"]').val())
+        var resource = jQuery(this).data('resource');
+        var relationship = jQuery(this).data('relationship');
+
+        for (let index = 0; index < related_resources.length; index++) {
+            const item = related_resources[index];
+            console.log(item);
+            if (item['resource']['id'] == resource && item['relationship'] == relationship) {
+                related_resources.splice(index, 1);
+                console.log(related_resources);
+            }
+        }
+
+        if (Array.isArray(related_resources) && related_resources.length > 0) {
+            jQuery('textarea[name="existing_related_resources"]').val(JSON.stringify(related_resources));
+        }
+        else {
+            jQuery('textarea[name="existing_related_resources"]').val('');
+        }
+
+
+        // remove the table rows from existing related resources table
+        jQuery(this).closest('tr').remove();
+        return false;
+    });
 });

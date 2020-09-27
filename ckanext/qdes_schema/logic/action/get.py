@@ -62,7 +62,7 @@ def package_autocomplete(original_action, context, data_dict):
             'name:{0}',
             'title:{0}',
         ]).format(search.query.solr_literal(q)),
-        'fl': 'name,title',
+        'fl': 'id,name,title',
         'fq': 'capacity:public',  # QDes Override: Only search on public datasets
         'rows': limit
     }
@@ -80,6 +80,7 @@ def package_autocomplete(original_action, context, data_dict):
             match_field = 'title'
             match_displayed = '%s (%s)' % (package['title'], package['name'])
         result_dict = {
+            'id': package['id'],
             'name': package['name'],
             'title': package['title'],
             'match_field': match_field,
