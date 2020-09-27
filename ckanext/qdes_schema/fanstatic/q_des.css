@@ -31,3 +31,7 @@ select[data-module="qdes_autocomplete"] {
   content: " (recommended):";
   color: blue;
 }
+
+label.no-colon:after {
+  display: none;
+}
