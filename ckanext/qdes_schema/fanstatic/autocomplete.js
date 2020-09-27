@@ -270,6 +270,13 @@ jQuery(document).ready(function () {
 
         if (this.options.tags) {
           formatted = jQuery.map(value.split(","), this.formatTerm);
+        } else if (this.options.source) {
+          // If a API source is used, check if the value is a json object to preselect the initial value
+          try {
+            formatted = JSON.parse(value);
+          } catch (e) {
+            formatted = this.formatTerm(value);
+          }
         } else {
           formatted = this.formatTerm(value);
         }

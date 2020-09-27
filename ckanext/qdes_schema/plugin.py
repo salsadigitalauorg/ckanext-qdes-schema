@@ -1,11 +1,17 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import json
+import logging
 
 from ckanext.qdes_schema import blueprint, helpers, validators
-from ckanext.qdes_schema.logic.action import get, update
-from ckanext.qdes_schema.logic.helpers import relationship_helpers
+from ckanext.qdes_schema.logic.action import (
+    get,
+    update as update_actions
+)
 from ckanext.relationships import helpers as ckanext_relationships_helpers
+from ckanext.qdes_schema.logic.helpers import relationship_helpers
+
+log = logging.getLogger(__name__)
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
@@ -22,11 +28,23 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         return blueprint.qdes_schema
 
     # IPackageController
-    def after_update(self, context, pkg_dict):
-        pass
-
     def after_create(self, context, pkg_dict):
-        pass
+        u'''
+        Extensions will receive the validated data dict after the dataset
+        has been created (Note that the create method will return a dataset
+        domain object, which may not include all fields). Also the newly
+        created dataset id will be added to the dict.
+        '''
+        helpers.update_related_resources(context, pkg_dict, False)
+        return pkg_dict
+
+    def after_update(self, context, pkg_dict):
+        u'''
+        Extensions will receive the validated data dict after the dataset
+        has been updated.
+        '''
+        helpers.update_related_resources(context, pkg_dict, True)
+        return pkg_dict
 
     def before_index(self, pkg_dict):
         # Remove the relationship type fields from the pkg_dict to prevent indexing from breaking
@@ -55,7 +73,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_iso_8601_durations': validators.qdes_iso_8601_durations,
             'qdes_validate_multi_groups': validators.qdes_validate_multi_groups,
             'qdes_validate_related_dataset': validators.qdes_validate_related_dataset,
-            'qdes_validate_related_resources': validators.qdes_validate_related_resources
+            'qdes_validate_related_resources': validators.qdes_validate_related_resources,
+            'qdes_convert_related_resources': relationship_helpers.convert_related_resources
         }
 
     # IConfigurer
@@ -101,8 +120,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         return {
             'get_dataservice': get.dataservice,
             'package_autocomplete': get.package_autocomplete,
+            'update_dataservice_datasets_available': update_actions.dataservice_datasets_available,
+            'update_related_resources': update_actions.update_related_resources,
             'get_all_successor_versions': get.all_successor_versions,
             'get_all_predecessor_versions': get.all_predecessor_versions,
-            'get_all_relationships': get.all_relationships,
-            'update_dataservice_datasets_available': update.dataservice_datasets_available
+            'get_all_relationships': get.all_relationships
         }
