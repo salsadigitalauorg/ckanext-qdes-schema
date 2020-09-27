@@ -1,7 +1,7 @@
 import logging
 import json
 
-from ckan.plugins.toolkit import get_action, h
+from ckan.plugins.toolkit import get_action, h, check_access
 from ckanext.qdes_schema.logic.helpers import (
     dataservice_helpers as ds_helpers,
     resource_helpers as res_helpers)
@@ -40,5 +40,40 @@ def dataservice_datasets_available(context, resource):
                     context['ignore_auth'] = True
                     # package_patch seems to be failing validation here
                     get_action('package_update')(context, dataservice_dict)
+        except Exception as e:
+            log.error(str(e))
+
+
+def update_related_resources(context, data_dict):
+    """
+    Update dataset related_resources metadata field
+    """
+    check_access('package_update', context, data_dict)
+
+    dataset_id = data_dict.get('id', None)
+    if dataset_id:
+        model = context.get('model')
+        try:
+            dataset = model.Package.get(dataset_id)
+            if dataset:
+                current_related_resources = dataset._extras.get('related_resources', None)
+                new_related_resources_value = json.dumps(data_dict.get('related_resources', None)) \
+                    if isinstance(data_dict.get('related_resources', None), list) else data_dict.get('related_resources', None)
+
+                if not current_related_resources:
+                    # Create a new PackageExtra object for related_resources
+                    dataset._extras['related_resources'] = model.PackageExtra(key='related_resources', value=new_related_resources_value)
+                else:
+                    current_related_resources.value = new_related_resources_value
+                # Always set the below values to None as they should have been included above in related_resources
+                series_or_collection = dataset._extras.get('series_or_collection', None)
+                if series_or_collection:
+                    series_or_collection.value = None
+                related_datasets = dataset._extras.get('related_datasets', None)
+                if related_datasets:
+                    related_datasets.value = None
+
+                dataset.commit()
+
         except Exception as e:
             log.error(str(e))
