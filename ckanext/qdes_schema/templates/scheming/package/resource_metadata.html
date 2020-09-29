@@ -1,20 +1,9 @@
-{% ckan_extends %}
+{% extends 'package/resource_read.html' %}
 
 {%- block resource_format -%}{%- endblock -%}
 {%- block resource_license -%}{%- endblock -%}
 
-{%- set include_fields = [
-    'name',
-    'format',
-    'schema_standards',
-    'data_services',
-    'license',
-    'size',
-    'url',
-    'service_api_endpoint',
-    ] -%}
-
-{%- set schema = h.scheming_get_dataset_schema(pkg_dict['type']) -%}
+{%- set schema = h.scheming_get_dataset_schema(package['type']) -%}
 
 {%- block resource_additional_information_inner -%}
   <div class="module-content">
@@ -40,7 +29,7 @@
           <td>{{ h.render_datetime(res.created) or _('unknown') }}</td>
         </tr>
         {%- for field in schema.resource_fields -%}
-          {%- if field.field_name in include_fields and field.display_snippet is not none and res[field.field_name] -%}
+          {%- if field.display_snippet is not none and res[field.field_name] -%}
             <tr>
               <th scope="row">
                 {{- h.scheming_language_text(field.label) -}}
@@ -55,7 +44,7 @@
         {%- endfor -%}
       </tbody>
     </table>
-
-    <a href="{{ h.url_for('qdes_schema.resource_metadata', id=pkg_dict['id'], resource_id=res['id']) }}">{{ _('View all metadata') }}</a>
   </div>
 {%- endblock -%}
+
+
