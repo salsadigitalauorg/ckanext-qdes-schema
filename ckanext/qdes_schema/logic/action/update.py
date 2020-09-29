@@ -1,7 +1,7 @@
 import logging
 import json
 
-from ckan.plugins.toolkit import get_action, h, check_access
+from ckan.plugins.toolkit import get_action, h, check_access, get_converter
 from ckanext.qdes_schema.logic.helpers import (
     dataservice_helpers as ds_helpers,
     resource_helpers as res_helpers)
@@ -56,10 +56,13 @@ def update_related_resources(context, data_dict):
         try:
             dataset = model.Package.get(dataset_id)
             if dataset:
-                current_related_resources = dataset._extras.get('related_resources', None)
-                new_related_resources_value = json.dumps(data_dict.get('related_resources', None)) \
-                    if isinstance(data_dict.get('related_resources', None), list) else data_dict.get('related_resources', None)
+                related_resources = get_converter('json_or_string')(data_dict.get('related_resources', [])) or []
+                if isinstance(related_resources, list) and len(related_resources) > 0:
+                    new_related_resources_value = json.dumps(related_resources)
+                else:
+                    new_related_resources_value = None
 
+                current_related_resources = dataset._extras.get('related_resources', None)
                 if not current_related_resources:
                     # Create a new PackageExtra object for related_resources
                     dataset._extras['related_resources'] = model.PackageExtra(key='related_resources', value=new_related_resources_value)
