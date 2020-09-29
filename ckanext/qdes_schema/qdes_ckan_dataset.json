@@ -28,6 +28,15 @@
       "display_group": "general"
     },
     {
+      "field_name": "notes",
+      "label": "Description or abstract",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "eg. Some useful notes about the data",
+      "display_property": "dcterms:description",
+      "display_group": "description",
+      "required": true
+    },
+    {
       "field_name": "classification",
       "label": "General classification of dataset type",
       "display_property": "dcterms:type",
@@ -41,15 +50,6 @@
         "class": "form-control"
       },
       "form_include_blank_choice": true
-    },
-    {
-      "field_name": "notes",
-      "label": "Description or abstract",
-      "form_snippet": "markdown.html",
-      "form_placeholder": "eg. Some useful notes about the data",
-      "display_property": "dcterms:description",
-      "display_group": "description",
-      "required": true
     },
     {
       "field_name": "purpose",
