@@ -21,9 +21,10 @@
 {%- endfor -%}
 
 <!-- @TODO create macro for the row -->
-{% macro row(field, pkg_dict, schema) -%}
+{% macro row(field, pkg_dict, schema, add_spaces) -%}
   <tr>
     <th scope="row" class="dataset-label">
+      {{ "&nbsp;"|safe*4 if add_spaces }}
       {{ h.scheming_language_text(field.label) }}
     </th>
     <td class="dataset-details"{%
@@ -60,7 +61,7 @@
               {% do spatial_coverage_has_value.update({'show_label': 0}) %}
             {% endif %}
 
-            {{row(field, pkg_dict, schema)}}
+            {{row(field, pkg_dict, schema, True)}}
           {%- endif -%}
         {%- endfor -%}
 
