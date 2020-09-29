@@ -40,4 +40,4 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-ckanext/qdes_schema/qspatial_harvest/xml_files
+ckanext/qdes_schema/qspatial_harvest/xml_files/*.xml
