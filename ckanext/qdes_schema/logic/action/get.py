@@ -257,7 +257,7 @@ def all_relationships(context, id):
         WHERE
             pr.subject_package_id = '{1}' OR pr.object_package_id =  '{1}'
         
-        ORDER BY "type" ASC, dataset_creation_date DESC;
+        ORDER BY "type" ASC, dataset_creation_date ASC;
         """
     query_select = query_select.format(query_select_type, id)
 
