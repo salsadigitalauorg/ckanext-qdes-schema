@@ -283,7 +283,16 @@ def qdes_validate_related_resources(field, schema):
                                 qdes_validate_related_dataset([field_value], context)
                             except toolkit.Invalid as e:
                                 errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
-
+                    # Validates the dataset relationship to prevent circular references
+                    dataset = toolkit.get_converter('json_or_string')(value)
+                    if dataset and isinstance(dataset, dict):
+                        package = context.get('package')
+                        dataset_id = dataset.get('resource', {}).get('id', None)
+                        relationship_type = dataset.get('relationship', None)
+                        try:
+                            qdes_validate_dataset_relationships(package.id, dataset_id, relationship_type, context)
+                        except toolkit.Invalid as e:
+                            errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))  
     return validator
 
 
@@ -310,6 +319,7 @@ def qdes_validate_related_dataset(value, context):
 
     return value
 
+
 def qdes_validate_metadata_review_date(key, flattened_data, errors, context):
     """
     Set metadata_review_date value.
@@ -322,3 +332,32 @@ def qdes_validate_metadata_review_date(key, flattened_data, errors, context):
     if (type in ['dataset', 'dataservice']) and (metadata_review_date_reviewed or len(flattened_data.get(key)) == 0):
         # If empty OR checkbox ticked.
         flattened_data[key] = dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+
+
+def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset_id, relationship_type, context):
+    """
+    Validates the dataset relationship to prevent circular references
+    """
+    try:
+        dataset_dict = toolkit.get_action('package_show')(context, {"id": relationship_dataset_id})
+    except toolkit.NotFound:
+        # Package does not exists so it must be a valid URI from external dataset
+        return True
+
+    if relationship_type in ['replaces']:
+        # This is to prevent circular relationships to happen
+        # Creating a relationship for Jim1 to replace Jim2
+        # Need to check if there is a relationship where Jim2 replaces Jim1
+        # Jim1.id = subject and Jim2.id = object
+        # Load any relationship where Jim2 is the subject Jim1 is object
+        #
+        model = context['model']
+        query = model.Session.query(model.PackageRelationship)
+        query = query.filter(model.PackageRelationship.subject_package_id == relationship_dataset_id)
+        query = query.filter(model.PackageRelationship.object_package_id == current_dataset_id)
+        query = query.filter(model.PackageRelationship.type == relationship_type)
+        relationship = query.first()
+        if relationship:
+            raise toolkit.Invalid("Relationship type '{0}' already exists from dataset '{1}'".format(relationship_type, dataset_dict.get('title', None)))
+    
+    return True
