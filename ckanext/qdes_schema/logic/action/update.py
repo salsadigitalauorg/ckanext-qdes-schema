@@ -56,8 +56,19 @@ def update_related_resources(context, data_dict):
         try:
             dataset = model.Package.get(dataset_id)
             if dataset:
-                related_resources = get_converter('json_or_string')(data_dict.get('related_resources', [])) or []
-                if isinstance(related_resources, list) and len(related_resources) > 0:
+                # Create related_resources from datasets relationships as they are the source of truth
+                relationships = h.get_subject_package_relationship_objects(dataset_id)
+                related_resources = []
+                if relationships:
+                    for relationship in relationships:
+                        id = relationship['object'] if relationship['object'] else relationship['comment']
+                        text = relationship['title'] if relationship['object'] else relationship['comment']
+                        type = relationship['type']
+                        related_resources.append({"resource": {"id": id, "text": text}, "relationship": type})
+
+                log.debug('related_resources: {}'.format(related_resources))
+
+                if len(related_resources) > 0:
                     new_related_resources_value = json.dumps(related_resources)
                 else:
                     new_related_resources_value = None
