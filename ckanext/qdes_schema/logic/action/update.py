@@ -71,7 +71,7 @@ def update_related_resources(context, data_dict):
                 if len(related_resources) > 0:
                     new_related_resources_value = json.dumps(related_resources)
                 else:
-                    new_related_resources_value = None
+                    new_related_resources_value = ''
 
                 current_related_resources = dataset._extras.get('related_resources', None)
                 if not current_related_resources:
