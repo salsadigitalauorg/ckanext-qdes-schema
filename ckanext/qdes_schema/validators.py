@@ -292,7 +292,7 @@ def qdes_validate_related_resources(field, schema):
                         try:
                             qdes_validate_dataset_relationships(package.id, dataset_id, relationship_type, context)
                         except toolkit.Invalid as e:
-                            errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))  
+                            errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
     return validator
 
 
@@ -359,5 +359,5 @@ def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset
         relationship = query.first()
         if relationship:
             raise toolkit.Invalid("Relationship type '{0}' already exists from dataset '{1}'".format(relationship_type, dataset_dict.get('title', None)))
-    
+
     return True
