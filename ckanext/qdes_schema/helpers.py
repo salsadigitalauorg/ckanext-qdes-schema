@@ -51,11 +51,18 @@ def qdes_relationship_types_choices(field):
     choices = []
 
     try:
-        for data in h.get_relationship_types():
-            #log.debug('qdes_relationship_types_choices: {0}'.format(data))
+        # Remove the duplicate `unspecified relationship` type
+        # as it has the same value for forward and reverse
+        unique_relationship_types = []
+
+        for relationship_type in h.get_relationship_types():
+            if relationship_type not in unique_relationship_types:
+                unique_relationship_types.append(relationship_type)
+
+        for data in unique_relationship_types:
             choices.append({
-                'value': data[0],
-                'label': data[0]
+                'value': data,
+                'label': data
             })
     except Exception as e:
         log.error(str(e))
