@@ -284,10 +284,11 @@ def qdes_validate_related_resources(field, schema):
                             except toolkit.Invalid as e:
                                 errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
                     # Validates the dataset relationship to prevent circular references
+                    # If there is no package.id it must be a new dataset so there will not be any previous relationsips
+                    package = context.get('package', None)
                     dataset = toolkit.get_converter('json_or_string')(value)
-                    if dataset and isinstance(dataset, dict):
-                        package = context.get('package')
-                        dataset_id = dataset.get('resource', {}).get('id', None)
+                    if package and package.id and dataset and isinstance(dataset, dict):              
+                        dataset_id = dataset.get('resource', {}).get('id', None)                        
                         relationship_type = dataset.get('relationship', None)
                         try:
                             qdes_validate_dataset_relationships(package.id, dataset_id, relationship_type, context)
