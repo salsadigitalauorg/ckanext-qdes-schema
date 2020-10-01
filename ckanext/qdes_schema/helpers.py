@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -242,3 +243,13 @@ def get_related_versions(id):
 
 def get_all_relationships(id):
     return get_action('get_all_relationships')({}, id)
+
+def get_au_bounding_box_config():
+    aubb = None
+
+    try:
+        aubb = config.get('ckanext.qdes_schema.au_bounding_box', None)
+    except Exception as e:
+        log.error(str(e))
+
+    return aubb
