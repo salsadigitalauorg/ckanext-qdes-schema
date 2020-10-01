@@ -249,3 +249,10 @@ def get_related_versions(id):
 
 def get_all_relationships(id):
     return get_action('get_all_relationships')({}, id)
+
+def convert_relationships_to_related_resources(relationships):
+    related_resources = []
+    for relationship in relationships:
+        related_resources.append({"resource": {"id": relationship.get('object', None)}, "relationship": relationship.get('type', None)})
+
+    return h.dump_json(related_resources) if related_resources and len(related_resources) > 0 else ''
