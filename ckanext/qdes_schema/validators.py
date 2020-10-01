@@ -338,9 +338,14 @@ def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset
     """
     Validates the dataset relationship to prevent circular references
     """
+    # Check the value of relationship_dataset_id first
+    # in case it is a URI - if it is, exit early
+    if ':' or 'http' in relationship_dataset_id:
+        return True
+
     try:
         dataset_dict = toolkit.get_action('package_show')(context, {"id": relationship_dataset_id})
-    except toolkit.NotFound:
+    except toolkit.ObjectNotFound:
         # Package does not exists so it must be a valid URI from external dataset
         return True
 
