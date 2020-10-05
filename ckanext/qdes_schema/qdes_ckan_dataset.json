@@ -237,6 +237,47 @@
       "display_group": "spatial content"
     },
     {
+      "field_name": "conforms_to",
+      "label": "Schema or standard",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "qdes_uri_validator",
+      "display_property": "dcterms:conformsTo",
+      "display_group": "data quality"
+    },
+    {
+      "field_name": "quality_description",
+      "label": "Quality description",
+      "display_group": "data quality",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_empty qdes_validate_multi_groups",
+      "field_group": [
+        {
+          "field_name": "dimension",
+          "label": "Dimension",
+          "display_property": "dqv:inDimension",
+          "preset": "controlled_vocabulary_single_select",
+          "form_snippet": "select.html",
+          "display_snippet": "controlled_vocabulary_single_select.html",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "vocabulary_service_name": "dimension",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        },
+        {
+          "field_name": "value",
+          "label": "Value",
+          "form_snippet": "text.html",
+          "display_property": "oa:bodyValue",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        }
+      ]
+    },
+    {
       "field_name": "spatial",
       "label": "Spatial",
       "preset": "json_object",
