@@ -29,11 +29,10 @@
       }
     },
     {
-      "preset_name": "controlled_vocabulary_multi_group_select",
+      "preset_name": "controlled_vocabulary_multi_group",
       "values": {
-        "form_snippet": "qdes_multi_group_select.html",
-        "display_snippet": "qdes_multi_group_select.html",
-        "choices_helper": "scheming_vocabulary_service_choices",
+        "form_snippet": "qdes_multi_group.html",
+        "display_snippet": "qdes_multi_group.html",
         "validators": "qdes_validate_multi_groups"
       }
     },
@@ -72,8 +71,18 @@
         "form_attrs": {
           "data-module": "qdes_autocomplete",
           "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
-          "data-module-create-search-choice": true
+          "data-module-create-search-choice": true,
+          "data-module-key": "id",
+          "data-module-label": "title"
         }
+      }
+    },
+    {
+      "preset_name": "qdes_metadata_review_date",
+      "values": {
+        "form_snippet": "qdes_metadata_review_date.html",
+        "display_snippet": "qdes_metadata_review_date.html",
+        "validators": "qdes_validate_metadata_review_date"
       }
     }
   ]

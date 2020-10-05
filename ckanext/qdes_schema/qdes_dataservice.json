@@ -60,6 +60,30 @@
       "display_group": "description"
     },
     {
+      "field_name": "metadata_review_date",
+      "label": "Metadata review date",
+      "preset": "qdes_metadata_review_date",
+      "display_group": "description"
+    },
+    {
+      "field_name": "metadata_contact_point",
+      "label": "Point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "contact_point",
+      "display_group": "description",
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "url",
+      "label": "Source of record",
+      "form_placeholder": "http://example.com/dataset.json",
+      "display_property": "foaf:homepage",
+      "display_snippet": "link.html",
+      "display_group": "description",
+      "validators": "url_validator qdes_uri_validator"
+    },
+    {
       "field_name": "dataset_language",
       "label": "Service language",
       "display_property": "dcterms:language",
@@ -209,12 +233,13 @@
       "field_name": "contact_other_party",
       "label": "Other responsible party",
       "display_property": "prov:qualifiedAttribution",
-      "preset": "controlled_vocabulary_multi_group_select",
+      "preset": "controlled_vocabulary_multi_group",
       "display_group": "contacts",
       "field_group": [
         {
           "field_name": "the-party",
           "label": "The party",
+          "form_snippet": "select.html",
           "display_property": "prov:agent",
           "vocabulary_service_name": "the-party",
           "choices_helper": "scheming_vocabulary_service_choices",
@@ -226,6 +251,7 @@
         {
           "field_name": "nature-of-their-responsibility",
           "label": "Nature of their responsibility",
+          "form_snippet": "select.html",
           "display_property": "dcat:hadRole",
           "vocabulary_service_name": "nature-of-their-responsibility",
           "choices_helper": "scheming_vocabulary_service_choices",
@@ -264,7 +290,8 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "license",
       "display_group": "rights & licensing",
-      "required": true
+      "required": true,
+      "form_include_blank_choice": true
     },
     {
       "field_name": "specialized_license",

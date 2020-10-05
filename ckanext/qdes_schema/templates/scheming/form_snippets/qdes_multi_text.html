@@ -7,6 +7,10 @@
         {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 
         {% for value in values %}
+            <!-- If value is from dataset autocomplete it will be a json object -->
+            {% if value and field.get('form_attrs', {}).get('data-module-source' ,'') == '/api/2/util/dataset/autocomplete?incomplete=?' %}
+                {% set value = h.dump_json(value) %}
+            {% endif %}
             <div data-repeater-item class="row">
                 <div class="col-xs-11">
                     {%

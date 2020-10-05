@@ -28,6 +28,16 @@
       "display_group": "general"
     },
     {
+      "field_name": "notes",
+      "label": "Description or abstract",
+      "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
+      "form_placeholder": "eg. Some useful notes about the data",
+      "display_property": "dcterms:description",
+      "display_group": "description",
+      "required": true
+    },
+    {
       "field_name": "classification",
       "label": "General classification of dataset type",
       "display_property": "dcterms:type",
@@ -41,15 +51,6 @@
         "class": "form-control"
       },
       "form_include_blank_choice": true
-    },
-    {
-      "field_name": "notes",
-      "label": "Description or abstract",
-      "form_snippet": "markdown.html",
-      "form_placeholder": "eg. Some useful notes about the data",
-      "display_property": "dcterms:description",
-      "display_group": "description",
-      "required": true
     },
     {
       "field_name": "purpose",
@@ -68,6 +69,30 @@
       "display_snippet": "qdes_multi_markdown.html",
       "form_placeholder": "e.g. warnings",
       "display_group": "description"
+    },
+    {
+      "field_name": "metadata_review_date",
+      "label": "Metadata review date",
+      "preset": "qdes_metadata_review_date",
+      "display_group": "description"
+    },
+    {
+      "field_name": "metadata_contact_point",
+      "label": "Point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "contact_point",
+      "display_group": "description",
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "url",
+      "label": "Source of record",
+      "form_placeholder": "http://example.com/dataset.json",
+      "display_property": "foaf:homepage",
+      "display_snippet": "link.html",
+      "display_group": "description",
+      "validators": "url_validator qdes_uri_validator"
     },
     {
       "field_name": "dataset_language",
@@ -108,11 +133,12 @@
       "label": "Parameter",
       "display_property": "dcat:property",
       "display_group": "description",
-      "preset": "controlled_vocabulary_multi_group_select",
+      "preset": "controlled_vocabulary_multi_group",
       "field_group": [
         {
           "field_name": "observed-property",
           "label": "Observed property",
+          "form_snippet": "select.html",
           "display_property": "qudt:hasQuantityKind",
           "vocabulary_service_name": "observed-property",
           "choices_helper": "scheming_vocabulary_service_choices",
@@ -124,6 +150,7 @@
         {
           "field_name": "unit-of-measure",
           "label": "Unit of measure",
+          "form_snippet": "select.html",
           "display_property": "qudt:unit",
           "vocabulary_service_name": "unit-of-measure",
           "choices_helper": "scheming_vocabulary_service_choices",
@@ -310,21 +337,23 @@
       "sub_heading": "related",
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
-      "validators": "ignore_empty qdes_validate_related_resources",
+      "validators": "qdes_validate_related_resources ",
       "field_group": [
         {
-          "field_name": "resources",
+          "field_name": "resource",
           "label": "Resource",
           "form_snippet": "text.html",
           "form_attrs": {
             "data-module": "qdes_autocomplete",
             "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
             "data-module-create-search-choice": true,
+            "data-module-key": "id",
+            "data-module-label": "title",
             "class": "form-control"
           }
         },
         {
-          "field_name": "relationships",
+          "field_name": "relationship",
           "label": "Relationship",
           "form_snippet": "select.html",
           "choices_helper": "qdes_relationship_types_choices",
@@ -428,12 +457,13 @@
       "field_name": "contact_other_party",
       "label": "Other responsible party",
       "display_property": "prov:qualifiedAttribution",
-      "preset": "controlled_vocabulary_multi_group_select",
+      "preset": "controlled_vocabulary_multi_group",
       "display_group": "contacts",
       "field_group": [
         {
           "field_name": "the-party",
           "label": "The party",
+          "form_snippet": "select.html",
           "display_property": "prov:agent",
           "vocabulary_service_name": "the-party",
           "choices_helper": "scheming_vocabulary_service_choices",
@@ -445,6 +475,7 @@
         {
           "field_name": "nature-of-their-responsibility",
           "label": "Nature of their responsibility",
+          "form_snippet": "select.html",
           "display_property": "dcat:hadRole",
           "vocabulary_service_name": "nature-of-their-responsibility",
           "choices_helper": "scheming_vocabulary_service_choices",
@@ -532,7 +563,8 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "license",
       "display_group": "rights & licensing",
-      "required": true
+      "required": true,
+      "form_include_blank_choice": true
     },
     {
       "field_name": "specialized_license",
@@ -553,13 +585,6 @@
       "field_name": "owner_org",
       "label": "Organization",
       "preset": "dataset_organization"
-    },
-    {
-      "field_name": "url",
-      "label": "Source",
-      "form_placeholder": "http://example.com/dataset.json",
-      "display_property": "foaf:homepage",
-      "display_snippet": "link.html"
     },
     {
       "field_name": "version",
@@ -652,6 +677,7 @@
       "field_name": "description",
       "label": "Description",
       "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
       "form_placeholder": "Some useful notes about the data",
       "display_property": "dcterms:description"
     },

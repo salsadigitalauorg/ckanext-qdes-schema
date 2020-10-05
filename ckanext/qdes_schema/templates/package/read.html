@@ -11,7 +11,7 @@
     {% endif %}
 
     {% if versions|length > 1 and h.check_access('package_update', {'id':pkg.id }) %}
-        {% set superseded_versions = h.get_superseded_versions(pkg.related_resources, versions) %}
+        {% set superseded_versions = h.get_superseded_versions(pkg.id, versions) %}
 
         {% for superseded_version in superseded_versions %}
             {% if not 'superseded' in superseded_version.publication_status %}
@@ -29,9 +29,3 @@
 
   {% snippet "/package/snippets/dataset_versions.html", versions=versions, pkg=pkg %}
 {% endblock %}
-
-{% block package_tags %}
-  {{ super() }}
-  {% snippet "package/snippets/dataset_related.html", pkg=pkg_dict %}
-{% endblock %}
-

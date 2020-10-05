@@ -1,7 +1,11 @@
 {% import 'macros/form.html' as form %}
 
-{%- if values[field_group.field_name] -%}
-    {%- set value = values[field_group.field_name][row]|string -%}
+{%- if field_group.field_name in group_data -%}
+    {%- set value = group_data.get(field_group.field_name, '') -%}
+    <!-- If value is from dataset autocomplete it will be a json object -->
+    {% if value and field_group.get('form_attrs', {}).get('data-module-source' ,'') == '/api/2/util/dataset/autocomplete?incomplete=?' %}
+        {% set value = h.dump_json(value) %}
+    {% endif %}
 {%- else -%}
     {%- set value = None -%}
 {%- endif -%}
