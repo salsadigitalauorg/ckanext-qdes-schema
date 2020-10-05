@@ -84,6 +84,19 @@
         "display_snippet": "qdes_metadata_review_date.html",
         "validators": "qdes_validate_metadata_review_date"
       }
+    },
+    {
+      "preset_name": "qdes_vocab_service_autocomplete",
+      "values": {
+        "display_snippet": "controlled_vocabulary_single_select.html",
+        "choices_helper": "scheming_vocabulary_service_choices",
+        "form_attrs": {
+          "data-module": "qdes_autocomplete",
+          "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/change_this_to_vocabulary_service_name?incomplete=?",
+          "data-module-key": "value",
+          "data-module-label": "label"
+        }
+      }
     }
   ]
 }
