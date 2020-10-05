@@ -341,7 +341,11 @@ def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset
     """
     # Check the value of relationship_dataset_id first
     # in case it is a URI - if it is, exit early
-    if ':' or 'http' in relationship_dataset_id:
+    data = {'url':relationship_dataset_id}
+    errors = {'url': []}
+    toolkit.get_validator('url_validator')('url', data, errors, context)
+    if(len(errors['url']) == 0):
+        # If there are no errors it must be a valid URL so exit early
         return True
 
     try:
