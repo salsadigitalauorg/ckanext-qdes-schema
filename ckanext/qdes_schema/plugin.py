@@ -85,6 +85,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         schema.update({
             'ckanext.qdes_schema.au_bounding_box': [ignore_missing, qdes_validate_geojson],
+            'ckanext.qdes_schema.qld_bounding_box': [ignore_missing, qdes_validate_geojson],
         })
 
         return schema
@@ -106,7 +107,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_superseded_versions': relationship_helpers.get_superseded_versions,
             'get_all_relationships': helpers.get_all_relationships,
             'convert_relationships_to_related_resources': helpers.convert_relationships_to_related_resources,
-            'get_au_bounding_box_config': helpers.get_au_bounding_box_config,
+            'get_qld_bounding_box_config': helpers.get_qld_bounding_box_config
         }
 
     def get_multi_textarea_values(self, value):
