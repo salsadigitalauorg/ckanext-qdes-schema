@@ -49,7 +49,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     def before_index(self, pkg_dict):
         # Remove the relationship type fields from the pkg_dict to prevent indexing from breaking
         # because we removed the relationship type fields from solr schema.xml
-        relationship_types = ckanext_relationships_helpers.get_relationship_types()
+        relationship_types = ckanext_relationships_helpers.get_relationship_types_as_flat_list()
 
         for relationship_type in relationship_types:
             if pkg_dict.get(relationship_type, None):
@@ -85,6 +85,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         schema.update({
             'ckanext.qdes_schema.au_bounding_box': [ignore_missing, qdes_validate_geojson],
+            'ckanext.qdes_schema.qld_bounding_box': [ignore_missing, qdes_validate_geojson],
         })
 
         return schema
@@ -105,8 +106,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_related_versions': helpers.get_related_versions,
             'get_superseded_versions': relationship_helpers.get_superseded_versions,
             'get_all_relationships': helpers.get_all_relationships,
-            'convert_relationships_to_related_resources': helpers.convert_relationships_to_related_resources,
-            'get_au_bounding_box_config': helpers.get_au_bounding_box_config,
+            'get_qld_bounding_box_config': helpers.get_qld_bounding_box_config
         }
 
     def get_multi_textarea_values(self, value):

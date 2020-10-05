@@ -11,12 +11,20 @@
         placeholder='GeoJSON polygon',
         value=data['ckanext.qdes_schema.au_bounding_box'],
         error=errors['ckanext.qdes_schema.au_bounding_box']) }}
+
+    {{ form.textarea(
+        'ckanext.qdes_schema.qld_bounding_box',
+        id='field-ckanext.qdes_schema.qld_bounding_box',
+        label=_('Queensland Bounding Box'),
+        placeholder='GeoJSON polygon',
+        value=data['ckanext.qdes_schema.qld_bounding_box'],
+        error=errors['ckanext.qdes_schema.qld_bounding_box']) }}
 {% endblock %}
 
 {% block admin_form_help %}
     {{ super() }}
     <p>
-        <strong>Australia Bounding Box:</strong> Example:<br/>
+        <strong>Australia/QLD Bounding Box:</strong> Example:<br/>
         <pre>
 {
     "type": "Polygon",
