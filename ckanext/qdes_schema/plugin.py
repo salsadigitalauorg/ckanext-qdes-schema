@@ -10,6 +10,7 @@ from ckanext.qdes_schema.logic.action import (
 )
 from ckanext.relationships import helpers as ckanext_relationships_helpers
 from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_helpers
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -35,7 +36,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         domain object, which may not include all fields). Also the newly
         created dataset id will be added to the dict.
         '''
-        helpers.update_related_resources(context, pkg_dict, False)
+        if pkg_dict['type'] == 'dataset':
+            helpers.update_related_resources(context, pkg_dict, False)
+
         return pkg_dict
 
     def after_update(self, context, pkg_dict):
@@ -43,7 +46,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         Extensions will receive the validated data dict after the dataset
         has been updated.
         '''
-        helpers.update_related_resources(context, pkg_dict, True)
+        if pkg_dict['type'] == 'dataset':
+            helpers.update_related_resources(context, pkg_dict, True)
+
         return pkg_dict
 
     def before_index(self, pkg_dict):
