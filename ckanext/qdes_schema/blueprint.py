@@ -35,5 +35,35 @@ def related_datasets(id):
     except (NotFound, NotAuthorized):
         abort(404, _('Related dataset not found'))
 
+def dataset_metadata(id):
+    try:
+        extra_vars = {}
+        extra_vars['pkg_dict'] = get_action('package_show')({}, {'id': id})
+
+        return render('package/metadata.html', extra_vars=extra_vars)
+    except (NotFound, NotAuthorized):
+        abort(404, _('Dataset metadata not found'))
+
+def resource_metadata(id, resource_id):
+    try:
+        extra_vars = {}
+        extra_vars['pkg_dict'] = get_action('package_show')({}, {'id': id})
+        extra_vars['package'] = extra_vars['pkg_dict']
+        extra_vars['resource'] = []
+        extra_vars['current_resource_view'] = None
+
+        for resource in extra_vars['package'].get('resources', []):
+            if resource['id'] == resource_id:
+                extra_vars['resource'] = resource
+                break
+        if not extra_vars['resource']:
+            abort(404, _('Resource not found'))
+
+        return render('scheming/package/resource_metadata.html', extra_vars=extra_vars)
+    except (NotFound, NotAuthorized):
+        abort(404, _('Resource metadata not found'))
+
 
 qdes_schema.add_url_rule(u'/dataset/<id>/related-datasets', view_func=related_datasets)
+qdes_schema.add_url_rule(u'/dataset/<id>/metadata', view_func=dataset_metadata)
+qdes_schema.add_url_rule(u'/dataset/<id>/resource/<resource_id>/metadata', view_func=resource_metadata)

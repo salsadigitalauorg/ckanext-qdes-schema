@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -253,10 +254,21 @@ def get_all_relationships(id):
     return get_action('get_all_relationships')({}, id)
 
 
-def convert_relationships_to_related_resources(relationships):
+  def convert_relationships_to_related_resources(relationships):
     related_resources = []
     for relationship in relationships:
         id = relationship.get('object', None) or relationship.get('comment', None)
         related_resources.append({"resource": {"id": id}, "relationship": relationship.get('type', None)})
 
     return h.dump_json(related_resources) if related_resources and len(related_resources) > 0 else ''
+
+
+def get_au_bounding_box_config():
+    aubb = None
+
+    try:
+        aubb = config.get('ckanext.qdes_schema.au_bounding_box', None)
+    except Exception as e:
+        log.error(str(e))
+
+    return aubb
