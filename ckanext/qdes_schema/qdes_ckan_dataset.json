@@ -31,6 +31,7 @@
       "field_name": "notes",
       "label": "Description or abstract",
       "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
       "form_placeholder": "eg. Some useful notes about the data",
       "display_property": "dcterms:description",
       "display_group": "description",
@@ -635,6 +636,7 @@
       "field_name": "description",
       "label": "Description",
       "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
       "form_placeholder": "Some useful notes about the data",
       "display_property": "dcterms:description"
     },
