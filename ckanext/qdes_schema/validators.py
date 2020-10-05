@@ -7,6 +7,7 @@ import re
 from datetime import datetime as dt
 from ckan.common import config
 from ckanext.scheming.validation import scheming_validator
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -244,12 +245,14 @@ def qdes_validate_multi_groups(field, schema):
         key_data = data.get(key)
         field_groups = field.get('field_group')
         if key_data and field_groups:
-            values = toolkit.h.get_multi_textarea_values(key_data)
-            for field_group in field_groups:
-                group_values = values.get(field_group.get('field_name', ''), [])
-                # Check if there are any missing empty values in the group
-                if any(values for value in group_values if value == None or value.strip() == ''):
-                    errors[key].append(toolkit._('{0} field should not be empty'.format(field_group.get('label'))))
+            values = toolkit.get_converter('json_or_string')(key_data)
+            if values and isinstance(values, list):
+                for value in values:
+                    for field_group in field_groups:
+                        field_value = value.get(field_group.get('field_name', ''))
+                        # Check if there are any missing empty values in the group
+                        if field_value == None:
+                            errors[key].append(toolkit._('{0} field should not be empty'.format(field_group.get('label'))))
 
     return validator
 
@@ -266,19 +269,31 @@ def qdes_validate_related_resources(field, schema):
         key_data = data.get(key)
         field_groups = field.get('field_group')
         if key_data and field_groups:
-            values = toolkit.h.get_multi_textarea_values(key_data)
-            for field_group in field_groups:
-                group_values = values.get(field_group.get('field_name', ''), [])
-                # Check if there are any missing empty values in the group
-                if any(values for value in group_values if value == None or value.strip() == ''):
-                    errors[key].append(toolkit._('{0} field should not be empty'.format(field_group.get('label'))))
-                elif field_group.get('field_name') == 'resources':
-                    # Check if dataset name exists or is a valid URL
-                    try:
-                        qdes_validate_related_dataset(group_values, context)
-                    except toolkit.Invalid as e:
-                        errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
-
+            values = toolkit.get_converter('json_or_string')(key_data)
+            if values and isinstance(values, list):
+                for value in values:
+                    for field_group in field_groups:
+                        field_value = value.get(field_group.get('field_name', ''))
+                        # Check if there are any missing empty values in the group
+                        if field_value == None:
+                            errors[key].append(toolkit._('{0} field should not be empty'.format(field_group.get('label'))))
+                        elif field_group.get('field_name') == 'resource':
+                            # Check if dataset name exists or is a valid URL
+                            try:
+                                qdes_validate_related_dataset([field_value], context)
+                            except toolkit.Invalid as e:
+                                errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
+                    # Validates the dataset relationship to prevent circular references
+                    # If there is no package.id it must be a new dataset so there will not be any previous relationsips
+                    package = context.get('package', None)
+                    dataset = toolkit.get_converter('json_or_string')(value)
+                    if package and package.id and dataset and isinstance(dataset, dict):              
+                        dataset_id = dataset.get('resource', {}).get('id', None)                        
+                        relationship_type = dataset.get('relationship', None)
+                        try:
+                            qdes_validate_dataset_relationships(package.id, dataset_id, relationship_type, context)
+                        except toolkit.Invalid as e:
+                            errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
     return validator
 
 
@@ -286,21 +301,69 @@ def qdes_validate_related_dataset(value, context):
     """
     Validates each dataset name exists in CKAN or is a valid URL to external dataset
     """
-    log.debug('qdes_dataset_related - {0}'.format(value))
-    datasets = related_resources = toolkit.get_converter('json_or_string')(value)
+    datasets = toolkit.get_converter('json_or_string')(value)
     if datasets and isinstance(datasets, list):
         for dataset in datasets:
+            dataset_id = dataset.get('id', '')
             try:
-                toolkit.get_validator('package_name_exists')(dataset, context)
+                toolkit.get_validator('package_id_exists')(dataset_id, context)
             except toolkit.Invalid:
                 # Package does not exists so lets check to see if there is a valid URI entereds
-                data = {'url': dataset}
+                data = {'url': dataset_id}
                 errors = {'url': []}
                 toolkit.get_validator('url_validator')('url', data, errors, context)
                 if(len(errors['url']) > 0):
                     raise toolkit.Invalid(errors['url'][0])
 
-                if not toolkit.get_validator('qdes_uri_validator')(dataset):
-                    raise toolkit.Invalid('Unsuccessful connecting to URI "{}'.format(dataset))
+                if not toolkit.get_validator('qdes_uri_validator')(dataset_id):
+                    raise toolkit.Invalid('Unsuccessful connecting to URI "{}'.format(dataset_id))
 
     return value
+
+
+def qdes_validate_metadata_review_date(key, flattened_data, errors, context):
+    """
+    Set metadata_review_date value.
+    """
+    extras = flattened_data.get(('__extras',), {}) or None
+    metadata_review_date_reviewed = extras.get('metadata_review_date_reviewed', {}) or None
+    package = context.get('package', {}) or {}
+    type = package.type if package else None
+
+    if (type in ['dataset', 'dataservice']) and (metadata_review_date_reviewed or len(flattened_data.get(key)) == 0):
+        # If empty OR checkbox ticked.
+        flattened_data[key] = dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+
+
+def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset_id, relationship_type, context):
+    """
+    Validates the dataset relationship to prevent circular references
+    """
+    # Check the value of relationship_dataset_id first
+    # in case it is a URI - if it is, exit early
+    if ':' or 'http' in relationship_dataset_id:
+        return True
+
+    try:
+        dataset_dict = toolkit.get_action('package_show')(context, {"id": relationship_dataset_id})
+    except toolkit.ObjectNotFound:
+        # Package does not exists so it must be a valid URI from external dataset
+        return True
+
+    if relationship_type in ['replaces']:
+        # This is to prevent circular relationships to happen
+        # Creating a relationship for Jim1 to replace Jim2
+        # Need to check if there is a relationship where Jim2 replaces Jim1
+        # Jim1.id = subject and Jim2.id = object
+        # Load any relationship where Jim2 is the subject Jim1 is object
+        #
+        model = context['model']
+        query = model.Session.query(model.PackageRelationship)
+        query = query.filter(model.PackageRelationship.subject_package_id == relationship_dataset_id)
+        query = query.filter(model.PackageRelationship.object_package_id == current_dataset_id)
+        query = query.filter(model.PackageRelationship.type == relationship_type)
+        relationship = query.first()
+        if relationship:
+            raise toolkit.Invalid("Relationship type '{0}' already exists from dataset '{1}'".format(relationship_type, dataset_dict.get('title', None)))
+
+    return True

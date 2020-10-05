@@ -62,7 +62,7 @@ def package_autocomplete(original_action, context, data_dict):
             'name:{0}',
             'title:{0}',
         ]).format(search.query.solr_literal(q)),
-        'fl': 'name,title',
+        'fl': 'id,name,title',
         'fq': 'capacity:public',  # QDes Override: Only search on public datasets
         'rows': limit
     }
@@ -80,6 +80,7 @@ def package_autocomplete(original_action, context, data_dict):
             match_field = 'title'
             match_displayed = '%s (%s)' % (package['title'], package['name'])
         result_dict = {
+            'id': package['id'],
             'name': package['name'],
             'title': package['title'],
             'match_field': match_field,
@@ -227,8 +228,7 @@ def all_relationships(context, id):
     """
     query_type_case = ''
     for relationship in constants.RELATIONSHIP_TYPES:
-        if relationship[0] != 'unspecified relationship':
-            query_type_case += """WHEN pr.type = '""" + relationship[0] + """' THEN '""" + relationship[1] + """' """
+        query_type_case += """WHEN pr.type = '""" + relationship[0] + """' THEN '""" + relationship[1] + """' """
 
     query_select_type = """
         CASE 
@@ -256,7 +256,7 @@ def all_relationships(context, id):
         WHERE
             pr.subject_package_id = '{1}' OR pr.object_package_id =  '{1}'
         
-        ORDER BY "type" ASC, dataset_creation_date DESC;
+        ORDER BY "type" ASC, dataset_creation_date ASC;
         """
     query_select = query_select.format(query_select_type, id)
 
