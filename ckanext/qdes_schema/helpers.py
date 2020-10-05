@@ -254,7 +254,7 @@ def get_all_relationships(id):
     return get_action('get_all_relationships')({}, id)
 
 
-  def convert_relationships_to_related_resources(relationships):
+def convert_relationships_to_related_resources(relationships):
     related_resources = []
     for relationship in relationships:
         id = relationship.get('object', None) or relationship.get('comment', None)
