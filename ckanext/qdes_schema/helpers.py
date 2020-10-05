@@ -263,11 +263,11 @@ def convert_relationships_to_related_resources(relationships):
     return h.dump_json(related_resources) if related_resources and len(related_resources) > 0 else ''
 
 
-def get_au_bounding_box_config():
+def get_qld_bounding_box_config():
     aubb = None
 
     try:
-        aubb = config.get('ckanext.qdes_schema.au_bounding_box', None)
+        aubb = config.get('ckanext.qdes_schema.qld_bounding_box', None)
     except Exception as e:
         log.error(str(e))
 
