@@ -228,8 +228,7 @@ def all_relationships(context, id):
     """
     query_type_case = ''
     for relationship in constants.RELATIONSHIP_TYPES:
-        if relationship[0] != 'unspecified relationship':
-            query_type_case += """WHEN pr.type = '""" + relationship[0] + """' THEN '""" + relationship[1] + """' """
+        query_type_case += """WHEN pr.type = '""" + relationship[0] + """' THEN '""" + relationship[1] + """' """
 
     query_select_type = """
         CASE 
