@@ -105,7 +105,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_related_versions': helpers.get_related_versions,
             'get_superseded_versions': relationship_helpers.get_superseded_versions,
             'get_all_relationships': helpers.get_all_relationships,
-            "convert_relationships_to_related_resources": helpers.convert_relationships_to_related_resources
+            'convert_relationships_to_related_resources': helpers.convert_relationships_to_related_resources,
+            'get_au_bounding_box_config': helpers.get_au_bounding_box_config,
         }
 
     def get_multi_textarea_values(self, value):
