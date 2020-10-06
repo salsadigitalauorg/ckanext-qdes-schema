@@ -58,18 +58,41 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             if pkg_dict.get(relationship_type, None):
                 pkg_dict.pop(relationship_type)
 
-        # Process the package's CKAN resources (aka "Data Access" (QDCAT), aka "Distribution" (DCAT))
-        # The values stored in `res_format` are URIs for the vocabulary term
-        # We have added a new field to the solr schema.xml to store the labels of the resource formats
-        resource_format_labels = indexing_helpers.get_resource_format_labels(
-            pkg_dict.get('dataset_type', None),
-            pkg_dict.get('res_format', None)
-        )
+        dataset_type = pkg_dict.get('dataset_type', None)
 
-        # If we have some resource format labels - include these in the
-        # details being sent to Solr for indexing
-        if resource_format_labels:
-            pkg_dict['resource_format_labels'] = resource_format_labels
+        if dataset_type:
+            # Process the package's CKAN resources (aka "Data Access" (QDCAT), aka "Distribution" (DCAT))
+            # The values stored in `res_format` are URIs for the vocabulary term
+            # A new field was added to the solr schema.xml to store the labels of the resource formats
+            resource_format_labels = indexing_helpers.get_resource_format_labels(
+                dataset_type,
+                pkg_dict.get('res_format', None)
+            )
+
+            # If we have some resource format labels - include these in the
+            # details being sent to Solr for indexing
+            if resource_format_labels:
+                pkg_dict['resource_format_labels'] = resource_format_labels
+
+            # "Topic or theme" terms are stored as URIs, so also need to be indexed
+            # by their labels for searching on keyword
+            topic_labels = indexing_helpers.convert_vocabulary_terms_json_to_labels(
+                dataset_type,
+                'topic',
+                pkg_dict.get('topic', '')
+            )
+
+            if topic_labels:
+                pkg_dict['topic_labels'] = topic_labels
+
+            # Make license searchable via vocabulary term label
+            license_label = indexing_helpers.convert_license_uri_to_label(
+                dataset_type,
+                pkg_dict.get('license_id', '')
+            )
+
+            if license_label:
+                pkg_dict['license_label'] = license_label
 
         return pkg_dict
 
