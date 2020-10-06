@@ -72,7 +72,7 @@
 {% endcall %}
 {# END: The actual form field the multiple values will be captured & submitted in #}
 
-{% if field.field_name == 'related_resources' and g.controller == 'dataset' and g.action == 'edit' %}
+{% if field.field_name == 'related_resources' and g.controller in ['dataset', 'dataservice'] and g.action == 'edit' %}
     <h4>Existing related resources</h4>
     {% set relationships = h.get_subject_package_relationship_objects(data['id']) %}
     {% if relationships %}
