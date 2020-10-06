@@ -337,7 +337,7 @@
       "sub_heading": "related",
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
-      "validators": "qdes_validate_related_resources ",
+      "validators": "ignore_missing qdes_validate_related_resources ",
       "field_group": [
         {
           "field_name": "resource",
