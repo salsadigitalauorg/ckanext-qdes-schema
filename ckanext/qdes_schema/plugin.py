@@ -88,7 +88,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             # Make license searchable via vocabulary term label
             license_label = indexing_helpers.convert_license_uri_to_label(
                 dataset_type,
-                pkg_dict.get('license_id', '')
+                # Check `license_id` first, fall-back to `license` or None if empty string
+                pkg_dict.get('license_id', None) or pkg_dict.get('license', None) or None
             )
 
             if license_label:
