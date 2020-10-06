@@ -569,10 +569,10 @@
     {
       "field_name": "specialized_license",
       "label": "Specialized license",
+      "form_snippet": "textarea.html",
       "display_property": "odrl:hasPolicy",
       "display_snippet": "qdes_text_url.html",
-      "display_group": "rights & licensing",
-      "validators": "url_validator qdes_uri_validator"
+      "display_group": "rights & licensing"
     },
     {
       "field_name": "landing_page",
