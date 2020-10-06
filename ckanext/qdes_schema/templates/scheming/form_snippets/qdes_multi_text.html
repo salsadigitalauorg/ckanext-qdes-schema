@@ -17,7 +17,14 @@
                         call form.input(
                             label=h.scheming_language_text(field.label),
                             placeholder=h.scheming_language_text(field.form_placeholder),
-                            attrs=dict({"class": "form-control", "data-field-name": field.field_name, "data-placeholder":"Select a {0}".format(field.label)}, **(field.get('form_attrs', {}))),
+                            attrs=dict(
+                                {
+                                    "class": "form-control",
+                                    "data-field-name": field.field_name, 
+                                    "data-placeholder":"Select a {0}".format(field.label),
+                                    "data-module-id": data.get('id', ''),
+                                    "data-module-type": data.get('type', '')
+                                }, **(field.get('form_attrs', {}))),
                             is_required=h.scheming_field_required(field),
                             value=value,
                             error=errors[field.field_name]

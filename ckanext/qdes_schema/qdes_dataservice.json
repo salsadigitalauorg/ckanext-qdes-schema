@@ -197,6 +197,14 @@
       "display_group": "status"
     },
     {
+      "field_name": "related_services",
+      "label": "Related service",
+      "preset": "dataset_related_multi_text"
+    },
+    {
+      "preset": "related_resources_multi_group"
+    },
+    {
       "field_name": "contact_point",
       "label": "Point of contact",
       "display_property": "dcat:contactPoint",
