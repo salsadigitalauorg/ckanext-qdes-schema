@@ -82,22 +82,19 @@ def update_related_resources(context, pkg_dict, reconcile_relationships=False):
         remove_duplicate_related_resources(pkg_dict)
         reconcile_package_relationships(context, pkg_dict['id'], pkg_dict.get('related_resources', None))
 
-    create_series_or_collection_relationships(context, pkg_dict)
-    create_related_datasets_relationships(context, pkg_dict)
+    if pkg_dict.get('type') == 'dataset':
+        create_related_relationships(context, pkg_dict, 'series_or_collection', 'isPartOf')
+        create_related_relationships(context, pkg_dict, 'related_datasets', 'unspecified relationship')
+    elif pkg_dict.get('type') == 'dataservice':
+        create_related_relationships(context, pkg_dict, 'related_services', 'unspecified relationship')
+
     create_related_resource_relationships(context, pkg_dict)
-    data_dict = {"id": pkg_dict.get('id'), "related_resources": pkg_dict.get('related_resources')}
+    data_dict = {"id": pkg_dict.get('id')}
     get_action('update_related_resources')(context, data_dict)
 
 
-def create_series_or_collection_relationships(context, pkg_dict):
-    datasets = get_converter('json_or_string')(pkg_dict.get('series_or_collection', []))
-    relationship_type = 'isPartOf'
-    add_related_resources(pkg_dict, datasets, relationship_type)
-
-
-def create_related_datasets_relationships(context, pkg_dict):
-    datasets = get_converter('json_or_string')(pkg_dict.get('related_datasets', []))
-    relationship_type = 'unspecified relationship'
+def create_related_relationships(context, pkg_dict, metadata_field, relationship_type):
+    datasets = get_converter('json_or_string')(pkg_dict.get(metadata_field, []))
     add_related_resources(pkg_dict, datasets, relationship_type)
 
 

@@ -36,8 +36,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         domain object, which may not include all fields). Also the newly
         created dataset id will be added to the dict.
         '''
-        if pkg_dict['type'] == 'dataset':
-            helpers.update_related_resources(context, pkg_dict, False)
+        helpers.update_related_resources(context, pkg_dict, False)
 
         return pkg_dict
 
@@ -46,8 +45,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         Extensions will receive the validated data dict after the dataset
         has been updated.
         '''
-        if pkg_dict['type'] == 'dataset':
-            helpers.update_related_resources(context, pkg_dict, True)
+        helpers.update_related_resources(context, pkg_dict, True)
 
         return pkg_dict
 
