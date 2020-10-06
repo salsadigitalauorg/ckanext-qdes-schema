@@ -54,18 +54,26 @@ def package_autocomplete(original_action, context, data_dict):
 
     limit = data_dict.get('limit', 10)
     q = data_dict['q']
+    # QDes Override
+    dataset_id = toolkit.request.args.get('dataset_id', None)
+    id_query = ' AND NOT id:{} '.format(dataset_id) if dataset_id else ''
+    dataset_type = toolkit.request.args.get('dataset_type', None)
+    type_query = ' AND type:{} '.format(dataset_type) if dataset_type else ''
 
     data_dict = {
         'q': ' OR '.join([
             'name_ngram:{0}',
             'title_ngram:{0}',
             'name:{0}',
-            'title:{0}',
+            'title:{0}'
         ]).format(search.query.solr_literal(q)),
         'fl': 'id,name,title',
-        'fq': 'capacity:public',  # QDes Override: Only search on public datasets
+        # QDes Override: Only search on public datasets, not its own dataset_id and filter by dataset_type
+        'fq': 'capacity:public{id_query}{type_query}'.format(id_query=id_query, type_query=type_query),
         'rows': limit
     }
+    log.debug('package_autocomplete data_dict:{0}'.format(data_dict))
+
     query = search.query_for(model.Package)
 
     results = query.run(data_dict)['results']
@@ -89,6 +97,7 @@ def package_autocomplete(original_action, context, data_dict):
 
     return pkg_list
 
+
 def build_versions(tree):
     versions = []
     for version in tree:
@@ -99,6 +108,7 @@ def build_versions(tree):
             log.error(str(e))
 
     return versions
+
 
 def all_successor_versions(context, id):
     """
@@ -125,6 +135,7 @@ def all_successor_versions(context, id):
     successors = load_successor_versions([], id)
 
     return build_versions(successors)
+
 
 def all_predecessor_versions(context, id):
     """

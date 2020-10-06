@@ -86,6 +86,9 @@ def update_related_resources(context, data_dict):
                 related_datasets = dataset._extras.get('related_datasets', None)
                 if related_datasets:
                     related_datasets.value = None
+                related_services = dataset._extras.get('related_services', None)
+                if related_services:
+                    related_services.value = None
 
                 dataset.commit()
 
