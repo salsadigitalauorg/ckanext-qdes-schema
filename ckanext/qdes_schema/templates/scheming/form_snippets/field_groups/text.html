@@ -21,7 +21,7 @@
                 "data-parent-field-name": field.field_name, 
                 "data-placeholder":"Select a {0}".format(field_group.label),
                 "data-module-id": data.get('id', ''),
-                "data-module-type": data.get('type', '')
+                "data-module-type": g.controller
             }, 
             **(field_group.get('form_attrs', {}))),
         is_required=h.scheming_field_required(field_group),

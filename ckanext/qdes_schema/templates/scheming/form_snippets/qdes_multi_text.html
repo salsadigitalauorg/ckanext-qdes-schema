@@ -23,7 +23,7 @@
                                     "data-field-name": field.field_name, 
                                     "data-placeholder":"Select a {0}".format(field.label),
                                     "data-module-id": data.get('id', ''),
-                                    "data-module-type": data.get('type', '')
+                                    "data-module-type": g.controller
                                 }, **(field.get('form_attrs', {}))),
                             is_required=h.scheming_field_required(field),
                             value=value,
