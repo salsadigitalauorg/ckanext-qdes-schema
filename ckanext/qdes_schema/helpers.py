@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -51,11 +52,18 @@ def qdes_relationship_types_choices(field):
     choices = []
 
     try:
-        for data in h.get_relationship_types():
-            #log.debug('qdes_relationship_types_choices: {0}'.format(data))
+        # Remove the duplicate `unspecified relationship` type
+        # as it has the same value for forward and reverse
+        unique_relationship_types = []
+
+        for relationship_type in h.get_relationship_types():
+            if relationship_type not in unique_relationship_types:
+                unique_relationship_types.append(relationship_type)
+
+        for data in unique_relationship_types:
             choices.append({
-                'value': data[0],
-                'label': data[0]
+                'value': data,
+                'label': data
             })
     except Exception as e:
         log.error(str(e))
@@ -74,22 +82,19 @@ def update_related_resources(context, pkg_dict, reconcile_relationships=False):
         remove_duplicate_related_resources(pkg_dict)
         reconcile_package_relationships(context, pkg_dict['id'], pkg_dict.get('related_resources', None))
 
-    create_series_or_collection_relationships(context, pkg_dict)
-    create_related_datasets_relationships(context, pkg_dict)
+    if pkg_dict.get('type') == 'dataset':
+        create_related_relationships(context, pkg_dict, 'series_or_collection', 'isPartOf')
+        create_related_relationships(context, pkg_dict, 'related_datasets', 'unspecified relationship')
+    elif pkg_dict.get('type') == 'dataservice':
+        create_related_relationships(context, pkg_dict, 'related_services', 'unspecified relationship')
+
     create_related_resource_relationships(context, pkg_dict)
-    data_dict = {"id": pkg_dict.get('id'), "related_resources": pkg_dict.get('related_resources')}
+    data_dict = {"id": pkg_dict.get('id')}
     get_action('update_related_resources')(context, data_dict)
 
 
-def create_series_or_collection_relationships(context, pkg_dict):
-    datasets = get_converter('json_or_string')(pkg_dict.get('series_or_collection', []))
-    relationship_type = 'isPartOf'
-    add_related_resources(pkg_dict, datasets, relationship_type)
-
-
-def create_related_datasets_relationships(context, pkg_dict):
-    datasets = get_converter('json_or_string')(pkg_dict.get('related_datasets', []))
-    relationship_type = 'unspecified relationship'
+def create_related_relationships(context, pkg_dict, metadata_field, relationship_type):
+    datasets = get_converter('json_or_string')(pkg_dict.get(metadata_field, []))
     add_related_resources(pkg_dict, datasets, relationship_type)
 
 
@@ -111,7 +116,7 @@ def add_related_resources(pkg_dict, datasets, relationship_type):
             related_resources.append(related_resource)
             log.debug('add_related_resources: {}'.format(related_resource))
 
-    pkg_dict['related_resources'] =  h.dump_json(related_resources)
+    pkg_dict['related_resources'] = h.dump_json(related_resources)
 
 
 def create_related_resource_relationships(context, pkg_dict):
@@ -136,7 +141,7 @@ def create_relationships(context, dataset_id, datasets):
                     'comment': relationship_url,
                 })
     except Exception as e:
-        log.debug('create_relationships error: {0}'.format(e))
+        log.error('create_relationships error: {0}'.format(e))
         raise
 
 
@@ -188,18 +193,20 @@ def reconcile_package_relationships(context, pkg_id, related_resources):
             # If it's an external URI we can process straight away
             if not relationship.object_package_id:
                 matching_related_resource = [resource for resource in related_resources
-                                             if resource['relationship'] == relationship.type
-                                             and resource['resource'] == relationship.comment]
+                                             if resource.get('relationship', None) == relationship.type
+                                             and resource.get('resource', {}).get('id', None) == relationship.comment]
             else:
                 try:
                     matching_related_resource = [resource for resource in related_resources
-                                                 if resource['relationship'] == relationship.type
-                                                 and resource['resource'] == relationship.object_package_id]
+                                                 if resource.get('relationship', None) == relationship.type
+                                                 and resource.get('resource', {}).get('id', None) == relationship.object_package_id]
                 except Exception as e:
                     log.error(str(e))
 
             if not matching_related_resource:
                 # Delete the existing relationship from `package_relationships` as it no longer exists in the dataset
+                log.debug('Purging relationship: Subject {0} - Object {1} - Type {2} - Comment {3}'
+                          .format(relationship.subject_package_id, relationship.object_package_id, relationship.type, relationship.comment))
                 relationship.purge()
                 model.meta.Session.commit()
 
@@ -216,7 +223,7 @@ def remove_duplicate_related_resources(pkg_dict):
                        if distinct_dataset.get('resource', {}).get('id', '') == dataset_id
                        and distinct_dataset.get('relationship', '') == relationship_type):
                 distinct_list.append(related_resource)
-       
+
         pkg_dict['related_resources'] = h.dump_json(distinct_list)
 
 
@@ -242,3 +249,23 @@ def get_related_versions(id):
 
 def get_all_relationships(id):
     return get_action('get_all_relationships')({}, id)
+
+
+def convert_relationships_to_related_resources(relationships):
+    related_resources = []
+    for relationship in relationships:
+        id = relationship.get('object', None) or relationship.get('comment', None)
+        related_resources.append({"resource": {"id": id}, "relationship": relationship.get('type', None)})
+
+    return h.dump_json(related_resources) if related_resources and len(related_resources) > 0 else ''
+
+
+def get_qld_bounding_box_config():
+    aubb = None
+
+    try:
+        aubb = config.get('ckanext.qdes_schema.qld_bounding_box', None)
+    except Exception as e:
+        log.error(str(e))
+
+    return aubb

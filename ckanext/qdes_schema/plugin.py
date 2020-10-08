@@ -9,7 +9,8 @@ from ckanext.qdes_schema.logic.action import (
     update as update_actions
 )
 from ckanext.relationships import helpers as ckanext_relationships_helpers
-from ckanext.qdes_schema.logic.helpers import relationship_helpers
+from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_helpers
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -36,6 +37,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         created dataset id will be added to the dict.
         '''
         helpers.update_related_resources(context, pkg_dict, False)
+
         return pkg_dict
 
     def after_update(self, context, pkg_dict):
@@ -44,16 +46,54 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         has been updated.
         '''
         helpers.update_related_resources(context, pkg_dict, True)
+
         return pkg_dict
 
     def before_index(self, pkg_dict):
         # Remove the relationship type fields from the pkg_dict to prevent indexing from breaking
         # because we removed the relationship type fields from solr schema.xml
-        relationship_types = ckanext_relationships_helpers.get_relationship_types_as_flat_list()
+        relationship_types = ckanext_relationships_helpers.get_relationship_types()
 
         for relationship_type in relationship_types:
             if pkg_dict.get(relationship_type, None):
                 pkg_dict.pop(relationship_type)
+
+        dataset_type = pkg_dict.get('dataset_type', None)
+
+        if dataset_type:
+            # Process the package's CKAN resources (aka "Data Access" (QDCAT), aka "Distribution" (DCAT))
+            # The values stored in `res_format` are URIs for the vocabulary term
+            # A new field was added to the solr schema.xml to store the labels of the resource formats
+            resource_format_labels = indexing_helpers.get_resource_format_labels(
+                dataset_type,
+                pkg_dict.get('res_format', None)
+            )
+
+            # If we have some resource format labels - include these in the
+            # details being sent to Solr for indexing
+            if resource_format_labels:
+                pkg_dict['resource_format_labels'] = resource_format_labels
+
+            # "Topic or theme" terms are stored as URIs, so also need to be indexed
+            # by their labels for searching on keyword
+            topic_labels = indexing_helpers.convert_vocabulary_terms_json_to_labels(
+                dataset_type,
+                'topic',
+                pkg_dict.get('topic', '')
+            )
+
+            if topic_labels:
+                pkg_dict['topic_labels'] = topic_labels
+
+            # Make license searchable via vocabulary term label
+            license_label = indexing_helpers.convert_license_uri_to_label(
+                dataset_type,
+                # Check `license_id` first, fall-back to `license` or None if empty string
+                pkg_dict.get('license_id', None) or pkg_dict.get('license', None) or None
+            )
+
+            if license_label:
+                pkg_dict['license_label'] = license_label
 
         return pkg_dict
 
@@ -85,6 +125,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         schema.update({
             'ckanext.qdes_schema.au_bounding_box': [ignore_missing, qdes_validate_geojson],
+            'ckanext.qdes_schema.qld_bounding_box': [ignore_missing, qdes_validate_geojson],
         })
 
         return schema
@@ -104,7 +145,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_relationship_types_choices': helpers.qdes_relationship_types_choices,
             'get_related_versions': helpers.get_related_versions,
             'get_superseded_versions': relationship_helpers.get_superseded_versions,
-            'get_all_relationships': helpers.get_all_relationships
+            'get_all_relationships': helpers.get_all_relationships,
+            'convert_relationships_to_related_resources': helpers.convert_relationships_to_related_resources,
+            'get_qld_bounding_box_config': helpers.get_qld_bounding_box_config
         }
 
     def get_multi_textarea_values(self, value):

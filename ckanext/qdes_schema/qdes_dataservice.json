@@ -197,6 +197,14 @@
       "display_group": "status"
     },
     {
+      "field_name": "related_services",
+      "label": "Related service",
+      "preset": "dataset_related_multi_text"
+    },
+    {
+      "preset": "related_resources_multi_group"
+    },
+    {
       "field_name": "contact_point",
       "label": "Point of contact",
       "display_property": "dcat:contactPoint",
@@ -290,15 +298,16 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "license",
       "display_group": "rights & licensing",
-      "required": true
+      "required": true,
+      "form_include_blank_choice": true
     },
     {
       "field_name": "specialized_license",
       "label": "Specialized license",
+      "form_snippet": "textarea.html",
       "display_property": "odrl:hasPolicy",
       "display_snippet": "qdes_text_url.html",
-      "display_group": "rights & licensing",
-      "validators": "url_validator qdes_uri_validator"
+      "display_group": "rights & licensing"
     },
     {
       "field_name": "owner_org",
