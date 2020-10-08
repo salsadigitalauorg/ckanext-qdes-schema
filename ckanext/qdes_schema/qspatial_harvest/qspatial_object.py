@@ -4,6 +4,7 @@ from datetime import datetime as dt
 from xml.dom import minidom
 from pprint import pformat
 
+
 class QSpatialObject:
     """
     This class will do mapping from QSpatial XML to CKAN package dictionary.
@@ -15,7 +16,9 @@ class QSpatialObject:
         self.xmldom = minidom.parse(xml_filename)
 
     def get_ckan_package_dict(self):
+
         self.package.update(self.get_title())
+        self.package.update(self.get_identifiers())
         self.package.update(self.get_classification())
         self.package.update(self.get_notes())
         self.package.update(self.get_topic())
@@ -25,16 +28,22 @@ class QSpatialObject:
         self.package.update(self.get_classification_and_access_restrictions())
         self.package.update(self.get_license_id())
         self.package.update(self.get_owner_org())
+        # @TODO: Adjust the truncation limit based on a sample of dataset titles observed
         self.package.update({'name': re.sub('[^0-9a-zA-Z]+', '-', self.package['title']).lower()[:100]})
 
         # Populate some of the other fields that throw errors from scheming validation
         self.package['metadata_review_date_reviewed'] = dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
-        self.package['qdes_iso_8601_durations'] = None
 
-        # @TODO: These ones should probably have the ignore_empty validator added to them
-        self.package['url'] = None
-        self.package['spatial_lower_left'] = 'abc123'
-        self.package['spatial_upper_right'] = ''
+        # @TODO: These ones should probably have the ignore_missing validator added to themx
+        for field in [
+            'qdes_iso_8601_durations',
+            'parameter',
+            'contact_other_party',
+            'lineage_inputs',
+            'lineage_sensor',
+            'url',
+        ]:
+            self.package[field] = None
 
         return self.package
 
@@ -46,6 +55,10 @@ class QSpatialObject:
                 rc.append(node.data)
         return ''.join(rc)
 
+    def get_identifiers(self):
+        fileidentifier = self.xmldom.getElementsByTagName('fileIdentifier')
+        return {'identifiers': '["{}"]'.format(self.get_text(fileidentifier[0].getElementsByTagName('gco:CharacterString')[0].childNodes))}
+
     def get_title(self):
         identification_info = self.xmldom.getElementsByTagName('identificationInfo')
         citation = identification_info[0].getElementsByTagName('citation')
@@ -56,7 +69,9 @@ class QSpatialObject:
         return {'classification': 'classification'}
 
     def get_notes(self):
-        return {'notes': 'notes'}
+        identification_info = self.xmldom.getElementsByTagName('identificationInfo')
+        abstract = identification_info[0].getElementsByTagName('abstract')
+        return {'notes': self.get_text(abstract[0].getElementsByTagName('gco:CharacterString')[0].childNodes)}
 
     def get_topic(self):
         return {'topic': 'topic'}
@@ -79,7 +94,7 @@ class QSpatialObject:
 
     def get_license_id(self):
         # @TODO: Grab the first term from the vocabulary_service for testing purposes
-        return {'license_id': 'http://registry.it.csiro.au/def/datacite/resourceType/Audiovisual'}
+        return {'license_id': 'http://registry.it.csiro.au/licence/csiro-binary-software-v1.0'}
 
     def get_owner_org(self):
         return {'owner_org': 'salsa-digital'}
