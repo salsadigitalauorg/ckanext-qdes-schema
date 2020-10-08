@@ -139,10 +139,10 @@ jQuery(document).ready(function () {
         var parts = this.options.source.split('?');
         var end = parts.pop();
         var source = parts.join('?') + encodeURIComponent(string) + end;
-        if (this.options.id) {
+        if (this.options.id.length > 0) {
           source += "&dataset_id=" + this.options.id;
         }
-        if (this.options.type) {
+        if (this.options.type.length > 0) {
           source += "&dataset_type=" + this.options.type;
         }
         var client = this.sandbox.client;
