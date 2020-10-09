@@ -25,6 +25,7 @@ jQuery(document).ready(function () {
         createtags: true,
         key: false,
         label: false,
+        title: false,
         items: 10,
         source: null,
         tokensep: ',',
@@ -139,18 +140,82 @@ jQuery(document).ready(function () {
         var end = parts.pop();
         var source = parts.join('?') + encodeURIComponent(string) + end;
         var client = this.sandbox.client;
+        var parseCompletions = this.parseCompletions;
         var options = {
           format: function (data) {
             var completion_options = jQuery.extend(options, { objects: true });
             return {
-              results: client.parseCompletions(data, completion_options)
+              results: parseCompletions(data, completion_options)
             }
           },
           key: this.options.key,
-          label: this.options.label
+          label: this.options.label,
+          title: this.options.title
         };
 
         return client.getCompletions(source, options, fn);
+      },
+
+    /* Copied from ckan/public/base/javascript/client.js and modified to add title property to object returned 
+     * Takes a JSON response from an auto complete endpoint and normalises
+     * the data into an array of strings. This also will remove duplicates
+     * from the results (this is case insensitive).
+     *
+     * data    - The parsed JSON response from the server.
+     * options - An object of options for the method.
+     *           objects: If true returns an object of results.
+     *
+     * Examples
+     *
+     *   jQuery.getJSON(tagCompletionUrl, function (data) {
+     *     var parsed = client.parseCompletions(data);
+     *   });
+     *
+     * Returns the parsed object.
+     */
+      parseCompletions: function (data, options) {
+        if (typeof data === 'string') {
+          // Package completions are returned as a crazy string. So we handle
+          // them separately.
+          return this.parsePackageCompletions(data, options);
+        }
+
+        var map = {};
+        // If given a 'result' array then convert it into a Result dict inside a Result dict.
+        // new syntax (not used until all browsers support arrow notation):
+        //data = data.result ? { 'ResultSet': { 'Result': data.result.map(x => ({'Name': x})) } } : data;
+        // compatible syntax:
+        data = data.result ? { 'ResultSet': { 'Result': data.result.map(function (val) { return { 'Name': val } }) } } : data;
+        // If given a Result dict inside a ResultSet dict then use the Result dict.
+        var raw = jQuery.isArray(data) ? data : data.ResultSet && data.ResultSet.Result || {};
+
+        var items = jQuery.map(raw, function (item) {
+          var key = typeof options.key != 'undefined' ? item[options.key] : false;
+          var label = typeof options.label != 'undefined' ? item[options.label] : false;
+          var title = typeof options.title != 'undefined' ? item[options.title] : false;
+
+          item = typeof item === 'string' ? item : item.name || item.Name || item.Format || '';
+          item = jQuery.trim(item);
+
+          key = key ? key : item;
+          label = label ? label : item;
+          title = title ? title : item;
+
+          var lowercased = item.toLowerCase();
+          var returnObject = options && options.objects === true;
+
+          if (lowercased && !map[lowercased]) {
+            map[lowercased] = 1;
+            return returnObject ? { id: key, text: label, title: title } : item;
+          }
+
+          return null;
+        });
+
+        // Remove duplicates.
+        items = jQuery.grep(items, function (item) { return item !== null; });
+
+        return items;
       },
 
       /* Looks up the completions for the provided text but also provides a few
@@ -211,6 +276,13 @@ jQuery(document).ready(function () {
         if (container) {
           // Append the select id to the element for styling.
           container.attr('data-value', state.id);
+          // Add container title attribute either from select element or state object property
+          if (state.element && state.element[0]) {
+            container.attr('title', state.element[0].title)
+          }
+          else if (state.title) {
+            container.attr('title', state.title)
+          }
         }
 
         var result = [];
