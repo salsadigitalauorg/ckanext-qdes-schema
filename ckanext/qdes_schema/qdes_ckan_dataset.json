@@ -19,6 +19,20 @@
       "display_group": "general"
     },
     {
+      "field_name": "test_field",
+      "label": "Test Field",
+      "preset": "qdes_vocab_service_autocomplete",
+      "vocabulary_service_name": "spatial_name_code",
+      "form_placeholder": "Select a Test Field",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/spatial_name_code?incomplete=?",
+        "data-module-key": "value",
+        "data-module-label": "name",
+        "data-module-title": "title"
+      }
+    },
+    {
       "field_name": "identifiers",
       "label": "Identifier",
       "display_property": "dcterms:identifier",
