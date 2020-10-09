@@ -94,7 +94,7 @@
           "data-module": "qdes_autocomplete",
           "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/change_this_to_vocabulary_service_name?incomplete=?",
           "data-module-key": "value",
-          "data-module-label": "label"
+          "data-module-label": "name"
         }
       }
     }
