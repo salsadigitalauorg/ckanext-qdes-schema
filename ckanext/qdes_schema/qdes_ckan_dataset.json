@@ -321,6 +321,36 @@
       "display_group": "spatial details"
     },
     {
+      "field_name": "quality_measure",
+      "label": "Quality measure",
+      "display_group": "data quality",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_empty qdes_validate_multi_groups",
+      "field_group": [
+        {
+          "field_name": "measurement",
+          "label": "Measurement",
+          "preset": "controlled_vocabulary_single_select",
+          "form_snippet": "select.html",
+          "display_snippet": "controlled_vocabulary_single_select.html",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "vocabulary_service_name": "measurement",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        },
+        {
+          "field_name": "value",
+          "label": "Value",
+          "form_snippet": "text.html",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        }
+      ]
+    },
+    {
       "field_name": "series_or_collection",
       "label": "Series or collection",
       "preset": "dataset_related_multi_text"
