@@ -278,10 +278,10 @@ jQuery(document).ready(function () {
           container.attr('data-value', state.id);
           // Add container title attribute either from select element or state object property
           if (state.element && state.element[0]) {
-            container.attr('title', state.element[0].title)
+            jQuery(container).tooltip({'title': state.element[0].title})
           }
           else if (state.title) {
-            container.attr('title', state.title)
+            jQuery(container).tooltip({'title': state.title})
           }
         }
 
