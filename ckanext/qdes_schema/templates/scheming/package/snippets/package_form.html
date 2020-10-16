@@ -1,6 +1,7 @@
 {% ckan_extends %}
 
 {% block basic_fields %}
+  {% snippet "/snippets/invalid_uris_error.html", entity_id=data.id , entity=data %}
 
   {% if h.ckan_version() > '2.9' %}
     {% asset 'qdes_schema/repeater' %}
