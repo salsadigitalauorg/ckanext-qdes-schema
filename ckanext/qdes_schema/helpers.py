@@ -1,7 +1,11 @@
 import datetime
 import logging
 
+from ckan.model import Session
+from ckan.lib import helpers as core_helper
 from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
+from ckanext.invalid_uris.model import InvalidUri
+from ckanext.invalid_uris.validator import is_value_exist
 from pprint import pformat
 
 log = logging.getLogger(__name__)
@@ -269,3 +273,20 @@ def get_qld_bounding_box_config():
         log.error(str(e))
 
     return aubb
+
+def get_package_dict(id):
+    return get_action('package_show')({}, {'id': id})
+
+def get_invalid_uris(entity_id, pkg_dict):
+    u"""
+    Get invalid uris for the current package.
+    """
+    uris = Session.query(InvalidUri).filter(InvalidUri.entity_id == entity_id).all()
+    invalid_uris = [uri.as_dict() for uri in uris]
+    checked_invalid_uris = []
+
+    for uri in invalid_uris:
+        if is_value_exist(uri.get('id'), pkg_dict):
+            checked_invalid_uris.append(uri)
+
+    return checked_invalid_uris
