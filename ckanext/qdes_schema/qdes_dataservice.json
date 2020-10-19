@@ -303,7 +303,7 @@
     },
     {
       "field_name": "specialized_license",
-      "label": "Specialized license",
+      "label": "Specialised license",
       "form_snippet": "textarea.html",
       "display_property": "odrl:hasPolicy",
       "display_snippet": "qdes_text_url.html",
