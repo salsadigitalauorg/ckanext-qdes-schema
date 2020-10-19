@@ -278,11 +278,12 @@ jQuery(document).ready(function () {
           container.attr('data-value', state.id);
           // Add container title attribute either from select element or state object property
           if (state.element && state.element[0]) {
-            jQuery(container).tooltip({'title': state.element[0].title})
+            container.prop('title', state.element[0].title);
           }
           else if (state.title) {
-            jQuery(container).tooltip({'title': state.title})
+            container.prop('title', state.title);
           }
+          container.on("mouseover", this._initialiseTooltip.bind(this));
         }
 
         var result = [];
@@ -383,6 +384,28 @@ jQuery(document).ready(function () {
             var e = jQuery.Event("keydown", { which: 13 });
             jQuery(event.target).trigger(e);
           }, 10);
+        }
+      },
+
+      /* Initialise the elements bootstrap tooltip
+       *
+       * Returns nothing.
+       */            
+      _initialiseTooltip : function (event) {
+        // Only initialise tooltip if it has not been initialised yet
+        if(jQuery(event.target).data('bs.tooltip') === undefined) {
+          jQuery(event.target).tooltip({"placement": "auto", "delay": { "show": 500, "hide": 100 }});
+          setTimeout(this._showTooltip, 500, event.target);
+        }
+      },
+
+      /* Show the tooltip after its been initialised only if the mouse is still hovering over the element
+       *
+       * Returns nothing.
+       */
+      _showTooltip : function (container) {
+        if(jQuery(container).is(":hover")) {
+          jQuery(container).tooltip('show');
         }
       }
     };
