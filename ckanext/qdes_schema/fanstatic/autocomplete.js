@@ -33,7 +33,8 @@ jQuery(document).ready(function () {
         containerClass: '',
         allowClear: true,
         createSearchChoice: false,
-        id: ''
+        id: '',
+        type: ''
       },
 
       /* Sets up the module, binding methods, creating elements etc. Called
@@ -138,6 +139,12 @@ jQuery(document).ready(function () {
         var parts = this.options.source.split('?');
         var end = parts.pop();
         var source = parts.join('?') + encodeURIComponent(string) + end;
+        if (this.options.id.length > 0) {
+          source += "&dataset_id=" + this.options.id;
+        }
+        if (this.options.type.length > 0) {
+          source += "&dataset_type=" + this.options.type;
+        }
         var client = this.sandbox.client;
         var options = {
           format: function (data) {

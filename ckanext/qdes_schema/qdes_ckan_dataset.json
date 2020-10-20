@@ -31,6 +31,7 @@
       "field_name": "notes",
       "label": "Description or abstract",
       "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
       "form_placeholder": "eg. Some useful notes about the data",
       "display_property": "dcterms:description",
       "display_group": "description",
@@ -236,6 +237,47 @@
       "display_group": "spatial content"
     },
     {
+      "field_name": "conforms_to",
+      "label": "Schema or standard",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "qdes_uri_validator",
+      "display_property": "dcterms:conformsTo",
+      "display_group": "data quality"
+    },
+    {
+      "field_name": "quality_description",
+      "label": "Quality description",
+      "display_group": "data quality",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_empty qdes_validate_multi_groups",
+      "field_group": [
+        {
+          "field_name": "dimension",
+          "label": "Dimension",
+          "display_property": "dqv:inDimension",
+          "preset": "controlled_vocabulary_single_select",
+          "form_snippet": "select.html",
+          "display_snippet": "controlled_vocabulary_single_select.html",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "vocabulary_service_name": "dimension",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        },
+        {
+          "field_name": "value",
+          "label": "Value",
+          "form_snippet": "text.html",
+          "display_property": "oa:bodyValue",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        }
+      ]
+    },
+    {
       "field_name": "spatial",
       "label": "Spatial",
       "preset": "json_object",
@@ -279,6 +321,36 @@
       "display_group": "spatial details"
     },
     {
+      "field_name": "quality_measure",
+      "label": "Quality measure",
+      "display_group": "data quality",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_empty qdes_validate_multi_groups",
+      "field_group": [
+        {
+          "field_name": "measurement",
+          "label": "Measurement",
+          "preset": "controlled_vocabulary_single_select",
+          "form_snippet": "select.html",
+          "display_snippet": "controlled_vocabulary_single_select.html",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "vocabulary_service_name": "measurement",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        },
+        {
+          "field_name": "value",
+          "label": "Value",
+          "form_snippet": "text.html",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        }
+      ]
+    },
+    {
       "field_name": "series_or_collection",
       "label": "Series or collection",
       "preset": "dataset_related_multi_text"
@@ -289,38 +361,7 @@
       "preset": "dataset_related_multi_text"
     },
     {
-      "field_name": "related_resources",
-      "label": "Related resource",
-      "display_group": "related and lineage",
-      "sub_heading": "related",
-      "form_snippet": "qdes_multi_group.html",
-      "display_snippet": "qdes_multi_group.html",
-      "validators": "qdes_validate_related_resources ",
-      "field_group": [
-        {
-          "field_name": "resource",
-          "label": "Resource",
-          "form_snippet": "text.html",
-          "form_attrs": {
-            "data-module": "qdes_autocomplete",
-            "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
-            "data-module-create-search-choice": true,
-            "data-module-key": "id",
-            "data-module-label": "title",
-            "class": "form-control"
-          }
-        },
-        {
-          "field_name": "relationship",
-          "label": "Relationship",
-          "form_snippet": "select.html",
-          "choices_helper": "qdes_relationship_types_choices",
-          "form_attrs": {
-            "class": "form-control"
-          },
-          "form_include_blank_choice": true
-        }
-      ]
+      "preset": "related_resources_multi_group"
     },
     {
       "field_name": "lineage_description",
@@ -521,15 +562,16 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "license",
       "display_group": "rights & licensing",
-      "required": true
+      "required": true,
+      "form_include_blank_choice": true
     },
     {
       "field_name": "specialized_license",
-      "label": "Specialized license",
+      "label": "Specialised license",
+      "form_snippet": "textarea.html",
       "display_property": "odrl:hasPolicy",
       "display_snippet": "qdes_text_url.html",
-      "display_group": "rights & licensing",
-      "validators": "url_validator qdes_uri_validator"
+      "display_group": "rights & licensing"
     },
     {
       "field_name": "landing_page",
@@ -634,6 +676,7 @@
       "field_name": "description",
       "label": "Description",
       "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
       "form_placeholder": "Some useful notes about the data",
       "display_property": "dcterms:description"
     },

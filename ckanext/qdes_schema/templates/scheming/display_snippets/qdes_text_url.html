@@ -1,5 +1,1 @@
-{% if h.is_url(data[field.field_name]) %}
-    <a href="{{ data[field.field_name] }}">{{ data[field.field_name] }}</a>
-{% else %}
-    {{ data[field.field_name] }}
-{% endif %}
+{{ h.wrap_url_within_text_as_link(data[field.field_name])|safe }}
