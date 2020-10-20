@@ -125,11 +125,27 @@
     {
       "preset_name": "qdes_vocab_service_autocomplete",
       "values": {
+        "form_snippet": "text.html",
         "display_snippet": "controlled_vocabulary_single_select.html",
+        "choices_helper": "scheming_vocabulary_service_choices",
+        "validators": "scheming_required scheming_choices",
+        "form_attrs": {
+          "data-module": "qdes_autocomplete",
+          "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/{vocabularyServiceName}?incomplete=?",
+          "data-module-key": "value",
+          "data-module-label": "name"
+        }
+      }
+    },
+    {
+      "preset_name": "qdes_vocab_service_multi_autocomplete",
+      "values": {
+        "form_snippet": "qdes_multi_text.html",
+        "display_snippet": "controlled_vocabulary_multi_select.html", 
         "choices_helper": "scheming_vocabulary_service_choices",
         "form_attrs": {
           "data-module": "qdes_autocomplete",
-          "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/change_this_to_vocabulary_service_name?incomplete=?",
+          "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/{vocabularyServiceName}?incomplete=?",
           "data-module-key": "value",
           "data-module-label": "name"
         }
