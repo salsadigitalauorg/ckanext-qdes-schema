@@ -42,9 +42,9 @@ def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, c
     """
     # Get date values.
     creation_date_value = None
-    if key == ('dataset_creation_date',):
+    if ('dataset_creation_date',) in flattened_data:
         creation_date_value = flattened_data[('dataset_creation_date',)]
-    elif key == ('service_creation_date',):
+    elif ('service_creation_date',) in flattened_data:
         creation_date_value = flattened_data[('service_creation_date',)]
     current_date_value = flattened_data[key]
 
@@ -52,14 +52,21 @@ def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, c
     if (creation_date_value is not None) and (current_date_value is not None):
         if len(current_date_value) > 0:
             dt_creation = dt.strptime(creation_date_value, '%Y-%m-%dT%H:%M:%S')
-            dt_release = dt.strptime(current_date_value, '%Y-%m-%dT%H:%M:%S')
+            dt_current_date = dt.strptime(current_date_value, '%Y-%m-%dT%H:%M:%S')
 
-            if dt_release < dt_creation:
+            if dt_current_date < dt_creation:
                 raise toolkit.Invalid('Must be later than creation date.')
 
 
-def qdes_dataservice_current_date_later_than_creation(key, flattened_data, errors, context):
+def qdes_dataset_last_modified_date_before_today(key, flattened_data, errors, context):
     qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, context)
+
+    # Get date values.
+    current_date_value = flattened_data[key]
+    if current_date_value is not None and len(current_date_value) > 0:
+        dt_current = dt.strptime(current_date_value, '%Y-%m-%dT%H:%M:%S')
+        if not dt_current <= dt.today():
+            raise toolkit.Invalid('Last modified date must be on or earlier than today.')
 
 
 def qdes_uri_validator(value):

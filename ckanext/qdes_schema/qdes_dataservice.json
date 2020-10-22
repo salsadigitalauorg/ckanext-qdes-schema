@@ -193,7 +193,7 @@
       "label": "Last modified date",
       "display_property": "dcterms:modified",
       "preset": "datetime_tz",
-      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_current_date_later_than_creation",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_last_modified_date_before_today",
       "display_group": "status"
     },
     {
