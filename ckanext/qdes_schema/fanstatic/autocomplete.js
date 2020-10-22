@@ -285,6 +285,8 @@ jQuery(document).ready(function () {
           // If a API source is used, check if the value is a json object to preselect the initial value
           try {
             formatted = JSON.parse(value);
+            // Set the element value to the object id so on form submit the id value is used instead of the JSON object
+            element[0].value = formatted.id;
           } catch (e) {
             formatted = this.formatTerm(value);
           }
