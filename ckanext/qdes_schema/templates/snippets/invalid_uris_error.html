@@ -1,0 +1,21 @@
+{% set invalid_uris = h.get_invalid_uris(entity_id, entity) %}
+{% set schema = h.scheming_dataset_schemas() %}
+
+{% if invalid_uris %}
+  <div class="alert alert-error">
+    This {{invalid_uris[0].entity_type}} has error(s)
+    <ul>
+      {% for uri in invalid_uris %}
+        <li>
+          {% if uri.entity_type == 'resource' %}
+            {% set field = h.scheming_field_by_name(schema[parent_entity]['resource_fields'], uri.field) %}
+          {% else %}
+            {% set field = h.scheming_field_by_name(schema[uri.entity_type]['dataset_fields'], uri.field) %}
+          {% endif %}
+
+          {{ field['label'] }}: Please provide a valid URL
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
