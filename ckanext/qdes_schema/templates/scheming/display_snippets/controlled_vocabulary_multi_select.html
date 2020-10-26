@@ -1,0 +1,17 @@
+{% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
+{% for value in values %}
+    {# temporary generation of labels from URI or from a lookup list if the URIs are from BFO #}
+    {% set label = value.split('/')[-1] %}
+    {% if label is not none %}
+      {# <a href="{{ data[field.field_name] }}">{{ label }}</a> #}
+        <a href="{{ value }}">{{ h.scheming_choices_label(
+            h.scheming_field_choices(field),
+            value) }}</a>
+    {% else %}
+      {# if we really can't generate a sensible label, just use the whole URI #}
+      <a href="{{ value }}">{{ value }}</a>
+    {% endif %}
+  {% if not loop.last %}
+    <hr>
+  {% endif %} 
+{% endfor %}

@@ -46,10 +46,23 @@ jQuery(document).ready(function () {
                     // Check to see if select2 has been initialised
                     if (jQuery(this).data('select2')) {
                         // Get the selected option data object eg. {"id":dataset_id, "text":dataset_title}
-                        value = $(this).select2('data');
+                        value = jQuery(this).select2('data');
                     } else if (value) {
                         // This will be the value set from a post back error eg. {"id":dataset_id, "text":dataset_title}
                         value = JSON.parse(value)
+                    }
+                } else if (jQuery(this).data('module') == "qdes_autocomplete" && jQuery(this).data('module-source') && jQuery(this).data('module-source').indexOf('/ckan-admin/vocabulary-service/term-autocomplete/') >= 0) {
+                    // Check to see if select2 has been initialised
+                    if (jQuery(this).data('select2')) {
+                        // Get the selected option data object eg. {"id":URI, "text":label}
+                        value = jQuery(this).select2('data');
+                    } else if (value) {
+                        // This will be the value set from a post back error eg. {"id":URI, "text":label}
+                        value = JSON.parse(value);
+                    }
+                    if (value) {
+                        // We only want to store the id which is the vocabulary URI
+                        value = value.id;
                     }
                 }
                 if (value) {
@@ -71,13 +84,26 @@ jQuery(document).ready(function () {
                     // Check to see if select2 has been initialised
                     if (jQuery(this).data('select2')) {
                         // Get the selected option data object eg. {"id":dataset_id, "text":dataset_title}
-                        value = $(this).select2('data');
+                        value = jQuery(this).select2('data');
                     } else if (value) {
                         // This will be the value set from a post back error eg. {"id":dataset_id, "text":dataset_title}
                         value = JSON.parse(value)
                     }
                     if (value) {
                         collated_values.push(value);
+                    }
+                } else if (jQuery(this).data('module') == "qdes_autocomplete" && jQuery(this).data('module-source') && jQuery(this).data('module-source').indexOf('/ckan-admin/vocabulary-service/term-autocomplete/') >= 0) {
+                    // Check to see if select2 has been initialised
+                    if (jQuery(this).data('select2')) {
+                        // Get the selected option data object eg. {"id":URI, "text":label}
+                        value = jQuery(this).select2('data');
+                    } else if (value) {
+                        // This will be the value set from a post back error eg. {"id":URI, "text":label}
+                        value = JSON.parse(value);
+                    }
+                    if (value) {
+                        // We only want to store the id which is the vocabulary URI
+                        collated_values.push(value.id);
                     }
                 }
                 else {

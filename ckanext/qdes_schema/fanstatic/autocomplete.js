@@ -34,7 +34,8 @@ jQuery(document).ready(function () {
         allowClear: true,
         createSearchChoice: false,
         id: '',
-        type: ''
+        type: '',
+        vocabularyServiceName: ''
       },
 
       /* Sets up the module, binding methods, creating elements etc. Called
@@ -144,6 +145,9 @@ jQuery(document).ready(function () {
         }
         if (this.options.type.length > 0) {
           source += "&dataset_type=" + this.options.type;
+        }
+        if (source.indexOf('{vocabularyServiceName}') >= 0 && this.options.vocabularyServiceName.length > 0) {
+          source = source.replace("{vocabularyServiceName}", this.options.vocabularyServiceName);
         }
         var client = this.sandbox.client;
         var options = {
@@ -281,6 +285,8 @@ jQuery(document).ready(function () {
           // If a API source is used, check if the value is a json object to preselect the initial value
           try {
             formatted = JSON.parse(value);
+            // Set the element value to the object id so on form submit the id value is used instead of the JSON object
+            element[0].value = formatted.id;
           } catch (e) {
             formatted = this.formatTerm(value);
           }
