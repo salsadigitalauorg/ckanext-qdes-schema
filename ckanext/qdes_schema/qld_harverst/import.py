@@ -8,7 +8,7 @@ from ckanapi import RemoteCKAN
 from pprint import pformat
 
 owner_org = os.environ['OWNER_ORG']
-apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJYeHVTSTRXTDdSS1FwM0hIYVJKS0Q3RmNIQjFnR2pSQVZGZlFSR21SdVJfRVhLR0lkNXpMTjRxZEJoTzkzUlppNHAtWWVHQ0JQeHlydHVDayIsImlhdCI6MTYwMzcwNDIwOX0.ee3V6xluDQzGDiagrjX-jZXMrOow6KAUeLjmD2Tw6LU'
+apiKey = os.environ['HARVEST_API_KEY']
 
 
 def convert_size_to_bytes(size_str):
