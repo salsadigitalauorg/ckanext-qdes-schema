@@ -1,32 +1,60 @@
 import csv
 import os
 import json
+import re
 
+from datetime import datetime
 from ckanapi import RemoteCKAN
 from pprint import pformat
 
+owner_org = os.environ['OWNER_ORG']
+apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJYeHVTSTRXTDdSS1FwM0hIYVJKS0Q3RmNIQjFnR2pSQVZGZlFSR21SdVJfRVhLR0lkNXpMTjRxZEJoTzkzUlppNHAtWWVHQ0JQeHlydHVDayIsImlhdCI6MTYwMzcwNDIwOX0.ee3V6xluDQzGDiagrjX-jZXMrOow6KAUeLjmD2Tw6LU'
 
-def get_vocab_value(value, f_name):
+
+def convert_size_to_bytes(size_str):
     """
-    @todo
-    Some value is only fraction of the URI, some of them are the label, and others are URI.
-    This function will return the data in following order.
-    - Search by the full URI
-    - Search by the fraction of URI with either space, dash or camel case.
-    - Search by the label
+    Convert human file-sizes to bytes.
     """
-    return value
+    multipliers = {
+        'kib': 1024,
+        'mib': 1024 ** 2,
+        'gib': 1024 ** 3,
+    }
+
+    for suffix in multipliers:
+        size_str = size_str.lower().strip().strip('s')
+        if size_str.lower().endswith(suffix):
+            return int(float(size_str[0:-len(suffix)]) * multipliers[suffix])
+    else:
+        if size_str.endswith('b'):
+            size_str = size_str[0:-1]
+        elif size_str.endswith('byte'):
+            size_str = size_str[0:-4]
+    return int(size_str)
 
 
-def dataset_mapping(dataset, row):
+def get_all_fields():
+    """
+    Get all fields available on QDES dataset.
+    """
+    with open('../qdes_ckan_dataset.json') as f:
+        return json.load(f)
+
+
+def dataset_mapping(dataset):
     """
     Map QLD dataset to QDES dataset.
     """
     mapped_dataset = {}
+    scheme = get_all_fields()
 
-    # Get all fields available on QDES dataset.
-    with open('../qdes_ckan_dataset.json') as f:
-        scheme = json.load(f)
+    # Added default fields specific to the QDES dataset.
+    mapped_dataset['package'] = 'dataset'
+    mapped_dataset['owner_org'] = owner_org
+    today = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+    mapped_dataset['dataset_creation_date'] = today
+    mapped_dataset['dataset_release_date'] = today
+    mapped_dataset['dataset_last_modified_date'] = today
 
     # Manual field mapping.
     manual_fields = [
@@ -43,11 +71,7 @@ def dataset_mapping(dataset, row):
         'format',
     ]
 
-    # Map owner_org. @todo: fix this.
-    mapped_dataset['owner_org'] = 'yolo'
-
     # Map license, license_id on QLD only a fraction of the vocab data that controlled QDES field.
-    # mapped_dataset['license_id'] = get_vocab_value(dataset.get('license_id'), 'license')
     # @todo: fix this.
     mapped_dataset['license_id'] = 'http://registry.it.csiro.au/licence/cc-by-4.0'
 
@@ -86,12 +110,11 @@ def dataset_mapping(dataset, row):
         'publication_status': 6,
         'format': 7,
     }
-    # Map classification_and_access_restrictions. @todo: fix this.
-    mapped_dataset['classification_and_access_restrictions'] = 'http://registry.it.csiro.au/def/isotc211/MD_ClassificationCode/confidential'
-
-    # @todo: this should be json.
-    mapped_dataset['classification'] = 'http://registry.it.csiro.au/def/datacite/resourceType/Audiovisual'
-    mapped_dataset['topic'] = 'https://gcmdservices.gsfc.nasa.gov/kms/concept/feef8827-92a6-4d1d-b6a5-ecda38a32656'
+    # Map classification_and_access_restrictions.
+    # @todo: fix this after the data is confirmed in csv, maybe can introduce the new param to this function.
+    mapped_dataset['classification_and_access_restrictions'] = json.dumps(['http://registry.it.csiro.au/def/isotc211/MD_ClassificationCode/confidential'])
+    mapped_dataset['classification'] = json.dumps(['http://registry.it.csiro.au/def/datacite/resourceType/Audiovisual'])
+    mapped_dataset['topic'] = json.dumps(['https://gcmdservices.gsfc.nasa.gov/kms/concept/feef8827-92a6-4d1d-b6a5-ecda38a32656'])
 
     mapped_dataset['contact_point'] = 'http://linked.data.gov.au/def/iso19115-1/RoleCode/author'
     mapped_dataset['contact_publisher'] = 'http://linked.data.gov.au/def/organisation-type/family-partnership'
@@ -125,10 +148,11 @@ def resource_mapping(res):
         'format',
     ]
 
-    # Map size. @todo: source has bytes, KiBytes, etc. destination only accept integer in bytes.
-    mapped_resource['size'] = 0
+    # Map size.
+    mapped_resource['size'] = convert_size_to_bytes(res.get('size', 0))
 
-    # Map format. @todo: fix this. issue example: on source there is "JSON" as value, but the format has many JSON.
+    # Map format.
+    # @todo: fix this. issue example: on source there is "JSON" as value, but the format has many JSON types.
     mapped_resource['format'] = 'https://www.iana.org/assignments/media-types/application/alto-directory+json'
 
     # Strip out unnecessary fields.
@@ -155,11 +179,41 @@ def resource_mapping(res):
     return mapped_resource
 
 
+def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id):
+    """
+    Map resource to dataset for series.
+    """
+    mapped_dataset = {}
+    scheme = get_all_fields()
+
+    # Loop the parent, get the data from resource first and if none, use the parent data.
+    for field in scheme.get('dataset_fields'):
+        field_name = field.get('field_name')
+        value = res.get(field_name)
+
+        if field_name == 'name':
+            value = re.sub('[^0-9a-zA-Z]+', '-', value.lower())
+            # No value longer than 100 chars, we will add the last 8 chars with current uuid,
+            # otherwise it will have possibility conflict with other series.
+            value = (value[:92] + res.get('id')[:8]) if len(value) > 100 else value
+
+        if not value:
+            value = parent_dataset.get(field_name)
+
+        mapped_dataset[field_name] = value
+
+    # Set title.
+    mapped_dataset['title'] = res.get('name')
+
+    # Set isPartOf relationship.
+    mapped_dataset['series_or_collection'] = json.dumps([{"id": parent_dataset_id.get('id'), "text": parent_dataset_id.get('title')}])
+
+    return mapped_dataset
+
+
 # Set the import source and destination.
 source = RemoteCKAN('https://www.data.qld.gov.au')
-destination = RemoteCKAN(
-    os.environ['LAGOON_ROUTE'],
-    apikey='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJYeHVTSTRXTDdSS1FwM0hIYVJKS0Q3RmNIQjFnR2pSQVZGZlFSR21SdVJfRVhLR0lkNXpMTjRxZEJoTzkzUlppNHAtWWVHQ0JQeHlydHVDayIsImlhdCI6MTYwMzcwNDIwOX0.ee3V6xluDQzGDiagrjX-jZXMrOow6KAUeLjmD2Tw6LU')
+destination = RemoteCKAN(os.environ['LAGOON_ROUTE'], apikey=apiKey)
 
 # Open CSV file.
 filename = 'dataset.csv'
@@ -181,98 +235,68 @@ for row in csv_reader:
     try:
         package_dict = source.action.package_show(id=dataset_name)
     except Exception as e:
-        error_log.append([url, str(e)])
+        error_response = {
+            'package_id': dataset_name,
+            'errors': ['Not able to load the package from source.']
+        }
+        error_log.append(error_response)
 
     if not package_dict:
+        error_response = {
+            'package_id': dataset_name,
+            'errors': ['Not able to load the package from source.']
+        }
+        error_log.append(error_response)
         continue
 
-    # Strip out unnecessary fields.
-    strip_out_fields = [
-        'archiver',
-        'qa',
-        'data_driven_application'
-    ]
-    for strip_out_field in strip_out_fields:
-        if strip_out_field in package_dict:
-            package_dict.pop(strip_out_field)
+    # Map dataset.
+    new_package_dict = dataset_mapping(package_dict)
 
     if 'series' in package_dict['title']:
-        pass
+        # This will be resource-less package.
+        new_package_dict['resources'] = []
+        error = False
+        new_package_dict_id = {}
+
+        # Create the parent of series dataset.
+        try:
+            new_package_dict_id = destination.action.package_create(**new_package_dict)
+        except Exception as e:
+            error = True
+            error_response = {
+                'package_id': dataset_name,
+                'errors': e.error_dict
+            }
+            error_log.append(error_response)
+
+        # Create individual package for each resource that belong to above series dataset.
+        if ('resources' in package_dict) and not error:
+            for resource in package_dict.get('resources'):
+                new_series_package_dict = resource_to_dataset_mapping(resource, new_package_dict, new_package_dict_id)
+
+                try:
+                    new_series_package_dict_id = destination.action.package_create(**new_series_package_dict)
+                except Exception as e:
+                    error_response = {
+                        'resource_id': resource.get('id'),
+                        'errors': e.error_dict
+                    }
+                    error_log.append(error_response)
     else:
-        # Map dataset.
-        new_package_dict = dataset_mapping(package_dict, row)
-
-        # Added default field.
-        new_package_dict['package'] = 'dataset'
-
         # Map Resources.
+        new_package_dict['resources'] = []
         if 'resources' in package_dict:
-            new_package_dict['resources'] = []
             for resource in package_dict.get('resources'):
                 new_package_dict['resources'].append(resource_mapping(resource))
 
         try:
-            # print(pformat(package_dict.get('notes')))
             new_package_dict_id = destination.action.package_create(**new_package_dict)
         except Exception as e:
-            print(e)
-            error_log.append(e)
-
-    # print(new_dataset['resources'])
-
-    # break
+            error_response = {
+                'package_id': dataset_name,
+                'errors': e.error_dict
+            }
+            error_log.append(error_response)
 
 if error_log:
-    print(error_log)
-
-# print(headers)
-
-# for row in csv_rows:
-#     # row = https://www.data.qld.gov.au/dataset/sali-soil-chemistry-api
-#     dataset_name = row.split('/')[:-1]
-#     # Fetch package from Data.Qld
-#     # e.g. https://www.data.qld.gov.au/api/action/package_show?id=matters-of-state-environmental-significance-queensland-series
-#     package_dict = source.action.package_show(id=dataset_name)
-#     # Strip out unnecessary fields, e.g.
-#     archiver
-#     qa
-#     data_driven_application
-#     # for each resource
-#     # strip out: archiver, qa, datastore_*
-#     # This dataset on the source is the parent of a series
-#     if 'series' in package_dict['title'].lower():
-#         resources = package_dict['resources']
-#         package_dict.pop('resources')
-#         # Do field mapping here
-#         # Set any mandatory field defaults
-#         # Create a dataset in DES
-#         try:
-#             # This will be a resource-less dataset
-#             # new_package_dict_id = destination.action.package_create(**new_package_dict)
-#             for resource in resources:
-#                 # Do field mapping here
-#                 # Set any mandatory field defaults
-#                 try:
-#                     child_package_dict_id = destination.action.package_create(**new_child_package_dict)
-#                     # create "isPartOf" relation between child_package_dict_id (subject_package_id) and new_package_dict_id (object_package_id)
-#                     # https://docs.ckan.org/en/2.9/api/#ckan.logic.action.create.package_relationship_create
-#                     # destination.action.package_relationship_create(subject=child_package_dict_id, object=new_package_dict_id, type="isPartOf")
-#                 except Exception as e:
-#                     error_log.append(str(e))
-#         except Exception as e:
-#             error_log.append(str(e))
-#     else:
-#         # NOT A SERIES DATASET
-#         new_package_dict = package_dict
-#         # @TODO: What to do with groups?
-#         # Do field mapping here
-#         # Set any mandatory field defaults
-#         # Create a dataset in DES
-#         try:
-#         # new_package_dict_id = destination.action.package_create(**new_package_dict)
-#         except Exception as e:
-#             error_log.append(str(e))
-# Park this until we get confirmation from DES
-# Iterate through the series list and create:
-# a new dataset (child) for each resource in the series parent dataset
-# create "isPart" relationships between the series parent, and it's children...
+    print(pformat(error_log))
