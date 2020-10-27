@@ -114,8 +114,17 @@ jQuery(document).ready(function () {
             });
         }
 
-        if (Array.isArray(collated_values) && collated_values.length > 0) {
-            jQuery('#' + target_field_id).val(JSON.stringify(collated_values));
+
+        // Clean up empty/null values.
+        var clean_value = [];
+        collated_values.forEach(function (v) {
+            if (v) {
+                clean_value.push(v);
+            }
+        });
+
+        if (Array.isArray(clean_value) && clean_value.length > 0) {
+            jQuery('#' + target_field_id).val(JSON.stringify(clean_value));
         }
         else {
             jQuery('#' + target_field_id).val('');
