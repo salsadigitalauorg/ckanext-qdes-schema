@@ -155,15 +155,6 @@ def resource_mapping(res):
     # @todo: fix this. issue example: on source there is "JSON" as value, but the format has many JSON types.
     mapped_resource['format'] = 'https://www.iana.org/assignments/media-types/application/alto-directory+json'
 
-    # Strip out unnecessary fields.
-    remove_fields = [
-        'archiver',
-        'package_id'
-    ]
-    for f_name in remove_fields:
-        if f_name in res:
-            res.pop(f_name)
-
     # Get all fields available on QDES dataset.
     with open('../qdes_ckan_dataset.json') as f:
         scheme = json.load(f)
