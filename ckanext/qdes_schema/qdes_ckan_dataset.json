@@ -92,7 +92,7 @@
       "display_property": "foaf:homepage",
       "display_snippet": "link.html",
       "display_group": "description",
-      "validators": "url_validator qdes_uri_validator"
+      "validators": "ignore_missing url_validator qdes_uri_validator"
     },
     {
       "field_name": "dataset_language",
@@ -166,7 +166,7 @@
       "label": "Temporal coverage start",
       "display_property": "dcat:startDate",
       "preset": "date",
-      "validators": "qdes_temporal_start_end_date",
+      "validators": "ignore_missing qdes_temporal_start_end_date",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage"
     },
@@ -175,7 +175,7 @@
       "label": "Temporal coverage end",
       "display_property": "dcat:endDate",
       "preset": "date",
-      "validators": "qdes_temporal_start_end_date",
+      "validators": "ignore_missing qdes_temporal_start_end_date",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage"
     },
@@ -197,7 +197,7 @@
       "field_name": "spatial_lower_left",
       "label": "Lower left",
       "form_snippet": "textarea.html",
-      "validators": "qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "validators": "ignore_missing qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "qdcat:lowerLeft",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage"
@@ -206,7 +206,7 @@
       "field_name": "spatial_upper_right",
       "label": "Upper right",
       "form_snippet": "textarea.html",
-      "validators": "qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "validators": "ignore_missing qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "qdcat:upperRight",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage"
@@ -215,7 +215,7 @@
       "field_name": "spatial_centroid",
       "label": "Centroid",
       "form_snippet": "textarea.html",
-      "validators": "qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "validators": "ignore_missing qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "dcat:centroid",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage"
@@ -224,7 +224,7 @@
       "field_name": "spatial_geometry",
       "label": "Geometry",
       "form_snippet": "textarea.html",
-      "validators": "qdes_validate_geojson_polygon",
+      "validators": "ignore_missing qdes_validate_geojson_polygon",
       "display_property": "qdcat:asGeoJSON",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage"
@@ -232,7 +232,7 @@
     {
       "field_name": "spatial_content_resolution",
       "label": "Spatial resolution in meters",
-      "validators": "qdes_validate_decimal",
+      "validators": "ignore_missing qdes_validate_decimal",
       "display_property": "dcat:spatialResolutionInMeters",
       "display_group": "spatial content"
     },
@@ -241,7 +241,7 @@
       "label": "Schema or standard",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator",
+      "validators": "ignore_missing qdes_uri_validator",
       "display_property": "dcterms:conformsTo",
       "display_group": "data quality"
     },
@@ -282,7 +282,7 @@
       "label": "Spatial",
       "preset": "json_object",
       "form_snippet": "qdes_hidden_json.html",
-      "validators": "qdes_validate_geojson_spatial",
+      "validators": "ignore_missing qdes_validate_geojson_spatial",
       "display_group": "spatial content"
     },
     {
@@ -361,9 +361,6 @@
       "preset": "dataset_related_multi_text"
     },
     {
-      "preset": "related_resources_multi_group"
-    },
-    {
       "field_name": "lineage_description",
       "label": "Description",
       "form_snippet": "markdown.html",
@@ -376,7 +373,7 @@
       "field_name": "lineage_plan",
       "label": "Plan",
       "display_snippet": "qdes_text_url.html",
-      "validators": "url_validator qdes_uri_validator",
+      "validators": "ignore_missing url_validator qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "prov:hadPlan",
       "sub_heading": "lineage"
@@ -386,7 +383,7 @@
       "label": "Inputs",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator",
+      "validators": "ignore_missing qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "prov:used",
       "sub_heading": "lineage"
@@ -396,7 +393,7 @@
       "label": "Sensor",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator",
+      "validators": "ignore_missing qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "sosa:madeBySensor",
       "sub_heading": "lineage"
@@ -415,7 +412,7 @@
       "label": "Cited in",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator",
+      "validators": "ignore_missing qdes_uri_validator",
       "display_group": "related and lineage",
       "sub_heading": "lineage"
     },
@@ -578,7 +575,7 @@
       "label": "Web-page (landing page) for this dataset",
       "display_property": "dcat:landingPage",
       "display_group": "data access",
-      "validators": "url_validator qdes_uri_validator"
+      "validators": "ignore_missing url_validator qdes_uri_validator"
     },
     {
       "field_name": "owner_org",
@@ -605,7 +602,7 @@
       "display_property": "dcterms:conformsTo",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator"
+      "validators": "ignore_missing qdes_uri_validator"
     },
     {
       "field_name": "format",
@@ -653,7 +650,7 @@
       "label": "Download address",
       "display_property": "dcat:downloadURL",
       "display_snippet": "qdes_text_url.html",
-      "validators": "url_validator qdes_uri_validator",
+      "validators": "ignore_missing url_validator qdes_uri_validator",
       "recommended": true
     },
     {
