@@ -1,5 +1,11 @@
 {% ckan_extends %}
 
+{% block stages %}
+{% if dataset_type != 'dataservice' %}
+  {{ h.snippet('package/snippets/stages.html', stages=stage) }}
+{% endif %}
+{% endblock %}
+
 {% block basic_fields %}
 
   {% if h.ckan_version() > '2.9' %}
@@ -53,8 +59,22 @@
   {%- if 'resource_fields' not in schema -%}
     <!-- force controller to skip resource-editing step for this type -->
     <input type="hidden" name="_ckan_phase" value="" />
+    {# Javscript to remove `_ckan_phase` inputs... #}
+    {% asset 'qdes_schema/dataservice' %}
   {%- endif -%}
 {% endblock %}
 
 {% block metadata_fields %}
+{% endblock %}
+
+{% block save_button_text %}
+  {% if dataset_type == 'dataservice' %}
+    {% if form_style == 'add' %}
+      {{ _('Add Data Service') }}  
+    {% else %}
+      {{ _('Update Data Service') }}
+    {% endif %}
+  {% else %}
+    {{ super() }}
+  {%- endif -%}
 {% endblock %}
