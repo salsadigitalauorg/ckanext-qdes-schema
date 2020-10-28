@@ -243,7 +243,7 @@ for row in csv_reader:
     # Map dataset.
     new_package_dict = dataset_mapping(package_dict)
 
-    if 'series' in package_dict['title']:
+    if 'series' in package_dict['title'].lower():
         # This will be resource-less package.
         new_package_dict['resources'] = []
         error = False
