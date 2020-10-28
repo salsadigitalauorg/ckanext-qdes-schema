@@ -120,7 +120,7 @@
       "field_name": "datasets_available",
       "label": "Datasets available",
       "display_snippet": "qdes_multi_text_url.html",
-      "form_snippet": "qdes_multi_text.html",
+      "form_snippet": null,
       "display_group": "description"
     },
     {
@@ -313,13 +313,6 @@
       "field_name": "owner_org",
       "label": "Organization",
       "preset": "dataset_organization"
-    }
-  ],
-  "resource_fields": [
-    {
-      "field_name": "name",
-      "label": "Name",
-      "form_placeholder": "eg. January 2011 Gold Prices"
     }
   ]
 }
