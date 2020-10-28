@@ -149,7 +149,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_all_relationships': helpers.get_all_relationships,
             'convert_relationships_to_related_resources': helpers.convert_relationships_to_related_resources,
             'get_qld_bounding_box_config': helpers.get_qld_bounding_box_config,
-            'wrap_url_within_text_as_link': helpers.wrap_url_within_text_as_link
+            'get_package_dict': helpers.get_package_dict,
+            'get_invalid_uris': helpers.get_invalid_uris,
+            'wrap_url_within_text_as_link': helpers.wrap_url_within_text_as_link,
         }
 
     def get_multi_textarea_values(self, value):
