@@ -1,4 +1,5 @@
 import ckan.plugins.toolkit as toolkit
+import ckan.logic as logic
 import geojson
 import json
 import logging
@@ -10,6 +11,8 @@ from ckanext.scheming.validation import scheming_validator
 from pprint import pformat
 
 log = logging.getLogger(__name__)
+get_action = logic.get_action
+h = toolkit.h
 
 
 def qdes_temporal_start_end_date(key, flattened_data, errors, context):
@@ -264,6 +267,50 @@ def qdes_validate_multi_groups(field, schema):
     return validator
 
 
+def qdes_validate_replace_relationship(value, context, package, data):
+    """
+    Validate replaces relationship, a dataset version can only be replaced by one version.
+    Example case: we have v1, v2 and v3,
+    v1 is replaced by v2, then v3 should not be able to replace v1.
+    """
+    relationship_type = value.get('relationship')
+    if relationship_type == 'isReplacedBy' or relationship_type == 'replaces':
+        model = context['model']
+        query = model.Session.query(model.PackageRelationship)
+        replaced_by_dataset_title = ''
+        target_title = ''
+        target_id = None
+
+        if relationship_type == 'replaces':
+            # This will happen when editor create/edit v3, and add relationship type 'replaces'.
+            # Get the target id, in this example case, v1 information is available on value of the field.
+            target_id = value.get('resource', {}).get('id', None)
+            target_dict = get_action('package_show')(context, {'id': target_id})
+            target_title = target_dict.get('title')
+            replaced_by_dataset_title = data.get(('title',), None)
+
+        elif relationship_type == 'isReplacedBy' and package.id:
+            # This will happen when editor edit v1, and add relationship type 'isReplacedBy'.
+            # Get the target id, in this example case, v1 information is available the current package dict.
+            target_id = package.id
+            target_title = package.title
+            replaced_by_dataset_id = value.get('resource', {}).get('id', None)
+            replaced_by_dataset_title = get_action('package_show')(context, {'id': replaced_by_dataset_id}).get('title')
+
+        if target_id:
+            # Let's add a query to filter 'replaces' that has object_package_id of the target.
+            query = query.filter(model.PackageRelationship.object_package_id == target_id)
+            query = query.filter(model.PackageRelationship.type == 'replaces')
+
+            # Run the query.
+            relationship = query.first()
+            if relationship:
+                # If the v1 already has relationship, then throw an error.
+                return 'Dataset {0} cannot replace {1}, because it has already been replaced.'.format(replaced_by_dataset_title, target_title)
+
+    return False
+
+
 @scheming_validator
 def qdes_validate_related_resources(field, schema):
     """
@@ -291,16 +338,21 @@ def qdes_validate_related_resources(field, schema):
                             except toolkit.Invalid as e:
                                 errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
                     # Validates the dataset relationship to prevent circular references
-                    # If there is no package.id it must be a new dataset so there will not be any previous relationsips
+                    # If there is no package.id it must be a new dataset so there will not be any previous relationships
                     package = context.get('package', None)
                     dataset = toolkit.get_converter('json_or_string')(value)
-                    if package and package.id and dataset and isinstance(dataset, dict):              
-                        dataset_id = dataset.get('resource', {}).get('id', None)                        
+                    if package and package.id and dataset and isinstance(dataset, dict):
+                        dataset_id = dataset.get('resource', {}).get('id', None)
                         relationship_type = dataset.get('relationship', None)
                         try:
                             qdes_validate_dataset_relationships(package.id, dataset_id, relationship_type, context)
                         except toolkit.Invalid as e:
                             errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
+
+                    validate_replace_relationship = qdes_validate_replace_relationship(value, context, package, data)
+                    if validate_replace_relationship:
+                        errors[key].append(toolkit._(validate_replace_relationship))
+
     return validator
 
 
