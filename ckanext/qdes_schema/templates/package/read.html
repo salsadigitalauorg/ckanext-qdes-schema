@@ -31,3 +31,9 @@
 
     {% snippet "/package/snippets/dataset_versions.html", versions=versions, pkg=pkg %}
 {% endblock %}
+
+{% block package_resources %}
+    {% if not pkg.type == 'dataservice' %}
+        {% snippet "package/snippets/resources_list.html", pkg=pkg, resources=pkg.resources, is_activity_archive=is_activity_archive %}
+    {% endif %}
+{% endblock %}
