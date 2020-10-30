@@ -241,7 +241,7 @@
       "label": "Schema or standard",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator",
+      "validators": "ignore_missing qdes_uri_validator",
       "display_property": "dcterms:conformsTo",
       "display_group": "data quality"
     },
