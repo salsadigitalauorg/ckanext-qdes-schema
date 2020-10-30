@@ -3,7 +3,10 @@
     {% set secure_vocabulary = h.get_secure_vocabulary_record(field.vocabulary_service_name,  data[field.field_name]) %}
     {% if secure_vocabulary %}
         {% for key, value in secure_vocabulary.items() %}
-            {{ value}} <br>
+            <div>{{ value }}</div>
+            {% if not loop.last %}
+                <hr>
+            {% endif %} 
         {% endfor %}
     {% else %}
         {{ data[field.field_name] }}
