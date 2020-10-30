@@ -150,6 +150,20 @@
           "data-module-label": "name"
         }
       }
+    },
+    {
+      "preset_name": "qdes_secure_vocab_service_autocomplete",
+      "values": {
+        "form_snippet": "text.html",
+        "display_snippet": "qdes_secure_vocabulary_text.html",
+        "form_attrs": {
+          "data-module": "qdes_autocomplete",
+          "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+          "data-module-key": "value",
+          "data-module-label": "name",
+          "data-module-minimum-input-length": 3
+        }
+      }
     }
   ]
 }
