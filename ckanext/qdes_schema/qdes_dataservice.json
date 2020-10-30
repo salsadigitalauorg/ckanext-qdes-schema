@@ -67,10 +67,10 @@
     },
     {
       "field_name": "metadata_contact_point",
-      "label": "Point of contact",
+      "label": "Metadata point of contact",
       "display_property": "dcat:contactPoint",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_point",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
       "display_group": "description",
       "form_include_blank_choice": true
     },
@@ -208,8 +208,6 @@
       "field_name": "contact_point",
       "label": "Point of contact",
       "display_property": "dcat:contactPoint",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_point",
       "display_group": "contacts",
       "required": true,
       "form_include_blank_choice": true
