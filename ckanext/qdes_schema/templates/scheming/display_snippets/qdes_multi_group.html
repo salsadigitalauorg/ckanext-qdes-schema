@@ -1,26 +1,30 @@
 {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 {% for group_data in values  %}
     {% if group_data %}
-        <div>
+        <div class="row">
+            {% set columns = (12 / field.get('field_group')|length)|int %}
             {% for field_group in field.get('field_group') or [] %}
-                {% set value_data = group_data.get(field_group.field_name, '') %}
-                {% set value = value_data.get('text', '')|string if not value_data is string and 'text' in value_data else value_data|string %}
-                {% if h.is_url(value) %}
-                    <a href="{{ value }}"{% if display_property %} property="{{ display_property }}"{% endif %}>
-                        {% if 'choices_helper' in field_group %}
-                            {{ h.scheming_choices_label(h.scheming_field_choices(field_group), value) }}
+                <div class="col-xs-{{columns}}">
+                    {% if '/ckan-admin/vocabulary-services/secure-autocomplete/' in field_group.get('form_attrs', {}).get('data-module-source' ,'') %}
+                        {% snippet "/scheming/display_snippets/qdes_secure_vocabulary_text.html", field=field_group , data=group_data %}
+                    {% else %}
+                        {% set value_data = group_data.get(field_group.field_name, '') %}
+                        {% set value = value_data.get('text', '')|string if not value_data is string and 'text' in value_data else value_data|string %}
+                        {% if h.is_url(value) %}
+                            <a href="{{ value }}"{% if display_property %} property="{{ display_property }}"{% endif %}>
+                                {% if 'choices_helper' in field_group %}
+                                    {{ h.scheming_choices_label(h.scheming_field_choices(field_group), value) }}
+                                {% else %}
+                                    {{ value }}
+                                {% endif %}
+                            </a>
                         {% else %}
-                            {{ value }}
+                            <span {% if field_group.display_property %} property="{{ field_group.display_property }}"{% endif %}>
+                                {{ value }}
+                            </span>
                         {% endif %}
-                    </a>
-                {% else %}
-                    <span {% if field_group.display_property %} property="{{ field_group.display_property }}"{% endif %}>
-                        {{ value }}
-                    </span>
-                {% endif %}
-                {% if not loop.last %}
-                    <span> - </span>
-                {% endif %}
+                    {% endif %}
+                </div>
             {% endfor %}
         </div>
     {% endif %}
