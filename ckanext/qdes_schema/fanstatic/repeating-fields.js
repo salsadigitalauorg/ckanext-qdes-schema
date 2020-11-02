@@ -51,7 +51,9 @@ jQuery(document).ready(function () {
                         // This will be the value set from a post back error eg. {"id":dataset_id, "text":dataset_title}
                         value = JSON.parse(value)
                     }
-                } else if (jQuery(this).data('module') == "qdes_autocomplete" && jQuery(this).data('module-source') && jQuery(this).data('module-source').indexOf('/ckan-admin/vocabulary-service/term-autocomplete/') >= 0) {
+                } else if (jQuery(this).data('module') == "qdes_autocomplete" && jQuery(this).data('module-source') &&
+                    (jQuery(this).data('module-source').indexOf('/ckan-admin/vocabulary-service/term-autocomplete/') >= 0 ||
+                        jQuery(this).data('module-source').indexOf('/ckan-admin/vocabulary-services/secure-autocomplete/') >= 0)) {
                     // Check to see if select2 has been initialised
                     if (jQuery(this).data('select2')) {
                         // Get the selected option data object eg. {"id":URI, "text":label}
@@ -61,7 +63,7 @@ jQuery(document).ready(function () {
                         value = JSON.parse(value);
                     }
                     if (value) {
-                        // We only want to store the id which is the vocabulary URI
+                        // We only want to store the id which is either the vocabulary URI or secure vocabulary PositionID or free text tag value
                         value = value.id;
                     }
                 }
