@@ -9,6 +9,7 @@ from pprint import pformat
 
 owner_org = os.environ['OWNER_ORG']
 apiKey = os.environ['HARVEST_API_KEY']
+dataservice_name = 'queensland-government-open-data-portal'
 
 
 def convert_size_to_bytes(size_str):
@@ -147,6 +148,9 @@ def resource_mapping(res):
         'size',
         'format',
     ]
+
+    # Set dataservice.
+    mapped_resource['data_services'] = json.dumps([os.environ['LAGOON_ROUTE'] + '/dataservice/' + dataservice_name])
 
     # Map size.
     mapped_resource['size'] = convert_size_to_bytes(res.get('size', 0))
