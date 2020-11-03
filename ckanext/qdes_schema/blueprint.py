@@ -20,11 +20,11 @@ render = toolkit.render
 qdes_schema = Blueprint('qdes_schema', __name__)
 
 
-def related_datasets(name_or_id):
+def related_datasets(id_or_name):
     try:
         related = []
 
-        pkg_dict = get_action('package_show')({}, {'id': name_or_id})
+        pkg_dict = get_action('package_show')({}, {'id': id_or_name})
 
         all_relationships = helpers.get_all_relationships(pkg_dict['id'])
 
@@ -88,7 +88,7 @@ def datasets_available(id):
         abort(404, _('Available datasets not found'))
 
 
-qdes_schema.add_url_rule(u'/dataset/<name_or_id>/related-datasets', view_func=related_datasets)
+qdes_schema.add_url_rule(u'/dataset/<id_or_name>/related-datasets', view_func=related_datasets)
 qdes_schema.add_url_rule(u'/dataset/<id>/metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/metadata', endpoint='dataservice_metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataset/<id>/resource/<resource_id>/metadata', view_func=resource_metadata)
