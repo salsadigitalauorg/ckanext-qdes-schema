@@ -14,7 +14,7 @@
 
 <div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="select">
     <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
-    {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ') }}</span>{% endif %}
+    {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ')|safe }}</span>{% endif %}
     <div data-repeater-list="{{ field.field_name }}">
 
         {# Default behaviour to re-populate all existing inputs #}
