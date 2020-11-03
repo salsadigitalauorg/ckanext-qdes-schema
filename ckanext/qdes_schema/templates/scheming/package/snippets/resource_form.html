@@ -45,3 +45,7 @@
 
 {% block metadata_fields %}
 {% endblock %}
+
+{% block previous_button %}
+  <a class="btn btn-default" href="{{h.url_for(dataset_type ~ '.edit', id=pkg_name)}}">{{ _('Previous') }}</a>
+{% endblock %}
