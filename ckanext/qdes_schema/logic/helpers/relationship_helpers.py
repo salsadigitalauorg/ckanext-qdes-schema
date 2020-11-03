@@ -2,6 +2,8 @@ import ckan.plugins.toolkit as toolkit
 import json
 import logging
 
+from ckan.model import PackageRelationship, Session
+
 log = logging.getLogger(__name__)
 
 
@@ -78,3 +80,14 @@ def get_superseded_versions(package_id, versions):
         log.error(str(e))
 
     return superseded_versions
+
+
+def get_existing_relationship(subject_package_id, object_package_id, type):
+    try:
+        return Session.query(PackageRelationship) \
+            .filter(PackageRelationship.subject_package_id == subject_package_id) \
+            .filter(PackageRelationship.object_package_id == object_package_id) \
+            .filter(PackageRelationship.type == type) \
+            .first()
+    except Exception as e:
+        log.error(str(e))
