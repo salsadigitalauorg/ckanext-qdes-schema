@@ -9,6 +9,10 @@
         <!-- If value is from vocabulary term autocomplete, create json object -->
         {% elif '/ckan-admin/vocabulary-service/term-autocomplete/' in field.get('form_attrs', {}).get('data-module-source' ,'')%}
             {% set value = h.dump_json({"id": value, "text":  h.scheming_choices_label(h.scheming_field_choices(field), value)}) %}
+        <!-- If value is from vocabulary secure record autocomplete, create json object -->
+        {% elif '/ckan-admin/vocabulary-services/secure-autocomplete/' in field.get('form_attrs', {}).get('data-module-source' ,'') %}
+            {% set text = h.get_secure_vocabulary_record_label(field.vocabulary_service_name, value) %}
+            {% set value = h.dump_json({"id": value, "text":  text}) %}
         {% endif %}
     {% endif %}
 {%- else -%}

@@ -10,8 +10,10 @@
 {% endblock %}
 
 {% block basic_fields %}
-  {% set pkg_dict = h.get_package_dict(data.package_id) %}
-  {% snippet "/snippets/invalid_uris_error.html", entity_id=data.id, entity=pkg_dict, parent_entity=pkg_dict.type %}
+  {% if g.action not in ['new'] %}
+    {% set pkg_dict = h.get_package_dict(data.package_id) %}
+    {% snippet "/snippets/invalid_uris_error.html", entity_id=data.id, entity=pkg_dict, parent_entity=pkg_dict.type %}
+  {% endif %}
 
   {% if h.ckan_version() > '2.9' %}
     {% asset 'qdes_schema/repeater' %}
