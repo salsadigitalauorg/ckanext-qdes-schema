@@ -305,8 +305,13 @@ def qdes_validate_replace_relationship(value, context, package, data):
             # Run the query.
             relationship = query.first()
             if relationship:
+                # Get the dataset that already replaced the target.
+                current_dataset_replacement_title = get_action('package_show')(context, {'id': relationship.subject_package_id}).get('title')
+                current_dataset_replacement_url = h.url_for('dataset.read', id=relationship.subject_package_id)
+
                 # If the v1 already has relationship, then throw an error.
-                return 'Dataset {0} cannot replace {1}, because it has already been replaced.'.format(replaced_by_dataset_title, target_title)
+                return 'Dataset {0} cannot replace {1}, because it has already been replaced by <a href="{2}">{3}</a>.'\
+                    .format(replaced_by_dataset_title, target_title, current_dataset_replacement_url, current_dataset_replacement_title)
 
     return False
 
