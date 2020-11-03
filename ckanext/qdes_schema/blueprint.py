@@ -20,18 +20,22 @@ render = toolkit.render
 qdes_schema = Blueprint('qdes_schema', __name__)
 
 
-def related_datasets(id):
+def related_datasets(id_or_name):
     try:
         related = []
-        all_relationships = helpers.get_all_relationships(id)
+
+        pkg_dict = get_action('package_show')({}, {'id': id_or_name})
+
+        all_relationships = helpers.get_all_relationships(pkg_dict['id'])
 
         for relationship in all_relationships:
             if relationship.get('type') not in ['isPartOf', 'hasPart']:
                 related.append(relationship)
 
-        extra_vars = {}
-        extra_vars['pkg_dict'] = get_action('package_show')({}, {'id': id})
-        extra_vars['related'] = related
+        extra_vars = {
+            'pkg_dict': pkg_dict,
+            'related': related
+        }
 
         return render('package/related_datasets.html', extra_vars=extra_vars)
     except (NotFound, NotAuthorized):
@@ -84,7 +88,7 @@ def datasets_available(id):
         abort(404, _('Available datasets not found'))
 
 
-qdes_schema.add_url_rule(u'/dataset/<id>/related-datasets', view_func=related_datasets)
+qdes_schema.add_url_rule(u'/dataset/<id_or_name>/related-datasets', view_func=related_datasets)
 qdes_schema.add_url_rule(u'/dataset/<id>/metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/metadata', endpoint='dataservice_metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataset/<id>/resource/<resource_id>/metadata', view_func=resource_metadata)
