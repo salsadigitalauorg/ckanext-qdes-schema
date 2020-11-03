@@ -78,10 +78,10 @@
     },
     {
       "field_name": "metadata_contact_point",
-      "label": "Point of contact",
+      "label": "Metadata point of contact",
       "display_property": "dcat:contactPoint",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_point",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
       "display_group": "description",
       "form_include_blank_choice": true
     },
@@ -241,7 +241,7 @@
       "label": "Schema or standard",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator",
+      "validators": "ignore_missing qdes_uri_validator",
       "display_property": "dcterms:conformsTo",
       "display_group": "data quality"
     },
@@ -423,11 +423,10 @@
       "field_name": "contact_point",
       "label": "Point of contact",
       "display_property": "dcat:contactPoint",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_point",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
       "display_group": "contacts",
-      "required": true,
-      "form_include_blank_choice": true
+      "required": true
     },
     {
       "field_name": "contact_publisher",
@@ -442,14 +441,19 @@
     {
       "field_name": "contact_creator",
       "label": "Creator",
+      "display_snippet": "text.html",
       "display_property": "dcterms:creator",
-      "preset": "controlled_vocabulary_multi_select",
-      "vocabulary_service_name": "contact_creator",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "creator",
       "display_group": "contacts",
       "required": false,
-      "form_include_blank_choice": true,
       "form_attrs": {
-        "class": "form-control"
+        "data-module": "qdes_autocomplete",
+        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+        "data-module-key": "value",
+        "data-module-label": "name",
+        "data-module-minimum-input-length": 3,      
+        "data-module-create-search-choice": true
       }
     },
     {
@@ -462,14 +466,18 @@
         {
           "field_name": "the-party",
           "label": "The party",
-          "form_snippet": "select.html",
+          "form_snippet": "text.html",
+          "display_snippet": "qdes_secure_vocabulary_text.html",
           "display_property": "prov:agent",
           "vocabulary_service_name": "the-party",
-          "choices_helper": "scheming_vocabulary_service_choices",
           "form_attrs": {
-            "class": "form-control"
-          },
-          "form_include_blank_choice": true
+            "data-module": "qdes_autocomplete",
+            "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+            "data-module-key": "value",
+            "data-module-label": "name",
+            "data-module-minimum-input-length": 3,      
+            "data-module-create-search-choice": true
+          }
         },
         {
           "field_name": "nature-of-their-responsibility",

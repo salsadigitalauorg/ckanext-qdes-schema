@@ -35,7 +35,8 @@ jQuery(document).ready(function () {
         createSearchChoice: false,
         id: '',
         type: '',
-        vocabularyServiceName: ''
+        vocabularyServiceName: '',
+        minimumInputLength: 0
       },
 
       /* Sets up the module, binding methods, creating elements etc. Called
@@ -61,7 +62,8 @@ jQuery(document).ready(function () {
           dropdownCssClass: this.options.dropdownClass,
           containerCssClass: this.options.containerClass,
           tokenSeparators: this.options.tokensep.split(''),
-          allowClear: this.options.allowClear
+          allowClear: this.options.allowClear,
+          minimumInputLength: this.options.minimumInputLength
         };
 
         // If source is set for API, replace the id placeholder with id passed in

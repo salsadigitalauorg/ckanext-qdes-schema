@@ -9,7 +9,7 @@
   {% else %}
     {{ h.build_nav_icon(dataset_type ~ '.read', _('Dataset'), id=id_or_name, icon='sitemap') }}
     {{ h.build_nav_icon('qdes_schema.dataset_metadata', _('All Metadata'), id=id_or_name, icon='th-list') }}
-    {{ h.build_nav_icon('qdes_schema.related_datasets', _('Related Datasets'), id=id_or_name, icon='object-group') }}
+    {{ h.build_nav_icon('qdes_schema.related_datasets', _('Related Datasets'), id_or_name=id_or_name, icon='object-group') }}
   {% endif %}
   {{ h.build_nav_icon(dataset_type ~ '.groups', _('Groups'), id=id_or_name, icon='users') }}
   {{ h.build_nav_icon(dataset_type ~ '.activity', _('Activity Stream'), id=id_or_name, icon='clock-o') }}
