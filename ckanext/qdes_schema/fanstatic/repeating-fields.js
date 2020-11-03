@@ -51,7 +51,9 @@ jQuery(document).ready(function () {
                         // This will be the value set from a post back error eg. {"id":dataset_id, "text":dataset_title}
                         value = JSON.parse(value)
                     }
-                } else if (jQuery(this).data('module') == "qdes_autocomplete" && jQuery(this).data('module-source') && jQuery(this).data('module-source').indexOf('/ckan-admin/vocabulary-service/term-autocomplete/') >= 0) {
+                } else if (jQuery(this).data('module') == "qdes_autocomplete" && jQuery(this).data('module-source') &&
+                    (jQuery(this).data('module-source').indexOf('/ckan-admin/vocabulary-service/term-autocomplete/') >= 0 ||
+                        jQuery(this).data('module-source').indexOf('/ckan-admin/vocabulary-services/secure-autocomplete/') >= 0)) {
                     // Check to see if select2 has been initialised
                     if (jQuery(this).data('select2')) {
                         // Get the selected option data object eg. {"id":URI, "text":label}
@@ -61,7 +63,7 @@ jQuery(document).ready(function () {
                         value = JSON.parse(value);
                     }
                     if (value) {
-                        // We only want to store the id which is the vocabulary URI
+                        // We only want to store the id which is either the vocabulary URI or secure vocabulary PositionID or free text tag value
                         value = value.id;
                     }
                 }
@@ -114,8 +116,17 @@ jQuery(document).ready(function () {
             });
         }
 
-        if (Array.isArray(collated_values) && collated_values.length > 0) {
-            jQuery('#' + target_field_id).val(JSON.stringify(collated_values));
+
+        // Clean up empty/null values.
+        var clean_value = [];
+        collated_values.forEach(function (v) {
+            if (v) {
+                clean_value.push(v);
+            }
+        });
+
+        if (Array.isArray(clean_value) && clean_value.length > 0) {
+            jQuery('#' + target_field_id).val(JSON.stringify(clean_value));
         }
         else {
             jQuery('#' + target_field_id).val('');
