@@ -7,9 +7,14 @@
         {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 
         {% for value in values %}
-            <!-- If value is from dataset autocomplete it will be a json object -->
-            {% if value and field.get('form_attrs', {}).get('data-module-source' ,'') == '/api/2/util/dataset/autocomplete?incomplete=?' %}
-                {% set value = h.dump_json(value) %}
+            {% if value %}
+                <!-- If value is from dataset autocomplete it will be a json object -->
+                {% if '/api/2/util/dataset/autocomplete' in field.get('form_attrs', {}).get('data-module-source' ,'') %}
+                    {% set value = h.dump_json(value) %}
+                <!-- If value is from dataset autocomplete it will be a json object -->
+                {% elif '/ckan-admin/vocabulary-service/term-autocomplete/' in field.get('form_attrs', {}).get('data-module-source' ,'')%}
+                    {% set value = h.dump_json({"id": value, "text":  h.scheming_choices_label(h.scheming_field_choices(field), value)}) %}
+                {% endif %}
             {% endif %}
             <div data-repeater-item class="row">
                 <div class="col-xs-11">
@@ -17,7 +22,15 @@
                         call form.input(
                             label=h.scheming_language_text(field.label),
                             placeholder=h.scheming_language_text(field.form_placeholder),
-                            attrs=dict({"class": "form-control", "data-field-name": field.field_name, "data-placeholder":"Select a {0}".format(field.label)}, **(field.get('form_attrs', {}))),
+                            attrs=dict(
+                                {
+                                    "class": "form-control",
+                                    "data-field-name": field.field_name, 
+                                    "data-placeholder":"Select a {0}".format(field.label),
+                                    "data-module-id": data.get('id', ''),
+                                    "data-module-type": g.controller,
+                                    "data-module-vocabulary-service-name": field.vocabulary_service_name
+                                }, **(field.get('form_attrs', {}))),
                             is_required=h.scheming_field_required(field),
                             value=value,
                             error=errors[field.field_name]

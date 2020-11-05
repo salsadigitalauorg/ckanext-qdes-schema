@@ -8,6 +8,7 @@
     'format',
     'schema_standards',
     'data_services',
+    'rights_statement',
     'license',
     'size',
     'url',
@@ -18,6 +19,8 @@
 
 {%- block resource_additional_information_inner -%}
   <div class="module-content">
+    {% snippet "/snippets/invalid_uris_error.html", entity_id=res.id, entity=pkg_dict, parent_entity=pkg_dict.type %}
+
     <h2>{{ _('Additional Information') }}</h2>
     <table class="table table-striped table-bordered table-condensed">
       <thead>
@@ -27,18 +30,6 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">{{ _('Data last updated') }}</th>
-          <td>{{ h.render_datetime(res.last_modified) or h.render_datetime(res.created) or _('unknown') }}</td>
-        </tr>
-        <tr>
-          <th scope="row">{{ _('Metadata last updated') }}</th>
-          <td>{{ h.render_datetime(res.metadata_modified) or h.render_datetime(res.created) or _('unknown') }}</td>
-        </tr>
-        <tr>
-          <th scope="row">{{ _('Created') }}</th>
-          <td>{{ h.render_datetime(res.created) or _('unknown') }}</td>
-        </tr>
         {%- for field in schema.resource_fields -%}
           {%- if field.field_name in include_fields and field.display_snippet is not none and res[field.field_name] -%}
             <tr>
@@ -59,3 +50,14 @@
     <a href="{{ h.url_for('qdes_schema.resource_metadata', id=pkg_dict['id'], resource_id=res['id']) }}">{{ _('View all metadata') }}</a>
   </div>
 {%- endblock -%}
+
+{% block resource_content %}
+  {% block package_archive_notice %}
+    {{super()}}
+  {% endblock %}
+  {% block resource_read_title %}
+    {{super()}}
+  {% endblock %}
+
+  {% block resource_read_url %}{% endblock %}
+{% endblock %}

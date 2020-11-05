@@ -23,10 +23,10 @@ iso-8601-duration:
   contents:
     - iso-8601-duration.js
 
-q_des:
-  contents:
-    - q_des.css
-
 autocomplete:
   contents:
     - autocomplete.js
+
+dataservice:
+  contents:
+    - dataservice.js

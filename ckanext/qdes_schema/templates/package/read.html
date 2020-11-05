@@ -4,14 +4,16 @@
 
 {% block package_description %}
 
-    {% if pkg.type == 'dataset' %}
-        <div class="alert alert-warning {{ '' if pkg.publication_status.split('/')|last|lower == 'superseded' else 'hidden' }}">
+    {% snippet "/snippets/invalid_uris_error.html", entity_id=pkg.id , entity=pkg %}
+
+    {% if pkg.type == 'dataset' and versions|length and pkg.publication_status.split('/')|last|lower == 'superseded' %}
+        <div class="alert alert-warning">
           This version has been superseded - <a href="{{ h.url_for('dataset.read', id=versions[0].id) }}">click here to see the latest version</a>.
         </div>
     {% endif %}
 
     {% if versions|length > 1 and h.check_access('package_update', {'id':pkg.id }) %}
-        {% set superseded_versions = h.get_superseded_versions(pkg.related_resources, versions) %}
+        {% set superseded_versions = h.get_superseded_versions(pkg.id, versions) %}
 
         {% for superseded_version in superseded_versions %}
             {% if not 'superseded' in superseded_version.publication_status %}
@@ -25,7 +27,15 @@
         {% endfor %}
     {% endif %}
 
-  {{ super() }}
+    {{ super() }}
 
-  {% snippet "/package/snippets/dataset_versions.html", versions=versions, pkg=pkg %}
+    {% if versions %}
+        {% snippet "/package/snippets/dataset_versions.html", versions=versions, pkg=pkg %}
+    {% endif %}
+{% endblock %}
+
+{% block package_resources %}
+    {% if not pkg.type == 'dataservice' %}
+        {% snippet "package/snippets/resources_list.html", pkg=pkg, resources=pkg.resources, is_activity_archive=is_activity_archive %}
+    {% endif %}
 {% endblock %}

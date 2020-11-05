@@ -51,45 +51,30 @@ def convert_related_resources_to_dict_list(related_resources):
     return dict_list
 
 
-def get_superseded_versions(related_resources, versions):
+def get_superseded_versions(package_id, versions):
     superseded_versions = []
 
-    if 'replaces' in related_resources:
-        # Adding a check here for when the JSON format of `related_resources` changes
-        # from:
-        #   {"resources": ["one", "two"], "relationships": ["isPartOf", "replaces"], "count": 2}
-        # to:
-        #   [
-        #       {"resource": "one", "relationship": "isPartOf"},
-        #       {"resource": "two", "relationship": "replaces"},
-        #   ]
-        try:
-            if related_resources.startswith('{'):
-                related_resources_dict = convert_related_resources_to_dict_list(related_resources)
-            else:
-                related_resources_dict = json.loads(related_resources)
+    superseded_dataset_id = None
 
-            superseded_dataset_id = None
+    try:
+        for relationship in toolkit.h.get_subject_package_relationship_objects(package_id):
+            if relationship['type'] == 'replaces':
+                superseded_dataset_id = relationship['object']
+                break
 
-            # Find the related resource that has been superseded
-            for related_resource in related_resources_dict:
-                if related_resource['relationship'] == 'replaces':
-                    superseded_dataset_id = related_resource['resource']
+        if superseded_dataset_id:
+            # Loop through versions and get the details for display
+            for version in versions:
+                if version['name'] == superseded_dataset_id \
+                        or version['id'] == superseded_dataset_id:
+                    superseded_versions.append({
+                        'id': version['id'],
+                        'name': version['name'],
+                        'title': version['title'],
+                        'publication_status': version['publication_status'],
+                    })
                     break
-
-            if superseded_dataset_id:
-                # Loop through versions and get the details for display
-                for version in versions:
-                    if version['name'] == superseded_dataset_id \
-                            or version['id'] == superseded_dataset_id:
-                        superseded_versions.append({
-                            'id': version['id'],
-                            'name': version['name'],
-                            'title': version['title'],
-                            'publication_status': version['publication_status'],
-                        })
-                        break
-        except Exception as e:
-            log.error(str(e))
+    except Exception as e:
+        log.error(str(e))
 
     return superseded_versions

@@ -34,7 +34,10 @@ jQuery(document).ready(function () {
         containerClass: '',
         allowClear: true,
         createSearchChoice: false,
-        id: ''
+        id: '',
+        type: '',
+        vocabularyServiceName: '',
+        minimumInputLength: 0
       },
 
       /* Sets up the module, binding methods, creating elements etc. Called
@@ -60,7 +63,8 @@ jQuery(document).ready(function () {
           dropdownCssClass: this.options.dropdownClass,
           containerCssClass: this.options.containerClass,
           tokenSeparators: this.options.tokensep.split(''),
-          allowClear: this.options.allowClear
+          allowClear: this.options.allowClear,
+          minimumInputLength: this.options.minimumInputLength
         };
 
         // If source is set for API, replace the id placeholder with id passed in
@@ -139,6 +143,15 @@ jQuery(document).ready(function () {
         var parts = this.options.source.split('?');
         var end = parts.pop();
         var source = parts.join('?') + encodeURIComponent(string) + end;
+        if (this.options.id.length > 0) {
+          source += "&dataset_id=" + this.options.id;
+        }
+        if (this.options.type.length > 0) {
+          source += "&dataset_type=" + this.options.type;
+        }
+        if (source.indexOf('{vocabularyServiceName}') >= 0 && this.options.vocabularyServiceName.length > 0) {
+          source = source.replace("{vocabularyServiceName}", this.options.vocabularyServiceName);
+        }
         var client = this.sandbox.client;
         var parseCompletions = this.parseCompletions;
         var options = {
@@ -347,6 +360,8 @@ jQuery(document).ready(function () {
           // If a API source is used, check if the value is a json object to preselect the initial value
           try {
             formatted = JSON.parse(value);
+            // Set the element value to the object id so on form submit the id value is used instead of the JSON object
+            element[0].value = formatted.id;
           } catch (e) {
             formatted = this.formatTerm(value);
           }

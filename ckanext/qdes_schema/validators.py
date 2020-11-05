@@ -1,4 +1,5 @@
 import ckan.plugins.toolkit as toolkit
+import ckan.logic as logic
 import geojson
 import json
 import logging
@@ -10,6 +11,8 @@ from ckanext.scheming.validation import scheming_validator
 from pprint import pformat
 
 log = logging.getLogger(__name__)
+get_action = logic.get_action
+h = toolkit.h
 
 
 def qdes_temporal_start_end_date(key, flattened_data, errors, context):
@@ -42,9 +45,9 @@ def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, c
     """
     # Get date values.
     creation_date_value = None
-    if key == ('dataset_creation_date',):
+    if ('dataset_creation_date',) in flattened_data:
         creation_date_value = flattened_data[('dataset_creation_date',)]
-    elif key == ('service_creation_date',):
+    elif ('service_creation_date',) in flattened_data:
         creation_date_value = flattened_data[('service_creation_date',)]
     current_date_value = flattened_data[key]
 
@@ -52,14 +55,21 @@ def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, c
     if (creation_date_value is not None) and (current_date_value is not None):
         if len(current_date_value) > 0:
             dt_creation = dt.strptime(creation_date_value, '%Y-%m-%dT%H:%M:%S')
-            dt_release = dt.strptime(current_date_value, '%Y-%m-%dT%H:%M:%S')
+            dt_current_date = dt.strptime(current_date_value, '%Y-%m-%dT%H:%M:%S')
 
-            if dt_release < dt_creation:
+            if dt_current_date < dt_creation:
                 raise toolkit.Invalid('Must be later than creation date.')
 
 
-def qdes_dataservice_current_date_later_than_creation(key, flattened_data, errors, context):
+def qdes_dataset_last_modified_date_before_today(key, flattened_data, errors, context):
     qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, context)
+
+    # Get date values.
+    current_date_value = flattened_data[key]
+    if current_date_value is not None and len(current_date_value) > 0:
+        dt_current = dt.strptime(current_date_value, '%Y-%m-%dT%H:%M:%S')
+        if not dt_current <= dt.today():
+            raise toolkit.Invalid('Last modified date must be on or earlier than today.')
 
 
 def qdes_uri_validator(value):
@@ -257,6 +267,55 @@ def qdes_validate_multi_groups(field, schema):
     return validator
 
 
+def qdes_validate_replace_relationship(value, context, package, data):
+    """
+    Validate replaces relationship, a dataset version can only be replaced by one version.
+    Example case: we have v1, v2 and v3,
+    v1 is replaced by v2, then v3 should not be able to replace v1.
+    """
+    relationship_type = value.get('relationship')
+    if relationship_type == 'isReplacedBy' or relationship_type == 'replaces':
+        model = context['model']
+        query = model.Session.query(model.PackageRelationship)
+        replaced_by_dataset_title = ''
+        target_title = ''
+        target_id = None
+
+        if relationship_type == 'replaces':
+            # This will happen when editor create/edit v3, and add relationship type 'replaces'.
+            # Get the target id, in this example case, v1 information is available on value of the field.
+            target_id = value.get('resource', {}).get('id', None)
+            target_dict = get_action('package_show')(context, {'id': target_id})
+            target_title = target_dict.get('title')
+            replaced_by_dataset_title = data.get(('title',), None)
+
+        elif relationship_type == 'isReplacedBy' and package.id:
+            # This will happen when editor edit v1, and add relationship type 'isReplacedBy'.
+            # Get the target id, in this example case, v1 information is available the current package dict.
+            target_id = package.id
+            target_title = package.title
+            replaced_by_dataset_id = value.get('resource', {}).get('id', None)
+            replaced_by_dataset_title = get_action('package_show')(context, {'id': replaced_by_dataset_id}).get('title')
+
+        if target_id:
+            # Let's add a query to filter 'replaces' that has object_package_id of the target.
+            query = query.filter(model.PackageRelationship.object_package_id == target_id)
+            query = query.filter(model.PackageRelationship.type == 'replaces')
+
+            # Run the query.
+            relationship = query.first()
+            if relationship:
+                # Get the dataset that already replaced the target.
+                current_dataset_replacement_title = get_action('package_show')(context, {'id': relationship.subject_package_id}).get('title')
+                current_dataset_replacement_url = h.url_for('dataset.read', id=relationship.subject_package_id)
+
+                # If the v1 already has relationship, then throw an error.
+                return 'Dataset {0} cannot replace {1}, because it has already been replaced by <a href="{2}">{3}</a>.'\
+                    .format(replaced_by_dataset_title, target_title, current_dataset_replacement_url, current_dataset_replacement_title)
+
+    return False
+
+
 @scheming_validator
 def qdes_validate_related_resources(field, schema):
     """
@@ -283,6 +342,21 @@ def qdes_validate_related_resources(field, schema):
                                 qdes_validate_related_dataset([field_value], context)
                             except toolkit.Invalid as e:
                                 errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
+                    # Validates the dataset relationship to prevent circular references
+                    # If there is no package.id it must be a new dataset so there will not be any previous relationships
+                    package = context.get('package', None)
+                    dataset = toolkit.get_converter('json_or_string')(value)
+                    if package and package.id and dataset and isinstance(dataset, dict):
+                        dataset_id = dataset.get('resource', {}).get('id', None)
+                        relationship_type = dataset.get('relationship', None)
+                        try:
+                            qdes_validate_dataset_relationships(package.id, dataset_id, relationship_type, context)
+                        except toolkit.Invalid as e:
+                            errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
+
+                    validate_replace_relationship = qdes_validate_replace_relationship(value, context, package, data)
+                    if validate_replace_relationship:
+                        errors[key].append(toolkit._(validate_replace_relationship))
 
     return validator
 
@@ -310,6 +384,7 @@ def qdes_validate_related_dataset(value, context):
 
     return value
 
+
 def qdes_validate_metadata_review_date(key, flattened_data, errors, context):
     """
     Set metadata_review_date value.
@@ -322,3 +397,41 @@ def qdes_validate_metadata_review_date(key, flattened_data, errors, context):
     if (type in ['dataset', 'dataservice']) and (metadata_review_date_reviewed or len(flattened_data.get(key)) == 0):
         # If empty OR checkbox ticked.
         flattened_data[key] = dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+
+
+def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset_id, relationship_type, context):
+    """
+    Validates the dataset relationship to prevent circular references
+    """
+    # Check the value of relationship_dataset_id first
+    # in case it is a URI - if it is, exit early
+    data = {'url':relationship_dataset_id}
+    errors = {'url': []}
+    toolkit.get_validator('url_validator')('url', data, errors, context)
+    if(len(errors['url']) == 0):
+        # If there are no errors it must be a valid URL so exit early
+        return True
+
+    try:
+        dataset_dict = toolkit.get_action('package_show')(context, {"id": relationship_dataset_id})
+    except toolkit.ObjectNotFound:
+        # Package does not exists so it must be a valid URI from external dataset
+        return True
+
+    if relationship_type in ['replaces']:
+        # This is to prevent circular relationships to happen
+        # Creating a relationship for Jim1 to replace Jim2
+        # Need to check if there is a relationship where Jim2 replaces Jim1
+        # Jim1.id = subject and Jim2.id = object
+        # Load any relationship where Jim2 is the subject Jim1 is object
+        #
+        model = context['model']
+        query = model.Session.query(model.PackageRelationship)
+        query = query.filter(model.PackageRelationship.subject_package_id == relationship_dataset_id)
+        query = query.filter(model.PackageRelationship.object_package_id == current_dataset_id)
+        query = query.filter(model.PackageRelationship.type == relationship_type)
+        relationship = query.first()
+        if relationship:
+            raise toolkit.Invalid("Relationship type '{0}' already exists from dataset '{1}'".format(relationship_type, dataset_dict.get('title', None)))
+
+    return True
