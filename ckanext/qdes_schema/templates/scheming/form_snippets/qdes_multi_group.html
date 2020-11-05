@@ -14,7 +14,7 @@
 
 <div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="select">
     <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
-    {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ') }}</span>{% endif %}
+    {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ')|safe }}</span>{% endif %}
     <div data-repeater-list="{{ field.field_name }}">
 
         {# Default behaviour to re-populate all existing inputs #}
@@ -72,9 +72,9 @@
 {% endcall %}
 {# END: The actual form field the multiple values will be captured & submitted in #}
 
-{% if field.field_name == 'related_resources' and g.controller == 'dataset' and g.action == 'edit' %}
+{% if field.field_name == 'related_resources' and g.controller in ['dataset', 'dataservice'] and g.action == 'edit' %}
     <h4>Existing related resources</h4>
-    {% set relationships = h.get_relationships(data['id']) %}
+    {% set relationships = h.get_subject_package_relationship_objects(data['id']) %}
     {% if relationships %}
         <table id="existing-related-resources" class="table">
             <thead>
@@ -84,24 +84,22 @@
             </thead>
             <tbody>
             {% for relationship in relationships %}
-                {% if relationship.type %}
-                    <tr>
-                        <td>
-                            {% set resource = relationship.object if relationship.object else relationship.comment %}
-                            {% set title = relationship.title if relationship.object else relationship.comment %}
-                            {{ title }}
-                        </td>
-                        <td>{{ relationship.type }}</td>
-                        <td>
-                            <a href="" class="remove btn btn-xs btn-danger"
-                               data-resource="{{ resource }}"
-                               data-relationship="{{ relationship.type }}"
-                            >
-                                Delete
-                            </a>
-                        </td>
-                    </tr>
-                {% endif %}
+                <tr>
+                    <td>
+                        {% set resource = relationship.object if relationship.object else relationship.comment %}
+                        {% set title = relationship.title if relationship.object else relationship.comment %}
+                        {{ title }}
+                    </td>
+                    <td>{{ relationship.type }}</td>
+                    <td>
+                        <a href="" class="remove btn btn-xs btn-danger"
+                            data-resource="{{ resource }}"
+                            data-relationship="{{ relationship.type }}"
+                        >
+                            Delete
+                        </a>
+                    </td>
+                </tr>
             {% endfor %}
             </tbody>
         </table>
@@ -112,7 +110,7 @@
         we need to re-populate the `existing_related_resources`
         with the value from the form submission, otherwise we loose the value
     #}
-    {% set existing_related_resources = data['existing_related_resources']|default(data[field.field_name]) %}
+    {% set existing_related_resources = data['existing_related_resources']|default(h.convert_relationships_to_related_resources(relationships)) %}
 
     {% call form.textarea(
         name="existing_related_resources",

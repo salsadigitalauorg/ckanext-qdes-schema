@@ -2,9 +2,18 @@
 
 {%- if field_group.field_name in group_data -%}
     {%- set value = group_data.get(field_group.field_name, '') -%}
-    <!-- If value is from dataset autocomplete it will be a json object -->
-    {% if value and field_group.get('form_attrs', {}).get('data-module-source' ,'') == '/api/2/util/dataset/autocomplete?incomplete=?' %}
-        {% set value = h.dump_json(value) %}
+    {% if value %}
+        <!-- If value is from dataset autocomplete it will be a json object -->
+        {% if '/api/2/util/dataset/autocomplete' in field_group.get('form_attrs', {}).get('data-module-source' ,'') %}
+            {% set value = h.dump_json(value) %}
+        <!-- If value is from vocabulary term autocomplete, create json object -->
+        {% elif '/ckan-admin/vocabulary-service/term-autocomplete/' in field_group.get('form_attrs', {}).get('data-module-source' ,'') %}
+            {% set value = h.dump_json({"id": value, "text":  h.scheming_choices_label(h.scheming_field_choices(field_group), value)}) %}
+        <!-- If value is from vocabulary secure record autocomplete, create json object -->
+        {% elif '/ckan-admin/vocabulary-services/secure-autocomplete/' in field_group.get('form_attrs', {}).get('data-module-source' ,'') %}
+            {% set text = h.get_secure_vocabulary_record_label(field_group.vocabulary_service_name, value) %}
+            {% set value = h.dump_json({"id": value, "text":  text}) %}
+        {% endif %}
     {% endif %}
 {%- else -%}
     {%- set value = None -%}
@@ -16,11 +25,13 @@
         placeholder=h.scheming_language_text(field_group.form_placeholder),
         attrs=dict(
             {
-            "data-group": true, 
-            "data-field-name": field_group.field_name, 
-            "data-parent-field-name": field.field_name, 
-            "data-placeholder":"Select a {0}".format(field_group.label),
-            "data-module-id": data.get('id', '')
+                "data-group": true, 
+                "data-field-name": field_group.field_name, 
+                "data-parent-field-name": field.field_name, 
+                "data-placeholder":"Select a {0}".format(field_group.label),
+                "data-module-id": data.get('id', ''),
+                "data-module-type": g.controller,
+                "data-module-vocabulary-service-name": field_group.vocabulary_service_name
             }, 
             **(field_group.get('form_attrs', {}))),
         is_required=h.scheming_field_required(field_group),

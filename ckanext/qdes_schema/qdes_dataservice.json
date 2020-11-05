@@ -67,10 +67,10 @@
     },
     {
       "field_name": "metadata_contact_point",
-      "label": "Point of contact",
+      "label": "Metadata point of contact",
       "display_property": "dcat:contactPoint",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_point",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
       "display_group": "description",
       "form_include_blank_choice": true
     },
@@ -120,7 +120,7 @@
       "field_name": "datasets_available",
       "label": "Datasets available",
       "display_snippet": "qdes_multi_text_url.html",
-      "form_snippet": "qdes_multi_text.html",
+      "form_snippet": null,
       "display_group": "description"
     },
     {
@@ -193,15 +193,21 @@
       "label": "Last modified date",
       "display_property": "dcterms:modified",
       "preset": "datetime_tz",
-      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_current_date_later_than_creation",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_last_modified_date_before_today",
       "display_group": "status"
+    },
+    {
+      "field_name": "related_services",
+      "label": "Related service",
+      "preset": "dataset_related_multi_text"
+    },
+    {
+      "preset": "related_resources_multi_group"
     },
     {
       "field_name": "contact_point",
       "label": "Point of contact",
       "display_property": "dcat:contactPoint",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_point",
       "display_group": "contacts",
       "required": true,
       "form_include_blank_choice": true
@@ -239,14 +245,18 @@
         {
           "field_name": "the-party",
           "label": "The party",
-          "form_snippet": "select.html",
+          "form_snippet": "text.html",
+          "display_snippet": "qdes_secure_vocabulary_text.html",
           "display_property": "prov:agent",
           "vocabulary_service_name": "the-party",
-          "choices_helper": "scheming_vocabulary_service_choices",
           "form_attrs": {
-            "class": "form-control"
-          },
-          "form_include_blank_choice": true
+            "data-module": "qdes_autocomplete",
+            "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+            "data-module-key": "value",
+            "data-module-label": "name",
+            "data-module-minimum-input-length": 3,      
+            "data-module-create-search-choice": true
+          }
         },
         {
           "field_name": "nature-of-their-responsibility",
@@ -290,27 +300,21 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "license",
       "display_group": "rights & licensing",
-      "required": true
+      "required": true,
+      "form_include_blank_choice": true
     },
     {
       "field_name": "specialized_license",
-      "label": "Specialized license",
+      "label": "Specialised license",
+      "form_snippet": "textarea.html",
       "display_property": "odrl:hasPolicy",
       "display_snippet": "qdes_text_url.html",
-      "display_group": "rights & licensing",
-      "validators": "url_validator qdes_uri_validator"
+      "display_group": "rights & licensing"
     },
     {
       "field_name": "owner_org",
       "label": "Organization",
       "preset": "dataset_organization"
-    }
-  ],
-  "resource_fields": [
-    {
-      "field_name": "name",
-      "label": "Name",
-      "form_placeholder": "eg. January 2011 Gold Prices"
     }
   ]
 }

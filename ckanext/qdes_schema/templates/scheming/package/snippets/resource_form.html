@@ -10,6 +10,11 @@
 {% endblock %}
 
 {% block basic_fields %}
+  {% if g.action not in ['new'] %}
+    {% set pkg_dict = h.get_package_dict(data.package_id) %}
+    {% snippet "/snippets/invalid_uris_error.html", entity_id=data.id, entity=pkg_dict, parent_entity=pkg_dict.type %}
+  {% endif %}
+
   {% if h.ckan_version() > '2.9' %}
     {% asset 'qdes_schema/repeater' %}
     {% asset 'qdes_schema/repeating-fields' %}
@@ -39,4 +44,8 @@
 {% endblock %}
 
 {% block metadata_fields %}
+{% endblock %}
+
+{% block previous_button %}
+  <a class="btn btn-default" href="{{h.url_for(dataset_type ~ '.edit', id=pkg_name)}}">{{ _('Previous') }}</a>
 {% endblock %}
