@@ -2,6 +2,7 @@ import csv
 import os
 import json
 import re
+from ckanext.qdes_schema.qld_harvert import helpers
 
 from datetime import datetime
 from ckanapi import RemoteCKAN
@@ -10,6 +11,9 @@ from pprint import pformat
 owner_org = os.environ['OWNER_ORG']
 apiKey = os.environ['HARVEST_API_KEY']
 dataservice_name = 'queensland-government-open-data-portal'
+
+DEBUG = False
+SOURCE_FILENAME = 'DES_Datasets_Open_data_V1.csv'
 
 
 def convert_size_to_bytes(size_str):
@@ -34,7 +38,7 @@ def convert_size_to_bytes(size_str):
     return int(size_str)
 
 
-def get_all_fields():
+def get_dataset_schema_fields():
     """
     Get all fields available on QDES dataset.
     """
@@ -42,15 +46,15 @@ def get_all_fields():
         return json.load(f)
 
 
-def dataset_mapping(dataset):
+def dataset_mapping(dataset, source_dict):
     """
     Map QLD dataset to QDES dataset.
     """
     mapped_dataset = {}
-    scheme = get_all_fields()
+    schema = get_dataset_schema_fields()
 
     # Added default fields specific to the QDES dataset.
-    mapped_dataset['package'] = 'dataset'
+    mapped_dataset['type'] = 'dataset'
     mapped_dataset['owner_org'] = owner_org
     today = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
     mapped_dataset['dataset_creation_date'] = today
@@ -77,61 +81,70 @@ def dataset_mapping(dataset):
     mapped_dataset['license_id'] = 'http://registry.it.csiro.au/licence/cc-by-4.0'
 
     # Map URL, if the URL is not available on source, give it default value.
-    mapped_dataset['url'] = dataset.get('url') if len(dataset.get('url', '')) > 0 else 'http://data.qld.gov.au'
+    mapped_dataset['url'] = source_dict.get('URL', '') or 'http://data.qld.gov.au'
 
-    # Map Update frequency, we can't use get_vocab_value because some of the values are custom (can't be matched 1:1).
-    # The below frequency value to filter based on this value, use below
-    # https://www.data.qld.gov.au/organization/a3cdcdcb-201c-4360-9fa6-98e361c89279?update_frequency=not-updated.
-    # @todo: fix this.
-    frequency_map = {
-        'near-real-time': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/continual',
-        'hourly': '',
-        'daily': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/daily',
-        'weekly': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/weekly',
-        'fortnightly': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/fortnightly',
-        'monthly': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/monthly',
-        'quarterly': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/quarterly',
-        'half-yearly': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/biannually',
-        'annually': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/annually',
-        'non-regular': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/irregular',
-        'not-updated': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/notPlanned',
-    }
-    mapped_dataset['update_schedule'] = frequency_map.get(dataset.get('update_frequency'), '')
+    mapped_dataset['update_schedule'] = helpers.get_mapped_update_frequency(dataset.get('update_frequency'))
 
     # Map keyword (tag_string).
     mapped_dataset['tag_string'] = []
 
-    # Map csv fields to QDES.
-    csv_field_col = {
-        'classification_and_access_restrictions': 1,
-        'classification': 2,
-        'topic': 3,
-        'contact_point': 4,
-        'contact_publisher': 5,
-        'publication_status': 6,
-        'format': 7,
-    }
-    # Map classification_and_access_restrictions.
-    # @todo: fix this after the data is confirmed in csv, maybe can introduce the new param to this function.
-    mapped_dataset['classification_and_access_restrictions'] = json.dumps(['http://registry.it.csiro.au/def/isotc211/MD_ClassificationCode/confidential'])
-    mapped_dataset['classification'] = json.dumps(['http://registry.it.csiro.au/def/datacite/resourceType/Audiovisual'])
-    mapped_dataset['topic'] = json.dumps(['https://gcmdservices.gsfc.nasa.gov/kms/concept/feef8827-92a6-4d1d-b6a5-ecda38a32656'])
+    # Classification vocabulary service lookup
+    classification = helpers.get_vocabulary_service_term(
+        destination,
+        source_dict.get('General classification of dataset type', 'Dataset').lower(),
+        'classification')
 
-    mapped_dataset['contact_point'] = 'http://linked.data.gov.au/def/iso19115-1/RoleCode/author'
+    if classification:
+        mapped_dataset['classification'] = json.dumps([classification['value']])
+
+    # Classification and access restrictions vocabulary service lookup
+    class_and_access = helpers.get_vocabulary_service_term(
+        destination,
+        source_dict.get('classification_and_access_restrictions', 'Dataset').lower(),
+        'classification_and_access_restrictions')
+
+    if class_and_access:
+        mapped_dataset['classification_and_access_restrictions'] = json.dumps([class_and_access['value']])
+
+    # Topic/theme vocabulary service lookup
+    topic = helpers.get_vocabulary_service_term(
+        destination,
+        source_dict.get('Topic or theme', '').lower(),
+        'topic')
+
+    if topic:
+        mapped_dataset['topic'] = json.dumps([topic['value']])
+
+    # Point of Contact "secure" vocabulary look-up
+    point_of_contact = helpers.get_point_of_contact_id(
+        destination,
+        source_dict.get('Point of contact'),
+        'point-of-contact')
+
+    if point_of_contact:
+        mapped_dataset['contact_point'] = point_of_contact['value']
+
+    # Publication status vocabulary service lookup
+    publication_status = helpers.get_vocabulary_service_term(
+        destination,
+        source_dict.get('Publication status', '').lower(),
+        'publication_status')
+
+    if publication_status:
+        mapped_dataset['publication_status'] = 'http://registry.it.csiro.au/def/isotc211/MD_ProgressCode/accepted'
+
+    # @TODO: This CV is not currently implemented
     mapped_dataset['contact_publisher'] = 'http://linked.data.gov.au/def/organisation-type/family-partnership'
-    mapped_dataset['publication_status'] = 'http://registry.it.csiro.au/def/isotc211/MD_ProgressCode/accepted'
+
+    # @TODO: Should this be set in here??? i.e. Dataset schema does not have a `format` field
     mapped_dataset['format'] = 'https://www.iana.org/assignments/media-types/application/1d-interleaved-parityfec'
 
-    # Build the rest of the value.
-    for field in scheme.get('dataset_fields'):
+    # Build the rest of the values.
+    for field in schema.get('dataset_fields'):
         field_name = field.get('field_name')
-        process = False
 
         # Do not process if the field already added via manual mapping or empty.
-        if (not field.get('field_name') in manual_fields) and dataset.get(field_name, None):
-            process = True
-
-        if process:
+        if field_name not in manual_fields and dataset.get(field_name, None):
             mapped_dataset[field_name] = dataset.get(field_name, '')
 
     return mapped_dataset
@@ -141,7 +154,12 @@ def resource_mapping(res):
     """
     Clean up resource.
     """
-    mapped_resource = {}
+    mapped_resource = {
+        'data_services': json.dumps([os.environ['LAGOON_ROUTE'] + '/dataservice/' + dataservice_name]),
+        'size': convert_size_to_bytes(res.get('size', 0)),
+        # @TODO: fix this. issue example: on source there is "JSON" as value, but the format has many JSON types.
+        'format': 'https://www.iana.org/assignments/media-types/application/alto-directory+json'
+    }
 
     # Manual field mapping.
     manual_fields = [
@@ -149,22 +167,13 @@ def resource_mapping(res):
         'format',
     ]
 
-    # Set dataservice.
-    mapped_resource['data_services'] = json.dumps([os.environ['LAGOON_ROUTE'] + '/dataservice/' + dataservice_name])
-
-    # Map size.
-    mapped_resource['size'] = convert_size_to_bytes(res.get('size', 0))
-
-    # Map format.
-    # @todo: fix this. issue example: on source there is "JSON" as value, but the format has many JSON types.
-    mapped_resource['format'] = 'https://www.iana.org/assignments/media-types/application/alto-directory+json'
-
     # Get all fields available on QDES dataset.
-    with open('../qdes_ckan_dataset.json') as f:
-        scheme = json.load(f)
+    # with open('../qdes_ckan_dataset.json') as f:
+    #     schema = json.load(f)
+    schema = get_dataset_schema_fields()
 
     # Build the rest of the value.
-    for field in scheme.get('resource_fields'):
+    for field in schema.get('resource_fields'):
         field_name = field.get('field_name')
 
         # Do not process if field value is empty.
@@ -174,15 +183,15 @@ def resource_mapping(res):
     return mapped_resource
 
 
-def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id):
+def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_url=None):
     """
     Map resource to dataset for series.
     """
     mapped_dataset = {}
-    scheme = get_all_fields()
+    schema = get_dataset_schema_fields()
 
     # Loop the parent, get the data from resource first and if none, use the parent data.
-    for field in scheme.get('dataset_fields'):
+    for field in schema.get('dataset_fields'):
         field_name = field.get('field_name')
         value = res.get(field_name)
 
@@ -206,46 +215,62 @@ def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id):
     return mapped_dataset
 
 
+def append_error(dataset_name, errors, source_url):
+    error_log.append({
+        'package_id': dataset_name,
+        'errors': errors,
+        'source_url': source_url,
+    })
+
+
 # Set the import source and destination.
 source = RemoteCKAN('https://www.data.qld.gov.au')
 destination = RemoteCKAN(os.environ['LAGOON_ROUTE'], apikey=apiKey)
 
 # Open CSV file.
-filename = 'dataset.csv'
-
 error_log = []
-with open(filename, "rt") as file:
+with open(SOURCE_FILENAME, "rt") as file:
     data = file.read().split('\n')
 
-csv_reader = csv.reader(data)
-headers = next(csv_reader)
+csv_reader = csv.DictReader(data)
+
+count = 0
+limit = 1
 
 for row in csv_reader:
+    count += 1
+
+    if DEBUG and count > limit:
+        break
+
     # Get dataset name.
-    url = row[0]
-    dataset_name = url.split('/')[-1]
+    source_url = row.get('URL', None)
+
+    if not source_url:
+        append_error('Row {}'.format(count), 'URL not set (URL is case sensitive)', None)
+        continue
+
+    dataset_name = source_url.split('/')[-1]
 
     # Fetch package from Data.Qld.
     package_dict = []
     try:
         package_dict = source.action.package_show(id=dataset_name)
     except Exception as e:
-        error_response = {
-            'package_id': dataset_name,
-            'errors': ['Not able to load the package from source.']
-        }
-        error_log.append(error_response)
+        append_error(dataset_name, e.error_dict, source_url)
 
     if not package_dict:
-        error_response = {
-            'package_id': dataset_name,
-            'errors': ['Not able to load the package from source.']
-        }
-        error_log.append(error_response)
+        append_error(dataset_name, 'No package_dict available', source_url)
         continue
 
+    if DEBUG:
+        print('Got package_dict: {}'.format(pformat(package_dict)))
+
     # Map dataset.
-    new_package_dict = dataset_mapping(package_dict)
+    new_package_dict = dataset_mapping(package_dict, row)
+
+    if DEBUG:
+        print('Mapped to package_dict: {}'.format(pformat(new_package_dict)))
 
     if 'series' in package_dict['title'].lower():
         # This will be resource-less package.
@@ -257,12 +282,8 @@ for row in csv_reader:
         try:
             new_package_dict_id = destination.action.package_create(**new_package_dict)
         except Exception as e:
-            error = True
-            error_response = {
-                'package_id': dataset_name,
-                'errors': e.error_dict
-            }
-            error_log.append(error_response)
+            append_error(dataset_name, e.error_dict, source_url)
+            continue
 
         # Create individual package for each resource that belong to above series dataset.
         if ('resources' in package_dict) and not error:
@@ -272,11 +293,7 @@ for row in csv_reader:
                 try:
                     new_series_package_dict_id = destination.action.package_create(**new_series_package_dict)
                 except Exception as e:
-                    error_response = {
-                        'resource_id': resource.get('id'),
-                        'errors': e.error_dict
-                    }
-                    error_log.append(error_response)
+                    append_error(dataset_name, str(e), source_url)
     else:
         # Map Resources.
         new_package_dict['resources'] = []
@@ -286,12 +303,12 @@ for row in csv_reader:
 
         try:
             new_package_dict_id = destination.action.package_create(**new_package_dict)
-        except Exception as e:
-            error_response = {
+            error_log.append({
                 'package_id': dataset_name,
-                'errors': e.error_dict
-            }
-            error_log.append(error_response)
+                'errors': 'None - successfully migrated.'
+            })
+        except Exception as e:
+            append_error(dataset_name, e.error_dict, source_url)
 
 if error_log:
     print(pformat(error_log))
