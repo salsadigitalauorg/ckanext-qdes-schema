@@ -258,18 +258,13 @@ for row in csv_reader:
         package_dict = source.action.package_show(id=dataset_name)
     except Exception as e:
         append_error(dataset_name, e.error_dict, source_url)
-
-    if not package_dict:
-        append_error(dataset_name, 'No package_dict available', source_url)
         continue
-
-    if DEBUG:
-        print('Got package_dict: {}'.format(pformat(package_dict)))
 
     # Map dataset.
     new_package_dict = dataset_mapping(package_dict, row)
 
     if DEBUG:
+        print('Got package_dict: {}'.format(pformat(package_dict)))
         print('Mapped to package_dict: {}'.format(pformat(new_package_dict)))
 
     if 'series' in package_dict['title'].lower():
