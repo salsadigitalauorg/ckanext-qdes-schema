@@ -619,12 +619,8 @@
       "field_name": "format",
       "label": "Primary format",
       "display_property": "dcterms:format",
-      "display_snippet": "controlled_vocabulary_single_select.html",
-      "preset": "controlled_vocabulary_single_select",
+      "preset": "qdes_vocab_service_autocomplete",
       "vocabulary_service_name": "format",
-      "form_attrs": {
-        "data-module": "qdes_autocomplete"
-      },
       "required": true
     },
     {
