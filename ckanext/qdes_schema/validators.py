@@ -289,7 +289,7 @@ def qdes_validate_replace_relationship(value, context, package, data):
             target_title = target_dict.get('title')
             replaced_by_dataset_title = data.get(('title',), None)
 
-        elif relationship_type == 'isReplacedBy' and package.id:
+        elif relationship_type == 'isReplacedBy' and package and package.id:
             # This will happen when editor edit v1, and add relationship type 'isReplacedBy'.
             # Get the target id, in this example case, v1 information is available the current package dict.
             target_id = package.id
@@ -301,6 +301,12 @@ def qdes_validate_replace_relationship(value, context, package, data):
             # Let's add a query to filter 'replaces' that has object_package_id of the target.
             query = query.filter(model.PackageRelationship.object_package_id == target_id)
             query = query.filter(model.PackageRelationship.type == 'replaces')
+
+            if package:
+                # In case where we create a new dataset, new resource screen will be presented,
+                # at this stage the package and its relationship is already created,
+                # this filter will exclude the current dataset from the query.
+                query = query.filter(model.PackageRelationship.subject_package_id != package.id)
 
             # Run the query.
             relationship = query.first()
@@ -408,7 +414,7 @@ def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset
     data = {'url':relationship_dataset_id}
     errors = {'url': []}
     toolkit.get_validator('url_validator')('url', data, errors, context)
-    if(len(errors['url']) == 0):
+    if len(errors['url']) == 0:
         # If there are no errors it must be a valid URL so exit early
         return True
 
