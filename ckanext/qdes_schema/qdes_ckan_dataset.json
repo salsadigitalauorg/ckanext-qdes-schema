@@ -92,7 +92,7 @@
       "display_property": "foaf:homepage",
       "display_snippet": "link.html",
       "display_group": "description",
-      "validators": "url_validator qdes_uri_validator"
+      "validators": "ignore_missing url_validator qdes_uri_validator"
     },
     {
       "field_name": "dataset_language",
@@ -386,7 +386,7 @@
       "label": "Inputs",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator",
+      "validators": "ignore_missing qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "prov:used",
       "sub_heading": "lineage"
@@ -396,7 +396,7 @@
       "label": "Sensor",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator",
+      "validators": "ignore_missing qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "sosa:madeBySensor",
       "sub_heading": "lineage"
@@ -613,7 +613,7 @@
       "display_property": "dcterms:conformsTo",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "qdes_uri_validator"
+      "validators": "ignore_missing qdes_uri_validator"
     },
     {
       "field_name": "format",
@@ -657,7 +657,7 @@
       "label": "Download address",
       "display_property": "dcat:downloadURL",
       "display_snippet": "qdes_text_url.html",
-      "validators": "url_validator qdes_uri_validator",
+      "validators": "ignore_missing url_validator qdes_uri_validator",
       "recommended": true
     },
     {
