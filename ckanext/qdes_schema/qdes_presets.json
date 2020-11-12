@@ -33,7 +33,7 @@
       "values": {
         "form_snippet": "qdes_multi_group.html",
         "display_snippet": "qdes_multi_group.html",
-        "validators": "qdes_validate_multi_groups"
+        "validators": "ignore_missing qdes_validate_multi_groups"
       }
     },
     {
