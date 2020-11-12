@@ -13,6 +13,7 @@ from pprint import pformat
 log = logging.getLogger(__name__)
 get_action = logic.get_action
 h = toolkit.h
+Invalid = toolkit.Invalid
 
 
 def qdes_temporal_start_end_date(key, flattened_data, errors, context):
@@ -23,18 +24,26 @@ def qdes_temporal_start_end_date(key, flattened_data, errors, context):
     - If the either start or end date is empty.
     - If the start date < end date.
     """
-    temporal_start_value = flattened_data[('temporal_start',)]
-    temporal_end_value = flattened_data[('temporal_end',)]
+    error = None
 
-    if ((len(temporal_start_value) > 0) != (len(temporal_end_value) > 0)) and (len(flattened_data.get(key)) == 0):
-        raise toolkit.Invalid("This field should not be empty")
+    try:
+        temporal_start_value = flattened_data[('temporal_start',)]
+        temporal_end_value = flattened_data[('temporal_end',)]
 
-    if (len(temporal_start_value) > 0) and (len(temporal_end_value) > 0):
-        if dt.strptime(temporal_start_value, '%Y-%m-%d') > dt.strptime(temporal_end_value, '%Y-%m-%d'):
-            if key == ('temporal_start',):
-                raise toolkit.Invalid('Must be earlier than end date.')
-            elif key == ('temporal_end',):
-                raise toolkit.Invalid('Must be later than start date.')
+        if ((len(temporal_start_value) > 0) != (len(temporal_end_value) > 0)) and (len(flattened_data.get(key)) == 0):
+            error = 'This field should not be empty'
+
+        if (len(temporal_start_value) > 0) and (len(temporal_end_value) > 0):
+            if dt.strptime(temporal_start_value, '%Y-%m-%d') > dt.strptime(temporal_end_value, '%Y-%m-%d'):
+                if key == ('temporal_start',):
+                    error = 'Must be earlier than end date.'
+                elif key == ('temporal_end',):
+                    error = 'Must be later than start date.'
+    except Exception as e:
+        log.error(str(e), exc_info=True)
+
+    if error:
+        raise Invalid(error)
 
 
 def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, context):
