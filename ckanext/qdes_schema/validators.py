@@ -226,20 +226,24 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
     Validate the value against iso 8601 duration.
     """
     has_error = False
-    result = re.split("(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?", flattened_data[key])
 
-    for index, value in enumerate(result):
-        if (index > 1) and (index < 10):
-            try:
-                if (value is None) or len(value) == 0:
-                    value = 0
+    try:
+        result = re.split("(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?", flattened_data[key])
 
-                float_value = float(value)
+        for index, value in enumerate(result):
+            if (index > 1) and (index < 10):
+                try:
+                    if (value is None) or len(value) == 0:
+                        value = 0
 
-                if float_value < 0:
+                    float_value = float(value)
+
+                    if float_value < 0:
+                        has_error = True
+                except:
                     has_error = True
-            except:
-                has_error = True
+    except Exception as e:
+        log.error(str(e), exc_info=True)
 
     if has_error:
         raise toolkit.Invalid('The value in each field needs to be positive number.')
@@ -395,14 +399,17 @@ def qdes_validate_metadata_review_date(key, flattened_data, errors, context):
     """
     Set metadata_review_date value.
     """
-    extras = flattened_data.get(('__extras',), {}) or None
-    metadata_review_date_reviewed = extras.get('metadata_review_date_reviewed', {}) or None
-    package = context.get('package', {}) or {}
-    type = package.type if package else None
+    try:
+        extras = flattened_data.get(('__extras',), {}) or None
+        metadata_review_date_reviewed = extras.get('metadata_review_date_reviewed', {}) or None
+        package = context.get('package', {}) or {}
+        type = package.type if package else None
 
-    if (type in ['dataset', 'dataservice']) and (metadata_review_date_reviewed or len(flattened_data.get(key)) == 0):
-        # If empty OR checkbox ticked.
-        flattened_data[key] = dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+        if (type in ['dataset', 'dataservice']) and (metadata_review_date_reviewed or len(flattened_data.get(key)) == 0):
+            # If empty OR checkbox ticked.
+            flattened_data[key] = dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+    except Exception as e:
+        log.error(str(e), exc_info=True)
 
 
 def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset_id, relationship_type, context):

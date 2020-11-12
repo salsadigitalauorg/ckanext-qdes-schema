@@ -57,7 +57,7 @@
       "values": {
         "form_snippet": "qdes_duration.html",
         "display_snippet": "qdes_duration.html",
-        "validators": "qdes_iso_8601_durations"
+        "validators": "ignore_missing qdes_iso_8601_durations"
       }
     },
     {
@@ -65,7 +65,7 @@
       "values": {
         "form_snippet": "qdes_metadata_review_date.html",
         "display_snippet": "qdes_metadata_review_date.html",
-        "validators": "qdes_validate_metadata_review_date"
+        "validators": "ignore_missing qdes_validate_metadata_review_date"
       }
     },
     {
