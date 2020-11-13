@@ -22,6 +22,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
+    plugins.implements(plugins.IFacets)
+
 
     # IBlueprint
 
@@ -94,6 +96,16 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
             if license_label:
                 pkg_dict['license_label'] = license_label
+
+            # DDCI-68/69 Discovery
+            general_classification = indexing_helpers.convert_vocabulary_terms_json_to_labels(
+                dataset_type,
+                'classification',
+                pkg_dict.get('classification', '')
+            )
+
+            if general_classification:
+                pkg_dict['general_classification'] = general_classification
 
         return pkg_dict
 
@@ -174,3 +186,18 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_all_predecessor_versions': get.all_predecessor_versions,
             'get_all_relationships': get.all_relationships
         }
+
+    # IFacets
+    def dataset_facets(self, facets_dict, package_type):
+        facets_dict['type'] = plugins.toolkit._('Resource type')
+
+        # Remove the default facets we don't want
+        if 'res_format' in facets_dict:
+            facets_dict.pop('res_format')
+        if 'license_id' in facets_dict:
+            facets_dict.pop('license_id')
+
+        facets_dict['general_classification'] = plugins.toolkit._('General classification')
+        facets_dict['topic_labels'] = plugins.toolkit._('Topic or theme')
+
+        return facets_dict
