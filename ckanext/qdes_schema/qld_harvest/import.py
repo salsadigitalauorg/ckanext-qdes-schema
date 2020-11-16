@@ -218,8 +218,16 @@ def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_u
     # Set title.
     mapped_dataset['title'] = res.get('name')
 
+    # Set the new dataset's notes (description) field to the resource description
+    resource_description = res.get('description', None) or None
+    mapped_dataset['notes'] = resource_description if resource_description else parent_dataset.get('notes', '')
+
     # Set isPartOf relationship.
     mapped_dataset['series_or_collection'] = json.dumps([{"id": parent_dataset_id.get('id'), "text": parent_dataset_id.get('title')}])
+
+    # Create a resource for the dataset based on the resource we are working with
+    # AND connect it to the data service
+    mapped_dataset['resources'] = [resource_mapping(res)]
 
     return mapped_dataset
 
@@ -244,7 +252,7 @@ with open(SOURCE_FILENAME, "rt") as file:
 csv_reader = csv.DictReader(data)
 
 count = 0
-limit = 1
+limit = 5
 
 for row in csv_reader:
     count += 1
