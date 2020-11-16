@@ -2,7 +2,7 @@ import csv
 import os
 import json
 import re
-from ckanext.qdes_schema.qld_harvert import helpers
+from ckanext.qdes_schema.qld_harvest import helpers
 
 from datetime import datetime
 from ckanapi import RemoteCKAN
@@ -26,16 +26,21 @@ def convert_size_to_bytes(size_str):
         'gib': 1024 ** 3,
     }
 
-    for suffix in multipliers:
-        size_str = size_str.lower().strip().strip('s')
-        if size_str.lower().endswith(suffix):
-            return int(float(size_str[0:-len(suffix)]) * multipliers[suffix])
-    else:
-        if size_str.endswith('b'):
-            size_str = size_str[0:-1]
-        elif size_str.endswith('byte'):
-            size_str = size_str[0:-4]
-    return int(size_str)
+    try:
+        for suffix in multipliers:
+            size_str = size_str.replace(',', '')
+            size_str = size_str.lower().strip().strip('s')
+            if size_str.lower().endswith(suffix):
+                return int(float(size_str[0:-len(suffix)]) * multipliers[suffix])
+        else:
+            if size_str.endswith('b'):
+                size_str = size_str[0:-1]
+            elif size_str.endswith('byte'):
+                size_str = size_str[0:-4]
+        return int(size_str)
+    except Exception as e:
+        print(str(e))
+        raise e
 
 
 def get_dataset_schema_fields():
@@ -154,33 +159,37 @@ def resource_mapping(res):
     """
     Clean up resource.
     """
-    mapped_resource = {
-        'data_services': json.dumps([os.environ['LAGOON_ROUTE'] + '/dataservice/' + dataservice_name]),
-        'size': convert_size_to_bytes(res.get('size', 0)),
-        # @TODO: fix this. issue example: on source there is "JSON" as value, but the format has many JSON types.
-        'format': 'https://www.iana.org/assignments/media-types/application/alto-directory+json'
-    }
+    try:
+        mapped_resource = {
+            'data_services': json.dumps([os.environ['LAGOON_ROUTE'] + '/dataservice/' + dataservice_name]),
+            'size': convert_size_to_bytes(res.get('size', 0)),
+            # @TODO: fix this. issue example: on source there is "JSON" as value, but the format has many JSON types.
+            'format': 'https://www.iana.org/assignments/media-types/application/alto-directory+json'
+        }
 
-    # Manual field mapping.
-    manual_fields = [
-        'size',
-        'format',
-    ]
+        # Manual field mapping.
+        manual_fields = [
+            'size',
+            'format',
+        ]
 
-    # Get all fields available on QDES dataset.
-    # with open('../qdes_ckan_dataset.json') as f:
-    #     schema = json.load(f)
-    schema = get_dataset_schema_fields()
+        # Get all fields available on QDES dataset.
+        # with open('../qdes_ckan_dataset.json') as f:
+        #     schema = json.load(f)
+        schema = get_dataset_schema_fields()
 
-    # Build the rest of the value.
-    for field in schema.get('resource_fields'):
-        field_name = field.get('field_name')
+        # Build the rest of the value.
+        for field in schema.get('resource_fields'):
+            field_name = field.get('field_name')
 
-        # Do not process if field value is empty.
-        if (res.get(field_name, None)) and (not field_name in manual_fields):
-            mapped_resource[field_name] = res.get(field_name, '')
+            # Do not process if field value is empty.
+            if (res.get(field_name, None)) and (not field_name in manual_fields):
+                mapped_resource[field_name] = res.get(field_name, '')
 
-    return mapped_resource
+        return mapped_resource
+    except Exception as e:
+        print(str(e))
+        raise e
 
 
 def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_url=None):
@@ -292,18 +301,19 @@ for row in csv_reader:
     else:
         # Map Resources.
         new_package_dict['resources'] = []
-        if 'resources' in package_dict:
-            for resource in package_dict.get('resources'):
-                new_package_dict['resources'].append(resource_mapping(resource))
 
         try:
+            if 'resources' in package_dict:
+                for resource in package_dict.get('resources'):
+                    new_package_dict['resources'].append(resource_mapping(resource))
+
             new_package_dict_id = destination.action.package_create(**new_package_dict)
             error_log.append({
                 'package_id': dataset_name,
                 'errors': 'None - successfully migrated.'
             })
         except Exception as e:
-            append_error(dataset_name, e.error_dict, source_url)
+            append_error(dataset_name, str(e), source_url)
 
 if error_log:
     print(pformat(error_log))
