@@ -3,6 +3,7 @@ import datetime
 import logging
 
 from ckan.model import Session
+from ckan.model.package_relationship import PackageRelationship
 from ckan.lib import helpers as core_helper
 from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
 from ckanext.qdes_schema.logic.helpers import relationship_helpers
@@ -61,7 +62,12 @@ def qdes_relationship_types_choices(field):
         # as it has the same value for forward and reverse
         unique_relationship_types = []
 
+        types = PackageRelationship.get_forward_types()
+
         for relationship_type in h.get_relationship_types():
+            if relationship_type not in types:
+                continue
+
             if relationship_type not in unique_relationship_types:
                 unique_relationship_types.append(relationship_type)
 
