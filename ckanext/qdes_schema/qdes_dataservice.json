@@ -216,11 +216,8 @@
       "field_name": "contact_publisher",
       "label": "Publisher",
       "display_property": "dcterms:publisher",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_publisher",
       "display_group": "contacts",
-      "required": true,
-      "form_include_blank_choice": true
+      "required": true
     },
     {
       "field_name": "contact_creator",
