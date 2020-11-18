@@ -665,7 +665,8 @@
       "label": "Service API end-point",
       "display_property": "dcterms:conformsTo",
       "display_snippet": "qdes_multi_text_url.html",
-      "form_snippet": "qdes_multi_text.html"
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "ignore_missing qdes_uri_validator"
     },
     {
       "field_name": "data_services",
