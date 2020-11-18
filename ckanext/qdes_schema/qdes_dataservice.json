@@ -223,14 +223,8 @@
       "field_name": "contact_creator",
       "label": "Creator",
       "display_property": "dcterms:creator",
-      "preset": "controlled_vocabulary_multi_select",
-      "vocabulary_service_name": "contact_creator",
       "display_group": "contacts",
-      "required": false,
-      "form_include_blank_choice": true,
-      "form_attrs": {
-        "class": "form-control"
-      }
+      "required": false
     },
     {
       "field_name": "contact_other_party",
