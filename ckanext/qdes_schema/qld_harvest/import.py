@@ -92,6 +92,14 @@ def dataset_mapping(dataset, source_dict):
             'format',
         ]
 
+        # Keeping track of license_id and license_url values
+        license_id = dataset.get('license_id', None)
+        if license_id not in unique_license_ids:
+            unique_license_ids.append(license_id)
+        license_url = dataset.get('license_url', None)
+        if license_url not in unique_license_urls:
+            unique_license_urls.append(license_url)
+
         # Map license, license_id on QLD only a fraction of the vocab data that controlled QDES field.
         # @todo: fix this.
         mapped_dataset['license_id'] = 'http://registry.it.csiro.au/licence/cc-by-4.0'
@@ -155,6 +163,7 @@ def dataset_mapping(dataset, source_dict):
             source_dict.get('Publication status', '').lower(),
             'publication_status')
 
+        # @TODO: Set this to COMPLETED
         if publication_status:
             mapped_dataset['publication_status'] = 'http://registry.it.csiro.au/def/isotc211/MD_ProgressCode/accepted'
 
@@ -284,6 +293,8 @@ destination = RemoteCKAN(os.environ['LAGOON_ROUTE'], apikey=apiKey)
 error_log = []
 success_log = []
 unique_formats = []
+unique_license_ids = []
+unique_license_urls = []
 
 # Open CSV file.
 with open(SOURCE_FILENAME, "rt") as file:
@@ -372,5 +383,11 @@ if error_log:
 
 print('>>> Unique formats from Data.Qld:')
 print(pformat(unique_formats))
+
+print('>>> Unique license_id values from Data.Qld:')
+print(pformat(unique_license_ids))
+
+print('>>> Unique license_url values from Data.Qld:')
+print(pformat(unique_license_urls))
 
 print(f'\nRows in CSV: {count}')
