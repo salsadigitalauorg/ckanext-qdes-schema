@@ -237,16 +237,9 @@
           "field_name": "the-party",
           "label": "The party",
           "form_snippet": "text.html",
-          "display_snippet": "qdes_secure_vocabulary_text.html",
           "display_property": "prov:agent",
-          "vocabulary_service_name": "the-party",
           "form_attrs": {
-            "data-module": "qdes_autocomplete",
-            "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
-            "data-module-key": "value",
-            "data-module-label": "name",
-            "data-module-minimum-input-length": 3,      
-            "data-module-create-search-choice": true
+            "class": "form-control"
           }
         },
         {
