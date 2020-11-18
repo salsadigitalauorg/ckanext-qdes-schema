@@ -12,7 +12,7 @@
         </div>
     {% elif h.has_newer_version(pkg.id, versions) %}
         <div class="alert alert-warning">
-          Newer versions of the dataset may exist.
+            Newer versions of the dataset may exist - <a href="{{ h.url_for('dataset.read', id=versions[0].id) }}">click here to see the latest version</a>.
         </div>
     {% endif %}
 
