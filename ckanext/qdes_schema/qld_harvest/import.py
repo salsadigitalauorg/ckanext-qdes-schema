@@ -165,13 +165,13 @@ def dataset_mapping(dataset, source_dict):
 
         # @TODO: Set this to COMPLETED
         if publication_status:
-            mapped_dataset['publication_status'] = 'http://registry.it.csiro.au/def/isotc211/MD_ProgressCode/accepted'
+            mapped_dataset['publication_status'] = 'http://registry.it.csiro.au/def/isotc211/MD_ProgressCode/completed'
 
         # @TODO: This CV is not currently implemented
         mapped_dataset['contact_publisher'] = 'http://linked.data.gov.au/def/organisation-type/family-partnership'
 
         # @TODO: Should this be set in here??? i.e. Dataset schema does not have a `format` field
-        mapped_dataset['format'] = 'https://www.iana.org/assignments/media-types/application/1d-interleaved-parityfec'
+        #mapped_dataset['format'] = 'https://www.iana.org/assignments/media-types/application/1d-interleaved-parityfec'
 
         # Build the rest of the values.
         for field in schema.get('dataset_fields'):
@@ -212,8 +212,6 @@ def resource_mapping(res):
         ]
 
         # Get all fields available on QDES dataset.
-        # with open('../qdes_ckan_dataset.json') as f:
-        #     schema = json.load(f)
         schema = get_dataset_schema_fields()
 
         # Build the rest of the value.
