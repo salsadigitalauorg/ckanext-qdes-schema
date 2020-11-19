@@ -81,7 +81,7 @@
       "display_property": "foaf:homepage",
       "display_snippet": "link.html",
       "display_group": "description",
-      "validators": "url_validator qdes_uri_validator"
+      "validators": "ignore_missing url_validator qdes_uri_validator"
     },
     {
       "field_name": "dataset_language",
@@ -143,7 +143,7 @@
       "display_snippet": "qdes_text_url.html",
       "display_group": "access",
       "recommended": true,
-      "validators": "url_validator qdes_uri_validator"
+      "validators": "ignore_missing url_validator qdes_uri_validator"
     },
     {
       "field_name": "api_address",
@@ -152,7 +152,7 @@
       "display_snippet": "qdes_text_url.html",
       "display_group": "access",
       "recommended": true,
-      "validators": "url_validator qdes_uri_validator"
+      "validators": "ignore_missing url_validator qdes_uri_validator"
     },
     {
       "field_name": "service_uri",
@@ -161,7 +161,7 @@
       "display_snippet": "qdes_text_url.html",
       "display_group": "access",
       "recommended": true,
-      "validators": "url_validator qdes_uri_validator"
+      "validators": "ignore_missing url_validator qdes_uri_validator"
     },
     {
       "field_name": "service_status",
