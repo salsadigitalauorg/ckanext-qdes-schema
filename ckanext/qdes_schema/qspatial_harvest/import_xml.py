@@ -10,8 +10,8 @@ from datetime import datetime as dt
 
 def get_remote_ckan():
     remoteCKAN = RemoteCKAN(
-        'http://qdes-ckan-29.docker.amazee.io',
-        apikey='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJGX0IzNUhRSGlHVHNWWXV4eWZHYm10bzVxNDZ2dWNrSVVlTV9pcERQeWJfMWU1cFQxZk9vMWl6WnVqUkZrMkZzMWJHZENOOFgwNllqQ1Y4RSIsImlhdCI6MTYwNDAwMzMxMX0.qvZ-trs4sKRy4wyj774BtefV-8-7auoMpHSkLrP8B8c'
+        os.environ['LAGOON_ROUTE'], 
+        os.environ['HARVEST_API_KEY']
     )
     return remoteCKAN
 
