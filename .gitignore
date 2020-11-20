@@ -43,3 +43,4 @@ docs/_build/
 
 .DS_Store
 ckanext/qdes_schema/qspatial_harvest/xml_files/*.xml
+ckanext/qdes_schema/qspatial_harvest/logs/

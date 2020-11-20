@@ -19,7 +19,7 @@
 {%- if field_group.get('first_choice') -%}
   {%- set options = h.set_first_option(options, field_group.get('first_choice')) -%}
 {%- endif -%}
-{%- if  field_group.field_name in group_data -%}
+{%- if not group_data is string and field_group.field_name in group_data-%}
   {%- set option_selected = group_data.get(field_group.field_name, '')|string -%}
 {%- else -%}
   {%- set option_selected = None -%}

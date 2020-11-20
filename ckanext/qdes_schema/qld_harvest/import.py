@@ -2,7 +2,7 @@ import csv
 import os
 import json
 import re
-from ckanext.qdes_schema.qld_harvert import helpers
+from ckanext.qdes_schema.logic.helpers import harvest_helpers as helpers
 
 from datetime import datetime
 from ckanapi import RemoteCKAN

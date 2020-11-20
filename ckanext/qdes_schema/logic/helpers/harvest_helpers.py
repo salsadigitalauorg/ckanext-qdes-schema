@@ -14,31 +14,32 @@ def get_mapped_update_frequency(update_frequency):
         'half-yearly': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/biannually',
         'annually': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/annually',
         'non-regular': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/irregular',
-        'not-updated': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/notPlanned',
+        'not-updated': 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/notPlanned'
     }
     return frequency_map.get(update_frequency, '')
 
 
-def get_point_of_contact_id(destination, query, vocabulary_name):
+def get_secure_vocabulary_record(destination, query, vocabulary_name, debug=False):
     try:
         data_dict = {
             'query': query,
-            'vocabulary_name': vocabulary_name,
+            'vocabulary_name': vocabulary_name
         }
         result = destination.action.get_secure_vocabulary_search(**data_dict)
 
         # Only return the first result, as presumably the data in the CSV file will be a unique name
-        if len(result) >= 1:
-            return result[0]
+        if result and len(result) >= 1:
+            return result[0].get('value', None)
 
-        print('>>>')
-        print('No point of contact found for name: {}'.format(query))
-        print('>>>')
+        if debug:
+            print('>>>')
+            print('No secure vocabulary record found: {0} for query: {1}'.format(vocabulary_name, query))
+            print('>>>')
     except Exception as e:
         print(str(e))
 
 
-def get_vocabulary_service_term(destination, query, vocabulary_service_name):
+def get_vocabulary_service_term(destination, query, vocabulary_service_name, debug=False):
     try:
         data_dict = {
             'q': query,
@@ -48,11 +49,12 @@ def get_vocabulary_service_term(destination, query, vocabulary_service_name):
         result = destination.action.vocabulary_service_term_search(**data_dict)
 
         # Only return the first result, as presumably the data in the CSV file will be a unique name
-        if len(result) >= 1:
-            return result[0]
+        if result and len(result) >= 1:
+            return result[0].get('value', None)
 
-        print('>>>')
-        print('No term found in vocabulary_service: {0} for query: {1}'.format(vocabulary_service_name, query))
-        print('>>>')
+        if debug:
+            print('>>>')
+            print('No term found in vocabulary_service: {0} for query: {1}'.format(vocabulary_service_name, query))
+            print('>>>')
     except Exception as e:
         print(str(e))

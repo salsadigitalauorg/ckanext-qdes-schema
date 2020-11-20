@@ -1,6 +1,6 @@
 {% import 'macros/form.html' as form %}
 
-{%- if field_group.field_name in group_data -%}
+{%- if not group_data is string and field_group.field_name in group_data -%}
     {%- set value = group_data.get(field_group.field_name, '') -%}
     {% if value %}
         <!-- If value is from dataset autocomplete it will be a json object -->
