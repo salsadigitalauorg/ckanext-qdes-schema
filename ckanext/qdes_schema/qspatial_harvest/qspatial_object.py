@@ -108,9 +108,9 @@ class QSpatialObject:
         if parentIdentifier != None:
             parent_identifier = parentIdentifier.text
 
-        if parent_identifier == None:
+        # if parent_identifier == None:
             # Set default value
-            self.log('parent_identifier: No value')
+            # self.log('parent_identifier: No value')
 
         # self.log('parent_identifier: {}'.format(parent_identifier))
         return {'parent_identifier': parent_identifier}
