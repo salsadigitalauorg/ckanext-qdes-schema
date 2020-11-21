@@ -54,6 +54,7 @@ class QSpatialObject:
         self.package.update(self.get_topic())
         self.package.update(self.get_contact_point())
         self.package.update(self.get_contact_publisher())
+        self.package.update(self.get_contact_other_party())
         self.package.update(self.get_publication_status())
         self.package.update(self.get_classification_and_access_restrictions())
         self.package.update(self.get_license_id())
@@ -242,6 +243,43 @@ class QSpatialObject:
 
         # self.log('contact_publisher: {}'.format(contact_publisher_term))
         return {'contact_publisher': contact_publisher_term}
+
+    def get_contact_other_party(self):
+        the_party_term = None
+        # "<identificationInfo>
+        # <MD_DataIdentification>
+        # <citation>
+        # <CI_Citation>
+        # <citedResponsibleParty>
+        # <CI_ResponsibleParty id=""resourceCustodian"">
+        # <organisationName> - ?
+        # <positionName> - ?
+        # <contactInfo>
+        # <CI_Contact>
+        # <onlineResource>
+        # <CI_OnlineResource>
+        # <linkage>
+        # <URL> - ?
+
+        # where <CI_RoleCode codeListValue=""custodian"" codeList=""http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode"">"
+        # TODO: Need to find out which element to use?
+        # /MD_Metadata/identificationInfo/MD_DataIdentification/citation/CI_Citation/citedResponsibleParty/CI_ResponsibleParty/contactInfo/CI_Contact/onlineResource/CI_OnlineResource/linkage/URL
+        # /MD_Metadata/identificationInfo/MD_DataIdentification/citation/CI_Citation/citedResponsibleParty[4]/CI_ResponsibleParty/positionName/gco:CharacterString
+        URL = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:citedResponsibleParty/gmd:CI_ResponsibleParty[@id="resourceCustodian"]/gmd:positionName/gco:CharacterString', self.ns)
+        # /MD_Metadata/identificationInfo/MD_DataIdentification/citation/CI_Citation/citedResponsibleParty[4]/CI_ResponsibleParty/role/CI_RoleCode/@codeListValue
+        # URL = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:citedResponsibleParty/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode[@codeListValue="custodian"]', self.ns)
+        if URL != None:
+            the_party_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, URL.text, 'the-party')
+
+        if the_party_term == None:
+            # Set default value
+            self.log('contact_other_party: {0}'.format(URL.text if URL != None else "No value"))
+            # Get 'Kelly Bryant' as the default
+            the_party_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, 'Kelly Bryant', 'the-party')
+
+        contact_other_party = [{"the-party": the_party_term, "nature-of-their-responsibility": "http://linked.data.gov.au/def/dataciteroles/DataCurator"}]
+        # self.log('contact_other_party: {}'.format(contact_other_party))
+        return {'contact_other_party': json.dumps(contact_other_party) if the_party_term else None}
 
     def get_publication_status(self):
         publication_status = None

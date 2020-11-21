@@ -63,6 +63,7 @@ def main():
             # 'topic',
             # 'contact_point',
             # 'contact_publisher',
+            # 'contact_other_party',
             # 'publication_status',
             # 'classification_and_access_restrictions',
             # 'license_id',
@@ -111,7 +112,6 @@ def main():
                     if field in distinct_resource_fields:
                         distinct_resource_fields[field].append(resource.get(field)) if resource.get(field) not in distinct_resource_fields[field] else distinct_resource_fields[field]
 
-            # if package
             # pprint(package)
             create_package(remoteCKAN, package)
 
@@ -131,6 +131,7 @@ def main():
                 # print('parent package found {0} for {1}'.format(parent_package.get('title'), package.get('title')))
                 package['series_or_collection'] = json.dumps([{"id": parent_package.get('id'), "text": parent_package.get('title')}])
 
+            # pprint(package)
             create_package(remoteCKAN, package)
 
         pprint(distinct_package_fields)

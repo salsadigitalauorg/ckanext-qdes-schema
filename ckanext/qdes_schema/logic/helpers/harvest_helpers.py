@@ -27,8 +27,11 @@ def get_secure_vocabulary_record(destination, query, vocabulary_name, debug=Fals
         }
         result = destination.action.get_secure_vocabulary_search(**data_dict)
 
+        # If action fails it will return something like this {'success': False, 'msg': 'Not authorised'}, instead of a list of results.
+        if result and 'success' in result and result.get('success') == False:
+            print(result.get('msg'))
         # Only return the first result, as presumably the data in the CSV file will be a unique name
-        if result and len(result) >= 1:
+        if result and isinstance(result, list) and len(result) >= 1:
             return result[0].get('value', None)
 
         if debug:
