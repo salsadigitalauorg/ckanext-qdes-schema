@@ -3,8 +3,10 @@ import datetime
 import logging
 
 from ckan.model import Session
+from ckan.model.package_relationship import PackageRelationship
 from ckan.lib import helpers as core_helper
 from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
+from ckanext.qdes_schema.logic.helpers import relationship_helpers
 from ckanext.invalid_uris.model import InvalidUri
 from pprint import pformat
 
@@ -60,7 +62,12 @@ def qdes_relationship_types_choices(field):
         # as it has the same value for forward and reverse
         unique_relationship_types = []
 
+        types = PackageRelationship.get_forward_types()
+
         for relationship_type in h.get_relationship_types():
+            if relationship_type not in types:
+                continue
+
             if relationship_type not in unique_relationship_types:
                 unique_relationship_types.append(relationship_type)
 
@@ -93,75 +100,82 @@ def update_related_resources(context, pkg_dict, reconcile_relationships=False):
         create_related_relationships(context, pkg_dict, 'related_services', 'unspecified relationship')
 
     create_related_resource_relationships(context, pkg_dict)
-    data_dict = {"id": pkg_dict.get('id')}
-    get_action('update_related_resources')(context, data_dict)
+    get_action('update_related_resources')(context, {"id": pkg_dict.get('id')})
 
 
+# @TODO: This should be renamed to something more appropriate to what it does, i.e. "stage|build|add_related_resources"
+# and could probably just be absorbed into the `set_pkg_related_resources` function below
 def create_related_relationships(context, pkg_dict, metadata_field, relationship_type):
-    datasets = get_converter('json_or_string')(pkg_dict.get(metadata_field, []))
-    add_related_resources(pkg_dict, datasets, relationship_type)
+    resources = get_converter('json_or_string')(pkg_dict.get(metadata_field, []))
+    set_pkg_related_resources(pkg_dict, resources, relationship_type)
 
 
-def add_related_resources(pkg_dict, datasets, relationship_type):
-    if not datasets or not isinstance(datasets, list):
-        return
-    related_resources = get_converter('json_or_string')(pkg_dict.get('related_resources', []))
-    if not related_resources:
-        related_resources = []
+def set_pkg_related_resources(pkg_dict, resources, relationship_type):
+    if resources and isinstance(resources, list):
+        pkg_related_resources = get_converter('json_or_string')(pkg_dict.get('related_resources', []))
+        if not pkg_related_resources:
+            pkg_related_resources = []
 
-    for dataset in datasets:
-        # Only add related_resource if it does not already exist
-        if not any(resource for resource in related_resources
-                   if resource.get('resource', {}).get('id', '') == dataset.get('id', '')
-                   and resource.get('relationship', '') == relationship_type):
-            related_resource = {}
-            related_resource["resource"] = dataset
-            related_resource["relationship"] = relationship_type
-            related_resources.append(related_resource)
-            log.debug('add_related_resources: {}'.format(related_resource))
+        for resource in resources:
+            # Only add `resource` to `related_resources` if it does not already exist
+            if not any(x for x in pkg_related_resources
+                       if x.get('resource', {}).get('id', '') == resource.get('id', '')
+                       and x.get('relationship', '') == relationship_type):
+                pkg_related_resources.append({
+                    'resource': resource,
+                    'relationship': relationship_type
+                })
 
-    pkg_dict['related_resources'] = h.dump_json(related_resources)
+        pkg_dict['related_resources'] = h.dump_json(pkg_related_resources)
 
 
 def create_related_resource_relationships(context, pkg_dict):
     remove_duplicate_related_resources(pkg_dict)
-    related_resources = get_converter('json_or_string')(pkg_dict.get('related_resources', []))
-    if related_resources and isinstance(related_resources, list):
-        dataset_id = pkg_dict.get('id')
-        create_relationships(context, dataset_id, related_resources)
+    pkg_related_resources = get_converter('json_or_string')(pkg_dict.get('related_resources', []))
+    if pkg_related_resources and isinstance(pkg_related_resources, list):
+        create_package_relationship_records(context, pkg_dict.get('id'), pkg_related_resources)
 
 
-def create_relationships(context, dataset_id, datasets):
+def create_package_relationship_records(context, pkg_id, pkg_related_resources):
     try:
-        for dataset in datasets:
-            relationship_type = dataset.get('relationship')
-            relationship_dataset, relationship_url = get_dataset_relationship(context, dataset.get('resource'))
+        for resource in pkg_related_resources:
+            relationship_type = resource.get('relationship')
+            object_package_id, url = get_related_object_or_url(context, resource.get('resource'))
 
-            if relationship_dataset or relationship_url:
-                relationship = get_action('package_relationship_create')(context, {
-                    'subject': dataset_id,
-                    'object': relationship_dataset,
+            if object_package_id or url:
+                # Pre-check to see if a `package_relationship` already exists for this `subject_package_id`,
+                # `object_package_id` and `type`, because it's possible that a sysadmin user added a
+                # relationship to a package that an admin or editor user does not have `package_update` permission
+                if object_package_id and \
+                        relationship_helpers.get_existing_relationship(pkg_id, object_package_id, relationship_type):
+                    continue
+
+                # Upsert the `package_relationship`
+                get_action('package_relationship_create')(context, {
+                    'subject': pkg_id,
+                    'object': object_package_id,
                     'type': relationship_type,
-                    'comment': relationship_url,
+                    'comment': url,
                 })
     except Exception as e:
-        log.error('create_relationships error: {0}'.format(e))
+        log.error('create_package_relationship_records error: {0}'.format(e), exc_info=True)
         raise
 
 
-def get_dataset_relationship(context, dataset):
-    relationship_dataset = None
-    relationship_url = None
-    dataset_id = dataset.get('id', '')
+def get_related_object_or_url(context, resource):
+    object_package_id = None
+    url = None
+    resource_id = resource.get('id', '')
     try:
-        get_validator('package_id_exists')(dataset_id, context)
-        relationship_dataset = dataset_id
+        get_validator('package_id_exists')(resource_id, context)
+        object_package_id = resource_id
     except Invalid:
         # Dataset does not exist so must be an external dataset URL
-        # Validation should have already happened in validator 'qdes_validate_related_dataset' so the dataset should be a URL to external dataset
-        relationship_url = dataset_id
+        # Validation should have already happened in validator 'qdes_validate_related_dataset'
+        # so the `resource` should be a URL to external dataset
+        url = resource_id
 
-    return (relationship_dataset, relationship_url)
+    return object_package_id, url
 
 
 def reconcile_package_relationships(context, pkg_id, related_resources):
@@ -265,14 +279,7 @@ def convert_relationships_to_related_resources(relationships):
 
 
 def get_qld_bounding_box_config():
-    aubb = None
-
-    try:
-        aubb = config.get('ckanext.qdes_schema.qld_bounding_box', None)
-    except Exception as e:
-        log.error(str(e))
-
-    return aubb
+    return config.get('ckanext.qdes_schema.qld_bounding_box', None)
 
 
 def get_package_dict(id):
