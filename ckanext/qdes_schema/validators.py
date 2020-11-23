@@ -13,6 +13,7 @@ from pprint import pformat
 log = logging.getLogger(__name__)
 get_action = logic.get_action
 h = toolkit.h
+Invalid = toolkit.Invalid
 
 
 def qdes_temporal_start_end_date(key, flattened_data, errors, context):
@@ -23,18 +24,26 @@ def qdes_temporal_start_end_date(key, flattened_data, errors, context):
     - If the either start or end date is empty.
     - If the start date < end date.
     """
-    temporal_start_value = flattened_data[('temporal_start',)]
-    temporal_end_value = flattened_data[('temporal_end',)]
+    error = None
 
-    if ((len(temporal_start_value) > 0) != (len(temporal_end_value) > 0)) and (len(flattened_data.get(key)) == 0):
-        raise toolkit.Invalid("This field should not be empty")
+    try:
+        temporal_start_value = flattened_data[('temporal_start',)]
+        temporal_end_value = flattened_data[('temporal_end',)]
 
-    if (len(temporal_start_value) > 0) and (len(temporal_end_value) > 0):
-        if dt.strptime(temporal_start_value, '%Y-%m-%d') > dt.strptime(temporal_end_value, '%Y-%m-%d'):
-            if key == ('temporal_start',):
-                raise toolkit.Invalid('Must be earlier than end date.')
-            elif key == ('temporal_end',):
-                raise toolkit.Invalid('Must be later than start date.')
+        if ((len(temporal_start_value) > 0) != (len(temporal_end_value) > 0)) and (len(flattened_data.get(key)) == 0):
+            error = 'This field should not be empty'
+
+        if (len(temporal_start_value) > 0) and (len(temporal_end_value) > 0):
+            if dt.strptime(temporal_start_value, '%Y-%m-%d') > dt.strptime(temporal_end_value, '%Y-%m-%d'):
+                if key == ('temporal_start',):
+                    error = 'Must be earlier than end date.'
+                elif key == ('temporal_end',):
+                    error = 'Must be later than start date.'
+    except Exception as e:
+        log.error(str(e), exc_info=True)
+
+    if error:
+        raise Invalid(error)
 
 
 def qdes_dataset_current_date_later_than_creation(key, flattened_data, errors, context):
@@ -226,20 +235,24 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
     Validate the value against iso 8601 duration.
     """
     has_error = False
-    result = re.split("(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?", flattened_data[key])
 
-    for index, value in enumerate(result):
-        if (index > 1) and (index < 10):
-            try:
-                if (value is None) or len(value) == 0:
-                    value = 0
+    try:
+        result = re.split("(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?", flattened_data[key])
 
-                float_value = float(value)
+        for index, value in enumerate(result):
+            if (index > 1) and (index < 10):
+                try:
+                    if (value is None) or len(value) == 0:
+                        value = 0
 
-                if float_value < 0:
+                    float_value = float(value)
+
+                    if float_value < 0:
+                        has_error = True
+                except:
                     has_error = True
-            except:
-                has_error = True
+    except Exception as e:
+        log.error(str(e), exc_info=True)
 
     if has_error:
         raise toolkit.Invalid('The value in each field needs to be positive number.')
@@ -289,7 +302,7 @@ def qdes_validate_replace_relationship(value, context, package, data):
             target_title = target_dict.get('title')
             replaced_by_dataset_title = data.get(('title',), None)
 
-        elif relationship_type == 'isReplacedBy' and package.id:
+        elif relationship_type == 'isReplacedBy' and package and package.id:
             # This will happen when editor edit v1, and add relationship type 'isReplacedBy'.
             # Get the target id, in this example case, v1 information is available the current package dict.
             target_id = package.id
@@ -301,6 +314,12 @@ def qdes_validate_replace_relationship(value, context, package, data):
             # Let's add a query to filter 'replaces' that has object_package_id of the target.
             query = query.filter(model.PackageRelationship.object_package_id == target_id)
             query = query.filter(model.PackageRelationship.type == 'replaces')
+
+            if package:
+                # In case where we create a new dataset, new resource screen will be presented,
+                # at this stage the package and its relationship is already created,
+                # this filter will exclude the current dataset from the query.
+                query = query.filter(model.PackageRelationship.subject_package_id != package.id)
 
             # Run the query.
             relationship = query.first()
@@ -389,14 +408,17 @@ def qdes_validate_metadata_review_date(key, flattened_data, errors, context):
     """
     Set metadata_review_date value.
     """
-    extras = flattened_data.get(('__extras',), {}) or None
-    metadata_review_date_reviewed = extras.get('metadata_review_date_reviewed', {}) or None
-    package = context.get('package', {}) or {}
-    type = package.type if package else None
+    try:
+        extras = flattened_data.get(('__extras',), {}) or None
+        metadata_review_date_reviewed = extras.get('metadata_review_date_reviewed', {}) or None
+        package = context.get('package', {}) or {}
+        type = package.type if package else None
 
-    if (type in ['dataset', 'dataservice']) and (metadata_review_date_reviewed or len(flattened_data.get(key)) == 0):
-        # If empty OR checkbox ticked.
-        flattened_data[key] = dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+        if (type in ['dataset', 'dataservice']) and (metadata_review_date_reviewed or len(flattened_data.get(key)) == 0):
+            # If empty OR checkbox ticked.
+            flattened_data[key] = dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+    except Exception as e:
+        log.error(str(e), exc_info=True)
 
 
 def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset_id, relationship_type, context):
@@ -408,7 +430,7 @@ def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset
     data = {'url':relationship_dataset_id}
     errors = {'url': []}
     toolkit.get_validator('url_validator')('url', data, errors, context)
-    if(len(errors['url']) == 0):
+    if len(errors['url']) == 0:
         # If there are no errors it must be a valid URL so exit early
         return True
 
