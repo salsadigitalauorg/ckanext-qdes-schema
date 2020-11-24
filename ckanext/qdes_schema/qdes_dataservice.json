@@ -37,7 +37,8 @@
       "validators": "scheming_required",
       "recommended": true,
       "form_attrs": {
-        "class": "form-control"
+        "class": "form-control",
+        "data-module-title": "title"
       },
       "form_include_blank_choice": true
     },
@@ -72,7 +73,10 @@
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
       "display_group": "description",
-      "form_include_blank_choice": true
+      "form_include_blank_choice": true,
+      "form_attrs": {
+        "data-module-title": "title"
+      }
     },
     {
       "field_name": "url",
@@ -91,7 +95,8 @@
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "dataset_language",
       "form_attrs": {
-        "data-module": "qdes_autocomplete"
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
       },
       "first_choice": "English",
       "form_include_blank_choice": true
@@ -105,7 +110,8 @@
       "vocabulary_service_name": "topic",
       "validators": "scheming_required",
       "form_attrs": {
-        "data-module": "qdes_autocomplete"
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
       },
       "form_include_blank_choice": true
     },
@@ -131,7 +137,8 @@
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "standards",
       "form_attrs": {
-        "class": "form-control"
+        "class": "form-control",
+        "data-module-title": "title"
       },
       "recommended": true,
       "form_include_blank_choice": true
@@ -169,7 +176,10 @@
       "display_property": "adms:status",
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "service_status",
-      "display_group": "status"
+      "display_group": "status",
+      "form_attrs": {
+        "data-module-title": "title"
+      }
     },
     {
       "field_name": "service_creation_date",
@@ -250,7 +260,8 @@
           "vocabulary_service_name": "nature-of-their-responsibility",
           "choices_helper": "scheming_vocabulary_service_choices",
           "form_attrs": {
-            "class": "form-control"
+            "class": "form-control",
+            "data-module-title": "title"
           },
           "form_include_blank_choice": true
         }
@@ -264,7 +275,8 @@
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "classification_and_access_restrictions",
       "form_attrs": {
-        "data-module": "qdes_autocomplete"
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
       },
       "form_include_blank_choice": true,
       "recommended": true
@@ -285,7 +297,10 @@
       "vocabulary_service_name": "license",
       "display_group": "rights & licensing",
       "required": true,
-      "form_include_blank_choice": true
+      "form_include_blank_choice": true,
+      "form_attrs": {
+        "data-module-title": "title"
+      }
     },
     {
       "field_name": "specialized_license",

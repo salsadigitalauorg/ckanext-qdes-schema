@@ -24,7 +24,7 @@
                         {%- do options.append({
                           'value': c.value|string,
                           'text': h.scheming_language_text(c.label),
-                          'title': c.title|string }) -%}
+                          'title': c.title|string if c.title is not none else ''  }) -%}
                       {%- endif -%}
                     {%- endfor -%}
                     {%- if field.get('sorted_choices') -%}
