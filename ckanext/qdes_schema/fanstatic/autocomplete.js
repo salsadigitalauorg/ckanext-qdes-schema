@@ -212,7 +212,7 @@ jQuery(document).ready(function () {
 
           key = key ? key : item;
           label = label ? label : item;
-          title = title ? title : item;
+          title = title ? title : '';
 
           var lowercased = item.toLowerCase();
           var returnObject = options && options.objects === true;
@@ -409,7 +409,11 @@ jQuery(document).ready(function () {
       _initialiseTooltip : function (event) {
         // Only initialise tooltip if it has not been initialised yet
         if(jQuery(event.target).data('bs.tooltip') === undefined) {
-          jQuery(event.target).tooltip({"placement": "auto", "delay": { "show": 500, "hide": 100 }});
+          jQuery(event.target).tooltip({
+            "placement": "auto",
+            "delay": {"show": 500, "hide": 100},
+            "container": 'body'
+          });
           setTimeout(this._showTooltip, 500, event.target);
         }
       },
