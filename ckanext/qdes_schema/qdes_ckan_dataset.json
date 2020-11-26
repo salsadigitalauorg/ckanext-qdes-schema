@@ -84,10 +84,7 @@
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
       "display_group": "description",
-      "form_include_blank_choice": true,
-      "form_attrs": {
-        "data-module-title": "title"
-      }
+      "form_include_blank_choice": true
     },
     {
       "field_name": "url",
@@ -452,10 +449,7 @@
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
       "display_group": "contacts",
-      "required": true,
-      "form_attrs": {
-        "data-module-title": "title"
-      }
+      "required": true
     },
     {
       "field_name": "contact_publisher",
@@ -668,6 +662,10 @@
       "vocabulary_service_name": "format",
       "required": true,
       "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/format?incomplete=?",
+        "data-module-key": "value",
+        "data-module-label": "name",
         "data-module-title": "title"
       }
     },

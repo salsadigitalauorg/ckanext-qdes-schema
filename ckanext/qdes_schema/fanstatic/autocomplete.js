@@ -120,6 +120,10 @@ jQuery(document).ready(function () {
           return false;
         });
 
+        this.el.on('select2-selecting', function (e) {
+            $('.tooltip').remove();
+        });
+
         this._select2 = select2;
       },
 
