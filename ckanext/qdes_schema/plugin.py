@@ -38,6 +38,13 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         '''
         helpers.update_related_resources(context, pkg_dict, False)
 
+        # Remove `ignore_auth` from the context - in case it was set
+        # lower in the chain, i.e. by ckanext-relationships
+        # `package_relationship_create` auth function
+        ignore_auth = context.get('ignore_auth', None)
+        if ignore_auth:
+            context.pop('ignore_auth')
+
         return pkg_dict
 
     def after_update(self, context, pkg_dict):
@@ -46,6 +53,13 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         has been updated.
         '''
         helpers.update_related_resources(context, pkg_dict, True)
+
+        # Remove `ignore_auth` from the context - in case it was set
+        # lower in the chain, i.e. by ckanext-relationships
+        # `package_relationship_create` auth function
+        ignore_auth = context.get('ignore_auth', None)
+        if ignore_auth:
+            context.pop('ignore_auth')
 
         return pkg_dict
 
@@ -146,6 +160,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_relationship_types_choices': helpers.qdes_relationship_types_choices,
             'get_related_versions': helpers.get_related_versions,
             'get_superseded_versions': relationship_helpers.get_superseded_versions,
+            'has_newer_version': relationship_helpers.has_newer_version,
             'get_all_relationships': helpers.get_all_relationships,
             'convert_relationships_to_related_resources': helpers.convert_relationships_to_related_resources,
             'get_qld_bounding_box_config': helpers.get_qld_bounding_box_config,
