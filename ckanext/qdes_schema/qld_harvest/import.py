@@ -2,8 +2,9 @@ import csv
 import os
 import json
 import re
-from ckanext.qdes_schema.qld_harvest import helpers
+import urllib as urllib
 
+from ckanext.qdes_schema.qld_harvest import helpers
 from datetime import datetime
 from ckanapi import RemoteCKAN
 from pprint import pformat
@@ -61,6 +62,25 @@ def get_dataset_schema_fields():
         return json.load(f)
 
 
+def fix_url(url):
+    parsed_url = urllib.parse.urlparse(url)
+
+    if parsed_url.query:
+        parsed_query_params = urllib.parse.parse_qs(parsed_url.query)
+        query = urllib.parse.urlencode(parsed_query_params, doseq=True)
+
+        return urllib.parse.urlunparse((
+            parsed_url.scheme,
+            parsed_url.netloc,
+            parsed_url.path,
+            parsed_url.params,
+            query,
+            parsed_url.fragment,
+        ))
+
+    return None
+
+
 def dataset_mapping(dataset, source_dict):
     """
     Map QLD dataset to QDES dataset.
@@ -90,6 +110,7 @@ def dataset_mapping(dataset, source_dict):
             'contact_publisher',
             'publication_status',
             'format',
+            'tag_string',
         ]
 
         # Keeping track of license_id and license_url values
@@ -222,6 +243,10 @@ def resource_mapping(res):
             if (res.get(field_name, None)) and (not field_name in manual_fields):
                 mapped_resource[field_name] = res.get(field_name, '')
 
+        # Encode url if exist.
+        if mapped_resource['url']:
+            mapped_resource['url'] = fix_url(mapped_resource['url'])
+
         return mapped_resource
     except Exception as e:
         print('>>> Exception raised in resource_mapping')
@@ -252,7 +277,8 @@ def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_u
             if not value:
                 value = parent_dataset.get(field_name)
 
-            mapped_dataset[field_name] = value
+            if value:
+                mapped_dataset[field_name] = value
 
         # Set title.
         mapped_dataset['title'] = res.get('name')
@@ -267,6 +293,10 @@ def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_u
         # Create a resource for the dataset based on the resource we are working with
         # AND connect it to the data service
         mapped_dataset['resources'] = [resource_mapping(res)]
+
+        # Encode url if exist.
+        if mapped_dataset['url']:
+            mapped_dataset['url'] = fix_url(mapped_dataset['url'])
 
         return mapped_dataset
 
@@ -355,7 +385,7 @@ for row in csv_reader:
                 try:
                     new_series_package_dict_id = destination.action.package_create(**new_series_package_dict)
                 except Exception as e:
-                    append_error(dataset_name, str(e), source_url)
+                    append_error(new_series_package_dict.get('name'), str(e), source_url)
     else:
         # Map Resources.
         new_package_dict['resources'] = []
