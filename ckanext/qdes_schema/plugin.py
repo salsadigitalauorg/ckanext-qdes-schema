@@ -10,6 +10,7 @@ from ckanext.qdes_schema.logic.action import (
 )
 from ckanext.relationships import helpers as ckanext_relationships_helpers
 from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_helpers
+from collections import OrderedDict
 from pprint import pformat
 
 log = logging.getLogger(__name__)
@@ -111,7 +112,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             if license_label:
                 pkg_dict['license_label'] = license_label
 
-            # DDCI-68/69 Discovery
+            # General classification.
             general_classification = indexing_helpers.convert_vocabulary_terms_json_to_labels(
                 dataset_type,
                 'classification',
@@ -120,6 +121,46 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
             if general_classification:
                 pkg_dict['general_classification'] = general_classification
+
+            # Publication status.
+            publication_status_label = indexing_helpers.convert_term_uri_to_label(
+                dataset_type,
+                'publication_status',
+                pkg_dict.get('publication_status', '')
+            )
+
+            if publication_status_label:
+                pkg_dict['publication_status_label'] = publication_status_label
+
+            # Access restriction.
+            classification_and_access_restrictions_label = indexing_helpers.convert_vocabulary_terms_json_to_labels(
+                dataset_type,
+                'classification_and_access_restrictions',
+                pkg_dict.get('classification_and_access_restrictions', '')
+            )
+
+            if classification_and_access_restrictions_label:
+                pkg_dict['classification_and_access_restrictions_label'] = classification_and_access_restrictions_label
+
+            # Service status.
+            service_status_label = indexing_helpers.convert_term_uri_to_label(
+                dataset_type,
+                'service_status',
+                pkg_dict.get('service_status', '')
+            )
+
+            if service_status_label:
+                pkg_dict['service_status_label'] = service_status_label
+
+            # Standards.
+            standards_label = indexing_helpers.convert_vocabulary_terms_json_to_labels(
+                dataset_type,
+                'standards',
+                pkg_dict.get('standards', '')
+            )
+
+            if standards_label:
+                pkg_dict['standards_label'] = standards_label
 
         return pkg_dict
 
@@ -204,15 +245,51 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
     # IFacets
     def dataset_facets(self, facets_dict, package_type):
-        facets_dict['type'] = plugins.toolkit._('Resource type')
-
         # Remove the default facets we don't want
-        if 'res_format' in facets_dict:
-            facets_dict.pop('res_format')
         if 'license_id' in facets_dict:
             facets_dict.pop('license_id')
+        if 'tags' in facets_dict:
+            facets_dict.pop('tags')
+        if 'groups' in facets_dict:
+            facets_dict.pop('groups')
+        if 'organization' in facets_dict:
+            facets_dict.pop('organization')
 
+        facets_dict['type'] = plugins.toolkit._('Dataset or Data service')
         facets_dict['general_classification'] = plugins.toolkit._('General classification')
         facets_dict['topic_labels'] = plugins.toolkit._('Topic or theme')
+        facets_dict['publication_status_label'] = plugins.toolkit._('Status')
+        facets_dict['service_status_label'] = plugins.toolkit._('Status')
+        facets_dict['classification_and_access_restrictions_label'] = plugins.toolkit._('Access restrictions')
+        facets_dict['resource_format_labels'] = plugins.toolkit._('Primary format')
+        facets_dict['standards_label'] = plugins.toolkit._('Data service standards')
 
+        # Reorder facets.
+        if facets_dict:
+            if package_type == 'dataset':
+                facets_order = [
+                    'general_classification',
+                    'topic_labels',
+                    'publication_status_label',
+                    'classification_and_access_restrictions_label',
+                    'resource_format_labels',
+                    'type',
+                ]
+                ordered_facets = OrderedDict((k, facets_dict[k]) for k in facets_order)
+            else:
+                facets_order = [
+                    'general_classification',
+                    'topic_labels',
+                    'service_status_label',
+                    'classification_and_access_restrictions_label',
+                    'standards_label',
+                ]
+                ordered_facets = OrderedDict((k, facets_dict[k]) for k in facets_order)
+
+            return ordered_facets
+
+    def group_facets(self, facets_dict, group_type, package_type):
+        return facets_dict
+
+    def organization_facets(self, facets_dict, organization_type, package_type):
         return facets_dict
