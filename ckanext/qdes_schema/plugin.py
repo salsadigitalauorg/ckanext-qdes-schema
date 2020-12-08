@@ -23,7 +23,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
-    plugins.implements(plugins.IFacets)
+    plugins.implements(plugins.IFacets, inherit=True)
 
 
     # IBlueprint
@@ -287,9 +287,3 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                 ordered_facets = OrderedDict((k, facets_dict[k]) for k in facets_order)
 
             return ordered_facets
-
-    def group_facets(self, facets_dict, group_type, package_type):
-        return facets_dict
-
-    def organization_facets(self, facets_dict, organization_type, package_type):
-        return facets_dict
