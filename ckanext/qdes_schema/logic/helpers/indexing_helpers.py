@@ -5,6 +5,16 @@ from ckan.plugins.toolkit import get_converter, h
 log = logging.getLogger(__name__)
 
 
+def get_collection_ids(pkg):
+    ids = []
+    series_relationships = h.get_series_relationship(pkg)
+
+    for relationship in series_relationships.get('isPartOf'):
+        ids.append(relationship.get('pkg_id'))
+
+    return ids
+
+
 def get_resource_format_labels(dataset_type, resource_formats):
     resource_format_labels = []
 
