@@ -606,7 +606,7 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "license",
       "display_group": "rights & licensing",
-      "required": true,
+      "recommended": true,
       "form_include_blank_choice": true,
       "form_attrs": {
         "data-module-title": "title"
