@@ -25,7 +25,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IFacets, inherit=True)
 
-
     # IBlueprint
 
     def get_blueprint(self):
@@ -78,6 +77,11 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         dataset_type = pkg_dict.get('dataset_type', None)
 
         if dataset_type:
+            # Get collection_package_id for each dataset that part of collection.
+            collection_package_id = indexing_helpers.get_collection_ids(pkg_dict)
+            if collection_package_id:
+                pkg_dict['collection_package_id'] = collection_package_id
+
             # Process the package's CKAN resources (aka "Data Access" (QDCAT), aka "Distribution" (DCAT))
             # The values stored in `res_format` are URIs for the vocabulary term
             # A new field was added to the solr schema.xml to store the labels of the resource formats
@@ -220,6 +224,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_package_dict': helpers.get_package_dict,
             'get_invalid_uris': helpers.get_invalid_uris,
             'wrap_url_within_text_as_link': helpers.wrap_url_within_text_as_link,
+            'get_series_relationship': helpers.get_series_relationship,
+            'is_collection': helpers.is_collection,
+            'is_part_of_collection': helpers.is_part_of_collection,
         }
 
     def get_multi_textarea_values(self, value):
@@ -245,6 +252,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
     # IFacets
     def dataset_facets(self, facets_dict, package_type):
+
         # Remove the default facets we don't want
         if 'license_id' in facets_dict:
             facets_dict.pop('license_id')
@@ -255,6 +263,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         if 'organization' in facets_dict:
             facets_dict.pop('organization')
 
+        facets_dict['collection_package_id'] = 'Collections'
         facets_dict['type'] = plugins.toolkit._('Dataset or Data service')
         facets_dict['general_classification'] = plugins.toolkit._('General classification')
         facets_dict['topic_labels'] = plugins.toolkit._('Topic or theme')
@@ -274,6 +283,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                     'classification_and_access_restrictions_label',
                     'resource_format_labels',
                     'type',
+                    'collection_package_id',
                 ]
                 ordered_facets = OrderedDict((k, facets_dict[k]) for k in facets_order)
             else:
@@ -283,6 +293,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                     'service_status_label',
                     'classification_and_access_restrictions_label',
                     'standards_label',
+                    'collection_package_id',
                 ]
                 ordered_facets = OrderedDict((k, facets_dict[k]) for k in facets_order)
 

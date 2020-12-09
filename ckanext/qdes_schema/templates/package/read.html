@@ -33,6 +33,8 @@
 
     {{ super() }}
 
+    {% snippet "/snippets/collection.html", pkg=pkg %}
+
     {% if versions %}
         {% snippet "/package/snippets/dataset_versions.html", versions=versions, pkg=pkg %}
     {% endif %}
