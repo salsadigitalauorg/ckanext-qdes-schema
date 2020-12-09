@@ -299,3 +299,37 @@ def wrap_url_within_text_as_link(value):
     urlfinder = re.compile("(https?:[;\/?\\@&=+$,\[\]A-Za-z0-9\-_\.\!\~\*\'\(\)%][\;\/\?\:\@\&\=\+\$\,\[\]A-Za-z0-9\-_\.\!\~\*\'\(\)%#]*|[KZ]:\\*.*\w+)")
 
     return urlfinder.sub(r'<a href="\1">\1</a>', value)
+
+
+def get_series_relationship(package):
+    """
+    Return package series relationship.
+    """
+    # Get all relationship.
+    relationships = get_all_relationships(package.get('id'))
+
+    # Group hasPart/isPartOf relationship.
+    has_part = []
+    is_part_of = []
+    for relationship in relationships:
+        type = relationship.get('type')
+        if type == 'hasPart':
+            has_part.append(relationship)
+        elif type == 'isPartOf':
+            is_part_of.append(relationship)
+
+    return {'hasPart': has_part, 'isPartOf': is_part_of}
+
+
+def is_collection(series_relationship):
+    if series_relationship.get('hasPart'):
+        return True
+
+    return False
+
+
+def is_part_of_collection(series_relationship):
+    if series_relationship.get('isPartOf'):
+        return True
+
+    return False
