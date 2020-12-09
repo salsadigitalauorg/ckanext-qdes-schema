@@ -22,6 +22,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
+    plugins.implements(plugins.IFacets, inherit=True)
 
     # IBlueprint
 
@@ -75,6 +76,11 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         dataset_type = pkg_dict.get('dataset_type', None)
 
         if dataset_type:
+            # Get collection_package_id for each dataset that part of collection.
+            collection_package_id = indexing_helpers.get_collection_ids(pkg_dict)
+            if collection_package_id:
+                pkg_dict['collection_package_id'] = collection_package_id
+
             # Process the package's CKAN resources (aka "Data Access" (QDCAT), aka "Distribution" (DCAT))
             # The values stored in `res_format` are URIs for the vocabulary term
             # A new field was added to the solr schema.xml to store the labels of the resource formats
@@ -167,6 +173,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_package_dict': helpers.get_package_dict,
             'get_invalid_uris': helpers.get_invalid_uris,
             'wrap_url_within_text_as_link': helpers.wrap_url_within_text_as_link,
+            'get_series_relationship': helpers.get_series_relationship,
+            'is_collection': helpers.is_collection,
+            'is_part_of_collection': helpers.is_part_of_collection,
         }
 
     def get_multi_textarea_values(self, value):
@@ -189,3 +198,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_all_predecessor_versions': get.all_predecessor_versions,
             'get_all_relationships': get.all_relationships
         }
+
+    # IFacets
+    def dataset_facets(self, facets_dict, package_type):
+        facets_dict['collection_package_id'] = 'Collections'
+
+        return facets_dict
