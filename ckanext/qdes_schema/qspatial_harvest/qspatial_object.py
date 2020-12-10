@@ -592,7 +592,7 @@ class QSpatialObject:
         linkage = self.root.find(
             'gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL', self.ns)
         if linkage != None:
-            url = linkage.text
+            url = helpers.fix_url(linkage.text)
         else:
             # Set default value?
             self.log('url: No value')
@@ -676,7 +676,7 @@ class QSpatialObject:
         url = self.root.find(
             'gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL', self.ns)
         if url != None:
-            resource_service_api_endpoint = url.text
+            resource_service_api_endpoint = helpers.fix_url(url.text)
         else:
             self.log('resource_service_api_endpoint: No value')
 
