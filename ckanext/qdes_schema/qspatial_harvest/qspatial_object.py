@@ -619,7 +619,7 @@ class QSpatialObject:
         if useLimitation != None:
             rights_statement = useLimitation.text
             # Rights statement is not displayed in a HTML markup textbox so the below copyright statement '&copy;' needs to be replaced with '©'
-            rights_statement = rights_statement.replace('&copy;', '©')
+            rights_statement = rights_statement.replace('&copy;', '©').replace('&copy', '©')
         else:
             # Set default value?
             self.log('rights_statement: No value')
@@ -689,6 +689,8 @@ class QSpatialObject:
         useLimitation = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:useLimitation/gco:CharacterString', self.ns)
         if useLimitation != None:
             resource_rights_statement = useLimitation.text
+            # Rights statement is not displayed in a HTML markup textbox so the below copyright statement '&copy;' needs to be replaced with '©'
+            resource_rights_statement = resource_rights_statement.replace('&copy;', '©').replace('&copy', '©')
         else:
             self.log('resource_rights_statement: No value')
 
