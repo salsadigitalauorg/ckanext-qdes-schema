@@ -36,13 +36,10 @@ def dataservice_datasets_available(context, data):
 
                     # Resource is about to be deleted, and it is associated with data service.
                     if resource_deleted:
-                        log.error('resource_deleted')
                         # If this is the only one resource, remove the dataset from datasets_available field.
                         if len(resources) == 1:
-                            log.error('resources.length == 1')
                             datasets_available.remove(pkg_dict['id'])
                         else:
-                            log.error('resources.length > 1')
                             # Iterate to all other resources,
                             # and check if the resource is associated with current dataservice_dict.
                             remove_from_dataset_available = True
@@ -69,7 +66,6 @@ def dataservice_datasets_available(context, data):
                     get_action('package_update')(context, dataservice_dict)
         except Exception as e:
             log.error(str(e))
-
 
 def update_related_resources(context, data_dict):
     """
