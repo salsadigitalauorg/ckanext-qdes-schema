@@ -28,6 +28,15 @@
             {%- endif -%}
           {%- endfor -%}
         {% endblock %}
+
+        <tr>
+          <th scope="row" class="dataset-label">
+            Data Catalogue ID
+          </th>
+          <td class="dataset-details">
+            {{ pkg_dict.get('id') }}
+          </td>
+        </tr>
       </tbody>
     </table>
   </section>
