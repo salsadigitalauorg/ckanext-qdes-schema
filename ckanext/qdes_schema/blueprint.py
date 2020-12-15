@@ -1,6 +1,8 @@
 import ckan.lib.base as base
+import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
 import ckan.plugins.toolkit as toolkit
+import ckan.model as model
 import logging
 
 from ckan.common import _, c, request
@@ -9,6 +11,7 @@ from flask import Blueprint
 from pprint import pformat
 from ckanext.qdes_schema.logic.helpers import (
     dataservice_helpers as dataservice_helpers, dataset_helpers as dataset_helpers)
+from ckanext.scheming.plugins import SchemingDatasetsPlugin
 
 abort = base.abort
 get_action = logic.get_action
@@ -16,6 +19,11 @@ log = logging.getLogger(__name__)
 NotFound = logic.NotFound
 NotAuthorized = logic.NotAuthorized
 render = toolkit.render
+# request = toolkit.request
+h = toolkit.h
+clean_dict = logic.clean_dict
+tuplize_dict = logic.tuplize_dict
+parse_params = logic.parse_params
 
 qdes_schema = Blueprint('qdes_schema', __name__)
 
@@ -88,8 +96,52 @@ def datasets_available(id):
         abort(404, _('Available datasets not found'))
 
 
+def datasets_schema_validation(id):
+    extra_vars = {}
+    errors = {}
+    pkg = get_action('package_show')({}, {'id': id})
+    extra_vars['pkg_dict'] = pkg
+    extra_vars['data'] = []
+    extra_vars['options'] = [
+        {'text': 'Select schema', 'value': 'none'},
+        {'text': 'Data Queensland', 'value': 'dataqld_dataset'},
+        {'text': 'QSpatial', 'value': 'qspatial_dataset'},
+        {'text': 'SIR', 'value': 'sir_dataset'}
+    ]
+    extra_vars['selected_opt'] = {}
+
+    if request.method == 'POST':
+        data = clean_dict(dict_fns.unflatten(tuplize_dict(parse_params(
+            request.form))))
+
+
+        if data.get('schema'):
+            for selected_opt in extra_vars['options']:
+                if selected_opt.get('value') == data.get('schema'):
+                    extra_vars['selected_opt'] = selected_opt
+
+            pkg['type'] = data.get('schema')
+
+            context = {
+                'model': model,
+                'session': model.Session,
+                'user': c.user,
+                'for_view': True,
+                'ignore_auth': True,
+                'auth_user_obj': c.userobj
+            }
+            p = SchemingDatasetsPlugin.instance
+            schema = logic.schema.default_update_package_schema()
+            data, errors = p.validate(context, pkg, schema, 'package_update')
+
+    extra_vars['errors'] = errors
+
+    return render('package/schema_validation.html', extra_vars=extra_vars)
+
+
 qdes_schema.add_url_rule(u'/dataset/<id_or_name>/related-datasets', view_func=related_datasets)
 qdes_schema.add_url_rule(u'/dataset/<id>/metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/metadata', endpoint='dataservice_metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataset/<id>/resource/<resource_id>/metadata', view_func=resource_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/datasets-available', view_func=datasets_available)
+qdes_schema.add_url_rule(u'/dataset/<id>/schema_validation', methods=[u'GET', u'POST'], view_func=datasets_schema_validation)

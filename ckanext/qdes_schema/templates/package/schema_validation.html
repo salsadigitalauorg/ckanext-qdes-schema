@@ -1,0 +1,35 @@
+{% extends 'package/read_base.html' %}
+{% import 'macros/form.html' as form %}
+
+{% block primary_content_inner %}
+  <h1>Validate metadata record</h1>
+  <form class="row" method="post" action="{{ h.url_for('qdes_schema.datasets_schema_validation', id=pkg_dict.id) }}" novalidate>
+    <div class="col-xs-12 col-md-10">
+      {{ form.select(
+      'schema',
+      id='field-schema',
+      label=_('Validate against'),
+      options=options
+      ) }}
+    </div>
+    <div class="col-xs-12 col-md-2">
+      <button class="btn btn-primary btn-block" type="submit">{{ _('Validate') }}</button>
+    </div>
+  </form>
+
+  {% if errors %}
+    {%- set schema = h.scheming_get_dataset_schema(pkg_dict.type) -%}
+    <br/>
+    <div class="error-explanation alert alert-error">
+      <p>The <strong>{{ pkg_dict.title if pkg_dict.title else pkg_dict.name }} dataset</strong> contains the following errors when validated against the <strong>{{ selected_opt.text }}</strong> schema:</p>
+      <br/>
+      <ul>
+        {% for key, error in errors.items() %}
+          <li data-field-label="{{ key }}">
+            <a href="{{ h.url_for('dataset.edit', id=pkg_dict.id) }}#field-{{key}}"><strong>{{ h.qdes_get_field_label(key, schema) }}</strong></a> : {{ error|join(', ') }}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+{% endblock %}
