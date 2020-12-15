@@ -10,6 +10,10 @@
             {% set url = value %}
         {% endif %}
 
+        {% if field.field_name == 'data_services' %}
+            {% set url = h.url_for('dataset.read', id=value) %}
+        {% endif %}
+
         <a href="{{ url }}">
             {{text_to_diplay}}
         </a>
