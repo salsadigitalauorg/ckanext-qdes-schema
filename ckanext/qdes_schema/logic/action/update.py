@@ -9,31 +9,55 @@ from ckanext.qdes_schema.logic.helpers import (
 log = logging.getLogger(__name__)
 
 
-def dataservice_datasets_available(context, resource):
+def dataservice_datasets_available(context, data):
     """
     Update datasets_available field for a dataservice.
     This will be triggered by the following events:
     - dataset resource created
     - dataset resource updated
-    - @TODO: dataset resource deleted
+    - dataset resource deleted
     - @TODO: data service updated
     - @TODO: data service deleted
+
+    On delete event, resource_deleted need to be True and resources are needed.
     """
+    resource = data.get('resource', None)
+    resource_deleted = data.get('resource_deleted', False)
+    resources = data.get('resources', {})
     pkg_dict = res_helpers.get_resource_package(context, resource['package_id'])
 
     if pkg_dict.get('type', None) == 'dataset':
         try:
             for dataservice in res_helpers.data_services_as_list(resource):
-
-                dataservice_dict = ds_helpers.get_dataservice_from_uri(context, dataservice)
+                dataservice_dict = get_action('package_show')(context, {'name_or_id': dataservice})
 
                 if dataservice_dict:
                     datasets_available = ds_helpers.datasets_available_as_list(dataservice_dict)
 
-                    dataset_url = h.url_for('dataset.read', id=pkg_dict['name'], _external=True)
+                    # Resource is about to be deleted, and it is associated with data service.
+                    if resource_deleted:
+                        # If this is the only one resource, remove the dataset from datasets_available field.
+                        if len(resources) == 1:
+                            datasets_available.remove(pkg_dict['id'])
+                        else:
+                            # Iterate to all other resources,
+                            # and check if the resource is associated with current dataservice_dict.
+                            remove_from_dataset_available = True
+                            for res in resources:
+                                if not res.get('id') ==  resource.get('id'):
+                                    data_service_list = res.get('data_services', [])
 
-                    # Update dataservice.
-                    dataservice_dict['datasets_available'] = json.dumps(list(set([dataset_url] + datasets_available)))
+                                    if dataservice_dict.get('id') in data_service_list:
+                                        remove_from_dataset_available = False
+
+                            if remove_from_dataset_available:
+                                datasets_available.remove(pkg_dict['id'])
+
+                        dataservice_dict['datasets_available'] = json.dumps(list(datasets_available))
+                    else:
+                        # Update dataservice.
+                        dataservice_dict['datasets_available'] = json.dumps(
+                            list(set([pkg_dict['id']] + datasets_available)))
 
                     # ref.: https://docs.ckan.org/en/2.9/api/#ckan.logic.action.patch.package_update
                     # "You must be authorized to edit the dataset and the groups that it belongs to."
@@ -42,7 +66,6 @@ def dataservice_datasets_available(context, resource):
                     get_action('package_update')(context, dataservice_dict)
         except Exception as e:
             log.error(str(e))
-
 
 def update_related_resources(context, data_dict):
     """

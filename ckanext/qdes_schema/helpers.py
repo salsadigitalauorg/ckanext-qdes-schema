@@ -42,7 +42,7 @@ def qdes_dataservice_choices(field):
     try:
         for data in get_action('get_dataservice')({}):
             choices.append({
-                'value': config.get('ckan.site_url', None) + '/dataservice/' + data.name,
+                'value': data.id,
                 'label': data.title
             })
     except Exception as e:
