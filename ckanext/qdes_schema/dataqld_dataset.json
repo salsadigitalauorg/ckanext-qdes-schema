@@ -9,7 +9,8 @@
       "label": "Title",
       "preset": "title",
       "form_placeholder": "eg. A descriptive title",
-      "display_group": "general"
+      "display_group": "general",
+      "required": true
     },
     {
       "field_name": "name",
@@ -46,7 +47,6 @@
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "classification",
       "validators": "scheming_required",
-      "required": true,
       "form_attrs": {
         "class": "form-control",
         "data-module-title": "title"
@@ -121,7 +121,6 @@
         "data-module": "qdes_autocomplete",
         "data-module-title": "title"
       },
-      "required": true,
       "form_include_blank_choice": true
     },
     {
@@ -448,8 +447,7 @@
       "display_property": "dcat:contactPoint",
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
-      "display_group": "contacts",
-      "required": true
+      "display_group": "contacts"
     },
     {
       "field_name": "contact_publisher",
@@ -458,7 +456,6 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "contact_publisher",
       "display_group": "contacts",
-      "required": true,
       "form_include_blank_choice": true,
       "form_attrs": {
         "data-module-title": "title"
@@ -472,7 +469,6 @@
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "creator",
       "display_group": "contacts",
-      "required": false,
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
@@ -536,7 +532,6 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "publication_status",
       "display_group": "status",
-      "required": true,
       "form_attrs": {
         "data-module-title": "title"
       }
@@ -575,7 +570,8 @@
       "display_group": "status",
       "form_attrs": {
         "data-module-title": "title"
-      }
+      },
+      "required": true
     },
     {
       "field_name": "classification_and_access_restrictions",
@@ -630,7 +626,8 @@
     {
       "field_name": "owner_org",
       "label": "Organization",
-      "preset": "dataset_organization"
+      "preset": "dataset_organization",
+      "required": true
     },
     {
       "field_name": "version",
@@ -660,7 +657,6 @@
       "display_property": "dcterms:format",
       "preset": "qdes_vocab_service_autocomplete",
       "vocabulary_service_name": "format",
-      "required": true,
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/format?incomplete=?",

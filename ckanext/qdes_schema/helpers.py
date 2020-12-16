@@ -334,7 +334,7 @@ def is_part_of_collection(series_relationship):
 
     return False
 
-def qdes_get_field_label(field_name, schema):
-    for field in schema.get('dataset_fields'):
+def qdes_get_field_label(field_name, schema, field='dataset_fields'):
+    for field in schema.get(field):
         if field.get('field_name') == field_name:
             return field.get('label')

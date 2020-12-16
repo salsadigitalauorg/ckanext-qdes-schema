@@ -97,7 +97,8 @@ def datasets_available(id):
 
 def datasets_schema_validation(id):
     extra_vars = {}
-    errors = {}
+    pkg_errors = {}
+    res_errors = []
     pkg = get_action('package_show')({}, {'id': id})
     extra_vars['pkg_dict'] = pkg
     extra_vars['data'] = []
@@ -113,13 +114,10 @@ def datasets_schema_validation(id):
         data = clean_dict(dict_fns.unflatten(tuplize_dict(parse_params(
             request.form))))
 
-
-        if data.get('schema'):
+        if not data.get('schema') == 'none':
             for selected_opt in extra_vars['options']:
                 if selected_opt.get('value') == data.get('schema'):
                     extra_vars['selected_opt'] = selected_opt
-
-            pkg['type'] = data.get('schema')
 
             context = {
                 'model': model,
@@ -131,9 +129,30 @@ def datasets_schema_validation(id):
             }
             p = SchemingDatasetsPlugin.instance
             schema = logic.schema.default_update_package_schema()
-            data, errors = p.validate(context, pkg, schema, 'package_update')
+            pkg['type'] = data.get('schema')
+            pkg_data, pkg_errors = p.validate(context, pkg, schema, 'package_update')
+            if pkg_errors.get('resources', None):
+                pkg_errors.pop('resources')
 
-    extra_vars['errors'] = errors
+            # Validate resource, the above code will validate resource
+            # but it has no indication which resource is throwing an error,
+            # so we will re-run the validation for each resource.
+            resources = pkg.get('resources', [])
+            if resources:
+                pkg.pop('resources')
+                for res in resources:
+                    pkg['resources'] = [res]
+                    pkg_data, resource_errors = p.validate(context, pkg, schema, 'package_update')
+                    if resource_errors.get('resources', None):
+                        res_errors.append({
+                            'resource_id': res.get('id'),
+                            'resource_name': res.get('name'),
+                            'errors': resource_errors.get('resources')
+                        })
+
+
+    extra_vars['pkg_errors'] = pkg_errors
+    extra_vars['res_errors'] = res_errors
 
     return render('package/schema_validation.html', extra_vars=extra_vars)
 
