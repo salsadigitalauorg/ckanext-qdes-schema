@@ -4,13 +4,12 @@
   {% set id_or_name = pkg.id if is_activity_archive else pkg.name %}
   {% if dataset_type == 'dataservice' %}
     {{ h.build_nav_icon(dataset_type ~ '.read', _('Data Service'), id=id_or_name, icon='sitemap') }}
-    {{ h.build_nav_icon('qdes_schema.dataservice_metadata', _('All Metadata'), id=id_or_name, icon='th-list') }}
     {{ h.build_nav_icon('qdes_schema.datasets_available', _('Available Datasets'), id=id_or_name, icon='object-group') }}
   {% else %}
     {{ h.build_nav_icon(dataset_type ~ '.read', _('Dataset'), id=id_or_name, icon='sitemap') }}
-    {{ h.build_nav_icon('qdes_schema.dataset_metadata', _('All Metadata'), id=id_or_name, icon='th-list') }}
     {{ h.build_nav_icon('qdes_schema.related_datasets', _('Related Datasets'), id_or_name=id_or_name, icon='object-group') }}
   {% endif %}
   {{ h.build_nav_icon(dataset_type ~ '.groups', _('Groups'), id=id_or_name, icon='users') }}
+  {{ h.build_nav_icon('qdes_schema.datasets_schema_validation', _('Publish'), id=id_or_name, icon='list') }}
   {{ h.build_nav_icon(dataset_type ~ '.activity', _('Activity Stream'), id=id_or_name, icon='clock-o') }}
 {% endblock %}
