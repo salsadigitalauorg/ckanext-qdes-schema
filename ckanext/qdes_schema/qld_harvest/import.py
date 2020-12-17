@@ -4,10 +4,13 @@ import json
 import re
 import urllib as urllib
 
+from ckan.model import Session
+from ckanext.clone_dataset.helpers import get_incremental_package_name
 from ckanext.qdes_schema.qld_harvest import helpers
 from datetime import datetime
 from ckanapi import RemoteCKAN
 from pprint import pformat
+from sqlalchemy import create_engine
 
 owner_org = os.environ['OWNER_ORG']
 apiKey = os.environ['HARVEST_API_KEY']
@@ -273,6 +276,7 @@ def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_u
                 # No value longer than 100 chars, we will add the last 8 chars with current uuid,
                 # otherwise it will have possibility conflict with other series.
                 value = (value[:92] + res.get('id')[:8]) if len(value) > 100 else value
+                value = get_incremental_package_name(value)
 
             if not value:
                 value = parent_dataset.get(field_name)
@@ -332,6 +336,10 @@ csv_reader = csv.DictReader(data)
 
 count = 0
 limit = 5
+
+# Configure session.
+engine = create_engine('postgresql://ckan:ckan@postgres/ckan?sslmode=disable')
+Session.configure(bind=engine)
 
 for row in csv_reader:
     count += 1
