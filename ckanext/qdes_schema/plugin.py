@@ -227,6 +227,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_series_relationship': helpers.get_series_relationship,
             'is_collection': helpers.is_collection,
             'is_part_of_collection': helpers.is_part_of_collection,
+            'qdes_get_field_label': helpers.qdes_get_field_label,
         }
 
     def get_multi_textarea_values(self, value):

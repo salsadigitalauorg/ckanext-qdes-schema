@@ -1,0 +1,757 @@
+{
+  "scheming_version": 1,
+  "dataset_type": "dataqld_dataset",
+  "about": "A reimplementation of the default CKAN dataset schema",
+  "about_url": "http://github.com/ckan/ckanext-scheming",
+  "dataset_fields": [
+    {
+      "field_name": "title",
+      "label": "Title",
+      "preset": "title",
+      "form_placeholder": "eg. A descriptive title",
+      "display_group": "general",
+      "required": true
+    },
+    {
+      "field_name": "name",
+      "label": "URL",
+      "preset": "dataset_slug",
+      "form_placeholder": "eg. my-dataset",
+      "display_group": "general"
+    },
+    {
+      "field_name": "identifiers",
+      "label": "Identifier",
+      "display_property": "dcterms:identifier",
+      "display_snippet": "qdes_multi_text.html",
+      "form_snippet": "qdes_multi_text.html",
+      "form_placeholder": "doi:10.25901/5e3ba30f141b7",
+      "display_group": "general"
+    },
+    {
+      "field_name": "notes",
+      "label": "Description or abstract",
+      "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
+      "form_placeholder": "eg. Some useful notes about the data",
+      "display_property": "dcterms:description",
+      "display_group": "description",
+      "required": true
+    },
+    {
+      "field_name": "classification",
+      "label": "General classification of dataset type",
+      "display_property": "dcterms:type",
+      "form_placeholder": "eg. 'image', 'map', 'section', 'gridded data', etc.",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "classification",
+      "validators": "scheming_required",
+      "form_attrs": {
+        "class": "form-control",
+        "data-module-title": "title"
+      },
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "purpose",
+      "label": "Purpose",
+      "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
+      "display_property": "qdcat:purpose",
+      "form_placeholder": "This map provides supporting information for assessments under the Vegetation Management Act.",
+      "display_group": "description"
+    },
+    {
+      "field_name": "additional_info",
+      "label": "Additional information",
+      "form_snippet": "qdes_multi_markdown.html",
+      "display_property": "rdfs:comment",
+      "display_snippet": "qdes_multi_markdown.html",
+      "form_placeholder": "e.g. warnings",
+      "display_group": "description"
+    },
+    {
+      "field_name": "metadata_review_date",
+      "label": "Metadata review date",
+      "preset": "qdes_metadata_review_date",
+      "display_group": "description"
+    },
+    {
+      "field_name": "metadata_contact_point",
+      "label": "Metadata point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
+      "display_group": "description",
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "url",
+      "label": "Source of record",
+      "form_placeholder": "http://example.com/dataset.json",
+      "display_property": "foaf:homepage",
+      "display_snippet": "link.html",
+      "display_group": "description",
+      "validators": "ignore_missing url_validator qdes_uri_validator"
+    },
+    {
+      "field_name": "dataset_language",
+      "label": "Dataset language",
+      "display_property": "dcterms:language",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "dataset_language",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
+      },
+      "first_choice": "English",
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "topic",
+      "label": "Topic or theme",
+      "display_property": "dcat:theme",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "topic",
+      "validators": "scheming_required",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
+      },
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "tag_string",
+      "label": "Keyword",
+      "preset": "tag_string_autocomplete",
+      "form_placeholder": "eg. economy, mental health, government",
+      "display_group": "description"
+    },
+    {
+      "field_name": "parameter",
+      "label": "Parameter",
+      "display_property": "dcat:property",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_group",
+      "field_group": [
+        {
+          "field_name": "observed-property",
+          "label": "Observed property",
+          "form_snippet": "select.html",
+          "display_property": "qudt:hasQuantityKind",
+          "vocabulary_service_name": "observed-property",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "data-module": "qdes_autocomplete",
+            "data-module-title": "title"
+          },
+          "form_include_blank_choice": true
+        },
+        {
+          "field_name": "unit-of-measure",
+          "label": "Unit of measure",
+          "form_snippet": "select.html",
+          "display_property": "qudt:unit",
+          "vocabulary_service_name": "unit-of-measure",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "data-module": "qdes_autocomplete",
+            "data-module-title": "title"
+          },
+          "form_include_blank_choice": true
+        }
+      ]
+    },
+    {
+      "field_name": "temporal_start",
+      "label": "Temporal coverage start",
+      "display_property": "dcat:startDate",
+      "preset": "date",
+      "validators": "qdes_temporal_start_end_date",
+      "display_group": "temporal content",
+      "sub_heading": "temporal coverage"
+    },
+    {
+      "field_name": "temporal_end",
+      "label": "Temporal coverage end",
+      "display_property": "dcat:endDate",
+      "preset": "date",
+      "validators": "ignore_missing qdes_temporal_start_end_date",
+      "display_group": "temporal content",
+      "sub_heading": "temporal coverage"
+    },
+    {
+      "field_name": "temporal_precision_spacing",
+      "label": "Time precision or spacing",
+      "preset": "iso_8601_durations",
+      "display_group": "temporal content"
+    },
+    {
+      "field_name": "temporal_resolution_range",
+      "label": "Temporal resolution range",
+      "display_group": "temporal content",
+      "display_property": "tempqdcat:temporalRange",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "temporal_resolution_ranges",
+      "form_attrs": {
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "spatial_lower_left",
+      "label": "Lower left",
+      "form_snippet": "textarea.html",
+      "validators": "ignore_missing qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "display_property": "qdcat:lowerLeft",
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
+    },
+    {
+      "field_name": "spatial_upper_right",
+      "label": "Upper right",
+      "form_snippet": "textarea.html",
+      "validators": "ignore_missing qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "display_property": "qdcat:upperRight",
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
+    },
+    {
+      "field_name": "spatial_centroid",
+      "label": "Centroid",
+      "form_snippet": "textarea.html",
+      "validators": "ignore_missing qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "display_property": "dcat:centroid",
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
+    },
+    {
+      "field_name": "spatial_geometry",
+      "label": "Geometry",
+      "form_snippet": "textarea.html",
+      "validators": "ignore_missing qdes_validate_geojson_polygon",
+      "display_property": "qdcat:asGeoJSON",
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
+    },
+    {
+      "field_name": "spatial_content_resolution",
+      "label": "Spatial resolution in meters",
+      "validators": "ignore_missing qdes_validate_decimal",
+      "display_property": "dcat:spatialResolutionInMeters",
+      "display_group": "spatial content"
+    },
+    {
+      "field_name": "conforms_to",
+      "label": "Schema or standard",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "ignore_missing qdes_uri_validator",
+      "display_property": "dcterms:conformsTo",
+      "display_group": "data quality"
+    },
+    {
+      "field_name": "quality_description",
+      "label": "Quality description",
+      "display_group": "data quality",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_empty qdes_validate_multi_groups",
+      "field_group": [
+        {
+          "field_name": "dimension",
+          "label": "Dimension",
+          "display_property": "dqv:inDimension",
+          "preset": "controlled_vocabulary_single_select",
+          "form_snippet": "select.html",
+          "display_snippet": "controlled_vocabulary_single_select.html",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "vocabulary_service_name": "dimension",
+          "form_attrs": {
+            "class": "form-control",
+            "data-module-title": "title"
+          }
+        },
+        {
+          "field_name": "value",
+          "label": "Value",
+          "form_snippet": "text.html",
+          "display_property": "oa:bodyValue",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        }
+      ]
+    },
+    {
+      "field_name": "spatial",
+      "label": "Spatial",
+      "preset": "json_object",
+      "form_snippet": "qdes_hidden_json.html",
+      "validators": "ignore_missing qdes_validate_geojson_spatial",
+      "display_group": "spatial content"
+    },
+    {
+      "field_name": "spatial_name_code",
+      "label": "Name or code",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "spatial_name_code",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
+      },
+      "display_property": "dcterms:spatial",
+      "display_group": "spatial coverage"
+    },
+    {
+      "field_name": "spatial_representation",
+      "label": "Representation",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "spatial_representation",
+      "display_property": "qdcat:hasSpatialRepresentation",
+      "display_group": "spatial details",
+      "form_attrs": {
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "spatial_datum_crs",
+      "label": "Datum & CRS",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "spatial_datum_crs",
+      "display_property": "qeox:inCRS",
+      "display_group": "spatial details",
+      "form_attrs": {
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "spatial_resolution",
+      "label": "Resolution",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "spatial_resolution",
+      "display_property": "qdcat:spatialResolution",
+      "display_group": "spatial details",
+      "form_attrs": {
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "quality_measure",
+      "label": "Quality measure",
+      "display_group": "data quality",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_empty qdes_validate_multi_groups",
+      "field_group": [
+        {
+          "field_name": "measurement",
+          "label": "Measurement",
+          "preset": "controlled_vocabulary_single_select",
+          "form_snippet": "select.html",
+          "display_snippet": "controlled_vocabulary_single_select.html",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "vocabulary_service_name": "measurement",
+          "form_attrs": {
+            "class": "form-control",
+            "data-module-title": "title"
+          }
+        },
+        {
+          "field_name": "value",
+          "label": "Value",
+          "form_snippet": "text.html",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        }
+      ]
+    },
+    {
+      "field_name": "series_or_collection",
+      "label": "Series or collection",
+      "preset": "dataset_related_multi_text"
+    },
+    {
+      "field_name": "related_datasets",
+      "label": "Related dataset",
+      "preset": "dataset_related_multi_text"
+    },
+    {
+      "preset": "related_resources_multi_group"
+    },
+    {
+      "field_name": "lineage_description",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
+      "display_group": "related and lineage",
+      "display_property": "dcterms:description",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "lineage_plan",
+      "label": "Plan",
+      "display_snippet": "qdes_text_url.html",
+      "validators": "ignore_missing url_validator qdes_uri_validator",
+      "display_group": "related and lineage",
+      "display_property": "prov:hadPlan",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "lineage_inputs",
+      "label": "Inputs",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "ignore_missing qdes_uri_validator",
+      "display_group": "related and lineage",
+      "display_property": "prov:used",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "lineage_sensor",
+      "label": "Sensor",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "ignore_missing qdes_uri_validator",
+      "display_group": "related and lineage",
+      "display_property": "sosa:madeBySensor",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "lineage_responsible_party",
+      "label": "Responsible party",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "contact_creator",
+      "display_group": "related and lineage",
+      "display_property": "prov:wasAssociatedWith",
+      "sub_heading": "lineage",
+      "form_attrs": {
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "cited_in",
+      "label": "Cited in",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "ignore_missing qdes_uri_validator",
+      "display_group": "related and lineage",
+      "sub_heading": "lineage"
+    },
+    {
+      "field_name": "contact_point",
+      "label": "Point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
+      "display_group": "contacts"
+    },
+    {
+      "field_name": "contact_publisher",
+      "label": "Publisher",
+      "display_property": "dcterms:publisher",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "contact_publisher",
+      "display_group": "contacts",
+      "form_include_blank_choice": true,
+      "form_attrs": {
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "contact_creator",
+      "label": "Creator",
+      "display_snippet": "text.html",
+      "display_property": "dcterms:creator",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "creator",
+      "display_group": "contacts",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+        "data-module-key": "value",
+        "data-module-label": "name",
+        "data-module-minimum-input-length": 3,      
+        "data-module-create-search-choice": true,
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "contact_other_party",
+      "label": "Other responsible party",
+      "display_property": "prov:qualifiedAttribution",
+      "preset": "controlled_vocabulary_multi_group",
+      "display_group": "contacts",
+      "field_group": [
+        {
+          "field_name": "the-party",
+          "label": "The party",
+          "form_snippet": "text.html",
+          "display_snippet": "qdes_secure_vocabulary_text.html",
+          "display_property": "prov:agent",
+          "vocabulary_service_name": "the-party",
+          "form_attrs": {
+            "data-module": "qdes_autocomplete",
+            "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+            "data-module-key": "value",
+            "data-module-label": "name",
+            "data-module-minimum-input-length": 3,      
+            "data-module-create-search-choice": true,
+            "data-module-title": "title"
+          }
+        },
+        {
+          "field_name": "nature-of-their-responsibility",
+          "label": "Nature of their responsibility",
+          "form_snippet": "select.html",
+          "display_property": "dcat:hadRole",
+          "vocabulary_service_name": "nature-of-their-responsibility",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "class": "form-control",
+            "data-module-title": "title"
+          },
+          "form_include_blank_choice": true
+        }
+      ]
+    },
+    {
+      "field_name": "acknowledgements",
+      "label": "Acknowledgements",
+      "display_property": "qdcat:acknowledgements",
+      "display_group": "contacts",
+      "form_snippet": "textarea.html"
+    },
+    {
+      "field_name": "publication_status",
+      "label": "Publication status",
+      "display_property": "adms:status",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "publication_status",
+      "display_group": "status",
+      "form_attrs": {
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "dataset_creation_date",
+      "label": "Creation date",
+      "display_property": "dcterms:created",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime",
+      "display_group": "status",
+      "default_value": true
+    },
+    {
+      "field_name": "dataset_release_date",
+      "label": "Release date",
+      "display_property": "dcterms:issued",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_current_date_later_than_creation",
+      "display_group": "status"
+    },
+    {
+      "field_name": "dataset_last_modified_date",
+      "label": "Last modified date",
+      "display_property": "dcterms:modified",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_last_modified_date_before_today",
+      "display_group": "status"
+    },
+    {
+      "field_name": "update_schedule",
+      "label": "Update schedule",
+      "display_property": "dcterms:accrualPeriodicity",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "update_schedule",
+      "display_group": "status",
+      "form_attrs": {
+        "data-module-title": "title"
+      },
+      "required": true
+    },
+    {
+      "field_name": "classification_and_access_restrictions",
+      "label": "Classification and access restrictions",
+      "display_property": "dcterms:accessRights",
+      "display_group": "rights & licensing",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "classification_and_access_restrictions",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
+      },
+      "form_include_blank_choice": true,
+      "required": true
+    },
+    {
+      "field_name": "rights_statement",
+      "label": "Rights statement",
+      "form_snippet": "textarea.html",
+      "display_property": "dcterms:rights",
+      "display_group": "rights & licensing",
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
+    },
+    {
+      "field_name": "license_id",
+      "label": "License",
+      "display_property": "dcterms:license",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "license",
+      "display_group": "rights & licensing",
+      "required": true,
+      "form_include_blank_choice": true,
+      "form_attrs": {
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "specialized_license",
+      "label": "Specialised license",
+      "form_snippet": "textarea.html",
+      "display_property": "odrl:hasPolicy",
+      "display_snippet": "qdes_text_url.html",
+      "display_group": "rights & licensing"
+    },
+    {
+      "field_name": "landing_page",
+      "label": "Web-page (landing page) for this dataset",
+      "display_property": "dcat:landingPage",
+      "display_group": "data access",
+      "validators": "ignore_missing url_validator qdes_uri_validator"
+    },
+    {
+      "field_name": "owner_org",
+      "label": "Organization",
+      "preset": "dataset_organization",
+      "required": true
+    },
+    {
+      "field_name": "version",
+      "label": "Version",
+      "validators": "ignore_missing unicode package_version_validator",
+      "form_placeholder": "1.0"
+    }
+  ],
+  "resource_fields": [
+    {
+      "field_name": "name",
+      "label": "Title",
+      "form_placeholder": "eg. January 2011 Gold Prices",
+      "display_property": "dcterms:title"
+    },
+    {
+      "field_name": "schema_standards",
+      "label": "Schema, standard(s)",
+      "display_property": "dcterms:conformsTo",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "ignore_missing qdes_uri_validator"
+    },
+    {
+      "field_name": "format",
+      "label": "Primary format",
+      "display_property": "dcterms:format",
+      "preset": "qdes_vocab_service_autocomplete",
+      "vocabulary_service_name": "format",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/format?incomplete=?",
+        "data-module-key": "value",
+        "data-module-label": "name",
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "compression",
+      "label": "Compression",
+      "display_property": "dcat:compressFormat",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "compression",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "packaging",
+      "label": "Packaging",
+      "display_property": "dcat:packageFormat",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "packaging",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "size",
+      "label": "Size",
+      "display_property": "dcat:byteSize",
+      "display_snippet": "qdes_byte_size.html",
+      "validators": "ignore_missing int_validator",
+      "form_placeholder": "Enter exact or approximate file size in bytes (integer)",
+      "recommended": true
+    },
+    {
+      "field_name": "url",
+      "label": "Download address",
+      "display_property": "dcat:downloadURL",
+      "display_snippet": "qdes_text_url.html",
+      "validators": "ignore_missing url_validator qdes_uri_validator",
+      "recommended": true
+    },
+    {
+      "field_name": "service_api_endpoint",
+      "label": "Service API end-point",
+      "display_property": "dcterms:conformsTo",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "ignore_missing qdes_uri_validator"
+    },
+    {
+      "field_name": "data_services",
+      "label": "Data service",
+      "display_property": "dcat:accessService",
+      "preset": "controlled_dataservice_multi_select",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete"
+      }
+    },
+    {
+      "field_name": "description",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
+      "form_placeholder": "Some useful notes about the data",
+      "display_property": "dcterms:description"
+    },
+    {
+      "field_name": "additional_info",
+      "label": "Additional information",
+      "form_snippet": "qdes_multi_markdown.html",
+      "display_snippet": "qdes_multi_markdown.html"
+    },
+    {
+      "field_name": "rights_statement",
+      "label": "Rights statement",
+      "form_snippet": "textarea.html",
+      "display_property": "dcterms:rights",
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
+    },
+    {
+      "field_name": "license",
+      "label": "License",
+      "display_property": "dcterms:license",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "license",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
+      }
+    }
+  ]
+}
