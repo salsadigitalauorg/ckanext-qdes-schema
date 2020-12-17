@@ -26,7 +26,7 @@
 
   {% if pkg_errors or res_errors %}
     {%- set schema = h.scheming_get_dataset_schema(pkg_dict.type) -%}
-    <div class="error-explanation alert alert-error">
+    <div class="error-explanation alert alert-error" role="alert">
       <p>The <strong>{{ pkg_dict.title if pkg_dict.title else pkg_dict.name }} dataset</strong> contains the following errors when validated against the <strong>{{ selected_opt.text }}</strong> schema:</p>
 
       {% if pkg_errors %}
@@ -66,7 +66,7 @@
       {% endif %}
     </div>
   {% else %}
-    <div class="alert alert-success">
+    <div class="alert alert-success" role="alert">
       The <strong>{{ pkg_dict.title if pkg_dict.title else pkg_dict.name }} dataset</strong> has no errors when validated against the <strong>{{ selected_opt.text }}</strong> schema.
     </div>
   {% endif %}
