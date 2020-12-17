@@ -7,8 +7,7 @@ from ckan.common import _, c, request
 from ckanext.qdes_schema import helpers
 from flask import Blueprint
 from pprint import pformat
-from ckanext.qdes_schema.logic.helpers import (
-    dataservice_helpers as dataservice_helpers, dataset_helpers as dataset_helpers)
+from ckanext.qdes_schema.logic.helpers import dataservice_helpers as dataservice_helpers
 
 abort = base.abort
 get_action = logic.get_action
@@ -16,6 +15,7 @@ log = logging.getLogger(__name__)
 NotFound = logic.NotFound
 NotAuthorized = logic.NotAuthorized
 render = toolkit.render
+h = toolkit.h
 
 qdes_schema = Blueprint('qdes_schema', __name__)
 
@@ -78,8 +78,9 @@ def datasets_available(id):
         extra_vars = {}
         extra_vars['pkg_dict'] = dataservice
         datasets_available = []
-        for dataset_url in dataservice_helpers.datasets_available_as_list(dataservice):
-            dataset = dataset_helpers.get_dataset_from_uri({}, dataset_url)
+        for dataset_id in dataservice_helpers.datasets_available_as_list(dataservice):
+            dataset = get_action('package_show')({}, {'id': dataset_id})
+            dataset_url = h.url_for('dataset.read', id=dataset_id)
             datasets_available.append({'title': dataset.get('title', None), 'url': dataset_url})
 
         extra_vars['datasets_available'] = datasets_available

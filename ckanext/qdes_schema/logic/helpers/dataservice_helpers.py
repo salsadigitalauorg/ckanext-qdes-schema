@@ -7,18 +7,6 @@ from ckan.plugins.toolkit import get_action
 log = logging.getLogger(__name__)
 
 
-def get_dataservice_from_uri(context, uri):
-    # `package_show` action will raise a NotFound exception if dataservice does not exist
-    try:
-        return get_action('package_show')(context, {
-            'name_or_id': uri.split('/')[-1]
-        })
-    except NotFound as e:
-        log.error(str(e))
-
-    return {}
-
-
 def datasets_available_as_list(dataservice_dict):
     """
     Get the value of 'datasets_available' if the key exists in the dict
