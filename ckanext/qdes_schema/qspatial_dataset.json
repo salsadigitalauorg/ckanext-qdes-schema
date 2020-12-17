@@ -96,7 +96,8 @@
       "display_property": "foaf:homepage",
       "display_snippet": "link.html",
       "display_group": "description",
-      "validators": "ignore_missing url_validator qdes_uri_validator"
+      "validators": "scheming_required url_validator qdes_uri_validator",
+      "required": true
     },
     {
       "field_name": "dataset_language",
@@ -403,7 +404,8 @@
       "display_snippet": "markdown.html",
       "display_group": "related and lineage",
       "display_property": "dcterms:description",
-      "sub_heading": "lineage"
+      "sub_heading": "lineage",
+      "required": true
     },
     {
       "field_name": "lineage_plan",
