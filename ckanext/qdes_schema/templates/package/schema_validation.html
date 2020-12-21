@@ -65,7 +65,7 @@
 
       {% endif %}
     </div>
-  {% else %}
+  {% elif selected_opt.text %}
     <div class="alert alert-success" role="alert">
       The <strong>{{ pkg_dict.title if pkg_dict.title else pkg_dict.name }} dataset</strong> has no errors when validated against the <strong>{{ selected_opt.text }}</strong> schema.
     </div>
