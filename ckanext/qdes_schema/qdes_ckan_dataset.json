@@ -22,10 +22,11 @@
       "field_name": "identifiers",
       "label": "Identifier",
       "display_property": "dcterms:identifier",
-      "display_snippet": "qdes_multi_text.html",
+      "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
       "form_placeholder": "doi:10.25901/5e3ba30f141b7",
-      "display_group": "general"
+      "display_group": "general",
+      "validators": "ignore_missing qdes_uri_validator"
     },
     {
       "field_name": "notes",
