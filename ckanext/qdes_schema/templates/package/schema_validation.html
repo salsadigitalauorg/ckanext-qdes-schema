@@ -34,7 +34,7 @@
         <ul>
           {% for key, error in pkg_errors.items() %}
             <li>
-              <a href="{{ h.url_for('dataset.edit', id=pkg_dict.id) }}#field-{{key}}">
+              <a target="_blank" href="{{ h.url_for('dataset.edit', id=pkg_dict.id) }}#field-{{key}}">
                 <strong>{{ h.qdes_get_field_label(key, schema) }}</strong></a> : {{ error|join(', ') }}
             </li>
           {% endfor %}
@@ -55,7 +55,7 @@
             {% for err in res.errors %}
               {% for key, key_error in err.items() %}
                 <li>
-                  <a href="{{ h.url_for(pkg_dict.type + '_resource.edit', id=pkg_dict.id, resource_id=res.resource_id) }}#field-{{key}}">
+                  <a target="_blank" href="{{ h.url_for(pkg_dict.type + '_resource.edit', id=pkg_dict.id, resource_id=res.resource_id) }}#field-{{key}}">
                     <strong>{{ h.qdes_get_field_label(key, schema, 'resource_fields') }}</strong></a> : {{ key_error|join(', ') }}
                 </li>
               {% endfor %}

@@ -395,7 +395,8 @@
       "preset": "dataset_related_multi_text"
     },
     {
-      "preset": "related_resources_multi_group"
+      "preset": "related_resources_multi_group",
+      "validators": "ignore_missing"
     },
     {
       "field_name": "lineage_description",
