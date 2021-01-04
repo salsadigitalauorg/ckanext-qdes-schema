@@ -32,7 +32,7 @@
         {% for group_data in group_values or [''] %}
         
             <div data-repeater-item class="repeater-wrapper">
-                <div class="row vertical-align">
+                <div class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
                     {% for field_group in field.get('field_group') or [] %}
                         <div class="col-lg-{{ 12 // field.get('field_group')|length }}">
                             {% if field_group.form_snippet %}

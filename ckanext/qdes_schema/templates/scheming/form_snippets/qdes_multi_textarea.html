@@ -7,7 +7,7 @@
         {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 
         {% for value in values %}
-        <div data-repeater-item class="row vertical-align">
+        <div data-repeater-item class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
             <div class="col-lg-11">
                 {% call form.textarea(
                     label=h.scheming_language_text(field.label),

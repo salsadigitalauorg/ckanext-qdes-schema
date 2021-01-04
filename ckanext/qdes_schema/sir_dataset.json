@@ -247,7 +247,8 @@
       "form_snippet": "qdes_multi_text.html",
       "validators": "ignore_missing qdes_uri_validator",
       "display_property": "dcterms:conformsTo",
-      "display_group": "data quality"
+      "display_group": "data quality",
+      "recommended": true
     },
     {
       "field_name": "quality_description",
