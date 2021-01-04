@@ -11,7 +11,7 @@
 
         {% for value in values %}
                 
-            <div data-repeater-item class="row vertical-align">
+            <div data-repeater-item class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
                 <div class="col-lg-11">              
                     {%- set options=[] -%}
                     {%- set form_restrict_choices_to=field.get('form_restrict_choices_to') -%}
