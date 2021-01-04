@@ -9,7 +9,9 @@
       "label": "Title",
       "preset": "title",
       "form_placeholder": "eg. A descriptive title",
-      "display_group": "general"
+      "display_group": "general",
+      "required": true,
+      "validators": "scheming_required if_empty_same_as(name) unicode"
     },
     {
       "field_name": "name",

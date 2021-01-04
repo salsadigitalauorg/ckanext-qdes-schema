@@ -10,7 +10,8 @@
       "preset": "title",
       "form_placeholder": "eg. A descriptive title",
       "display_group": "general",
-      "required": true
+      "required": true,
+      "validators": "scheming_required"
     },
     {
       "field_name": "name",
