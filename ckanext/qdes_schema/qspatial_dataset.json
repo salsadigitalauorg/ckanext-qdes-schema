@@ -557,7 +557,8 @@
       "required": true,
       "form_attrs": {
         "data-module-title": "title"
-      }
+      },
+      "form_include_blank_choice": true
     },
     {
       "field_name": "dataset_creation_date",
