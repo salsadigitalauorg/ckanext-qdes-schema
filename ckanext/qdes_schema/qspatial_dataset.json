@@ -211,6 +211,19 @@
       }
     },
     {
+      "field_name": "spatial_name_code",
+      "label": "Name or code",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "spatial_name_code",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
+      },
+      "display_property": "dcterms:spatial",
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
+    },
+    {
       "field_name": "spatial_lower_left",
       "label": "Lower left",
       "form_snippet": "textarea.html",
@@ -253,7 +266,56 @@
       "label": "Spatial resolution in meters",
       "validators": "ignore_missing qdes_validate_decimal",
       "display_property": "dcat:spatialResolutionInMeters",
-      "display_group": "spatial content"
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
+    },
+    {
+      "field_name": "spatial",
+      "label": "Spatial",
+      "preset": "json_object",
+      "form_snippet": "qdes_hidden_json.html",
+      "validators": "ignore_missing qdes_validate_geojson_spatial",
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
+    },
+    {
+      "field_name": "spatial_representation",
+      "label": "Representation",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "spatial_representation",
+      "display_property": "qdcat:hasSpatialRepresentation",
+      "display_group": "spatial content",
+      "sub_heading": "spatial details",
+      "form_attrs": {
+        "data-module-title": "title"
+      },
+      "required": true
+    },
+    {
+      "field_name": "spatial_datum_crs",
+      "label": "Datum & CRS",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "spatial_datum_crs",
+      "display_property": "qeox:inCRS",
+      "display_group": "spatial content",
+      "sub_heading": "spatial details",
+      "form_attrs": {
+        "data-module-title": "title"
+      },
+      "required": true
+    },
+    {
+      "field_name": "spatial_resolution",
+      "label": "Resolution",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "spatial_resolution",
+      "display_property": "qdcat:spatialResolution",
+      "display_group": "spatial content",
+      "sub_heading": "spatial details",
+      "form_attrs": {
+        "data-module-title": "title"
+      },
+      "required": true
     },
     {
       "field_name": "conforms_to",
@@ -264,6 +326,37 @@
       "display_property": "dcterms:conformsTo",
       "display_group": "data quality",
       "recommended": true
+    },
+    {
+      "field_name": "quality_measure",
+      "label": "Quality measure",
+      "display_group": "data quality",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_empty qdes_validate_multi_groups",
+      "field_group": [
+        {
+          "field_name": "measurement",
+          "label": "Measurement",
+          "preset": "controlled_vocabulary_single_select",
+          "form_snippet": "select.html",
+          "display_snippet": "controlled_vocabulary_single_select.html",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "vocabulary_service_name": "measurement",
+          "form_attrs": {
+            "class": "form-control",
+            "data-module-title": "title"
+          }
+        },
+        {
+          "field_name": "value",
+          "label": "Value",
+          "form_snippet": "text.html",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        }
+      ]
     },
     {
       "field_name": "quality_description",
@@ -293,93 +386,6 @@
           "label": "Value",
           "form_snippet": "text.html",
           "display_property": "oa:bodyValue",
-          "form_attrs": {
-            "class": "form-control"
-          }
-        }
-      ]
-    },
-    {
-      "field_name": "spatial",
-      "label": "Spatial",
-      "preset": "json_object",
-      "form_snippet": "qdes_hidden_json.html",
-      "validators": "ignore_missing qdes_validate_geojson_spatial",
-      "display_group": "spatial content"
-    },
-    {
-      "field_name": "spatial_name_code",
-      "label": "Name or code",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "spatial_name_code",
-      "form_attrs": {
-        "data-module": "qdes_autocomplete",
-        "data-module-title": "title"
-      },
-      "display_property": "dcterms:spatial",
-      "display_group": "spatial coverage"
-    },
-    {
-      "field_name": "spatial_representation",
-      "label": "Representation",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "spatial_representation",
-      "display_property": "qdcat:hasSpatialRepresentation",
-      "display_group": "spatial details",
-      "form_attrs": {
-        "data-module-title": "title"
-      },
-      "required": true
-    },
-    {
-      "field_name": "spatial_datum_crs",
-      "label": "Datum & CRS",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "spatial_datum_crs",
-      "display_property": "qeox:inCRS",
-      "display_group": "spatial details",
-      "form_attrs": {
-        "data-module-title": "title"
-      },
-      "required": true
-    },
-    {
-      "field_name": "spatial_resolution",
-      "label": "Resolution",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "spatial_resolution",
-      "display_property": "qdcat:spatialResolution",
-      "display_group": "spatial details",
-      "form_attrs": {
-        "data-module-title": "title"
-      },
-      "required": true
-    },
-    {
-      "field_name": "quality_measure",
-      "label": "Quality measure",
-      "display_group": "data quality",
-      "form_snippet": "qdes_multi_group.html",
-      "display_snippet": "qdes_multi_group.html",
-      "validators": "ignore_empty qdes_validate_multi_groups",
-      "field_group": [
-        {
-          "field_name": "measurement",
-          "label": "Measurement",
-          "preset": "controlled_vocabulary_single_select",
-          "form_snippet": "select.html",
-          "display_snippet": "controlled_vocabulary_single_select.html",
-          "choices_helper": "scheming_vocabulary_service_choices",
-          "vocabulary_service_name": "measurement",
-          "form_attrs": {
-            "class": "form-control",
-            "data-module-title": "title"
-          }
-        },
-        {
-          "field_name": "value",
-          "label": "Value",
-          "form_snippet": "text.html",
           "form_attrs": {
             "class": "form-control"
           }
