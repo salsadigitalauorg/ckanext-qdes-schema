@@ -425,11 +425,11 @@ def qdes_validate_metadata_review_date(key, flattened_data, errors, context):
     """
     try:
         extras = flattened_data.get(('__extras',), {}) or None
-        metadata_review_date_reviewed = extras.get('metadata_review_date_reviewed', {}) or None
-        package = context.get('package', {}) or {}
-        type = package.type if package else None
+        metadata_review_date_reviewed = extras.get('metadata_review_date_reviewed', None) if extras else None
+        type = flattened_data.get(('type',))
+        value = flattened_data.get(key)
 
-        if (type in ['dataset', 'dataservice']) and (metadata_review_date_reviewed or len(flattened_data.get(key)) == 0):
+        if (type in ['dataset', 'dataservice']) and (metadata_review_date_reviewed or value is missing or value is None or len(value) == 0):
             # If empty OR checkbox ticked.
             flattened_data[key] = dt.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
     except Exception as e:
