@@ -1,3 +1,4 @@
+import ckan.lib.navl.dictization_functions as df
 import ckan.plugins.toolkit as toolkit
 import ckan.logic as logic
 import geojson
@@ -14,6 +15,8 @@ log = logging.getLogger(__name__)
 get_action = logic.get_action
 h = toolkit.h
 Invalid = toolkit.Invalid
+missing = df.missing
+StopOnError = df.StopOnError
 
 
 def qdes_temporal_start_end_date(key, flattened_data, errors, context):
@@ -26,10 +29,21 @@ def qdes_temporal_start_end_date(key, flattened_data, errors, context):
     """
     error = None
 
-    try:
-        temporal_start_value = flattened_data[('temporal_start',)]
-        temporal_end_value = flattened_data[('temporal_end',)]
+    temporal_start_value = flattened_data.get(('temporal_start',), None)
+    if temporal_start_value:
+        split = temporal_start_value.split('T')
+        temporal_start_value = split[0] if len(split) > 1 else temporal_start_value
 
+    temporal_end_value = flattened_data.get(('temporal_end',), None)
+    if temporal_end_value:
+        split = temporal_end_value.split('T')
+        temporal_end_value = split[0] if len(split) > 1 else temporal_end_value
+
+    if (temporal_start_value is missing or temporal_start_value is None) and (temporal_end_value is missing or temporal_end_value is None):
+        flattened_data.pop(key, None)
+        raise StopOnError
+
+    try:
         if ((len(temporal_start_value) > 0) != (len(temporal_end_value) > 0)) and (len(flattened_data.get(key)) == 0):
             error = 'This field should not be empty'
 
@@ -39,6 +53,7 @@ def qdes_temporal_start_end_date(key, flattened_data, errors, context):
                     error = 'Must be earlier than end date.'
                 elif key == ('temporal_end',):
                     error = 'Must be later than start date.'
+
     except Exception as e:
         log.error(str(e), exc_info=True)
 
