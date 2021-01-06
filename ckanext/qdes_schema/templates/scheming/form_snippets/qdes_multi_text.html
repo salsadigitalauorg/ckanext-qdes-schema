@@ -2,7 +2,7 @@
 
 <div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="input">
 
-    <div data-repeater-list="{{ field.field_name }}">
+    <div id="{{ 'field-' + field.field_name }}" data-repeater-list="{{ field.field_name }}">
 
         {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 
@@ -16,7 +16,8 @@
                     {% set value = h.dump_json({"id": value, "text":  h.scheming_choices_label(h.scheming_field_choices(field), value)}) %}
                 {% endif %}
             {% endif %}
-            <div data-repeater-item class="row">
+
+            <div data-repeater-item class="row{{ ' recommended-field' if field.recommended else '' }}">
                 <div class="col-xs-11">
                     {%
                         call form.input(
@@ -57,11 +58,11 @@
 {%
     call form.input(
         field.field_name,
-        id='field-' + field.field_name,
+        id='field-' + field.field_name + '-hidden',
         label=h.scheming_language_text(field.label),
         placeholder=h.scheming_language_text(field.form_placeholder),
         value=data[field.field_name],
-        classes=default_classes + visibility,
+        classes=default_classes + visibility + ['anjay'],
         is_required=h.scheming_field_required(field)
     )
 %}

@@ -121,7 +121,7 @@
         $(document).on('blur', '.iso-8601-duration-field input', function () {
             var $wrapper = $(this).parents('.iso-8601-duration-field-wrapper');
             var field_name = $wrapper.data('duration-fieldname');
-            var $el = $wrapper.find('#field-' + field_name);
+            var $el = $wrapper.find('#field-' + field_name + '-hidden');
             var current_designator = $(this).attr('name').replace(field_name + '_', '');
 
             setDesignator(duration_field_designators[field_name], current_designator, $(this).val());
@@ -134,7 +134,7 @@
         $('.iso-8601-duration-field-wrapper').each(function () {
             var $el_wrapper = $(this);
             var field_name = $el_wrapper.data('duration-fieldname');
-            var $el = $el_wrapper.find('#field-' + field_name);
+            var $el = $el_wrapper.find('#field-' + field_name + '-hidden');
 
             if (field_name.length > 0) {
                 // Parse the duration and put them to respected field.
