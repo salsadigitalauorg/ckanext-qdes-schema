@@ -15,7 +15,7 @@
 <div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="select">
     <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
     {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ')|safe }}</span>{% endif %}
-    <div data-repeater-list="{{ field.field_name }}">
+    <div id="{{ 'field-' + field.field_name }}" data-repeater-list="{{ field.field_name }}">
 
         {# Default behaviour to re-populate all existing inputs #}
         {% set group_values = h.get_multi_textarea_values(data[field.field_name])  %}
@@ -32,7 +32,7 @@
         {% for group_data in group_values or [''] %}
         
             <div data-repeater-item class="repeater-wrapper">
-                <div class="row vertical-align">
+                <div class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
                     {% for field_group in field.get('field_group') or [] %}
                         <div class="col-lg-{{ 12 // field.get('field_group')|length }}">
                             {% if field_group.form_snippet %}
@@ -62,7 +62,7 @@
 {# BEGIN: The actual form field the multiple values will be captured & submitted in #}
 {% call form.textarea(
     field.field_name,
-    id='field-' + field.field_name,
+    id='field-' + field.field_name + '-hidden',
     label=h.scheming_language_text(field.label),
     value=data[field.field_name],
     classes=ns.field_classes,
