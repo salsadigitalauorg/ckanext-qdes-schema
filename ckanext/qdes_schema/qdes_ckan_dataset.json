@@ -183,7 +183,7 @@
       "label": "Temporal coverage end",
       "display_property": "dcat:endDate",
       "preset": "date",
-      "validators": "ignore_missing qdes_temporal_start_end_date",
+      "validators": "qdes_temporal_start_end_date",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage"
     },
