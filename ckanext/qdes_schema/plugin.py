@@ -3,13 +3,14 @@ import ckan.plugins.toolkit as toolkit
 import json
 import logging
 
+from ckan.common import request
 from ckanext.qdes_schema import blueprint, helpers, validators
 from ckanext.qdes_schema.logic.action import (
     get,
     update as update_actions
 )
 from ckanext.relationships import helpers as ckanext_relationships_helpers
-from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_helpers
+from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_helpers, resource_helpers as res_helpers
 from collections import OrderedDict
 from pprint import pformat
 
@@ -47,6 +48,10 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         if ignore_auth:
             context.pop('ignore_auth')
 
+        if request.endpoint == 'api.action' and request.view_args['logic_function'] == 'package_create':
+            for resource in pkg_dict.get('resources'):
+                res_helpers.after_create_and_update(context, resource)
+
         return pkg_dict
 
     def after_update(self, context, pkg_dict):
@@ -62,6 +67,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         ignore_auth = context.get('ignore_auth', None)
         if ignore_auth:
             context.pop('ignore_auth')
+
+        for resource in pkg_dict.get('resources', []):
+            res_helpers.after_create_and_update(context, resource)
 
         return pkg_dict
 
