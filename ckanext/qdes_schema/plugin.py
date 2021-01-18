@@ -206,6 +206,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         schema.update({
             'ckanext.qdes_schema.au_bounding_box': [ignore_missing, qdes_validate_geojson],
             'ckanext.qdes_schema.qld_bounding_box': [ignore_missing, qdes_validate_geojson],
+            'ckanext.qdes_schema.default_map_zoom': [ignore_missing],
         })
 
         return schema
@@ -229,6 +230,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_all_relationships': helpers.get_all_relationships,
             'convert_relationships_to_related_resources': helpers.convert_relationships_to_related_resources,
             'get_qld_bounding_box_config': helpers.get_qld_bounding_box_config,
+            'get_default_map_zoom': helpers.get_default_map_zoom,
             'get_package_dict': helpers.get_package_dict,
             'get_invalid_uris': helpers.get_invalid_uris,
             'wrap_url_within_text_as_link': helpers.wrap_url_within_text_as_link,
