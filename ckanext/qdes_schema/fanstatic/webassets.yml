@@ -31,6 +31,10 @@ dataservice:
   contents:
     - dataservice.js
 
+dataset_no_resource:
+  contents:
+    - dataset_no_resource.js
+
 publish:
   extra:
     preload:
