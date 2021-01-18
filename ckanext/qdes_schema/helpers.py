@@ -282,6 +282,10 @@ def get_qld_bounding_box_config():
     return config.get('ckanext.qdes_schema.qld_bounding_box', None)
 
 
+def get_default_map_zoom():
+    return config.get('ckanext.qdes_schema.default_map_zoom', None) or 5
+
+
 def get_package_dict(id):
     return get_action('package_show')({}, {'id': id})
 
