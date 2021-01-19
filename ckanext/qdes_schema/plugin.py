@@ -1,5 +1,6 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+import calendar
 import json
 import logging
 
@@ -176,6 +177,29 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         return pkg_dict
 
+    def before_search(self, search_params):
+        temporal_coverage_from = request.params.get('temporal_coverage_from', '') or ''
+        temporal_coverage_to = request.params.get('temporal_coverage_to', '') or ''
+
+        # Clean up fq params from temporal start end.
+        search_params['fq'] = search_params['fq'].replace('temporal_coverage_from:"' + temporal_coverage_from + '"', '')
+        search_params['fq'] = search_params['fq'].replace('temporal_coverage_to:"' + temporal_coverage_to + '"', '')
+
+        if temporal_coverage_from and not temporal_coverage_to:
+            search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO *]'
+
+        if temporal_coverage_from and temporal_coverage_to:
+            # Need to make sure to use the last day of the selected month,
+            # otherwise solr will assume this is the first day.
+            to_date = temporal_coverage_to.split('-')
+            last_day = calendar.monthrange(int(to_date[0]), int(to_date[1]))[1]
+            temporal_coverage_to = temporal_coverage_to + '-' + str(last_day)
+
+            search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
+            search_params['fq'] += '+temporal_end:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
+
+        return search_params
+
     # IValidators
     def get_validators(self):
         return {
@@ -283,6 +307,10 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         facets_dict['classification_and_access_restrictions_label'] = plugins.toolkit._('Access restrictions')
         facets_dict['resource_format_labels'] = plugins.toolkit._('Primary format')
         facets_dict['standards_label'] = plugins.toolkit._('Data service standards')
+        facets_dict['temporal_start'] = plugins.toolkit._('Temporal start')
+        facets_dict['temporal_end'] = plugins.toolkit._('Temporal end')
+        facets_dict['temporal_coverage_from'] = plugins.toolkit._('Temporal coverage from')
+        facets_dict['temporal_coverage_to'] = plugins.toolkit._('Temporal coverage to')
 
         # Reorder facets.
         if facets_dict:
@@ -290,11 +318,15 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                 facets_order = [
                     'general_classification',
                     'topic_labels',
+                    'temporal_start',
+                    'temporal_end',
                     'publication_status_label',
                     'classification_and_access_restrictions_label',
                     'resource_format_labels',
                     'type',
                     'collection_package_id',
+                    'temporal_coverage_from',
+                    'temporal_coverage_to'
                 ]
                 ordered_facets = OrderedDict((k, facets_dict[k]) for k in facets_order)
             else:

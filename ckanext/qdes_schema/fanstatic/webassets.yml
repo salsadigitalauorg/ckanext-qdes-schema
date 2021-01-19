@@ -42,6 +42,17 @@ publish:
   contents:
     - publish.js
 
+temporal-coverage:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - temporal-coverage.js
+
+temporal-coverage-style:
+  contents:
+    - temporal-coverage.css
+
 style:
   contents:
     - style.css
