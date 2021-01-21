@@ -5,7 +5,7 @@ import json
 import logging
 
 from ckan.common import request
-from ckanext.qdes_schema import blueprint, helpers, validators
+from ckanext.qdes_schema import blueprint, helpers, validators, auth
 from ckanext.qdes_schema.logic.action import (
     get,
     update as update_actions
@@ -26,6 +26,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IFacets, inherit=True)
+    plugins.implements(plugins.IAuthFunctions)
 
     # IBlueprint
 
@@ -342,3 +343,13 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                 ordered_facets = OrderedDict((k, facets_dict[k]) for k in facets_order)
 
             return ordered_facets
+
+    # IAuthFunctions
+    def get_auth_functions(self):
+        return {
+            'site_read': auth.site_read,
+            'package_create': auth.package_create,
+            'package_update': auth.package_update,
+            'package_patch': auth.package_patch,
+            'package_delete': auth.package_delete,
+        }
