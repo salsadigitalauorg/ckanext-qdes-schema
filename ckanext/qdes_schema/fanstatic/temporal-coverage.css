@@ -1,0 +1,51 @@
+.temporal-coverage-wrapper {
+    position: relative;
+}
+
+.temporal-coverage {
+    padding: 10px 15px;
+    overflow: hidden;
+}
+
+.temporal-coverage .form-group {
+    margin-bottom: 10px;
+}
+
+.temporal-coverage .form-group:last-child {
+    margin: 0;
+}
+
+.temporal-coverage label {
+    width: 40px;
+}
+
+.temporal-coverage .btn {
+    top: 0;
+    line-height: 20px;
+}
+
+.monthyear-picker {
+    background: #eeeeee;
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    overflow: hidden;
+    z-index: 4;
+    border: 1px solid #dddddd;
+    padding: 10px 10px;
+    display: none;
+}
+
+.monthyear-picker.show {
+    display: block;
+}
+
+/** Datepicker **/
+.ui-datepicker-calendar {
+    display: none;
+}
+
+.temporal-coverage-datepicker {
+    background: white;
+    border: 1px solid #dddddd;
+}
