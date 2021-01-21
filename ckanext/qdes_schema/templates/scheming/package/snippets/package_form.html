@@ -7,9 +7,10 @@
 {% endblock %}
 
 {% block basic_fields %}
-  {%- set invalid_uris = h.get_invalid_uris(data.id, data) -%}
+  {%- set invalid_uris = [] -%}
 
   {% if g.action not in ['new'] %}
+    {% set invalid_uris = h.get_invalid_uris(data.id, data) %}
     {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris %}
   {% endif %}
 
