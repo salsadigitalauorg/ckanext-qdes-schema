@@ -50,7 +50,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             context.pop('ignore_auth')
 
         if request.endpoint == 'api.action' and request.view_args['logic_function'] == 'package_create':
-            for resource in pkg_dict.get('resources'):
+            for resource in pkg_dict.get('resources', []):
                 res_helpers.after_create_and_update(context, resource)
 
         return pkg_dict
