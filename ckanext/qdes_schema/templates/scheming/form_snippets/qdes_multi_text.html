@@ -1,5 +1,9 @@
 {% import 'macros/form.html' as form %}
 
+{% if invalid_uris %}
+    {% set errors = h.qdes_merge_invalid_uris_error(invalid_uris, field.field_name, errors) %}
+{% endif %}
+
 <div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="input">
 
     <div id="{{ 'field-' + field.field_name }}" data-repeater-list="{{ field.field_name }}">

@@ -1,15 +1,17 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+import calendar
 import json
 import logging
 
+from ckan.common import request
 from ckanext.qdes_schema import blueprint, helpers, validators, auth
 from ckanext.qdes_schema.logic.action import (
     get,
     update as update_actions
 )
 from ckanext.relationships import helpers as ckanext_relationships_helpers
-from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_helpers
+from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_helpers, resource_helpers as res_helpers
 from collections import OrderedDict
 from pprint import pformat
 
@@ -48,6 +50,10 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         if ignore_auth:
             context.pop('ignore_auth')
 
+        if request.endpoint == 'api.action' and request.view_args['logic_function'] == 'package_create':
+            for resource in pkg_dict.get('resources', []):
+                res_helpers.after_create_and_update(context, resource)
+
         return pkg_dict
 
     def after_update(self, context, pkg_dict):
@@ -63,6 +69,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         ignore_auth = context.get('ignore_auth', None)
         if ignore_auth:
             context.pop('ignore_auth')
+
+        for resource in pkg_dict.get('resources', []):
+            res_helpers.after_create_and_update(context, resource)
 
         return pkg_dict
 
@@ -169,6 +178,29 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         return pkg_dict
 
+    def before_search(self, search_params):
+        temporal_coverage_from = request.params.get('temporal_coverage_from', '') or ''
+        temporal_coverage_to = request.params.get('temporal_coverage_to', '') or ''
+
+        # Clean up fq params from temporal start end.
+        search_params['fq'] = search_params['fq'].replace('temporal_coverage_from:"' + temporal_coverage_from + '"', '')
+        search_params['fq'] = search_params['fq'].replace('temporal_coverage_to:"' + temporal_coverage_to + '"', '')
+
+        if temporal_coverage_from and not temporal_coverage_to:
+            search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO *]'
+
+        if temporal_coverage_from and temporal_coverage_to:
+            # Need to make sure to use the last day of the selected month,
+            # otherwise solr will assume this is the first day.
+            to_date = temporal_coverage_to.split('-')
+            last_day = calendar.monthrange(int(to_date[0]), int(to_date[1]))[1]
+            temporal_coverage_to = temporal_coverage_to + '-' + str(last_day)
+
+            search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
+            search_params['fq'] += '+temporal_end:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
+
+        return search_params
+
     # IValidators
     def get_validators(self):
         return {
@@ -199,6 +231,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         schema.update({
             'ckanext.qdes_schema.au_bounding_box': [ignore_missing, qdes_validate_geojson],
             'ckanext.qdes_schema.qld_bounding_box': [ignore_missing, qdes_validate_geojson],
+            'ckanext.qdes_schema.default_map_zoom': [ignore_missing],
         })
 
         return schema
@@ -222,6 +255,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_all_relationships': helpers.get_all_relationships,
             'convert_relationships_to_related_resources': helpers.convert_relationships_to_related_resources,
             'get_qld_bounding_box_config': helpers.get_qld_bounding_box_config,
+            'get_default_map_zoom': helpers.get_default_map_zoom,
             'get_package_dict': helpers.get_package_dict,
             'get_invalid_uris': helpers.get_invalid_uris,
             'wrap_url_within_text_as_link': helpers.wrap_url_within_text_as_link,
@@ -229,6 +263,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'is_collection': helpers.is_collection,
             'is_part_of_collection': helpers.is_part_of_collection,
             'qdes_get_field_label': helpers.qdes_get_field_label,
+            'qdes_merge_invalid_uris_error': helpers.qdes_merge_invalid_uris_error,
         }
 
     def get_multi_textarea_values(self, value):
@@ -274,6 +309,10 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         facets_dict['classification_and_access_restrictions_label'] = plugins.toolkit._('Access restrictions')
         facets_dict['resource_format_labels'] = plugins.toolkit._('Primary format')
         facets_dict['standards_label'] = plugins.toolkit._('Data service standards')
+        facets_dict['temporal_start'] = plugins.toolkit._('Temporal start')
+        facets_dict['temporal_end'] = plugins.toolkit._('Temporal end')
+        facets_dict['temporal_coverage_from'] = plugins.toolkit._('Temporal coverage from')
+        facets_dict['temporal_coverage_to'] = plugins.toolkit._('Temporal coverage to')
 
         # Reorder facets.
         if facets_dict:
@@ -281,11 +320,15 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                 facets_order = [
                     'general_classification',
                     'topic_labels',
+                    'temporal_start',
+                    'temporal_end',
                     'publication_status_label',
                     'classification_and_access_restrictions_label',
                     'resource_format_labels',
                     'type',
                     'collection_package_id',
+                    'temporal_coverage_from',
+                    'temporal_coverage_to'
                 ]
                 ordered_facets = OrderedDict((k, facets_dict[k]) for k in facets_order)
             else:

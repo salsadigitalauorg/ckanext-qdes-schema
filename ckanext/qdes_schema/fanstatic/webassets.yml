@@ -31,12 +31,27 @@ dataservice:
   contents:
     - dataservice.js
 
+dataset_no_resource:
+  contents:
+    - dataset_no_resource.js
+
 publish:
   extra:
     preload:
       - vendor/jquery
   contents:
     - publish.js
+
+temporal-coverage:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - temporal-coverage.js
+
+temporal-coverage-style:
+  contents:
+    - temporal-coverage.css
 
 style:
   contents:

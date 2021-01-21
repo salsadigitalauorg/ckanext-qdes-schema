@@ -221,6 +221,7 @@ def qdes_validate_geojson_spatial(key, flattened_data, errors, context):
     """
     spatial_lower_left_value = flattened_data[('spatial_lower_left',)]
     spatial_upper_right_value = flattened_data[('spatial_upper_right',)]
+    spatial_centroid_value = flattened_data[('spatial_centroid',)]
 
     if (len(spatial_lower_left_value) > 0) and (len(spatial_upper_right_value) > 0):
         # Get coordinates.
@@ -243,7 +244,10 @@ def qdes_validate_geojson_spatial(key, flattened_data, errors, context):
             flattened_data[key] = geojson.dumps(box)
         except Exception as e:
             log.error(str(e))
-
+    elif len(spatial_centroid_value) > 0:
+        flattened_data[key] = spatial_centroid_value
+    else:
+        flattened_data[key] = ''
 
 def qdes_iso_8601_durations(key, flattened_data, errors, context):
     """
