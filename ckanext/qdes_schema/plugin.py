@@ -238,6 +238,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'is_collection': helpers.is_collection,
             'is_part_of_collection': helpers.is_part_of_collection,
             'qdes_get_field_label': helpers.qdes_get_field_label,
+            'qdes_merge_invalid_uris_error': helpers.qdes_merge_invalid_uris_error,
         }
 
     def get_multi_textarea_values(self, value):

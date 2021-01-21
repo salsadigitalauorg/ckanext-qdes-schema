@@ -7,8 +7,10 @@
 {% endblock %}
 
 {% block basic_fields %}
+  {%- set invalid_uris = h.get_invalid_uris(data.id, data) -%}
+
   {% if g.action not in ['new'] %}
-    {% snippet "/snippets/invalid_uris_error.html", entity_id=data.id , entity=data %}
+    {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris %}
   {% endif %}
 
   {% if h.ckan_version() > '2.9' %}
@@ -58,7 +60,7 @@
     {%- if field.form_snippet is not none -%}
       {%- snippet 'scheming/snippets/form_field.html',
         field=field, data=data, errors=errors, licenses=c.licenses,
-        entity_type='dataset', object_type=dataset_type -%}
+        entity_type='dataset', object_type=dataset_type, invalid_uris=invalid_uris -%}
     {%- endif -%}
   {%- endfor -%}
   {%- if 'resource_fields' not in schema -%}
