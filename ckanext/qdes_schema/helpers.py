@@ -5,7 +5,7 @@ import logging
 from ckan.model import Session
 from ckan.model.package_relationship import PackageRelationship
 from ckan.lib import helpers as core_helper
-from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
+from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request, _
 from ckanext.qdes_schema.logic.helpers import relationship_helpers
 from ckanext.invalid_uris.model import InvalidUri
 from pprint import pformat
@@ -338,7 +338,22 @@ def is_part_of_collection(series_relationship):
 
     return False
 
+
 def qdes_get_field_label(field_name, schema, field='dataset_fields'):
     for field in schema.get(field):
         if field.get('field_name') == field_name:
             return field.get('label')
+
+
+def qdes_merge_invalid_uris_error(invalid_uris, field_name, current_errors, error='Please provide a valid URL'):
+    error = _(error)
+    for uri in invalid_uris:
+        if uri.get('field') == field_name:
+            if field_name in current_errors:
+                current_errors[field_name].append(str(error))
+            else:
+                current_errors[field_name] = [str(error)]
+
+            current_errors[field_name] = list(set(current_errors[field_name]))
+
+    return current_errors
