@@ -3,6 +3,8 @@
 {%- set schema = h.scheming_get_dataset_schema(pkg_dict['type']) -%}
 
 {% block primary_content_inner %}
+  {% snippet "/snippets/invalid_uris_error.html", entity_id=pkg_dict.id , entity=pkg_dict %}
+
   <section class="additional-info">
     <h3>{{ _('Metadata') }}</h3>
     <table class="table table-striped table-bordered table-condensed">
