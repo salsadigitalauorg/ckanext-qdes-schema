@@ -15,7 +15,7 @@
   {% if g.action not in ['new'] %}
     {%- set invalid_uris = h.get_invalid_uris(data.id, data) -%}
     {% set pkg_dict = h.get_package_dict(data.package_id) %}
-    {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris, parent_entity=pkg_dict.type %}
+    {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris, parent_entity=pkg_dict.type, is_edit=True %}
   {% endif %}
 
   {% if h.ckan_version() > '2.9' %}

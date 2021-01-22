@@ -5,8 +5,13 @@
 {% endif %}
 
 {% if invalid_uris %}
-  <div class="alert alert-error">
-    This {{invalid_uris[0].entity_type}} has error(s)
+  <div class="alert alert-warning">
+    {% if is_edit %}
+      The form may contain invalid URL entries
+    {% else %}
+      This {{invalid_uris[0].entity_type}} has error(s)
+    {% endif %}
+
     <ul>
       {% for uri in invalid_uris %}
         <li>
@@ -16,7 +21,7 @@
             {% set field = h.scheming_field_by_name(schema[uri.entity_type]['dataset_fields'], uri.field) %}
           {% endif %}
 
-          {{ field['label'] }}: {{ _('Please provide a valid URL') }}
+          {{ field['label'] }}: {{ _('The URL could not be validated') }}
         </li>
       {% endfor %}
     </ul>
