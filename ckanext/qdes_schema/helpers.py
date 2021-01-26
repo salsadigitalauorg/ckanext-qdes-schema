@@ -345,7 +345,7 @@ def qdes_get_field_label(field_name, schema, field='dataset_fields'):
             return field.get('label')
 
 
-def qdes_merge_invalid_uris_error(invalid_uris, field_name, current_errors, error='Please provide a valid URL'):
+def qdes_merge_invalid_uris_error(invalid_uris, field_name, current_errors, error='The URL could not be validated'):
     error = _(error)
     for uri in invalid_uris:
         if uri.get('field') == field_name:

@@ -11,7 +11,7 @@
 
   {% if g.action not in ['new'] %}
     {% set invalid_uris = h.get_invalid_uris(data.id, data) %}
-    {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris %}
+    {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris, is_edit=True %}
   {% endif %}
 
   {% if h.ckan_version() > '2.9' %}
