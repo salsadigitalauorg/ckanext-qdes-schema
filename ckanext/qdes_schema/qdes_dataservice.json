@@ -9,7 +9,9 @@
       "label": "Title",
       "preset": "title",
       "form_placeholder": "eg. A descriptive title",
-      "display_group": "general"
+      "display_group": "general",
+      "required": true,
+      "validators": "scheming_required if_empty_same_as(name) unicode"
     },
     {
       "field_name": "name",
@@ -22,10 +24,11 @@
       "field_name": "identifiers",
       "label": "Identifier",
       "display_property": "dcterms:identifier",
-      "display_snippet": "qdes_multi_text.html",
+      "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
       "form_placeholder": "doi:10.25901/5e3ba30f141b7",
-      "display_group": "general"
+      "display_group": "general",
+      "validators": "ignore_missing qdes_uri_validator"
     },
     {
       "field_name": "classification",
@@ -296,7 +299,7 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "license",
       "display_group": "rights & licensing",
-      "required": true,
+      "recommended": true,
       "form_include_blank_choice": true,
       "form_attrs": {
         "data-module-title": "title"

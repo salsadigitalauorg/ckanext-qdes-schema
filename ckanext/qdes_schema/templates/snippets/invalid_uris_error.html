@@ -1,9 +1,17 @@
-{% set invalid_uris = h.get_invalid_uris(entity_id, entity) %}
 {% set schema = h.scheming_dataset_schemas() %}
 
+{% if entity_id and entity and not invalid_uris %}
+  {%- set invalid_uris = h.get_invalid_uris(entity_id, entity) -%}
+{% endif %}
+
 {% if invalid_uris %}
-  <div class="alert alert-error">
-    This {{invalid_uris[0].entity_type}} has error(s)
+  <div class="alert alert-warning">
+    {% if is_edit %}
+      The form may contain invalid URL entries
+    {% else %}
+      This {{invalid_uris[0].entity_type}} has error(s)
+    {% endif %}
+
     <ul>
       {% for uri in invalid_uris %}
         <li>
@@ -13,9 +21,11 @@
             {% set field = h.scheming_field_by_name(schema[uri.entity_type]['dataset_fields'], uri.field) %}
           {% endif %}
 
-          {{ field['label'] }}: Please provide a valid URL
+          {{ field['label'] }}: {{ _('The URL could not be validated') }}
         </li>
       {% endfor %}
     </ul>
+    <p>&nbsp;</p>
+    <p class="text-muted"><em>If you have updated the above fields with valid URLs, then please ignore the warning messages. The validation process runs overnight and the warning messages will be removed if the fields contain valid URLs.</em></p>
   </div>
 {% endif %}

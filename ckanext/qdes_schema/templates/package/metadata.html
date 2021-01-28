@@ -3,6 +3,8 @@
 {%- set schema = h.scheming_get_dataset_schema(pkg_dict['type']) -%}
 
 {% block primary_content_inner %}
+  {% snippet "/snippets/invalid_uris_error.html", entity_id=pkg_dict.id , entity=pkg_dict %}
+
   <section class="additional-info">
     <h3>{{ _('Metadata') }}</h3>
     <table class="table table-striped table-bordered table-condensed">
@@ -22,12 +24,26 @@
                 </th>
                 <td class="dataset-details"{%
                   if field.display_property %} property="{{ field.display_property
-                  }}"{% endif %}>{%- snippet 'scheming/snippets/display_field.html',
-                  field=field, data=pkg_dict, schema=schema -%}</td>
+                  }}"{% endif %}>
+                  {%- if field.field_name == 'owner_org' -%}
+                    {{ pkg_dict['organization']['title'] }}
+                  {%- else -%}
+                    {%- snippet 'scheming/snippets/display_field.html', field=field, data=pkg_dict, schema=schema -%}
+                  {%- endif -%}
+                </td>
               </tr>
             {%- endif -%}
           {%- endfor -%}
         {% endblock %}
+
+        <tr>
+          <th scope="row" class="dataset-label">
+            Data Catalogue ID
+          </th>
+          <td class="dataset-details">
+            {{ pkg_dict.get('id') }}
+          </td>
+        </tr>
       </tbody>
     </table>
   </section>

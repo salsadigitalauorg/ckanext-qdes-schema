@@ -1,6 +1,6 @@
 {
   "scheming_version": 1,
-  "dataset_type": "dataset",
+  "dataset_type": "qspatial_dataset",
   "about": "A reimplementation of the default CKAN dataset schema",
   "about_url": "http://github.com/ckan/ckanext-scheming",
   "dataset_fields": [
@@ -11,7 +11,7 @@
       "form_placeholder": "eg. A descriptive title",
       "display_group": "general",
       "required": true,
-      "validators": "scheming_required if_empty_same_as(name) unicode"
+      "validators": "scheming_required"
     },
     {
       "field_name": "name",
@@ -24,11 +24,11 @@
       "field_name": "identifiers",
       "label": "Identifier",
       "display_property": "dcterms:identifier",
-      "display_snippet": "qdes_multi_text_url.html",
+      "display_snippet": "qdes_multi_text.html",
       "form_snippet": "qdes_multi_text.html",
       "form_placeholder": "doi:10.25901/5e3ba30f141b7",
       "display_group": "general",
-      "validators": "ignore_missing qdes_uri_validator"
+      "required": true
     },
     {
       "field_name": "notes",
@@ -72,7 +72,8 @@
       "display_property": "rdfs:comment",
       "display_snippet": "qdes_multi_markdown.html",
       "form_placeholder": "e.g. warnings",
-      "display_group": "description"
+      "display_group": "description",
+      "required": true
     },
     {
       "field_name": "metadata_review_date",
@@ -96,7 +97,8 @@
       "display_property": "foaf:homepage",
       "display_snippet": "link.html",
       "display_group": "description",
-      "validators": "ignore_missing url_validator qdes_uri_validator"
+      "validators": "scheming_required url_validator qdes_uri_validator",
+      "required": true
     },
     {
       "field_name": "dataset_language",
@@ -110,7 +112,8 @@
         "data-module-title": "title"
       },
       "first_choice": "English",
-      "form_include_blank_choice": true
+      "form_include_blank_choice": true,
+      "required": true
     },
     {
       "field_name": "topic",
@@ -132,7 +135,8 @@
       "label": "Keyword",
       "preset": "tag_string_autocomplete",
       "form_placeholder": "eg. economy, mental health, government",
-      "display_group": "description"
+      "display_group": "description",
+      "required": true
     },
     {
       "field_name": "parameter",
@@ -174,18 +178,20 @@
       "label": "Temporal coverage start",
       "display_property": "dcat:startDate",
       "preset": "date",
-      "validators": "ignore_missing qdes_temporal_start_end_date",
+      "validators": "scheming_required qdes_temporal_start_end_date",
       "display_group": "temporal content",
-      "sub_heading": "temporal coverage"
+      "sub_heading": "temporal coverage",
+      "required": true
     },
     {
       "field_name": "temporal_end",
       "label": "Temporal coverage end",
       "display_property": "dcat:endDate",
       "preset": "date",
-      "validators": "qdes_temporal_start_end_date",
+      "validators": "scheming_required qdes_temporal_start_end_date",
       "display_group": "temporal content",
-      "sub_heading": "temporal coverage"
+      "sub_heading": "temporal coverage",
+      "required": true
     },
     {
       "field_name": "temporal_precision_spacing",
@@ -221,19 +227,21 @@
       "field_name": "spatial_lower_left",
       "label": "Lower left",
       "form_snippet": "textarea.html",
-      "validators": "ignore_missing qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "validators": "scheming_required qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "qdcat:lowerLeft",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "required": true
     },
     {
       "field_name": "spatial_upper_right",
       "label": "Upper right",
       "form_snippet": "textarea.html",
-      "validators": "ignore_missing qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
+      "validators": "scheming_required qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "qdcat:upperRight",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "required": true
     },
     {
       "field_name": "spatial_centroid",
@@ -258,7 +266,8 @@
       "label": "Spatial resolution in meters",
       "validators": "ignore_missing qdes_validate_decimal",
       "display_property": "dcat:spatialResolutionInMeters",
-      "display_group": "spatial content"
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
     },
     {
       "field_name": "spatial",
@@ -266,7 +275,8 @@
       "preset": "json_object",
       "form_snippet": "qdes_hidden_json.html",
       "validators": "ignore_missing qdes_validate_geojson_spatial",
-      "display_group": "spatial content"
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
     },
     {
       "field_name": "spatial_representation",
@@ -278,7 +288,8 @@
       "sub_heading": "spatial details",
       "form_attrs": {
         "data-module-title": "title"
-      }
+      },
+      "required": true
     },
     {
       "field_name": "spatial_datum_crs",
@@ -290,7 +301,8 @@
       "sub_heading": "spatial details",
       "form_attrs": {
         "data-module-title": "title"
-      }
+      },
+      "required": true
     },
     {
       "field_name": "spatial_resolution",
@@ -302,7 +314,8 @@
       "sub_heading": "spatial details",
       "form_attrs": {
         "data-module-title": "title"
-      }
+      },
+      "required": true
     },
     {
       "field_name": "conforms_to",
@@ -351,7 +364,8 @@
       "display_group": "data quality",
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
-      "validators": "ignore_empty qdes_validate_multi_groups",
+      "validators": "scheming_required qdes_validate_multi_groups",
+      "required": true,
       "field_group": [
         {
           "field_name": "dimension",
@@ -389,7 +403,8 @@
       "preset": "dataset_related_multi_text"
     },
     {
-      "preset": "related_resources_multi_group"
+      "preset": "related_resources_multi_group",
+      "validators": "ignore_missing"
     },
     {
       "field_name": "lineage_description",
@@ -398,7 +413,8 @@
       "display_snippet": "markdown.html",
       "display_group": "related and lineage",
       "display_property": "dcterms:description",
-      "sub_heading": "lineage"
+      "sub_heading": "lineage",
+      "required": true
     },
     {
       "field_name": "lineage_plan",
@@ -486,7 +502,7 @@
         "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
         "data-module-key": "value",
         "data-module-label": "name",
-        "data-module-minimum-input-length": 3,      
+        "data-module-minimum-input-length": 3,
         "data-module-create-search-choice": true,
         "data-module-title": "title"
       }
@@ -510,7 +526,7 @@
             "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
             "data-module-key": "value",
             "data-module-label": "name",
-            "data-module-minimum-input-length": 3,      
+            "data-module-minimum-input-length": 3,
             "data-module-create-search-choice": true,
             "data-module-title": "title"
           }
@@ -564,8 +580,9 @@
       "label": "Release date",
       "display_property": "dcterms:issued",
       "preset": "datetime_tz",
-      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_current_date_later_than_creation",
-      "display_group": "status"
+      "validators": "scheming_required scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_current_date_later_than_creation",
+      "display_group": "status",
+      "required": true
     },
     {
       "field_name": "dataset_last_modified_date",
@@ -584,7 +601,8 @@
       "display_group": "status",
       "form_attrs": {
         "data-module-title": "title"
-      }
+      },
+      "required": true
     },
     {
       "field_name": "classification_and_access_restrictions",
@@ -606,7 +624,8 @@
       "form_snippet": "textarea.html",
       "display_property": "dcterms:rights",
       "display_group": "rights & licensing",
-      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>",
+      "required": true
     },
     {
       "field_name": "license_id",
@@ -653,7 +672,8 @@
       "field_name": "name",
       "label": "Title",
       "form_placeholder": "eg. January 2011 Gold Prices",
-      "display_property": "dcterms:title"
+      "display_property": "dcterms:title",
+      "required": true
     },
     {
       "field_name": "schema_standards",
@@ -705,16 +725,16 @@
       "label": "Size",
       "display_property": "dcat:byteSize",
       "display_snippet": "qdes_byte_size.html",
-      "validators": "ignore_missing int_validator",
+      "validators": "scheming_required int_validator",
       "form_placeholder": "Enter exact or approximate file size in bytes (integer)",
-      "recommended": true
+      "required": true
     },
     {
       "field_name": "url",
       "label": "Download address",
       "display_property": "dcat:downloadURL",
       "display_snippet": "qdes_text_url.html",
-      "validators": "ignore_missing url_validator qdes_uri_validator",
+      "validators": "scheming_required url_validator qdes_uri_validator",
       "recommended": true
     },
     {
@@ -723,7 +743,8 @@
       "display_property": "dcterms:conformsTo",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "ignore_missing qdes_uri_validator"
+      "validators": "scheming_required qdes_uri_validator",
+      "required": true
     },
     {
       "field_name": "data_services",
@@ -732,7 +753,8 @@
       "preset": "controlled_dataservice_multi_select",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
-      }
+      },
+      "required": true
     },
     {
       "field_name": "description",
@@ -753,7 +775,8 @@
       "label": "Rights statement",
       "form_snippet": "textarea.html",
       "display_property": "dcterms:rights",
-      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>",
+      "required": true
     },
     {
       "field_name": "license",
@@ -764,7 +787,8 @@
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-title": "title"
-      }
+      },
+      "required": true
     }
   ]
 }
