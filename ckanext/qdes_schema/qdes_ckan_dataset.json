@@ -667,16 +667,14 @@
       "field_name": "format",
       "label": "Primary format",
       "display_property": "dcterms:format",
-      "preset": "qdes_vocab_service_autocomplete",
+      "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "format",
       "required": true,
       "form_attrs": {
         "data-module": "qdes_autocomplete",
-        "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/format?incomplete=?",
-        "data-module-key": "value",
-        "data-module-label": "name",
         "data-module-title": "title"
-      }
+      },
+      "form_include_blank_choice": true
     },
     {
       "field_name": "compression",
