@@ -9,7 +9,7 @@
     {% if is_edit %}
       The form may contain invalid URL entries
     {% else %}
-      This {{invalid_uris[0].entity_type}} has error(s)
+      This {{ invalid_uris[0].entity_type if invalid_uris[0].entity_type != 'dataservice' else 'data service' }} may contain invalid URL entries
     {% endif %}
 
     <ul>
