@@ -46,13 +46,13 @@ def create_package(remoteCKAN, package):
         result = remoteCKAN.action.package_create(**package)
         package['id'] = result.get('id')
     except Exception as e:
-        append_error(package.get('title'),  str(e))
+        append_error(package.get('title'), str(e), package)
 
 
-def append_error(dataset_title, error):
+def append_error(dataset_title, error, package):
     # log =  {'error': str(error)}
     # error_log.append(log) if log not in error_log else error_log
-    log = [dataset_title, error]
+    log = [dataset_title, package.get('url'), error]
     error_log.append(log) if log not in error_log else error_log
 
 
@@ -145,11 +145,11 @@ def main():
 
     if error_log:
         pprint(json.dumps(error_log, indent=2))
-        log_file = 'logs/error_{0}.txt'.format(dt.now().strftime("%Y%m%d-%H%M%S"))
+        log_file = 'logs/error_{0}.csv'.format(dt.now().strftime("%Y%m%d-%H%M%S"))
         error_log_file = open(log_file, 'a')
-        error_log_file.write("Dataset Title, Error\n")
+        error_log_file.write("Dataset Title, URL, Error\n")
         for error in error_log:
-            error_log_file.write(f"{error[0]},{json.dumps(error[1],indent=2)}\n")
+            error_log_file.write(f"{error[0]},{error[1]},{json.dumps(error[2],indent=2)}\n")
         error_log_file.close()
 
 

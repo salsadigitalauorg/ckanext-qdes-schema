@@ -103,6 +103,7 @@ class QSpatialObject:
         self.resource.update(self.get_resource_service_api_endpoint())
         self.resource.update(self.get_resource_rights_statement())
         self.resource.update(self.get_resource_license())
+        self.resource.update(self.get_data_service())
         self.package['resources'] = [self.resource]
 
         return self.package
@@ -127,7 +128,7 @@ class QSpatialObject:
         if identifiers == None:
             self.log('identifiers: {0}'.format("No value"))
         
-        self.log('identifiers: {}'.format(identifiers))
+        # self.log('identifiers: {}'.format(identifiers))
         # Multi value
         return {'identifiers': json.dumps([identifiers]) if identifiers else None}
 
@@ -172,7 +173,7 @@ class QSpatialObject:
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/940c52b1-bb97-47d7-a515-2d42c068ab53
             # classification_term = 'http://registry.it.csiro.au/def/datacite/resourceType/Workflow'
 
-        self.log('classification: {}'.format(classification_term))
+        # self.log('classification: {}'.format(classification_term))
         # Multi value
         return {'classification': json.dumps([classification_term]) if classification_term else None}
 
@@ -203,7 +204,7 @@ class QSpatialObject:
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/67cb4107-9b8b-4dfd-a688-6c3e76e02239
             # topic_term = 'https://gcmdservices.gsfc.nasa.gov/kms/concept/14625f2a-4186-4377-a0d9-88998bb6b775'
 
-        self.log('topic: {}'.format(topic_term))
+        # self.log('topic: {}'.format(topic_term))
         # Multi value
         return {'topic': json.dumps([topic_term]) if topic_term else None}
 
@@ -219,7 +220,7 @@ class QSpatialObject:
             # Get 'Kelly Bryant' as the default
             # contact_point_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, 'Kelly Bryant', 'point-of-contact')
 
-        self.log('contact_point: {}'.format(contact_point_term))
+        # self.log('contact_point: {}'.format(contact_point_term))
         return {'contact_point': contact_point_term}
 
     def get_contact_publisher(self):
@@ -234,7 +235,7 @@ class QSpatialObject:
             # contact_publisher_term = 'http://linked.data.gov.au/def/organisation-type/trust-regarded-as-corporations'
 
 
-        self.log('contact_publisher: {}'.format(contact_publisher_term))
+        # self.log('contact_publisher: {}'.format(contact_publisher_term))
         return {'contact_publisher': contact_publisher_term}
 
     def get_contact_other_party(self):
@@ -270,7 +271,7 @@ class QSpatialObject:
             # Get 'Kelly Bryant' as the default
             # the_party_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, 'Kelly Bryant', 'the-party')
 
-        contact_other_party = [{"the-party": the_party_term, "nature-of-their-responsibility": "http://linked.data.gov.au/def/dataciteroles/DataCurator"}]
+        # contact_other_party = [{"the-party": the_party_term, "nature-of-their-responsibility": "http://linked.data.gov.au/def/dataciteroles/DataCurator"}]
         # self.log('contact_other_party: {}'.format(contact_other_party))
         return {'contact_other_party': json.dumps(contact_other_party) if the_party_term else None}
 
@@ -285,7 +286,7 @@ class QSpatialObject:
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/462ae48e-9509-46e7-b001-857f78c1a7ab
             # publication_status = 'http://registry.it.csiro.au/def/isotc211/MD_ProgressCode/withdrawn'
 
-        self.log('publication_status: {}'.format(publication_status_term))
+        # self.log('publication_status: {}'.format(publication_status_term))
         return {'publication_status': publication_status_term}
 
     def get_classification_and_access_restrictions(self):
@@ -299,7 +300,7 @@ class QSpatialObject:
             # Grabbed the send to last   value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/940c52b1-bb97-47d7-a515-2d42c068ab53
             # classification_and_access_restrictions = 'http://registry.it.csiro.au/def/isotc211/MD_ClassificationCode/topSecret'
 
-        self.log('classification_and_access_restrictions: {}'.format(classification_and_access_restrictions_term))
+        # self.log('classification_and_access_restrictions: {}'.format(classification_and_access_restrictions_term))
         # REQUIRED Multi value
         return {'classification_and_access_restrictions': json.dumps([classification_and_access_restrictions_term])}
 
@@ -495,7 +496,7 @@ class QSpatialObject:
             self.log('dataset_release_date: No value')
             # dataset_release_date = default_date
 
-        self.log('dataset_release_date: {}'.format(dataset_release_date))
+        # self.log('dataset_release_date: {}'.format(dataset_release_date))
         return {'dataset_release_date': dataset_release_date, 'dataset_creation_date': dataset_release_date}
 
     def get_update_schedule(self):
@@ -559,7 +560,7 @@ class QSpatialObject:
         if url == None:
             self.log('url: No value')
 
-        self.log('url: {}'.format(url))
+        # self.log('url: {}'.format(url))
         return {'url': url}
 
     def get_lineage_description(self):
@@ -614,7 +615,7 @@ class QSpatialObject:
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/035d3c4b-f503-496e-ab4b-820deee6c5cd
             # format_term = 'https://www.iana.org/assignments/media-types/application/zstd'
 
-        self.log('resource_format: {}'.format(format_term))
+        # self.log('resource_format: {}'.format(format_term))
         return {'format': format_term}
 
     def get_resource_size(self):
@@ -660,3 +661,11 @@ class QSpatialObject:
         resource_license = 'http://linked.data.gov.au/def/licence-document/cc-by-4.0'
         # self.log('resource_license: {}'.format(resource_license))
         return {'license': resource_license}
+
+    def get_data_service(self):
+        # Set default value to QSpatial dataservice
+        #TODO: verify this dataservice is created on environment
+        data_service_name= 'qspatial'
+        data_service = self.remoteCKAN.action.package_show(id=data_service_name)
+        # self.log('data_service: {}'.format(data_service))
+        return {'data_services': [data_service.get('id')]}
