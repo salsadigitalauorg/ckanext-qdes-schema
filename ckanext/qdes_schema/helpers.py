@@ -55,6 +55,13 @@ def qdes_relationship_types_choices(field):
     """
     Return choices for dataset relationship types.
     """
+    def search_term_definition(terms, search_string):
+        for term in terms:
+            if search_string.lower() in term['uri'].lower():
+                return term['title']
+
+        return ''
+
     choices = []
 
     try:
@@ -63,6 +70,10 @@ def qdes_relationship_types_choices(field):
         unique_relationship_types = []
 
         types = PackageRelationship.get_forward_types()
+
+        nature_of_relationship = []
+        for term in get_action('get_vocabulary_service_terms')({}, 'nature-of-relationship'):
+            nature_of_relationship.append({'uri': term.uri, 'label': term.label, 'title': term.definition})
 
         for relationship_type in h.get_relationship_types():
             if relationship_type not in types:
@@ -74,7 +85,8 @@ def qdes_relationship_types_choices(field):
         for data in unique_relationship_types:
             choices.append({
                 'value': data,
-                'label': data
+                'label': data,
+                'title': search_term_definition(nature_of_relationship, data)
             })
     except Exception as e:
         log.error(str(e))
