@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+import csv
 
 from ckanapi import RemoteCKAN
 from qspatial_object import QSpatialObject
@@ -10,7 +11,7 @@ from datetime import datetime as dt
 
 def get_remote_ckan():
     remoteCKAN = RemoteCKAN(
-        os.environ['LAGOON_ROUTE'], 
+        os.environ['LAGOON_ROUTE']+':'+os.environ['AMAZEEIO_HTTP_PORT'],
         os.environ['HARVEST_API_KEY']
     )
     return remoteCKAN
@@ -22,12 +23,17 @@ def get_ckan_packages():
     files = glob.glob('xml_files/*.xml')
     log_file = 'logs/{0}.txt'.format(dt.now().strftime("%Y%m%d-%H%M%S"))
     count = 0
+    csv_rows = [row for row in csv.DictReader(open('DES_Datasets_QSpatial_v1.csv', "r"))]
     with get_remote_ckan() as remoteCKAN:
         for file in files:
             count += 1
             if count > 1000:
                 break
-            obj = QSpatialObject(file, remoteCKAN, log_file, True)
+            # Get dataset identifier from file name
+            # Bit of a hack bt easier then doing a regex
+            identifier = file.replace('xml_files/', '').replace('.xml', '')
+            csv_row = next((row for row in csv_rows if identifier in row.get('URL')), None)
+            obj = QSpatialObject(file, csv_row, remoteCKAN, log_file, True)
             ckan_packages.append(obj.get_ckan_package_dict())
 
     return ckan_packages
@@ -46,7 +52,7 @@ def create_package(remoteCKAN, package):
 def append_error(dataset_title, error):
     # log =  {'error': str(error)}
     # error_log.append(log) if log not in error_log else error_log
-    log = '{0}: {1}'.format(dataset_title, error)
+    log = [dataset_title, error]
     error_log.append(log) if log not in error_log else error_log
 
 
@@ -138,7 +144,13 @@ def main():
         pprint(distinct_resource_fields)
 
     if error_log:
-        print(json.dumps(error_log, indent=2))
+        pprint(json.dumps(error_log, indent=2))
+        log_file = 'logs/error_{0}.txt'.format(dt.now().strftime("%Y%m%d-%H%M%S"))
+        error_log_file = open(log_file, 'a')
+        error_log_file.write("Dataset Title, Error\n")
+        for error in error_log:
+            error_log_file.write(f"{error[0]},{json.dumps(error[1],indent=2)}\n")
+        error_log_file.close()
 
 
 error_log = []

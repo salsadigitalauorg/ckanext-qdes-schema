@@ -13,8 +13,9 @@ class QSpatialObject:
     This class will do mapping from QSpatial XML to CKAN package dictionary.
     """
 
-    def __init__(self, xml_filename, remoteCKAN, log_file, debug=False):
+    def __init__(self, xml_filename, csv_row, remoteCKAN, log_file, debug=False):
         self.root = ET.parse(xml_filename).getroot()
+        self.csv_row = csv_row
         # self.ns={"gts":"http://www.isotc211.org/2005/gts","gml":"http://www.opengis.net/gml","gml32":"http://www.opengis.net/gml/3.2","gmx":"http://www.isotc211.org/2005/gmx","gsr":"http://www.isotc211.org/2005/gsr","gss":"http://www.isotc211.org/2005/gss","gco":"http://www.isotc211.org/2005/gco","gmd":"http://www.isotc211.org/2005/gmd","srv":"http://www.isotc211.org/2005/srv","xlink":"http://www.w3.org/1999/xlink","xsi":"http://www.w3.org/2001/XMLSchema-instance"}
         self.ns = {
             "gts": "http://www.isotc211.org/2005/gts",
@@ -121,18 +122,12 @@ class QSpatialObject:
         return {'parent_identifier': parent_identifier}
 
     def get_identifiers(self):
-        identifiers = None
-        # /MD_Metadata/fileIdentifier/gco:CharacterString
-        fileIdentifier = self.root.find('gmd:fileIdentifier/gco:CharacterString', self.ns)
-        if fileIdentifier != None:
-            identifiers = fileIdentifier.text
-
+        identifiers = self.csv_row.get('URL', None)
+        
         if identifiers == None:
-            # Set default value
-            self.log('identifiers: {0}'.format(fileIdentifier.text if fileIdentifier != None else "No value"))
-            # identifiers = 'value'
-
-        # self.log('identifiers: {}'.format(identifiers))
+            self.log('identifiers: {0}'.format("No value"))
+        
+        self.log('identifiers: {}'.format(identifiers))
         # Multi value
         return {'identifiers': json.dumps([identifiers]) if identifiers else None}
 
@@ -166,18 +161,18 @@ class QSpatialObject:
         return {'name': name}
 
     def get_classification(self):
+        classification = self.csv_row.get('General classification of dataset type', None)
         classification_term = None
-        presentationFormCode = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:presentationForm/gmd:CI_PresentationFormCode', self.ns)
-        if presentationFormCode != None:
-            classification_term = helpers.get_vocabulary_service_term(self.remoteCKAN, presentationFormCode.text, 'classification')
+        if classification != None:
+            classification_term = helpers.get_vocabulary_service_term(self.remoteCKAN, classification, 'classification')
 
         if classification_term == None:
             # Set default value
-            self.log('classification: {0}'.format(presentationFormCode.text if presentationFormCode != None else "No value"))
+            self.log('classification: {0}'.format(classification if classification != None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/940c52b1-bb97-47d7-a515-2d42c068ab53
-            classification_term = 'http://registry.it.csiro.au/def/datacite/resourceType/Workflow'
+            # classification_term = 'http://registry.it.csiro.au/def/datacite/resourceType/Workflow'
 
-        # self.log('classification: {}'.format(classification_term))
+        self.log('classification: {}'.format(classification_term))
         # Multi value
         return {'classification': json.dumps([classification_term]) if classification_term else None}
 
@@ -197,55 +192,49 @@ class QSpatialObject:
         return {'notes': notes}
 
     def get_topic(self):
-        topic_term = ''
-        # /MD_Metadata/identificationInfo/MD_DataIdentification/topicCategory/MD_TopicCategoryCode
-        topicCategoryCode = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:topicCategory/gmd:MD_TopicCategoryCode', self.ns)
-        if topicCategoryCode != None:
-            topic_term = helpers.get_vocabulary_service_term(self.remoteCKAN, topicCategoryCode.text, 'topic')
+        topic = self.csv_row.get('Topic or theme', None)
+        topic_term = None
+        if topic != None:
+            topic_term = helpers.get_vocabulary_service_term(self.remoteCKAN, topic, 'topic')
 
         if topic_term == None:
             # Set default value
-            self.log('topic_term: {0}'.format(topicCategoryCode.text if topicCategoryCode != None else "No value"))
+            self.log('topic_term: {0}'.format(topic if topic != None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/67cb4107-9b8b-4dfd-a688-6c3e76e02239
-            topic_term = 'https://gcmdservices.gsfc.nasa.gov/kms/concept/14625f2a-4186-4377-a0d9-88998bb6b775'
+            # topic_term = 'https://gcmdservices.gsfc.nasa.gov/kms/concept/14625f2a-4186-4377-a0d9-88998bb6b775'
 
-        # self.log('topic: {}'.format(topic_term))
+        self.log('topic: {}'.format(topic_term))
         # Multi value
         return {'topic': json.dumps([topic_term]) if topic_term else None}
 
     def get_contact_point(self):
+        contact_point = self.csv_row.get('Point of contact', None)
         contact_point_term = None
-        # /MD_Metadata/contact/CI_ResponsibleParty/contactInfo/CI_Contact/address/CI_Address/electronicMailAddress/gco:CharacterString
-        # /MD_Metadata/identificationInfo/MD_DataIdentification/pointOfContact/CI_ResponsibleParty/contactInfo/CI_Contact/address/CI_Address/electronicMailAddress/gco:CharacterString
-        electronicMailAddress = self.root.find(
-            'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString', self.ns)
-        if electronicMailAddress != None:
-            contact_point_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, electronicMailAddress.text, 'point-of-contact')
+        if contact_point != None:
+            contact_point_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, contact_point, 'point-of-contact')
 
         if contact_point_term == None:
             # Set default value
-            self.log('contact_point: {0}'.format(electronicMailAddress.text if electronicMailAddress != None else "No value"))
+            self.log('contact_point: {0}'.format(contact_point if contact_point != None else "No value"))
             # Get 'Kelly Bryant' as the default
-            contact_point_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, 'Kelly Bryant', 'point-of-contact')
+            # contact_point_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, 'Kelly Bryant', 'point-of-contact')
 
-        # self.log('contact_point: {}'.format(contact_point_term))
+        self.log('contact_point: {}'.format(contact_point_term))
         return {'contact_point': contact_point_term}
 
     def get_contact_publisher(self):
-        contact_publisher_term = None
-        # /MD_Metadata/identificationInfo/MD_DataIdentification/citation/CI_Citation/citedResponsibleParty[5]/CI_ResponsibleParty/positionName/gco:CharacterString
-        positionName = self.root.find(
-            'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:citedResponsibleParty/gmd:CI_ResponsibleParty[@id="resourceOwner"]/gmd:positionName/gco:CharacterString', self.ns)
-        if positionName != None:
-            contact_publisher_term = helpers.get_vocabulary_service_term(self.remoteCKAN, positionName.text, 'contact_publisher')
+        # # Default to 'Department of Environment and Science
+        contact_publisher = 'Department of Environment and Science'
+        contact_publisher_term = helpers.get_vocabulary_service_term(self.remoteCKAN, contact_publisher, 'contact_publisher')
 
         if contact_publisher_term == None:
             # Set default value
-            self.log('contact_publisher: {0}'.format(positionName.text if positionName != None else "No value"))
+            self.log('contact_publisher: {0}'.format(contact_publisher if contact_publisher != None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/e763c23d-2fd9-4e73-b186-ce121ea75791
-            contact_publisher_term = 'http://linked.data.gov.au/def/organisation-type/trust-regarded-as-corporations'
+            # contact_publisher_term = 'http://linked.data.gov.au/def/organisation-type/trust-regarded-as-corporations'
 
-        # self.log('contact_publisher: {}'.format(contact_publisher_term))
+
+        self.log('contact_publisher: {}'.format(contact_publisher_term))
         return {'contact_publisher': contact_publisher_term}
 
     def get_contact_other_party(self):
@@ -279,58 +268,49 @@ class QSpatialObject:
             # Set default value
             self.log('contact_other_party: {0}'.format(URL.text if URL != None else "No value"))
             # Get 'Kelly Bryant' as the default
-            the_party_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, 'Kelly Bryant', 'the-party')
+            # the_party_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, 'Kelly Bryant', 'the-party')
 
         contact_other_party = [{"the-party": the_party_term, "nature-of-their-responsibility": "http://linked.data.gov.au/def/dataciteroles/DataCurator"}]
         # self.log('contact_other_party: {}'.format(contact_other_party))
         return {'contact_other_party': json.dumps(contact_other_party) if the_party_term else None}
 
     def get_publication_status(self):
-        publication_status = None
-        progressCode = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:status/gmd:MD_ProgressCode', self.ns)
-        if progressCode != None:
-            publication_status = helpers.get_vocabulary_service_term(self.remoteCKAN, progressCode.text, 'publication_status')
+        # Default to 'Completed'
+        publication_status = 'Completed'
+        publication_status_term = helpers.get_vocabulary_service_term(self.remoteCKAN, publication_status, 'publication_status')
 
-        if publication_status == None:
+        if publication_status_term == None:
             # Set default value
-            self.log('publication_status: {0}'.format(progressCode.text if progressCode != None else "No value"))
+            self.log('publication_status: {0}'.format("No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/462ae48e-9509-46e7-b001-857f78c1a7ab
-            publication_status = 'http://registry.it.csiro.au/def/isotc211/MD_ProgressCode/withdrawn'
+            # publication_status = 'http://registry.it.csiro.au/def/isotc211/MD_ProgressCode/withdrawn'
 
-        # self.log('publication_status: {}'.format(publication_status))
-        return {'publication_status': publication_status}
+        self.log('publication_status: {}'.format(publication_status_term))
+        return {'publication_status': publication_status_term}
 
     def get_classification_and_access_restrictions(self):
-        classification_and_access_restrictions = None
-        # /MD_Metadata/identificationInfo/MD_DataIdentification/resourceConstraints[10]/MD_SecurityConstraints/classification/MD_ClassificationCode/@codeListValue
-        classificationCode = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_SecurityConstraints/gmd:classification/gmd:MD_ClassificationCode', self.ns)
-        if classificationCode != None:
-            classification_and_access_restrictions = helpers.get_vocabulary_service_term(self.remoteCKAN, classificationCode.text, 'classification_and_access_restrictions')
+        # Default to 'OFFICIAL'
+        classification_and_access_restrictions = 'OFFICIAL'
+        classification_and_access_restrictions_term = helpers.get_vocabulary_service_term(self.remoteCKAN, classification_and_access_restrictions, 'classification_and_access_restrictions')
 
-        if classification_and_access_restrictions == None:
+        if classification_and_access_restrictions_term == None:
             # Set default value
-            self.log('classification_and_access_restrictions: {0}'.format(classificationCode.text if classificationCode != None else "No value"))
+            self.log('classification_and_access_restrictions: {0}'.format("No value"))
             # Grabbed the send to last   value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/940c52b1-bb97-47d7-a515-2d42c068ab53
-            classification_and_access_restrictions = 'http://registry.it.csiro.au/def/isotc211/MD_ClassificationCode/topSecret'
+            # classification_and_access_restrictions = 'http://registry.it.csiro.au/def/isotc211/MD_ClassificationCode/topSecret'
 
-        # self.log('classification_and_access_restrictions: {}'.format(classification_and_access_restrictions))
+        self.log('classification_and_access_restrictions: {}'.format(classification_and_access_restrictions_term))
         # REQUIRED Multi value
-        return {'classification_and_access_restrictions': json.dumps([classification_and_access_restrictions])}
+        return {'classification_and_access_restrictions': json.dumps([classification_and_access_restrictions_term])}
 
     def get_license_id(self):
-        license_id = 'http://registry.it.csiro.au/licence/cc-by-4.0'
-        # TODO: Verify this XPath as it returns the value 'license' which is not correct
-        # restrictionCode = self.root.find(
-        #     'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:useConstraints/gmd:MD_RestrictionCode[@codeListValue="license"]', self.ns)
-        # if restrictionCode != None:
-        #     license_id = helpers.get_vocabulary_service_term(self.remoteCKAN, restrictionCode.text, 'license')
-
+        # Set default value to Creative Commons Attribution 4.0 International
+        license_id = 'http://linked.data.gov.au/def/licence-document/cc-by-4.0'
         # self.log('license_id: {}'.format(license_id))
-        # Set default value to Creative Commons Attribution 4.0 International https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/6290f167-9105-49e7-9c0b-d1ca05881525
         return {'license_id': license_id}
 
     def get_owner_org(self):
-        # # TODO: REQUIRED What should be the default owner_org
+        # TODO: Update to 'department-of-environment-and-science'
         return {'owner_org': 'qspatial'}
 
     def get_additional_info(self):
@@ -357,7 +337,7 @@ class QSpatialObject:
             # Set default value
             self.log('dataset_language: {0}'.format(language.text if language != None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/79209863-6432-4810-b614-d95e048affe5
-            dataset_language = 'http://id.loc.gov/vocabulary/iso639-1/zu'
+            # dataset_language = 'http://id.loc.gov/vocabulary/iso639-1/zu'
 
         # self.log('dataset_language: {}'.format(dataset_language))
         # Multi value
@@ -481,7 +461,7 @@ class QSpatialObject:
             # Set default value
             self.log('spatial_representation: {0}'.format(spatialRepresentationTypeCode.text if spatialRepresentationTypeCode != None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/1a4a638c-b6c0-43cd-aef1-413a1d99bd4b
-            spatial_representation = 'http://registry.it.csiro.au/def/isotc211/MD_SpatialRepresentationTypeCode/video'
+            # spatial_representation = 'http://registry.it.csiro.au/def/isotc211/MD_SpatialRepresentationTypeCode/video'
 
         # self.log('spatial_representation: {}'.format(spatial_representation))
         return {'spatial_representation': spatial_representation}
@@ -498,22 +478,24 @@ class QSpatialObject:
             # Set default value
             self.log('spatial_datum_crs: {0}'.format(code.text if code != None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/d112d2c1-9f93-40f3-9ac0-0a829aaf4090
-            spatial_datum_crs = 'http://linked.data.gov.au/def/queensland-crs/wgs1984'
+            # spatial_datum_crs = 'http://linked.data.gov.au/def/queensland-crs/wgs1984'
 
         # self.log('spatial_datum_crs: {}'.format(spatial_datum_crs))
         return {'spatial_datum_crs': spatial_datum_crs}
 
     def get_dataset_release_date(self, default_date):
+
+        pub_date = self.csv_row.get('Pub_Date', None)
         dataset_release_date = None
-        date = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date', self.ns)
-        if date != None:
-            dataset_release_date = date.text + "T14:00:00"  # Australia/Brisbane timezone in UTC
+        if pub_date != None:
+            # pub_date is in format 21/03/2013
+            dataset_release_date = datetime.strptime(pub_date + 'T14:00:00', '%d/%m/%YT%H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S') #pub_date+ "T14:00:00"  # Australia/Brisbane timezone in UTC
         else:
             # Set default value?
             self.log('dataset_release_date: No value')
-            dataset_release_date = default_date
+            # dataset_release_date = default_date
 
-        # self.log('dataset_release_date: {}'.format(dataset_release_date))
+        self.log('dataset_release_date: {}'.format(dataset_release_date))
         return {'dataset_release_date': dataset_release_date, 'dataset_creation_date': dataset_release_date}
 
     def get_update_schedule(self):
@@ -529,7 +511,7 @@ class QSpatialObject:
             # Set default value
             self.log('update_schedule: {0}'.format(maintenanceFrequencyCode.get('codeListValue', None) if maintenanceFrequencyCode != None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/54ca21ca-fa3b-4574-b2de-86d9986f18ab
-            update_schedule = 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/unknown'
+            # update_schedule = 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/unknown'
 
         # self.log('update_schedule: {}'.format(update_schedule))
         return {'update_schedule': update_schedule}
@@ -573,31 +555,11 @@ class QSpatialObject:
         return {'quality_description': json.dumps([quality_description]) if quality_description else None}
 
     def get_url(self):
-        url = None
-        # "<dataQualityInfo>
-        # <DQ_DataQuality>
-        # <lineage>
-        # <LI_Lineage>
-        # <source>
-        # <LI_Source>
-        # <description>"
-        # /MD_Metadata/dataQualityInfo/DQ_DataQuality/lineage/LI_Lineage/source/LI_Source/description/gco:CharacterString
-
-        # description = self.root.find('gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:source/gmd:LI_Source/gmd:description/gco:CharacterString', self.ns)
-        # if description != None:
-        #     url = description.text
-
-        # TODO: Verify this is the correct XPath
-        # /MD_Metadata/distributionInfo/MD_Distribution/distributor/MD_Distributor/distributorTransferOptions/MD_DigitalTransferOptions/onLine/CI_OnlineResource/linkage/URL ??
-        linkage = self.root.find(
-            'gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL', self.ns)
-        if linkage != None:
-            url = helpers.fix_url(linkage.text)
-        else:
-            # Set default value?
+        url = self.csv_row.get('URL', None)
+        if url == None:
             self.log('url: No value')
 
-        # self.log('url: {}'.format(url))
+        self.log('url: {}'.format(url))
         return {'url': url}
 
     def get_lineage_description(self):
@@ -640,24 +602,20 @@ class QSpatialObject:
         # self.log('resource_name: {}'.format(resource_name))
         return {'name': resource_name}
 
-    def get_resource_format(self):
-        resource_format = None
-        # TODO: Verify if should be using this XPATH It also has multiple formats?
-        # /MD_Metadata/identificationInfo/MD_DataIdentification/resourceFormat/MD_Format/name/gco:CharacterString
-        # /MD_Metadata/identificationInfo/MD_DataIdentification/resourceFormat/MD_Format/name/gco:CharacterString
-        name = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceFormat/gmd:MD_Format/gmd:name/gco:CharacterString', self.ns)
-        if name != None:
-            # TODO: Map string format to vocab
-            resource_format = helpers.get_vocabulary_service_term(self.remoteCKAN, name.text, 'format')
+    def get_resource_format(self):        
+        format = self.csv_row.get('Format', None)
+        format_term = None
+        if format != None:
+            format_term = helpers.get_vocabulary_service_term(self.remoteCKAN, format, 'format')
 
-        if resource_format == None:
+        if format_term == None:
             # Set default value
-            self.log('resource_format: {0}'.format(name.text if name != None else "No value"))
+            self.log('resource_format: {0}'.format(format if format != None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/035d3c4b-f503-496e-ab4b-820deee6c5cd
-            resource_format = 'https://www.iana.org/assignments/media-types/application/zstd'
+            # format_term = 'https://www.iana.org/assignments/media-types/application/zstd'
 
-        # self.log('resource_format: {}'.format(resource_format))
-        return {'format': resource_format}
+        self.log('resource_format: {}'.format(format_term))
+        return {'format': format_term}
 
     def get_resource_size(self):
         resource_size = None
@@ -698,16 +656,7 @@ class QSpatialObject:
         return {'rights_statement': resource_rights_statement}
 
     def get_resource_license(self):
-        resource_license = 'http://registry.it.csiro.au/licence/cc-by-4.0'
-
-        # TODO: Verify this XPath as it returns the value 'license' which is not correct
-        # restrictionCode = self.root.find(
-        #     'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:useConstraints/gmd:MD_RestrictionCode[@codeListValue="license"]', self.ns)
-        # if restrictionCode != None:
-        #     license_id = helpers.get_vocabulary_service_term(self.remoteCKAN, restrictionCode.text, 'license')
-
-        # self.log('license_id: {}'.format(license_id))
-        # Set default value to Creative Commons Attribution 4.0 International https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/6290f167-9105-49e7-9c0b-d1ca05881525
-
+        # Set default value to Creative Commons Attribution 4.0 International
+        resource_license = 'http://linked.data.gov.au/def/licence-document/cc-by-4.0'
         # self.log('resource_license: {}'.format(resource_license))
         return {'license': resource_license}
