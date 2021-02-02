@@ -1,5 +1,9 @@
 {% import 'macros/form.html' as form %}
 
+{% if invalid_uris %}
+    {% set errors = h.qdes_merge_invalid_uris_error(invalid_uris, field.field_name, errors) %}
+{% endif %}
+
 {%- if field.field_name in data -%}
     {%- set value = data.get(field.field_name, '') -%}
     {% if value %}

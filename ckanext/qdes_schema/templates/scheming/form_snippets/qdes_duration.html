@@ -1,6 +1,6 @@
 {% import 'macros/form.html' as form %}
 
-<div class="iso-8601-duration-field-wrapper" data-duration-fieldname="{{ field.field_name }}">
+<div id="{{ 'field-' + field.field_name }}" class="iso-8601-duration-field-wrapper" data-duration-fieldname="{{ field.field_name }}">
     <div class="row">
         <div class="col-sm-12">
             <h2>Time precision or spacing</h2>
@@ -123,7 +123,7 @@
     {%
         call form.input(
             field.field_name,
-            id='field-' + field.field_name,
+            id='field-' + field.field_name + '-hidden',
             label=h.scheming_language_text(field.label),
             placeholder=h.scheming_language_text(field.form_placeholder),
             value=data[field.field_name],

@@ -140,7 +140,7 @@ jQuery(document).ready(function () {
         var target_field_id = parent_field_name ? 'field-' + parent_field_name : 'field-' + field_name;
         var field_type = jQuery('#' + repeater_id).data('field-type');
 
-        collate_inputs(repeater_id, target_field_id, field_type);
+        collate_inputs(repeater_id, target_field_id + '-hidden', field_type);
         related_resource_replaces_relationship(element);
     }
 

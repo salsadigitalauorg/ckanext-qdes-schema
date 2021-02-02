@@ -42,4 +42,6 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
-.DS_Store
+# Ignore xml files from harvest and any logs
+ckanext/qdes_schema/qspatial_harvest/xml_files/*.xml
+ckanext/qdes_schema/qspatial_harvest/logs/

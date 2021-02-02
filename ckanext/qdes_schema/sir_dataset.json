@@ -1,6 +1,6 @@
 {
   "scheming_version": 1,
-  "dataset_type": "dataset",
+  "dataset_type": "sir_dataset",
   "about": "A reimplementation of the default CKAN dataset schema",
   "about_url": "http://github.com/ckan/ckanext-scheming",
   "dataset_fields": [
@@ -11,7 +11,7 @@
       "form_placeholder": "eg. A descriptive title",
       "display_group": "general",
       "required": true,
-      "validators": "scheming_required if_empty_same_as(name) unicode"
+      "validators": "scheming_required"
     },
     {
       "field_name": "name",
@@ -24,11 +24,10 @@
       "field_name": "identifiers",
       "label": "Identifier",
       "display_property": "dcterms:identifier",
-      "display_snippet": "qdes_multi_text_url.html",
+      "display_snippet": "qdes_multi_text.html",
       "form_snippet": "qdes_multi_text.html",
       "form_placeholder": "doi:10.25901/5e3ba30f141b7",
-      "display_group": "general",
-      "validators": "ignore_missing qdes_uri_validator"
+      "display_group": "general"
     },
     {
       "field_name": "notes",
@@ -37,8 +36,7 @@
       "display_snippet": "markdown.html",
       "form_placeholder": "eg. Some useful notes about the data",
       "display_property": "dcterms:description",
-      "display_group": "description",
-      "required": true
+      "display_group": "description"
     },
     {
       "field_name": "classification",
@@ -48,8 +46,6 @@
       "display_group": "description",
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "classification",
-      "validators": "scheming_required",
-      "required": true,
       "form_attrs": {
         "class": "form-control",
         "data-module-title": "title"
@@ -119,12 +115,10 @@
       "display_group": "description",
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "topic",
-      "validators": "scheming_required",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-title": "title"
       },
-      "required": true,
       "form_include_blank_choice": true
     },
     {
@@ -174,7 +168,7 @@
       "label": "Temporal coverage start",
       "display_property": "dcat:startDate",
       "preset": "date",
-      "validators": "ignore_missing qdes_temporal_start_end_date",
+      "validators": "qdes_temporal_start_end_date",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage"
     },
@@ -183,7 +177,7 @@
       "label": "Temporal coverage end",
       "display_property": "dcat:endDate",
       "preset": "date",
-      "validators": "qdes_temporal_start_end_date",
+      "validators": "ignore_missing qdes_temporal_start_end_date",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage"
     },
@@ -258,7 +252,8 @@
       "label": "Spatial resolution in meters",
       "validators": "ignore_missing qdes_validate_decimal",
       "display_property": "dcat:spatialResolutionInMeters",
-      "display_group": "spatial content"
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
     },
     {
       "field_name": "spatial",
@@ -266,7 +261,8 @@
       "preset": "json_object",
       "form_snippet": "qdes_hidden_json.html",
       "validators": "ignore_missing qdes_validate_geojson_spatial",
-      "display_group": "spatial content"
+      "display_group": "spatial content",
+      "sub_heading": "spatial coverage"
     },
     {
       "field_name": "spatial_representation",
@@ -274,8 +270,7 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "spatial_representation",
       "display_property": "qdcat:hasSpatialRepresentation",
-      "display_group": "spatial content",
-      "sub_heading": "spatial details",
+      "display_group": "spatial details",
       "form_attrs": {
         "data-module-title": "title"
       }
@@ -286,8 +281,7 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "spatial_datum_crs",
       "display_property": "qeox:inCRS",
-      "display_group": "spatial content",
-      "sub_heading": "spatial details",
+      "display_group": "spatial details",
       "form_attrs": {
         "data-module-title": "title"
       }
@@ -298,8 +292,7 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "spatial_resolution",
       "display_property": "qdcat:spatialResolution",
-      "display_group": "spatial content",
-      "sub_heading": "spatial details",
+      "display_group": "spatial details",
       "form_attrs": {
         "data-module-title": "title"
       }
@@ -379,6 +372,37 @@
       ]
     },
     {
+      "field_name": "quality_measure",
+      "label": "Quality measure",
+      "display_group": "data quality",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_empty qdes_validate_multi_groups",
+      "field_group": [
+        {
+          "field_name": "measurement",
+          "label": "Measurement",
+          "preset": "controlled_vocabulary_single_select",
+          "form_snippet": "select.html",
+          "display_snippet": "controlled_vocabulary_single_select.html",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "vocabulary_service_name": "measurement",
+          "form_attrs": {
+            "class": "form-control",
+            "data-module-title": "title"
+          }
+        },
+        {
+          "field_name": "value",
+          "label": "Value",
+          "form_snippet": "text.html",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        }
+      ]
+    },
+    {
       "field_name": "series_or_collection",
       "label": "Series or collection",
       "preset": "dataset_related_multi_text"
@@ -389,7 +413,8 @@
       "preset": "dataset_related_multi_text"
     },
     {
-      "preset": "related_resources_multi_group"
+      "preset": "related_resources_multi_group",
+      "validators": "ignore_missing"
     },
     {
       "field_name": "lineage_description",
@@ -456,8 +481,7 @@
       "display_property": "dcat:contactPoint",
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
-      "display_group": "contacts",
-      "required": true
+      "display_group": "contacts"
     },
     {
       "field_name": "contact_publisher",
@@ -466,7 +490,6 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "contact_publisher",
       "display_group": "contacts",
-      "required": true,
       "form_include_blank_choice": true,
       "form_attrs": {
         "data-module-title": "title"
@@ -480,7 +503,6 @@
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "creator",
       "display_group": "contacts",
-      "required": false,
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
@@ -544,7 +566,6 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "publication_status",
       "display_group": "status",
-      "required": true,
       "form_attrs": {
         "data-module-title": "title"
       },
@@ -597,8 +618,7 @@
         "data-module": "qdes_autocomplete",
         "data-module-title": "title"
       },
-      "form_include_blank_choice": true,
-      "required": true
+      "form_include_blank_choice": true
     },
     {
       "field_name": "rights_statement",
@@ -615,7 +635,6 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "license",
       "display_group": "rights & licensing",
-      "required": true,
       "form_include_blank_choice": true,
       "form_attrs": {
         "data-module-title": "title"
@@ -667,14 +686,15 @@
       "field_name": "format",
       "label": "Primary format",
       "display_property": "dcterms:format",
-      "preset": "controlled_vocabulary_single_select",
+      "preset": "qdes_vocab_service_autocomplete",
       "vocabulary_service_name": "format",
-      "required": true,
       "form_attrs": {
         "data-module": "qdes_autocomplete",
+        "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/format?incomplete=?",
+        "data-module-key": "value",
+        "data-module-label": "name",
         "data-module-title": "title"
-      },
-      "form_include_blank_choice": true
+      }
     },
     {
       "field_name": "compression",
