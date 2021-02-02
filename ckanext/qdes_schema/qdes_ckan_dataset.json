@@ -174,7 +174,7 @@
       "label": "Temporal coverage start",
       "display_property": "dcat:startDate",
       "preset": "date",
-      "validators": "ignore_missing qdes_temporal_start_end_date",
+      "validators": "qdes_temporal_start_end_date",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage"
     },

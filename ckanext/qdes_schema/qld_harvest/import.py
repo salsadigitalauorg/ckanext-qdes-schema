@@ -65,25 +65,6 @@ def get_dataset_schema_fields():
         return json.load(f)
 
 
-def fix_url(url):
-    parsed_url = urllib.parse.urlparse(url)
-
-    if parsed_url.query:
-        parsed_query_params = urllib.parse.parse_qs(parsed_url.query)
-        query = urllib.parse.urlencode(parsed_query_params, doseq=True)
-
-        return urllib.parse.urlunparse((
-            parsed_url.scheme,
-            parsed_url.netloc,
-            parsed_url.path,
-            parsed_url.params,
-            query,
-            parsed_url.fragment,
-        ))
-
-    return None
-
-
 def dataset_mapping(dataset, source_dict):
     """
     Map QLD dataset to QDES dataset.
