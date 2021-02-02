@@ -5,7 +5,7 @@ import logging
 from ckan.model import Session
 from ckan.model.package_relationship import PackageRelationship
 from ckan.lib import helpers as core_helper
-from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request
+from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request, _
 from ckanext.qdes_schema.logic.helpers import relationship_helpers
 from ckanext.invalid_uris.model import InvalidUri
 from pprint import pformat
@@ -55,6 +55,13 @@ def qdes_relationship_types_choices(field):
     """
     Return choices for dataset relationship types.
     """
+    def search_term_definition(terms, search_string):
+        for term in terms:
+            if search_string.lower() in term['uri'].lower():
+                return term['title']
+
+        return ''
+
     choices = []
 
     try:
@@ -63,6 +70,10 @@ def qdes_relationship_types_choices(field):
         unique_relationship_types = []
 
         types = PackageRelationship.get_forward_types()
+
+        nature_of_relationship = []
+        for term in get_action('get_vocabulary_service_terms')({}, 'nature-of-relationship'):
+            nature_of_relationship.append({'uri': term.uri, 'label': term.label, 'title': term.definition})
 
         for relationship_type in h.get_relationship_types():
             if relationship_type not in types:
@@ -74,7 +85,8 @@ def qdes_relationship_types_choices(field):
         for data in unique_relationship_types:
             choices.append({
                 'value': data,
-                'label': data
+                'label': data,
+                'title': search_term_definition(nature_of_relationship, data)
             })
     except Exception as e:
         log.error(str(e))
@@ -282,6 +294,10 @@ def get_qld_bounding_box_config():
     return config.get('ckanext.qdes_schema.qld_bounding_box', None)
 
 
+def get_default_map_zoom():
+    return config.get('ckanext.qdes_schema.default_map_zoom', None) or 5
+
+
 def get_package_dict(id):
     return get_action('package_show')({}, {'id': id})
 
@@ -333,3 +349,23 @@ def is_part_of_collection(series_relationship):
         return True
 
     return False
+
+
+def qdes_get_field_label(field_name, schema, field='dataset_fields'):
+    for field in schema.get(field):
+        if field.get('field_name') == field_name:
+            return field.get('label')
+
+
+def qdes_merge_invalid_uris_error(invalid_uris, field_name, current_errors, error='The URL could not be validated'):
+    error = _(error)
+    for uri in invalid_uris:
+        if uri.get('field') == field_name:
+            if field_name in current_errors:
+                current_errors[field_name].append(str(error))
+            else:
+                current_errors[field_name] = [str(error)]
+
+            current_errors[field_name] = list(set(current_errors[field_name]))
+
+    return current_errors

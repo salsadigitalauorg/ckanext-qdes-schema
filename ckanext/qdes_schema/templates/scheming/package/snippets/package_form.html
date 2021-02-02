@@ -1,14 +1,17 @@
 {% ckan_extends %}
 
 {% block stages %}
-{% if dataset_type != 'dataservice' %}
-  {{ h.snippet('package/snippets/stages.html', stages=stage) }}
-{% endif %}
+  {% if dataset_type != 'dataservice' and form_style == 'new' %}
+    {{ h.snippet('package/snippets/stages.html', stages=stage) }}
+  {% endif %}
 {% endblock %}
 
 {% block basic_fields %}
+  {%- set invalid_uris = [] -%}
+
   {% if g.action not in ['new'] %}
-    {% snippet "/snippets/invalid_uris_error.html", entity_id=data.id , entity=data %}
+    {% set invalid_uris = h.get_invalid_uris(data.id, data) %}
+    {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris, is_edit=True %}
   {% endif %}
 
   {% if h.ckan_version() > '2.9' %}
@@ -58,7 +61,7 @@
     {%- if field.form_snippet is not none -%}
       {%- snippet 'scheming/snippets/form_field.html',
         field=field, data=data, errors=errors, licenses=c.licenses,
-        entity_type='dataset', object_type=dataset_type -%}
+        entity_type='dataset', object_type=dataset_type, invalid_uris=invalid_uris -%}
     {%- endif -%}
   {%- endfor -%}
   {%- if 'resource_fields' not in schema -%}
@@ -72,14 +75,38 @@
 {% block metadata_fields %}
 {% endblock %}
 
-{% block save_button_text %}
-  {% if dataset_type == 'dataservice' %}
-    {% if form_style == 'new' %}
-      {{ _('Add Data Service') }}  
-    {% else %}
-      {{ _('Update Data Service') }}
-    {% endif %}
-  {% else %}
-    {{ super() }}
-  {%- endif -%}
+{% block form_actions %}
+  <div class="form-actions">
+    {{ form.required_message() }}
+    {% block disclaimer %}
+      {{ super() }}
+    {% endblock %}
+    {% block delete_button %}
+      {{ super() }}
+    {% endblock %}
+    {% block save_button %}
+      {% if dataset_type == 'dataset' %}
+        {% if form_style == 'new' %}
+          <button class="btn btn-primary" type="submit" name="save_record">{{ _('Finish: Save record') }}</button>
+          <button class="btn btn-default" type="submit" name="save">{{ _('Next: Add Data') }}</button>
+
+          {% if h.ckan_version() > '2.9' %}
+            {% asset 'qdes_schema/dataset_no_resource' %}
+          {% else %}
+            {% resource 'qdes_schema/dataset_no_resource.js' %}
+          {% endif %}
+        {% else %}
+          {{ super() }}
+        {% endif %}
+      {% else %}
+        <button class="btn btn-primary" type="submit" name="save">
+          {% if form_style == 'new' %}
+            {{ _('Add Data Service') }}
+          {% else %}
+            {{ _('Update Data Service') }}
+          {% endif %}
+        </button>
+      {%- endif -%}
+    {% endblock %}
+  </div>
 {% endblock %}

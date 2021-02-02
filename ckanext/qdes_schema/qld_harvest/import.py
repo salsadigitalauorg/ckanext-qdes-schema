@@ -6,7 +6,7 @@ import urllib as urllib
 
 from ckan.model import Session
 from ckanext.clone_dataset.helpers import get_incremental_package_name
-from ckanext.qdes_schema.qld_harvest import helpers
+from ckanext.qdes_schema.logic.helpers import harvest_helpers as helpers
 from datetime import datetime
 from ckanapi import RemoteCKAN
 from pprint import pformat
@@ -248,7 +248,7 @@ def resource_mapping(res):
 
         # Encode url if exist.
         if mapped_resource['url']:
-            mapped_resource['url'] = fix_url(mapped_resource['url'])
+            mapped_resource['url'] = helpers.fix_url(mapped_resource['url'])
 
         return mapped_resource
     except Exception as e:
@@ -300,7 +300,7 @@ def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_u
 
         # Encode url if exist.
         if mapped_dataset['url']:
-            mapped_dataset['url'] = fix_url(mapped_dataset['url'])
+            mapped_dataset['url'] = helpers.fix_url(mapped_dataset['url'])
 
         return mapped_dataset
 
