@@ -2,7 +2,6 @@ import csv
 import os
 import json
 import re
-import urllib as urllib
 
 from ckan.model import Session
 from ckanext.clone_dataset.helpers import get_incremental_package_name
