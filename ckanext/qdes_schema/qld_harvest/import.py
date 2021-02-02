@@ -143,7 +143,7 @@ def dataset_mapping(dataset, source_dict):
             'classification')
 
         if classification:
-            mapped_dataset['classification'] = json.dumps([classification['value']])
+            mapped_dataset['classification'] = json.dumps([classification])
 
         # Classification and access restrictions vocabulary service lookup
         class_and_access = helpers.get_vocabulary_service_term(
@@ -152,7 +152,7 @@ def dataset_mapping(dataset, source_dict):
             'classification_and_access_restrictions')
 
         if class_and_access:
-            mapped_dataset['classification_and_access_restrictions'] = json.dumps([class_and_access['value']])
+            mapped_dataset['classification_and_access_restrictions'] = json.dumps([class_and_access])
 
         # Topic/theme vocabulary service lookup
         source_topic = source_dict.get('Topic or theme', None) or None
@@ -164,7 +164,7 @@ def dataset_mapping(dataset, source_dict):
                 'topic')
 
             if topic:
-                mapped_dataset['topic'] = json.dumps([topic['value']])
+                mapped_dataset['topic'] = json.dumps([topic])
             else:
                 print('>>> No matching topic found for:')
                 print('>>> source: {}'.format(pformat(source_dict)))
@@ -173,13 +173,13 @@ def dataset_mapping(dataset, source_dict):
             print('>>> source: {}'.format(pformat(source_dict)))
 
         # Point of Contact "secure" vocabulary look-up
-        point_of_contact = helpers.get_point_of_contact_id(
+        point_of_contact = helpers.get_secure_vocabulary_record(
             destination,
             source_dict.get('Point of contact'),
             'point-of-contact')
 
         if point_of_contact:
-            mapped_dataset['contact_point'] = point_of_contact['value']
+            mapped_dataset['contact_point'] = point_of_contact
 
         # Publication status vocabulary service lookup
         publication_status = helpers.get_vocabulary_service_term(
