@@ -122,6 +122,7 @@
       "validators": "scheming_required",
       "required": true,
       "form_include_blank_choice": true,
+      "label_plural": "topic or themes",
       "no_selected_term": "No topics or theme have been added. Please use the interface above to select a <strong>Topic or theme.</strong>"
     },
     {
@@ -137,6 +138,7 @@
       "display_property": "dcat:property",
       "display_group": "description",
       "preset": "controlled_vocabulary_tree_multi_group",
+      "label_plural": "parameters",
       "no_selected_term": "No parameters have been added. Please use the interface above to select an <strong>Observed property</strong> and corresponding <strong>Unit of measure.</strong>",
       "field_group": [
         {
