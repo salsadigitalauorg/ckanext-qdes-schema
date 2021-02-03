@@ -1,10 +1,11 @@
-import ckan.lib.munge as munge
 import json
+import os
 import re
-from datetime import datetime
-
 import xml.etree.ElementTree as ET
+from datetime import datetime
 from pprint import pformat, pprint
+
+import ckan.lib.munge as munge
 from ckanext.qdes_schema.logic.helpers import harvest_helpers as helpers
 
 
@@ -271,7 +272,7 @@ class QSpatialObject:
             # Get 'Kelly Bryant' as the default
             # the_party_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, 'Kelly Bryant', 'the-party')
 
-        # contact_other_party = [{"the-party": the_party_term, "nature-of-their-responsibility": "http://linked.data.gov.au/def/dataciteroles/DataCurator"}]
+        contact_other_party = [{"the-party": the_party_term, "nature-of-their-responsibility": "http://linked.data.gov.au/def/dataciteroles/DataCurator"}]
         # self.log('contact_other_party: {}'.format(contact_other_party))
         return {'contact_other_party': json.dumps(contact_other_party) if the_party_term else None}
 
@@ -311,8 +312,10 @@ class QSpatialObject:
         return {'license_id': license_id}
 
     def get_owner_org(self):
-        # TODO: Update to 'department-of-environment-and-science'
-        return {'owner_org': 'qspatial'}
+        # TODO: For production OWNER_ORG should be set to 'department-of-environment-and-science'
+        owner_org = os.environ['OWNER_ORG']
+        # self.log('owner_org: {}'.format(owner_org))
+        return {'owner_org': owner_org}
 
     def get_additional_info(self):
         additional_info = None
@@ -667,5 +670,5 @@ class QSpatialObject:
         #TODO: verify this dataservice is created on environment
         data_service_name= 'qspatial'
         data_service = self.remoteCKAN.action.package_show(id=data_service_name)
-        # self.log('data_service: {}'.format(data_service))
-        return {'data_services': [data_service.get('id')]}
+        # self.log('data_services: {}'.format(data_service.get('id')))
+        return {'data_services': json.dumps([data_service.get('id')])}

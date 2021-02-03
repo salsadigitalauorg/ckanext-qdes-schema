@@ -11,7 +11,7 @@ from datetime import datetime as dt
 
 def get_remote_ckan():
     remoteCKAN = RemoteCKAN(
-        os.environ['LAGOON_ROUTE']+':'+os.environ['AMAZEEIO_HTTP_PORT'],
+        os.environ['LAGOON_ROUTE'],
         os.environ['HARVEST_API_KEY']
     )
     return remoteCKAN
@@ -97,7 +97,8 @@ def main():
             # 'size',
             # 'service_api_endpoint',
             # 'rights_statement',
-            # 'license'
+            # 'license',
+            # 'data_services'
         ]
         for check_field in package_fields:
             distinct_package_fields[check_field] = []
