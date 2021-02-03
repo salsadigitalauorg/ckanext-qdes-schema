@@ -82,4 +82,4 @@ def fix_url(url):
             parsed_url.fragment,
         ))
 
-    return None
+    return url
