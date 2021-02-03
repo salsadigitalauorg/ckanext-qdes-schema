@@ -14,6 +14,7 @@
      data-fieldname="{{ ns.tree_field_name }}"
      data-fieldlabel="{{ ns.tree_field_label }}"
      data-model="{{ h.url_for('vocabulary_services.vocabulary_service_term_json', term_name=ns.vocabulary_service_name) }}">
+  <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
   <div class="row">
     {% for field_group in field.get('field_group') or [] %}
         <div class="col-md-{{ 10 // field.get('field_group')|length }}">
