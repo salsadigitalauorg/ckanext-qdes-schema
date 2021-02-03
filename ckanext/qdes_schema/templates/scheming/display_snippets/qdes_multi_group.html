@@ -1,6 +1,6 @@
 {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 {% for group_data in values  %}
-    {% if group_data %}
+    {% if group_data and  not group_data is string %}
         <div class="row">
             {% set columns = (12 / field.get('field_group')|length)|int %}
             {% for field_group in field.get('field_group') or [] %}
