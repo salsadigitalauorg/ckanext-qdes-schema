@@ -12,6 +12,31 @@
       }
     },
     {
+      "preset_name": "controlled_vocabulary_tree_single",
+      "values": {
+        "display_snippet": "qdes_multi_select.html",
+        "choices_helper": "scheming_vocabulary_service_hierarchical",
+        "validators": "scheming_required"
+      }
+    },
+    {
+      "preset_name": "controlled_vocabulary_tree_multiple",
+      "values": {
+        "form_snippet": "qdes_tree.html",
+        "display_snippet": "qdes_multi_select.html",
+        "choices_helper": "scheming_vocabulary_service_hierarchical",
+        "validators": "scheming_required"
+      }
+    },
+    {
+      "preset_name": "controlled_vocabulary_tree_multi_group",
+      "values": {
+        "form_snippet": "qdes_tree_multi_group.html",
+        "display_snippet": "qdes_multi_group.html",
+        "validators": "ignore_missing qdes_validate_multi_groups"
+      }
+    },
+    {
       "preset_name": "controlled_vocabulary_single_select",
       "values": {
         "form_snippet": "qdes_select.html",
