@@ -117,15 +117,13 @@
       "label": "Topic or theme",
       "display_property": "dcat:theme",
       "display_group": "description",
-      "preset": "controlled_vocabulary_multi_select",
+      "preset": "controlled_vocabulary_tree_multiple",
       "vocabulary_service_name": "topic",
       "validators": "scheming_required",
-      "form_attrs": {
-        "data-module": "qdes_autocomplete",
-        "data-module-title": "title"
-      },
       "required": true,
-      "form_include_blank_choice": true
+      "form_include_blank_choice": true,
+      "label_plural": "topic or themes",
+      "no_selected_term": "No topics or theme have been added. Please use the interface above to select a <strong>Topic or theme.</strong>"
     },
     {
       "field_name": "tag_string",
@@ -139,19 +137,17 @@
       "label": "Parameter",
       "display_property": "dcat:property",
       "display_group": "description",
-      "preset": "controlled_vocabulary_multi_group",
+      "preset": "controlled_vocabulary_tree_multi_group",
+      "label_plural": "parameters",
+      "no_selected_term": "No parameters have been added. Please use the interface above to select an <strong>Observed property</strong> and corresponding <strong>Unit of measure.</strong>",
       "field_group": [
         {
           "field_name": "observed-property",
           "label": "Observed property",
-          "form_snippet": "select.html",
           "display_property": "qudt:hasQuantityKind",
+          "preset": "controlled_vocabulary_tree_single",
           "vocabulary_service_name": "observed-property",
-          "choices_helper": "scheming_vocabulary_service_choices",
-          "form_attrs": {
-            "data-module": "qdes_autocomplete",
-            "data-module-title": "title"
-          },
+          "choices_helper": "scheming_vocabulary_service_hierarchical",
           "form_include_blank_choice": true
         },
         {
