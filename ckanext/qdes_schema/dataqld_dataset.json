@@ -18,7 +18,8 @@
       "label": "URL",
       "preset": "dataset_slug",
       "form_placeholder": "eg. my-dataset",
-      "display_group": "general"
+      "display_group": "general",
+      "required": true
     },
     {
       "field_name": "identifiers",
@@ -651,7 +652,8 @@
       "field_name": "name",
       "label": "Title",
       "form_placeholder": "eg. January 2011 Gold Prices",
-      "display_property": "dcterms:title"
+      "display_property": "dcterms:title",
+      "required": true
     },
     {
       "field_name": "schema_standards",
@@ -673,7 +675,8 @@
         "data-module-key": "value",
         "data-module-label": "name",
         "data-module-title": "title"
-      }
+      },
+      "required": true
     },
     {
       "field_name": "compression",
@@ -702,17 +705,16 @@
       "label": "Size",
       "display_property": "dcat:byteSize",
       "display_snippet": "qdes_byte_size.html",
-      "validators": "ignore_missing int_validator",
+      "validators": "int_validator",
       "form_placeholder": "Enter exact or approximate file size in bytes (integer)",
-      "recommended": true
+      "required": true
     },
     {
       "field_name": "url",
       "label": "Download address",
       "display_property": "dcat:downloadURL",
       "display_snippet": "qdes_text_url.html",
-      "validators": "ignore_missing url_validator qdes_uri_validator",
-      "recommended": true
+      "required": true
     },
     {
       "field_name": "service_api_endpoint",
@@ -737,7 +739,8 @@
       "form_snippet": "markdown.html",
       "display_snippet": "markdown.html",
       "form_placeholder": "Some useful notes about the data",
-      "display_property": "dcterms:description"
+      "display_property": "dcterms:description",
+      "required": true
     },
     {
       "field_name": "additional_info",
