@@ -86,53 +86,76 @@
             });
         }
         var initTree = function ($treeWrapper, dataModelPath) {
-            $treeWrapper.find('.tree').fancytree({
-                extensions: ["filter"],
-                source: {
-                    url: dataModelPath,
-                    cache: true,
-                },
-                filter: {
-                    autoExpand: true,
-                    mode: "hide",
-                    nodata: 'No matches for filter.'
-                },
-                icon: false,
-                counter: true,
-                clickFolderMode: 3,
-                init: function (e, data) {
-                    var $wrapperEl = data.tree.$container.closest('.tree-wrapper');
-                    $wrapperEl.find(getHiddenInputElSelector()).change();
-                },
-                expand: function (e, data) {
-                    // Only need to adjust the CSS of the node that was
-                    // just opened.
-                    adjustCss(data.node.ul);
-                },
-                dblclick: function (e, data) {
-                    var $wrapperEl = data.node.tree.$container.closest('.tree-wrapper');
-                    var fieldName = $wrapperEl.attr('data-fieldname');
-                    var isMultiGrp = $wrapperEl.hasClass('tree-multi-group');
+            $treeWrapper.find('.tree')
+                .fancytree({
+                    extensions: ["filter"],
+                    source: {
+                        url: dataModelPath,
+                        cache: true,
+                    },
+                    filter: {
+                        autoExpand: true,
+                        mode: "hide",
+                        nodata: 'No matches for filter.'
+                    },
+                    icon: false,
+                    counter: true,
+                    clickFolderMode: 3,
+                    init: function (e, data) {
+                        var $wrapperEl = data.tree.$container.closest('.tree-wrapper');
+                        $wrapperEl.find(getHiddenInputElSelector()).change();
+                    },
+                    expand: function (e, data) {
+                        // Only need to adjust the CSS of the node that was
+                        // just opened.
+                        adjustCss(data.node.ul);
+                    },
+                    dblclick: function (e, data) {
+                        var $wrapperEl = data.node.tree.$container.closest('.tree-wrapper');
+                        var fieldName = $wrapperEl.attr('data-fieldname');
+                        var isMultiGrp = $wrapperEl.hasClass('tree-multi-group');
 
-                    // Add the selected tree node to search field.
-                    $wrapperEl.find(getSearchInputElSelector(fieldName)).val(data.node.title);
-                    $wrapperEl.find(getSearchInputElSelector(fieldName)).attr('data-selected-node-tree', data.node.key);
+                        // Add the selected tree node to search field.
+                        $wrapperEl.find(getSearchInputElSelector(fieldName)).val(data.node.title);
+                        $wrapperEl.find(getSearchInputElSelector(fieldName)).attr('data-selected-node-tree', data.node.key);
 
-                    // Enable add button.
-                    var enableButton = false;
-                    if (isMultiGrp) {
-                        // If it is group field, need to check the other field already selected or not.
-                        if ($wrapperEl.find('select').val().length > 0) {
+                        // Enable add button.
+                        var enableButton = false;
+                        if (isMultiGrp) {
+                            // If it is group field, need to check the other field already selected or not.
+                            if ($wrapperEl.find('select').val().length > 0) {
+                                enableButton = true;
+                            }
+                        } else {
                             enableButton = true;
                         }
+                        if (enableButton) {
+                            $wrapperEl.find('.add-selected-node-tree').removeAttr('disabled');
+                        }
+                    },
+                    enhanceTitle: function (e, data) {
+                        if (data.node.children !== null) {
+                            data.$title.html(data.node.title + '&nbsp; <i>(' + data.node.children.length + ')</i>')
+                        }
+
+                    }
+                })
+                .on('mouseenter mouseleave', 'span.fancytree-title', function (event) {
+                    var node = $.ui.fancytree.getNode(event);
+                    if (event.type === 'mouseenter') {
+                        $('.tooltip').remove();
+                        // Render tooltip.
+                        $(this)
+                            .attr('data-container', 'body')
+                            .attr('data-placement', 'right')
+                            .attr('data-original-title', node.data.definition)
+                            .tooltip('show');
                     } else {
-                        enableButton = true;
+                        // Disable tooltip.
+                        $(this).tooltip('hide');
                     }
-                    if (enableButton) {
-                        $wrapperEl.find('.add-selected-node-tree').removeAttr('disabled');
-                    }
-                },
-            });
+
+                });
         }
 
         var $treeWrapperEl = $('.tree-wrapper');
