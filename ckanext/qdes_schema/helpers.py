@@ -1,15 +1,22 @@
+import ckan.logic as logic
+import ckan.plugins.toolkit as toolkit
+import ckanext.qdes_schema.constants as constants
+import ckanext.qdes_schema.jobs as jobs
 import re
 import datetime
 import logging
 
-from ckan.model import Session
+from ckan import model
+from ckan.common import c
 from ckan.model.package_relationship import PackageRelationship
 from ckan.lib import helpers as core_helper
 from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request, _
 from ckanext.qdes_schema.logic.helpers import relationship_helpers
 from ckanext.invalid_uris.model import InvalidUri
+from ckanext.scheming.plugins import SchemingDatasetsPlugin
 from pprint import pformat
 
+Session = model.Session
 log = logging.getLogger(__name__)
 
 
@@ -369,3 +376,77 @@ def qdes_merge_invalid_uris_error(invalid_uris, field_name, current_errors, erro
             current_errors[field_name] = list(set(current_errors[field_name]))
 
     return current_errors
+
+
+
+def schema_validate(extra_vars, pkg_validated, data):
+    res_errors = []
+    for selected_opt in extra_vars['options']:
+        if selected_opt.get('value') == data.get('schema'):
+            extra_vars['selected_opt'] = selected_opt
+
+    context = {
+        'model': model,
+        'session': Session,
+        'user': c.user,
+        'for_view': True,
+        'ignore_auth': True,
+        'auth_user_obj': c.userobj
+    }
+    p = SchemingDatasetsPlugin.instance
+    schema = logic.schema.default_update_package_schema()
+    pkg_validated['type'] = data.get('schema')
+    pkg_data, pkg_errors = p.validate(context, pkg_validated, schema, 'package_update')
+    if pkg_errors.get('resources', None):
+        pkg_errors.pop('resources')
+
+    # Validate resource, the above code will validate resource
+    # but it has no indication which resource is throwing an error,
+    # so we will re-run the validation for each resource.
+    resources = pkg_validated.get('resources', [])
+    if resources:
+        pkg_validated.pop('resources')
+        for res in resources:
+            if res.get('id') in data.get('resources', []):
+                pkg_validated['resources'] = [res]
+                pkg_data, resource_errors = p.validate(context, pkg_validated, schema, 'package_update')
+                if resource_errors.get('resources', None):
+                    res_errors.append({
+                        'resource_id': res.get('id'),
+                        'resource_name': res.get('name'),
+                        'errors': resource_errors.get('resources')
+                    })
+
+    extra_vars['pkg_errors'] = pkg_errors
+    extra_vars['res_errors'] = res_errors
+
+    return extra_vars
+
+
+def schema_publish(pkg, data):
+    # Get resources that will be published.
+    resources_to_publish = []
+    for resource in pkg.get('resources', []):
+        if resource.get('id') in data.get('resources', []):
+            resources_to_publish.append(resource)
+
+    # Add to publish log.
+    try:
+        for resource in resources_to_publish:
+            publish_log = get_action('create_publish_log')({}, {
+                'dataset_id': pkg.get('id'),
+                'resource_id': resource.get('id'),
+                'trigger': constants.PUBLISH_TRIGGER_MANUAL,
+                'destination': data.get('schema'),
+                'status': constants.PUBLISH_STATUS_PENDING
+            })
+
+            # Add to job worker queue.
+            if publish_log:
+                toolkit.enqueue_job(jobs.publish_to_external_catalogue, [publish_log.id])
+
+        return True
+    except Exception as e:
+        log.error(str(e))
+        return False
+

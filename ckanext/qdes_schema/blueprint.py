@@ -3,6 +3,7 @@ import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
 import ckan.plugins.toolkit as toolkit
 import ckan.model as model
+import ckanext.qdes_schema.constants as constants
 import logging
 
 from ckan.common import _, c, request
@@ -10,7 +11,6 @@ from ckanext.qdes_schema import helpers
 from flask import Blueprint
 from pprint import pformat
 from ckanext.qdes_schema.logic.helpers import dataservice_helpers as dataservice_helpers
-from ckanext.scheming.plugins import SchemingDatasetsPlugin
 
 abort = base.abort
 get_action = logic.get_action
@@ -97,64 +97,48 @@ def datasets_available(id):
 
 def datasets_schema_validation(id):
     extra_vars = {}
-    pkg_errors = {}
-    res_errors = []
     pkg = get_action('package_show')({}, {'id': id})
+    pkg_validated = pkg.copy()
+    extra_vars['pkg_errors'] = []
+    extra_vars['res_errors'] = []
     extra_vars['pkg_dict'] = pkg
     extra_vars['data'] = []
     extra_vars['options'] = [
-        {'text': 'Select schema', 'value': 'none'},
-        {'text': 'Data Queensland', 'value': 'dataqld_dataset'},
-        {'text': 'QSpatial', 'value': 'qspatial_dataset'},
-        {'text': 'SIR', 'value': 'sir_dataset'}
+        {'text': 'Select publishing portal', 'value': 'none'},
+        {'text': 'Opendata Portal', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA},
+        # {'text': 'QSpatial', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA},
+        # {'text': 'SIR', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA}
     ]
     extra_vars['selected_opt'] = {}
+    extra_vars['valid'] = 0
+    extra_vars['publication_message'] = {}
 
     if request.method == 'POST':
         data = clean_dict(dict_fns.unflatten(tuplize_dict(parse_params(
             request.form))))
 
+        extra_vars['data'] = data
+
         if not data.get('schema') == 'none':
-            for selected_opt in extra_vars['options']:
-                if selected_opt.get('value') == data.get('schema'):
-                    extra_vars['selected_opt'] = selected_opt
+            if data.get('action') == 'validate':
+                extra_vars = helpers.schema_validate(extra_vars, pkg_validated, data)
+            elif data.get('action') == 'publish':
+                publish_log = helpers.schema_publish(pkg, data)
+                extra_vars['publication_message'] = {
+                    'text': 'The distribution has been queued for publishing.',
+                    'cls': 'alert-success'
+                }
+                if not publish_log:
+                    extra_vars['publication_message'] = {
+                        'text': 'The distribution could not be queued for publishing.',
+                        'cls': 'alert-error'
+                    }
 
-            context = {
-                'model': model,
-                'session': model.Session,
-                'user': c.user,
-                'for_view': True,
-                'ignore_auth': True,
-                'auth_user_obj': c.userobj
-            }
-            p = SchemingDatasetsPlugin.instance
-            schema = logic.schema.default_update_package_schema()
-            pkg['type'] = data.get('schema')
-            pkg_data, pkg_errors = p.validate(context, pkg, schema, 'package_update')
-            if pkg_errors.get('resources', None):
-                pkg_errors.pop('resources')
+        # if not extra_vars['pkg_errors'] and not extra_vars['res_errors'] and not extra_vars['publication_message']:
+        if not extra_vars['pkg_errors'] and not extra_vars['res_errors']:
+            extra_vars['valid'] = 1
 
-            # Validate resource, the above code will validate resource
-            # but it has no indication which resource is throwing an error,
-            # so we will re-run the validation for each resource.
-            resources = pkg.get('resources', [])
-            if resources:
-                pkg.pop('resources')
-                for res in resources:
-                    pkg['resources'] = [res]
-                    pkg_data, resource_errors = p.validate(context, pkg, schema, 'package_update')
-                    if resource_errors.get('resources', None):
-                        res_errors.append({
-                            'resource_id': res.get('id'),
-                            'resource_name': res.get('name'),
-                            'errors': resource_errors.get('resources')
-                        })
-
-
-    extra_vars['pkg_errors'] = pkg_errors
-    extra_vars['res_errors'] = res_errors
-
-    return render('package/schema_validation.html', extra_vars=extra_vars)
+    return render('package/publish_metadata.html', extra_vars=extra_vars)
 
 
 qdes_schema.add_url_rule(u'/dataset/<id_or_name>/related-datasets', view_func=related_datasets)
@@ -162,4 +146,5 @@ qdes_schema.add_url_rule(u'/dataset/<id>/metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/metadata', endpoint='dataservice_metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataset/<id>/resource/<resource_id>/metadata', view_func=resource_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/datasets-available', view_func=datasets_available)
-qdes_schema.add_url_rule(u'/dataset/<id>/schema_validation', methods=[u'GET', u'POST'], view_func=datasets_schema_validation)
+qdes_schema.add_url_rule(u'/dataset/<id>/schema_validation', methods=[u'GET', u'POST'],
+                         view_func=datasets_schema_validation)
