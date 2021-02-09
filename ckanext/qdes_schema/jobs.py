@@ -61,6 +61,27 @@ def publish_to_external_catalogue(publish_log_id):
         # Update external dataset.
         status, detail, external_pkg_dict = _create_external_dataset(publish_log, destination, package_dict)
 
+    # Update activity stream.
+    resource_name = ''
+    resource_format = ''
+    for resource in package_dict.get('resources', []):
+        if resource.get('id') == publish_log.resource_id:
+            resource_name = resource.get('name')
+            resource_format = _get_vocab_label('dataset', 'resource_fields', 'format', resource.get('format'))
+
+    site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
+    context = {u'user': site_user[u'name']}
+    toolkit.get_action('activity_create')(context, {
+        'user_id': 'salsa',
+        'object_id': publish_log.dataset_id,
+        'activity_type': 'publish external schema',
+        'data': {
+            'package': package_dict,
+            'status': 'successfully' if status == constants.PUBLISH_STATUS_SUCCESS else 'unsuccessfully',
+            'distribution': resource_format + ' - ' + resource_name
+        }
+    })
+
     # Update publish log.
     _update_publish_log(publish_log, status, detail, external_pkg_dict)
 
@@ -237,6 +258,7 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict={}, rece
     qld_pkg_dict['author_email'] = 'awang@salsadigital.com.au'
     qld_pkg_dict['security_classification'] = 'PUBLIC'
     qld_pkg_dict['data_driven_application'] = 'NO'
+    qld_pkg_dict['version'] = '1'
 
     return qld_pkg_dict
 

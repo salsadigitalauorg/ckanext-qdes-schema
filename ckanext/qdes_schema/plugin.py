@@ -5,6 +5,7 @@ import json
 import logging
 
 from ckan.common import request
+from ckan.logic import validators as core_validator
 from ckanext.qdes_schema.cli import get_commands
 from ckanext.qdes_schema import blueprint, helpers, validators, auth
 from ckanext.qdes_schema.logic.action import (
@@ -21,6 +22,7 @@ log = logging.getLogger(__name__)
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
+    plugins.implements(plugins.IConfigurable, inherit=True)
     plugins.implements(plugins.IClick)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IConfigurer)
@@ -30,6 +32,12 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
+
+
+    # IConfigurable
+    def configure(self, config):
+        core_validator.object_id_validators['publish external schema'] = core_validator.package_id_exists
+
 
     # IClick
     def get_commands(self):
@@ -275,6 +283,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_merge_invalid_uris_error': helpers.qdes_merge_invalid_uris_error,
             'schema_validate': helpers.schema_validate,
             'schema_publish': helpers.schema_publish,
+            'load_activity_with_full_data': helpers.load_activity_with_full_data,
         }
 
     def get_multi_textarea_values(self, value):

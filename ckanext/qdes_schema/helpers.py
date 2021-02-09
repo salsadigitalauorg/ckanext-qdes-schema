@@ -450,3 +450,6 @@ def schema_publish(pkg, data):
         log.error(str(e))
         return False
 
+
+def load_activity_with_full_data(activity_id):
+    return get_action(u'activity_show')({}, {u'id': activity_id, u'include_data': True})

@@ -643,8 +643,8 @@
     {
       "field_name": "version",
       "label": "Version",
-      "form_placeholder": "1.0",
-      "required": true
+      "validators": "ignore_missing unicode package_version_validator",
+      "form_placeholder": "1.0"
     }
   ],
   "resource_fields": [
