@@ -47,8 +47,14 @@ def publish_to_external_catalogue(publish_log_id):
         publish_log.action = 'update'
         publish_log.destination_identifier = external_pkg_dict.get('id')
 
+        # Load recent publish log for this dataset.
+        recent_publish_log = PublishLog.get_recent_resource_log(publish_log.resource_id,
+                                                                constants.PUBLISH_STATUS_SUCCESS)
+
         # Update external dataset.
-        status, detail = _update_external_dataset(publish_log, external_pkg_dict, package_dict)
+        status, detail, external_pkg_dict = _update_external_dataset(publish_log, destination, external_pkg_dict,
+                                                                     package_dict,
+                                                                     recent_publish_log)
     else:
         publish_log.action = 'create'
 
@@ -65,26 +71,29 @@ def _get_external_destination_ckan(schema, api_key):
 
 
 def _get_external_dataset(dataset_name, destination):
-    package_dict = []
     try:
         package_dict = destination.action.package_show(name_or_id=dataset_name)
     except Exception as e:
-        log.error(str(e))
+        package_dict = []
 
     return package_dict
 
 
-def _create_external_dataset(publish_log, destination, package_dict):
+def _get_selected_resource_to_publish(package_dict, publish_log):
     # Build new dataset and its resource.
     distribution = []
     for resource in package_dict.get('resources', []):
         if publish_log.resource_id == resource.get('id'):
             distribution.append(resource)
 
-    package_dict['resources'] = distribution
+    return distribution
+
+
+def _create_external_dataset(publish_log, destination, package_dict):
+    package_dict['resources'] = _get_selected_resource_to_publish(package_dict, publish_log)
 
     # Clean up the package_dict as per destination schema requirement.
-    package_dict = _clean_up_dataqld(package_dict)
+    package_dict = _build_and_clean_up_dataqld(package_dict)
 
     # Send to external schema.
     external_package_dict = {}
@@ -92,10 +101,12 @@ def _create_external_dataset(publish_log, destination, package_dict):
     try:
         external_package_dict = destination.action.package_create(**package_dict)
         success = True
-        details = external_package_dict
+        details = {
+            'external_package_dict': external_package_dict,
+            'external_resource_id': external_package_dict.get('resources')[0].get('id')
+        }
     except Exception as e:
-        if e.error_dict:
-            log.error(pformat(e.error_dict))
+        if 'error_dict' in dir(e):
             details = e.error_dict
         else:
             log.error(pformat(dir(e)))
@@ -104,12 +115,41 @@ def _create_external_dataset(publish_log, destination, package_dict):
     return constants.PUBLISH_STATUS_SUCCESS if success else constants.PUBLISH_STATUS_FAILED, details, external_package_dict
 
 
-def _update_external_dataset(publish_log, external_pkg_dict, package_dict):
+def _update_external_dataset(publish_log, destination, external_pkg_dict, package_dict, recent_publish_log):
+    package_dict['resources'] = _get_selected_resource_to_publish(package_dict, publish_log)
+
     # Modify the external_pkg_dict.
+    package_dict = _build_and_clean_up_dataqld(package_dict, external_pkg_dict, recent_publish_log)
 
     # Send the modified dict to external schema.
+    external_package_dict = {}
+    success = False
+    try:
+        external_package_dict = destination.action.package_update(**package_dict)
 
-    return True, {}
+        # Load external resource id. Since this is update,
+        # the possibility external_package_dict has multiple resources are big.
+        # Let's pull the same resource id as tracked on previous publish log.
+        if recent_publish_log:
+            recent_publish_log_detail = json.loads(recent_publish_log.details)
+            updated_external_resource_id = recent_publish_log_detail.get('external_resource_id')
+        else:
+            # Return the last list, and record the external resource id.
+            last_resource = external_package_dict.get('resources', [])[-1]
+            updated_external_resource_id = last_resource.get('id')
+
+        success = True
+        details = {
+            'external_package_dict': external_package_dict,
+            'external_resource_id': updated_external_resource_id
+        }
+    except Exception as e:
+        if 'error_dict' in dir(e):
+            details = e.error_dict
+        else:
+            details = {'error': str(e)}
+
+    return constants.PUBLISH_STATUS_SUCCESS if success else constants.PUBLISH_STATUS_FAILED, details, external_package_dict
 
 
 def _update_publish_log(publish_log, status, detail, external_pkg_dict):
@@ -120,7 +160,21 @@ def _update_publish_log(publish_log, status, detail, external_pkg_dict):
     return get_action('update_publish_log')({}, dict(publish_log.as_dict()))
 
 
-def _clean_up_dataqld(package_dict):
+def _build_and_clean_up_dataqld(des_package_dict, external_package_dict={}, recent_publish_log={}):
+    # Variable is_update will be true when
+    # there is a similar package name on external schema.
+    is_update = True if external_package_dict else False
+
+    # Variable has_recent_log will be True in case the dataset already published to external.
+    # Case like, user add new resource but the other resource/dataset already published,
+    # below variable will be False.
+    has_recent_log = True if recent_publish_log else False
+
+    updated_external_resource_id = None
+    if is_update and has_recent_log:
+        recent_publish_log_detail = json.loads(recent_publish_log.details)
+        updated_external_resource_id = recent_publish_log_detail.get('external_resource_id')
+
     # Load the schema.
     schema = scheming_helpers.scheming_get_dataset_schema(constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
 
@@ -129,33 +183,62 @@ def _clean_up_dataqld(package_dict):
     resource_fields = [field.get('field_name') for field in schema.get('resource_fields') if
                        field.get('required', False)]
 
-    # Build the package to be published to external schema.
-    pkg_dict = {}
-    resource_dict = {}
-    resource = package_dict.get('resources')
+    # Set default value, use external package data on update.
+    qld_pkg_dict = external_package_dict if is_update else {}
+    qld_resources_dict = qld_pkg_dict.get('resources', []) if qld_pkg_dict else []
+    qld_resource_dict = {}
+    if is_update and has_recent_log:
+        for resource in qld_resources_dict:
+            if resource.get('id') == updated_external_resource_id:
+                qld_resource_dict = resource
+
+    # Build the package metadata.
     for field in dataset_fields:
-        pkg_dict[field] = package_dict.get(field)
+        qld_pkg_dict[field] = des_package_dict.get(field)
+
+    # Build resource.
+    des_resource = des_package_dict.get('resources')
     for field in resource_fields:
-        resource_dict[field] = resource[0].get(field)
+        # It is always index 0.
+        qld_resource_dict[field] = des_resource[0].get(field)
 
         if field == 'format':
-            resource_dict[field] = _get_vocab_label('dataset', 'resource_fields', field, resource_dict[field])
+            qld_resource_dict[field] = _get_vocab_label('dataset', 'resource_fields', field, qld_resource_dict[field])
 
-    pkg_dict['resources'] = [resource_dict]
+    if is_update:
+        new_resources = []
+        if has_recent_log:
+            # Example case, user update resource that already published.
+            for resource in qld_resources_dict:
+                if resource.get('id') == updated_external_resource_id:
+                    new_resources.append(qld_resource_dict)
+                else:
+                    new_resources.append(resource)
+        else:
+            # Example case, when user add new resource
+            # and the dataset already published,
+            # that case we need to carry the other resource
+            # that coming from external_package_dict.
+            new_resources = qld_resources_dict
+            new_resources.append(qld_resource_dict)
+
+        qld_pkg_dict['resources'] = new_resources
+    else:
+        # Add the resource to package.
+        qld_pkg_dict['resources'] = [qld_resource_dict]
 
     # Manual Mapping for dataset field.
     # @todo, vocab value is not accepted, need a new uri for vocab.
     # dataset_fields['update_frequency'] = dataset_fields['update_schedule']
-    pkg_dict['update_frequency'] = 'near-realtime'
+    qld_pkg_dict['update_frequency'] = 'near-realtime'
 
     # @todo, fix this hardcoded value here.
-    pkg_dict['owner_org'] = '5e759cce-aa72-4908-987f-df61f7f8e44a'
-    pkg_dict['author_email'] = 'awang@salsadigital.com.au'
-    pkg_dict['security_classification'] = 'PUBLIC'
-    pkg_dict['data_driven_application'] = 'NO'
-    pkg_dict['version'] = '1'
+    qld_pkg_dict['owner_org'] = '5e759cce-aa72-4908-987f-df61f7f8e44a'
+    qld_pkg_dict['author_email'] = 'awang@salsadigital.com.au'
+    qld_pkg_dict['security_classification'] = 'PUBLIC'
+    qld_pkg_dict['data_driven_application'] = 'NO'
 
-    return pkg_dict
+    return qld_pkg_dict
 
 
 def _get_vocab_label(dataset_type, field_type, field_name, uri):
