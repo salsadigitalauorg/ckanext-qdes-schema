@@ -721,26 +721,6 @@ Field names are;
 **Tp** - The peak energy wave period.  
 **Dir_Tp TRUE** - Direction (related to true north) from which the peak period waves are coming from.  
 **SST** - Approximation of sea surface temperature.",,Mackay; Mackay Inner; The Science Sandpit; community; education; emergency; science; waves;,Environment and Science,opendata@des.qld.gov.au,17/02/2020,Wave Data - 2020,2020 Wave Data from the Mackay Inner site (January 1 - March 31),CSV,249.5 KiB,,https://www.data.qld.gov.au/dataset/coastal-data-system-waves-mackay-inner/resource/4b66535d-e5ae-43ca-9bd3-e71f2317b22c,https://www.data.qld.gov.au/dataset/23e7ad10-d47a-4f4a-9d2e-78b7f51c2906/resource/4b66535d-e5ae-43ca-9bd3-e71f2317b22c/download/mackay-inner_2020-01-01t00_00-2020-03-31t23_30.csv,17/02/2020,4/02/2020,undefined,Dataset,COASTAL,OFFICIAL,Kelly Bryant,Department of Environment and Science,completed
-17,Coastal Data System - Waves (Mackay Inner),https://www.data.qld.gov.au/dataset/coastal-data-system-waves-mackay-inner,"Measured/Calculated wave parameters.  Measured and derived wave data from data collected by oceanographic wave measuring buoys anchored at locations on the Queensland coastline.  
-For more information please refer to [www.qld.gov.au/waves](https://www.qld.gov.au/waves).  
-  
-Field names are;  
-**Hs** - Significant wave height, an average of the highest third of the waves in a record (26.6 minute recording period).  
-**Hmax** - The maximum wave height in the record.  
-**Tz** - The zero upcrossing wave period.  
-**Tp** - The peak energy wave period.  
-**Dir_Tp TRUE** - Direction (related to true north) from which the peak period waves are coming from.  
-**SST** - Approximation of sea surface temperature.",,Mackay; Mackay Inner; The Science Sandpit; community; education; emergency; science; waves;,Environment and Science,opendata@des.qld.gov.au,17/02/2020,Wave Data - 2019,2019 Wave Data from the Mackay Inner site (January 1 - December 31),CSV,982 KiB,,https://www.data.qld.gov.au/dataset/coastal-data-system-waves-mackay-inner/resource/7f676d1e-89d2-4d73-bf42-826c03f609c0,https://www.data.qld.gov.au/dataset/23e7ad10-d47a-4f4a-9d2e-78b7f51c2906/resource/7f676d1e-89d2-4d73-bf42-826c03f609c0/download/mackay-inner_2019-01-01t00_00-2019-12-31t23_30.csv,17/02/2020,17/02/2020,undefined,Dataset,COASTAL,OFFICIAL,Kelly Bryant,Department of Environment and Science,completed
-17,Coastal Data System - Waves (Mackay Inner),https://www.data.qld.gov.au/dataset/coastal-data-system-waves-mackay-inner,"Measured/Calculated wave parameters.  Measured and derived wave data from data collected by oceanographic wave measuring buoys anchored at locations on the Queensland coastline.  
-For more information please refer to [www.qld.gov.au/waves](https://www.qld.gov.au/waves).  
-  
-Field names are;  
-**Hs** - Significant wave height, an average of the highest third of the waves in a record (26.6 minute recording period).  
-**Hmax** - The maximum wave height in the record.  
-**Tz** - The zero upcrossing wave period.  
-**Tp** - The peak energy wave period.  
-**Dir_Tp TRUE** - Direction (related to true north) from which the peak period waves are coming from.  
-**SST** - Approximation of sea surface temperature.",,Mackay; Mackay Inner; The Science Sandpit; community; education; emergency; science; waves;,Environment and Science,opendata@des.qld.gov.au,17/02/2020,Wave Data - 2018,2018 Wave Data from the Mackay Inner site (August 8 - December 31),CSV,418 KiB,,https://www.data.qld.gov.au/dataset/coastal-data-system-waves-mackay-inner/resource/cc225819-ddc1-41b7-9485-19eb8a9c9c65,https://www.data.qld.gov.au/dataset/23e7ad10-d47a-4f4a-9d2e-78b7f51c2906/resource/cc225819-ddc1-41b7-9485-19eb8a9c9c65/download/mackay-inner_2018-08-01t00_00-2018-12-31t23_30.csv,17/02/2020,17/02/2020,undefined,Dataset,COASTAL,OFFICIAL,Kelly Bryant,Department of Environment and Science,completed
 418,Coastal Data System - Waves (Mackay),https://www.data.qld.gov.au/dataset/coastal-data-system-waves-mackay,"Measured/Calculated wave parameters.  Measured and derived wave data from data collected by oceanographic wave measuring buoys anchored at Mackay.  
 Please note that as at the 01/05/2017 the data at this site has been upgraded, as the site now has a new buoy type which uses a higher measuring frequency of 2.5Hz.  
   
