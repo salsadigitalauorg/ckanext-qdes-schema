@@ -2,55 +2,24 @@ import csv
 import os
 import json
 import re
+import urllib as urllib
+import pdb
 
+from ckan.model import Session
+import ckan.lib.munge as munge
 from ckanext.qdes_schema.logic.helpers import harvest_helpers as helpers
 from datetime import datetime
-from ckanapi import RemoteCKAN
+from ckanapi import RemoteCKAN, NotFound
 from pprint import pformat
+from sqlalchemy import create_engine
+from six import string_types
 
 owner_org = os.environ['OWNER_ORG']
 apiKey = os.environ['HARVEST_API_KEY']
-dataservice_name = 'queensland-government-open-data-portal'
+dataservice_name = 'data-qld'
 
 DEBUG = False
 SOURCE_FILENAME = 'DES_Datasets_Open_data_V1.csv'
-
-
-def convert_size_to_bytes(size_str):
-    """
-    Convert human file-sizes to bytes.
-    """
-    multipliers = {
-        'kib': 1024,
-        'mib': 1024 ** 2,
-        'gib': 1024 ** 3,
-    }
-
-    # Some Nones observed during migration
-    if not size_str:
-        return 0
-
-    # Some Int values observed for size
-    if isinstance(size_str, int):
-        return size_str
-
-    try:
-        for suffix in multipliers:
-            size_str = size_str.replace(',', '')
-            size_str = size_str.lower().strip().strip('s')
-            if size_str.lower().endswith(suffix):
-                return int(float(size_str[0:-len(suffix)]) * multipliers[suffix])
-        else:
-            if size_str.endswith('b'):
-                size_str = size_str[0:-1]
-            elif size_str.endswith('byte'):
-                size_str = size_str[0:-4]
-        return int(size_str)
-    except Exception as e:
-        print('Exception raised in convert_size_to_bytes')
-        print(f'>>> Input: {size_str}')
-        print('Exception: {}'.format(str(e)))
-        raise e
 
 
 def get_dataset_schema_fields():
@@ -69,13 +38,6 @@ def dataset_mapping(dataset, source_dict):
     schema = get_dataset_schema_fields()
 
     try:
-        # Added default fields specific to the QDES dataset.
-        mapped_dataset['type'] = 'dataset'
-        mapped_dataset['owner_org'] = owner_org
-        today = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
-        mapped_dataset['dataset_creation_date'] = today
-        mapped_dataset['dataset_release_date'] = today
-        mapped_dataset['dataset_last_modified_date'] = today
 
         # Manual field mapping.
         manual_fields = [
@@ -91,6 +53,14 @@ def dataset_mapping(dataset, source_dict):
             'publication_status',
             'format',
             'tag_string',
+            'identifiers',
+            'lineage_description',
+            'dataset_creation_date',
+            'dataset_release_date',
+            'metadata_review_date',
+            'type',
+            'dataset_last_modified_date',
+            'metadata_review_date'
         ]
 
         # Keeping track of license_id and license_url values
@@ -101,17 +71,34 @@ def dataset_mapping(dataset, source_dict):
         if license_url not in unique_license_urls:
             unique_license_urls.append(license_url)
 
-        # Map license, license_id on QLD only a fraction of the vocab data that controlled QDES field.
-        # @todo: fix this.
-        mapped_dataset['license_id'] = 'http://registry.it.csiro.au/licence/cc-by-4.0'
-
-        # Map URL, if the URL is not available on source, give it default value.
-        mapped_dataset['url'] = source_dict.get('URL', '') or 'http://data.qld.gov.au'
-
-        mapped_dataset['update_schedule'] = helpers.get_mapped_update_frequency(dataset.get('update_frequency'))
-
+        # Mandatory field default values from CSV
+        mapped_dataset['identifiers'] = json.dumps([source_dict.get('URL')])
+        mapped_dataset['url'] = source_dict.get('URL')
+        mapped_dataset['lineage_description'] = source_dict.get('Description')
+        creation_date_str = source_dict.get('Created date')
+        creation_date = datetime.strptime(creation_date_str, '%d/%m/%Y').strftime('%Y-%m-%dT%H:%M:%S')
+        mapped_dataset['dataset_creation_date'] = creation_date
+        mapped_dataset['dataset_release_date'] = creation_date
         # Map keyword (tag_string).
-        mapped_dataset['tag_string'] = []
+        tags = source_dict.get('Tags', '')
+        tag_strings = []
+        if tags.count(';') > 1:
+            tag_strings.extend([tag.strip() for tag in tags.split(';')])
+        else:
+            tag_strings.append(tags.strip())
+        tag_string = ','.join([re.sub('[^\w \-.]', '', str(tag)) for tag in tag_strings])
+        mapped_dataset['tag_string'] = tag_string
+
+        # Mandatory field default values hardcoded
+        mapped_dataset['type'] = 'dataset'
+        mapped_dataset['license_id'] = 'http://linked.data.gov.au/def/licence-document/cc-by-4.0'
+        mapped_dataset['owner_org'] = owner_org
+        today = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+        mapped_dataset['dataset_last_modified_date'] = today
+        mapped_dataset['metadata_review_date'] = today
+
+        # TODO: Reinstate this and update mappings
+        # mapped_dataset['update_schedule'] = helpers.get_mapped_update_frequency(dataset.get('update_frequency'))
 
         # Classification vocabulary service lookup
         classification = helpers.get_vocabulary_service_term(
@@ -120,16 +107,16 @@ def dataset_mapping(dataset, source_dict):
             'classification')
 
         if classification:
-            mapped_dataset['classification'] = json.dumps([classification['value']])
+            mapped_dataset['classification'] = json.dumps([classification])
 
         # Classification and access restrictions vocabulary service lookup
         class_and_access = helpers.get_vocabulary_service_term(
             destination,
-            source_dict.get('classification_and_access_restrictions', 'Dataset').lower(),
+            'OFFICIAL',
             'classification_and_access_restrictions')
 
         if class_and_access:
-            mapped_dataset['classification_and_access_restrictions'] = json.dumps([class_and_access['value']])
+            mapped_dataset['classification_and_access_restrictions'] = json.dumps([class_and_access])
 
         # Topic/theme vocabulary service lookup
         source_topic = source_dict.get('Topic or theme', None) or None
@@ -141,7 +128,7 @@ def dataset_mapping(dataset, source_dict):
                 'topic')
 
             if topic:
-                mapped_dataset['topic'] = json.dumps([topic['value']])
+                mapped_dataset['topic'] = json.dumps([topic])
             else:
                 print('>>> No matching topic found for:')
                 print('>>> source: {}'.format(pformat(source_dict)))
@@ -150,26 +137,27 @@ def dataset_mapping(dataset, source_dict):
             print('>>> source: {}'.format(pformat(source_dict)))
 
         # Point of Contact "secure" vocabulary look-up
-        point_of_contact = helpers.get_point_of_contact_id(
+        point_of_contact = helpers.get_secure_vocabulary_record(
             destination,
             source_dict.get('Point of contact'),
             'point-of-contact')
 
         if point_of_contact:
-            mapped_dataset['contact_point'] = point_of_contact['value']
+            mapped_dataset['contact_point'] = point_of_contact
 
         # Publication status vocabulary service lookup
         publication_status = helpers.get_vocabulary_service_term(
             destination,
-            source_dict.get('Publication status', '').lower(),
+            'completed',
             'publication_status')
 
-        # @TODO: Set this to COMPLETED
         if publication_status:
-            mapped_dataset['publication_status'] = 'http://registry.it.csiro.au/def/isotc211/MD_ProgressCode/completed'
+            mapped_dataset['publication_status'] = publication_status
 
-        # @TODO: This CV is not currently implemented
-        mapped_dataset['contact_publisher'] = 'http://linked.data.gov.au/def/organisation-type/family-partnership'
+        mapped_dataset['contact_publisher'] = helpers.get_vocabulary_service_term(
+            destination,
+            'Department of Environment and Science',
+            'contact_publisher')
 
         # @TODO: Should this be set in here??? i.e. Dataset schema does not have a `format` field
         #mapped_dataset['format'] = 'https://www.iana.org/assignments/media-types/application/1d-interleaved-parityfec'
@@ -189,7 +177,7 @@ def dataset_mapping(dataset, source_dict):
         raise
 
 
-def resource_mapping(res):
+def resource_mapping(res, source_dict):
     """
     Clean up resource.
     """
@@ -200,16 +188,22 @@ def resource_mapping(res):
             unique_formats.append(source_format)
 
         mapped_resource = {
-            'data_services': json.dumps([os.environ['LAGOON_ROUTE'] + '/dataservice/' + dataservice_name]),
-            'size': convert_size_to_bytes(res.get('size', 0)),
-            # @TODO: fix this. issue example: on source there is "JSON" as value, but the format has many JSON types.
-            'format': 'https://www.iana.org/assignments/media-types/application/alto-directory+json'
+            'data_services': json.dumps([data_service.get('id')]),
+            'size': helpers.convert_size_to_bytes(res.get('size', 0)),
+            'format': helpers.get_mapped_format(res.get('format', '')),
+            # TODO: Should url be service_api_endpoint
         }
+        # Manually map zip formats for resources
+        if res.get('name', '') == 'Springs database':
+            mapped_resource['format'] = helpers.get_mapped_format('csv')
+        if res.get('name', '') == 'Ground lidar scans and ancillary data directory':
+            mapped_resource['format'] = helpers.get_mapped_format('tiff')
 
         # Manual field mapping.
         manual_fields = [
             'size',
             'format',
+            'data_services'
         ]
 
         # Get all fields available on QDES dataset.
@@ -219,14 +213,16 @@ def resource_mapping(res):
         for field in schema.get('resource_fields'):
             field_name = field.get('field_name')
 
-            # Do not process if field value is empty.
-            if (res.get(field_name, None)) and (not field_name in manual_fields):
+            # Do not process if the field already added via manual mapping or empty.
+            if field_name not in manual_fields and res.get(field_name, None):
                 mapped_resource[field_name] = res.get(field_name, '')
 
         # Encode url if exist.
         if mapped_resource['url']:
             mapped_resource['url'] = helpers.fix_url(mapped_resource['url'])
 
+        if DEBUG:
+            print('Got mapped_resource: {}'.format(pformat(mapped_resource)))
         return mapped_resource
     except Exception as e:
         print('>>> Exception raised in resource_mapping')
@@ -235,7 +231,7 @@ def resource_mapping(res):
         raise e
 
 
-def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_url=None):
+def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_dict):
     """
     Map resource to dataset for series.
     """
@@ -243,18 +239,26 @@ def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_u
     schema = get_dataset_schema_fields()
 
     try:
+        # Manual field mapping.
+        mandatory_fields = [
+            'classification',
+            'classification_and_access_restrictions',
+            'contact_point',
+            'contact_publisher',
+            'license_id',
+            'publication_status',
+            'topic',
+            'owner_owg'
+        ]
         # Loop the parent, get the data from resource first and if none, use the parent data.
         for field in schema.get('dataset_fields'):
             field_name = field.get('field_name')
             value = res.get(field_name)
 
             if field_name == 'name':
-                value = re.sub('[^0-9a-zA-Z]+', '-', value.lower())
-                # No value longer than 100 chars, we will add the last 8 chars with current uuid,
-                # otherwise it will have possibility conflict with other series.
-                value = (value[:92] + res.get('id')[:8]) if len(value) > 100 else value
+                value = munge.munge_title_to_name(value)
 
-            if not value:
+            if not value and field_name in mandatory_fields:
                 value = parent_dataset.get(field_name)
 
             if value:
@@ -262,6 +266,9 @@ def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_u
 
         # Set title.
         mapped_dataset['title'] = res.get('name')
+
+        # Set organisation.
+        mapped_dataset['owner_org'] = owner_org
 
         # Set the new dataset's notes (description) field to the resource description
         resource_description = res.get('description', None) or None
@@ -272,7 +279,7 @@ def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_u
 
         # Create a resource for the dataset based on the resource we are working with
         # AND connect it to the data service
-        mapped_dataset['resources'] = [resource_mapping(res)]
+        mapped_dataset['resources'] = [resource_mapping(res, source_dict)]
 
         # Encode url if exist.
         if mapped_dataset['url']:
@@ -294,12 +301,129 @@ def append_error(dataset_name, errors, source_url):
     })
 
 
+def append_migration_log(dataset, resource, action):
+    migration_log.append(f'{dataset},"{resource}",{action}')
+
+
+def add_dataservice(resource, resource_match):
+    update_package = False
+     # Add data-qld dataservice to existing  data_services
+    if isinstance(resource.get('data_services', []), string_types):
+        existing_data_services = json.loads(resource.get('data_services', [])) or []
+    else:
+        existing_data_services = resource.get('data_services', []) or []
+
+    if data_service.get('id') not in existing_data_services:
+        existing_data_services.append(data_service.get('id'))
+        resource_match['data_services'] = json.dumps(existing_data_services)
+        update_package = True
+        append_migration_log(dataset_name, resource_match.get('name', None),
+                                'Resource is a duplicate of existing QSpatial resource. New resource not created. Existing resource updated.')
+    return update_package
+
+
+def add_new_resource_to_existing_package(dataset_name, existing_package, resource, row):
+    update_package = False
+    # Create new resources
+    new_resource = resource_mapping(resource, row)
+    existing_package['resources'].append(new_resource)
+    update_package = True
+    append_migration_log(dataset_name, new_resource.get('name', None), 'Resource added to existing QSpatial record.')
+
+    return update_package
+
+
+def check_for_existing_package(dataset_name):
+    existing_package = None
+    try:
+        update_package = False
+        existing_package = destination.action.package_show(id=dataset_name)
+        # Package already exists so lets update it
+        existing_identifiers = json.loads(existing_package.get('identifiers', [])) or []
+        if row.get('URL') not in existing_identifiers:
+            existing_identifiers.append(row.get('URL'))
+            existing_package['identifiers'] = json.dumps(existing_identifiers)
+            update_package = True
+
+        if 'series' in package_dict['title'].lower():
+           
+            # Create individual package for each resource that belong to above series dataset.
+            if ('resources' in package_dict):
+                for resource in package_dict.get('resources'):
+                    resource_name = munge.munge_title_to_name(resource.get('name'))
+                    try:
+                        existing_series_package = destination.action.package_show(id=resource_name)
+                        # Find matching resources using resource name and URLs
+                        resource_match = next(
+                            (
+                                series_resource for series_resource in existing_series_package.get('resources', [])
+                                if series_resource.get('name', None) == resource.get('name', None)
+                                # and helpers.fix_url(resource.get('url', '')) == json.loads(existing_resource.get('url', '[""]'))[0]
+                            ), None)
+                        if resource_match and 'qldspatial.information.qld.gov.au' in resource.get('url', None):
+                                update_package = add_dataservice(resource, resource_match)
+                        else:
+                            #  If resource has 'metadata' in the name and a qspatial rest API url, do not create it
+                            if 'metadata' in resource.get('name').lower() and 'qldspatial.information.qld.gov.au/catalogueadmin/rest/document?id=' in resource.get('url'):
+                                append_migration_log(dataset_name, resource.get('name', None),
+                                                        'Resource is a metadata XML of existing QSpatial record. Resource not created.')
+                            else:
+                                update_package = add_new_resource_to_existing_package(dataset_name, existing_package, resource, row)
+                        # Package already exists and key info has been updated so lets move on to the next
+                        continue
+                    except NotFound:
+                        pass
+
+                    # Package does not exists
+                    #  If resource has 'metadata' in the name and a qspatial rest API url, do not create it
+                    if 'metadata' in resource.get('name').lower() and 'qldspatial.information.qld.gov.au/catalogueadmin/rest/document?id=' in resource.get('url'):
+                        append_migration_log(dataset_name, resource.get('name', None),
+                                                'Resource is a metadata XML of existing QSpatial record. Resource not created.')
+                    else:
+                        # Create new package from series resource
+                        new_series_package_dict = resource_to_dataset_mapping(resource, existing_package, existing_package, row)
+                        try:
+                            new_series_package_dict_id = destination.action.package_create(**new_series_package_dict)
+                            append_migration_log(dataset_name, resource.get('name', None), 'New dataset created for QSpatial series')
+                        except Exception as e:
+                            print(e)
+                            append_error(new_series_package_dict.get('name'), str(e), source_url)
+        else:
+            # Update existing resources
+            for resource in package_dict.get('resources', []):
+                # Find matching resources using resource name and URLs
+                resource_match = next(
+                    (
+                        existing_resource for existing_resource in existing_package.get('resources', [])
+                        if existing_resource.get('name', None) == resource.get('name', None)
+                        # and helpers.fix_url(resource.get('url', '')) == json.loads(existing_resource.get('url', '[""]'))[0]
+                    ), None)
+
+                if resource_match and 'qldspatial.information.qld.gov.au' in resource.get('url', None):
+                   update_package = add_dataservice(resource, resource_match)
+                else:
+                    #  If resource has 'metadata' in the name and a qspatial rest API url, do not create it
+                    if 'metadata' in resource.get('name').lower() and 'qldspatial.information.qld.gov.au/catalogueadmin/rest/document?id=' in resource.get('url'):
+                        append_migration_log(dataset_name, resource.get('name', None),
+                                                'Resource is a metadata XML of existing QSpatial record. Resource not created.')
+                    else:
+                        update_package = add_new_resource_to_existing_package(dataset_name, existing_package, resource, row)
+
+        if update_package:
+            destination.action.package_update(**existing_package)
+    except NotFound:
+        existing_package = None
+
+    return existing_package and isinstance(existing_package, dict)
+
 # Set the import source and destination.
 source = RemoteCKAN('https://www.data.qld.gov.au')
 destination = RemoteCKAN(os.environ['LAGOON_ROUTE'], apikey=apiKey)
-
+data_service = destination.action.package_show(id=dataservice_name)
 error_log = []
 success_log = []
+migration_log = []
+append_migration_log('Dataset', 'Resource', 'Action')
 unique_formats = []
 unique_license_ids = []
 unique_license_urls = []
@@ -312,6 +436,10 @@ csv_reader = csv.DictReader(data)
 
 count = 0
 limit = 5
+
+# Configure session.
+engine = create_engine('postgresql://ckan:ckan@postgres/ckan?sslmode=disable')
+Session.configure(bind=engine)
 
 for row in csv_reader:
     count += 1
@@ -330,11 +458,18 @@ for row in csv_reader:
 
     # Fetch package from Data.Qld.
     package_dict = []
+    existing_package_found = False
     try:
         package_dict = source.action.package_show(id=dataset_name)
+        # package_dict = json.load(open(f'json_files/{dataset_name}.json','r'))
+        existing_package_found = check_for_existing_package(dataset_name)
     except Exception as e:
         print(f'Error fetching package {dataset_name}')
         append_error(dataset_name, str(e), source_url)
+        continue
+
+    # If existing package was found and updated move on to the next package
+    if existing_package_found:
         continue
 
     # Map dataset.
@@ -360,7 +495,7 @@ for row in csv_reader:
         # Create individual package for each resource that belong to above series dataset.
         if ('resources' in package_dict) and not error:
             for resource in package_dict.get('resources'):
-                new_series_package_dict = resource_to_dataset_mapping(resource, new_package_dict, new_package_dict_id)
+                new_series_package_dict = resource_to_dataset_mapping(resource, new_package_dict, new_package_dict_id, row)
 
                 try:
                     new_series_package_dict_id = destination.action.package_create(**new_series_package_dict)
@@ -373,7 +508,7 @@ for row in csv_reader:
         try:
             if 'resources' in package_dict:
                 for resource in package_dict.get('resources'):
-                    new_package_dict['resources'].append(resource_mapping(resource))
+                    new_package_dict['resources'].append(resource_mapping(resource, row))
 
             new_package_dict_id = destination.action.package_create(**new_package_dict)
             success_log.append({
@@ -389,8 +524,10 @@ if success_log:
 if error_log:
     print(pformat(error_log))
 
-print('>>> Unique formats from Data.Qld:')
-print(pformat(unique_formats))
+if migration_log:
+    with open('logs/{0}.csv'.format(datetime.now().strftime("%Y%m%d-%H%M%S")), 'w') as log_csv:
+        for log in migration_log:
+            log_csv.write(f'{log}\n')
 
 print('>>> Unique license_id values from Data.Qld:')
 print(pformat(unique_license_ids))
@@ -399,3 +536,6 @@ print('>>> Unique license_url values from Data.Qld:')
 print(pformat(unique_license_urls))
 
 print(f'\nRows in CSV: {count}')
+
+print('>>> Unique formats from Data.Qld:')
+print(pformat(unique_formats))

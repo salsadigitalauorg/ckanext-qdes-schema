@@ -1,5 +1,4 @@
 import json
-import os
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -14,7 +13,7 @@ class QSpatialObject:
     This class will do mapping from QSpatial XML to CKAN package dictionary.
     """
 
-    def __init__(self, xml_filename, csv_row, remoteCKAN, log_file, debug=False):
+    def __init__(self, xml_filename, csv_row, remoteCKAN, log_file, data_service, owner_org, debug=False):
         self.root = ET.parse(xml_filename).getroot()
         self.csv_row = csv_row
         # self.ns={"gts":"http://www.isotc211.org/2005/gts","gml":"http://www.opengis.net/gml","gml32":"http://www.opengis.net/gml/3.2","gmx":"http://www.isotc211.org/2005/gmx","gsr":"http://www.isotc211.org/2005/gsr","gss":"http://www.isotc211.org/2005/gss","gco":"http://www.isotc211.org/2005/gco","gmd":"http://www.isotc211.org/2005/gmd","srv":"http://www.isotc211.org/2005/srv","xlink":"http://www.w3.org/1999/xlink","xsi":"http://www.w3.org/2001/XMLSchema-instance"}
@@ -35,6 +34,8 @@ class QSpatialObject:
         self.resource = {}
         # Set the import source and destination.
         self.remoteCKAN = remoteCKAN
+        self.data_service_id = data_service.get('id')
+        self.owner_org = owner_org
         self.debug = debug
         self.log_file = open(log_file, 'a')
 
@@ -57,6 +58,7 @@ class QSpatialObject:
         self.log(self.package.get('title'))
         self.log('<----------------------------------------------------------------------------------------------------------------------------------------------------------->')
         self.package.update(self.get_parent_identifier())
+        self.package.update(self.get_file_identifier())
         self.package.update(self.get_identifiers())
         self.package.update(self.get_classification())
         self.package.update(self.get_notes())
@@ -101,6 +103,7 @@ class QSpatialObject:
         self.resource.update(self.get_resource_name())
         self.resource.update(self.get_resource_format())
         self.resource.update(self.get_resource_size())
+        self.resource.update(self.get_resource_url())
         self.resource.update(self.get_resource_service_api_endpoint())
         self.resource.update(self.get_resource_rights_statement())
         self.resource.update(self.get_resource_license())
@@ -122,6 +125,20 @@ class QSpatialObject:
 
         # self.log('parent_identifier: {}'.format(parent_identifier))
         return {'parent_identifier': parent_identifier}
+
+    def get_file_identifier(self):
+        file_identifier = None
+        # /MD_Metadata/fileIdentifier/gco:CharacterString
+        fileIdentifier = self.root.find('gmd:fileIdentifier/gco:CharacterString', self.ns)
+        if fileIdentifier != None:
+            file_identifier = fileIdentifier.text
+
+        # if file_identifier == None:
+            # Set default value
+            # self.log('file_identifier: No value')
+
+        # self.log('file_identifier: {}'.format(file_identifier))
+        return {'file_identifier': file_identifier}
 
     def get_identifiers(self):
         identifiers = self.csv_row.get('URL', None)
@@ -313,7 +330,7 @@ class QSpatialObject:
 
     def get_owner_org(self):
         # TODO: For production OWNER_ORG should be set to 'department-of-environment-and-science'
-        owner_org = os.environ['OWNER_ORG']
+        owner_org = self.owner_org
         # self.log('owner_org: {}'.format(owner_org))
         return {'owner_org': owner_org}
 
@@ -493,7 +510,7 @@ class QSpatialObject:
         dataset_release_date = None
         if pub_date != None:
             # pub_date is in format 21/03/2013
-            dataset_release_date = datetime.strptime(pub_date + 'T14:00:00', '%d/%m/%YT%H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S') #pub_date+ "T14:00:00"  # Australia/Brisbane timezone in UTC
+            dataset_release_date = datetime.strptime(pub_date, '%d/%m/%Y').strftime('%Y-%m-%dT%H:%M:%S')
         else:
             # Set default value?
             self.log('dataset_release_date: No value')
@@ -633,6 +650,14 @@ class QSpatialObject:
         # self.log('resource_size: {}'.format(resource_size))
         return {'size': resource_size}
 
+    def get_resource_url(self):
+        resource_url = self.csv_row.get('URL', None)
+        if resource_url == None:
+            self.log('resource_url: No value')
+
+        # self.log('resource_url: {}'.format(resource_url))
+        return {'url': resource_url}
+
     def get_resource_service_api_endpoint(self):
         resource_service_api_endpoint = None
         url = self.root.find(
@@ -667,8 +692,5 @@ class QSpatialObject:
 
     def get_data_service(self):
         # Set default value to QSpatial dataservice
-        #TODO: verify this dataservice is created on environment
-        data_service_name= 'qspatial'
-        data_service = self.remoteCKAN.action.package_show(id=data_service_name)
-        # self.log('data_services: {}'.format(data_service.get('id')))
-        return {'data_services': json.dumps([data_service.get('id')])}
+        # self.log('data_services: {}'.format(self.data_service_id))
+        return {'data_services': json.dumps([self.data_service_id])}

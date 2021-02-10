@@ -25,6 +25,8 @@ def get_ckan_packages():
     count = 0
     csv_rows = [row for row in csv.DictReader(open('DES_Datasets_QSpatial_v1.csv', "r"))]
     with get_remote_ckan() as remoteCKAN:
+        data_service = remoteCKAN.action.package_show(id='qspatial')
+        owner_org = os.environ['OWNER_ORG']
         for file in files:
             count += 1
             if count > 1000:
@@ -33,7 +35,7 @@ def get_ckan_packages():
             # Bit of a hack bt easier then doing a regex
             identifier = file.replace('xml_files/', '').replace('.xml', '')
             csv_row = next((row for row in csv_rows if identifier in row.get('URL')), None)
-            obj = QSpatialObject(file, csv_row, remoteCKAN, log_file, True)
+            obj = QSpatialObject(file, csv_row, remoteCKAN, log_file, data_service, owner_org, True)
             ckan_packages.append(obj.get_ckan_package_dict())
 
     return ckan_packages
@@ -133,9 +135,9 @@ def main():
                     if field in distinct_resource_fields:
                         distinct_resource_fields[field].append(resource.get(field)) if resource.get(field) not in distinct_resource_fields[field] else distinct_resource_fields[field]
 
-            parent_package = next((parent_package for parent_package in parent_packages if package.get('parent_identifier') in parent_package.get('identifiers', []) or []), None)
+            parent_package = next((parent_package for parent_package in parent_packages if package.get('parent_identifier', None) == parent_package.get('file_identifier', None)), None)
             if parent_package:
-                # print('parent package found {0} for {1}'.format(parent_package.get('title'), package.get('title')))
+                # print('{0}: parent package found {1} for {2}'.format(parent_package.get('id'), parent_package.get('title'), package.get('title')))
                 package['series_or_collection'] = json.dumps([{"id": parent_package.get('id'), "text": parent_package.get('title')}])
 
             # pprint(package)
