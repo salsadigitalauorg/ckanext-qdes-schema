@@ -34,11 +34,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
 
-
     # IConfigurable
     def configure(self, config):
         core_validator.object_id_validators['publish external schema'] = core_validator.package_id_exists
-
 
     # IClick
     def get_commands(self):
@@ -91,7 +89,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         if request.endpoint == 'dataset.edit':
             if h.dataset_has_published_to_external_schema(pkg_dict.get('id')):
                 url = h.url_for('qdes_schema.datasets_schema_validation', id=pkg_dict.get('id'))
-                h.flash_success('You have updated a dataset that is publicly available. Please go to the <a href="' + url +'">Publish tab</a> to validate the changes and publish to the relevant data service(s). This will ensure the metadata in updated in all systems.', True)
+                h.flash_success('You have updated a dataset that is publicly available. Please go to the <a href="' + url +'">Publish tab</a> to validate the changes and publish to the relevant data service(s). This will ensure the metadata is updated in all systems.', True)
 
         return pkg_dict
 
