@@ -145,5 +145,5 @@ qdes_schema.add_url_rule(u'/dataset/<id>/metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/metadata', endpoint='dataservice_metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataset/<id>/resource/<resource_id>/metadata', view_func=resource_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/datasets-available', view_func=datasets_available)
-qdes_schema.add_url_rule(u'/dataset/<id>/schema_validation', methods=[u'GET', u'POST'],
+qdes_schema.add_url_rule(u'/dataset/<id>/publish', methods=[u'GET', u'POST'],
                          view_func=datasets_schema_validation)
