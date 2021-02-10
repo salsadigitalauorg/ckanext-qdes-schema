@@ -134,8 +134,7 @@ def datasets_schema_validation(id):
                         'cls': 'alert-error'
                     }
 
-        # if not extra_vars['pkg_errors'] and not extra_vars['res_errors'] and not extra_vars['publication_message']:
-        if not extra_vars['pkg_errors'] and not extra_vars['res_errors']:
+        if not extra_vars['pkg_errors'] and not extra_vars['res_errors'] and not extra_vars['publication_message']:
             extra_vars['valid'] = 1
 
     return render('package/publish_metadata.html', extra_vars=extra_vars)

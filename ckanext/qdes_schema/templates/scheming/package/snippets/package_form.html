@@ -39,6 +39,14 @@
   {%- endif -%}
   {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
 
+
+  {% if h.dataset_has_published_to_external_schema(data.id) %}
+    <div class="alert alert-info" role="alert">
+      <p>This dataset and its distributions are publicly available and updates need to be manually published to all relevant data services via the Publish tab.</p>
+      <p>Please also ensure changes have gone through the required business review / approval process before updating.</p>
+    </div>
+  {% endif %}
+
   {#
       "namespace" is only available in Jinja2 v 2.10+
       therefore this approach won't work in CKAN < 2.9
