@@ -20,6 +20,8 @@ This adds `ckan qdes-ckan-29.docker.amazee.io` to the `/etc/hosts` file on the c
 
         . /app/ckan/activate.sh
 
+1. Add OWNER_ORG and HARVEST_API_KEY to environment variable
+
 1. Change to directory to where the script is:
 
         cd /app/src/ckanext-qdes-schema/ckanext/qdes_schema/qld_harvest

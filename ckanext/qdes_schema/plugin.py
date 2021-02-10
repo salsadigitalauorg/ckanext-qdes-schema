@@ -372,9 +372,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     # IAuthFunctions
     def get_auth_functions(self):
         return {
-            'site_read': auth.site_read,
             'package_create': auth.package_create,
             'package_update': auth.package_update,
             'package_patch': auth.package_patch,
             'package_delete': auth.package_delete,
+            'dataservice_index': auth.dataservice_index,
         }
