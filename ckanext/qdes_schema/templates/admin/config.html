@@ -4,6 +4,35 @@
 
 {% block admin_form %}
     {{ super() }}
+
+    <fieldset>
+        <legend>Publishing Portals</legend>
+
+        {{ form.input(
+            'ckanext.qdes_schema.publishing_portals.opendata',
+            id='field-ckanext.qdes_schema.publishing_portals.opendata',
+            label=_('Open Data/Data.Qld'),
+            placeholder='CKAN UUID of Open Data/Data.Qld data service',
+            value=data['ckanext.qdes_schema.publishing_portals.opendata'],
+            error=errors['ckanext.qdes_schema.publishing_portals.opendata']) }}
+
+        {{ form.input(
+            'ckanext.qdes_schema.publishing_portals.qspatial',
+            id='field-ckanext.qdes_schema.publishing_portals.qspatial',
+            label=_('QSpatial'),
+            placeholder='CKAN UUID of QSpatial data service',
+            value=data['ckanext.qdes_schema.publishing_portals.qspatial'],
+            error=errors['ckanext.qdes_schema.publishing_portals.qspatial']) }}
+
+        {{ form.input(
+            'ckanext.qdes_schema.publishing_portals.sir',
+            id='field-ckanext.qdes_schema.publishing_portals.sir',
+            label=_('SIR'),
+            placeholder='CKAN UUID of SIR data service',
+            value=data['ckanext.qdes_schema.publishing_portals.sir'],
+            error=errors['ckanext.qdes_schema.publishing_portals.sir']) }}
+    </fieldset>
+
     {{ form.textarea(
         'ckanext.qdes_schema.au_bounding_box',
         id='field-ckanext.qdes_schema.au_bounding_box',
@@ -31,6 +60,11 @@
 
 {% block admin_form_help %}
     {{ super() }}
+    <p>
+        <strong>Publishing Portals:</strong>
+        <br/>Enters the CKAN UUID of data services available in the catalogue for publishing to<br/>
+    </p>
+
     <p>
         <strong>Australia Bounding Box/Default map coordinates:</strong><br/>Example:<br/>
         <pre>

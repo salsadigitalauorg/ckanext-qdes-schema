@@ -5,7 +5,9 @@ def get_mapped_update_frequency(update_frequency):
     # Map Update frequency, we can't use get_vocab_value because some of the values are custom (can't be matched 1:1).
     # The below frequency value to filter based on this value, use below
     # https://www.data.qld.gov.au/organization/a3cdcdcb-201c-4360-9fa6-98e361c89279?update_frequency=not-updated.
-    # @todo: fix this.
+    # @todo: fix this, we maybe need to reuse helper.py:map_update_schedule(),
+    # but then need to figure out how to map the non-regular, not-updated, fortnightly and non-regular,
+    # currently they are mapped to multiple same URIs in DES, check DDCI-149.
     frequency_map = {
         'near-real-time': 'http://publications.europa.eu/resource/authority/continual',
         'hourly': '',
