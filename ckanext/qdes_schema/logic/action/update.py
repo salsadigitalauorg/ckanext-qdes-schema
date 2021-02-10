@@ -2,9 +2,11 @@ import logging
 import json
 
 from ckan.plugins.toolkit import get_action, h, check_access, get_converter
+from ckanext.qdes_schema.model import PublishLog
 from ckanext.qdes_schema.logic.helpers import (
     dataservice_helpers as ds_helpers,
     resource_helpers as res_helpers)
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -44,7 +46,7 @@ def dataservice_datasets_available(context, data):
                             # and check if the resource is associated with current dataservice_dict.
                             remove_from_dataset_available = True
                             for res in resources:
-                                if not res.get('id') ==  resource.get('id'):
+                                if not res.get('id') == resource.get('id'):
                                     data_service_list = res.get('data_services', [])
 
                                     if dataservice_dict.get('id') in data_service_list:
@@ -66,6 +68,7 @@ def dataservice_datasets_available(context, data):
                     get_action('package_update')(context, dataservice_dict)
         except Exception as e:
             log.error(str(e))
+
 
 def update_related_resources(context, data_dict):
     """
@@ -99,7 +102,8 @@ def update_related_resources(context, data_dict):
                 current_related_resources = dataset._extras.get('related_resources', None)
                 if not current_related_resources:
                     # Create a new PackageExtra object for related_resources
-                    dataset._extras['related_resources'] = model.PackageExtra(key='related_resources', value=new_related_resources_value)
+                    dataset._extras['related_resources'] = model.PackageExtra(key='related_resources',
+                                                                              value=new_related_resources_value)
                 else:
                     current_related_resources.value = new_related_resources_value
                 # Always set the below values to None as they should have been included above in related_resources
@@ -117,3 +121,20 @@ def update_related_resources(context, data_dict):
 
         except Exception as e:
             log.error(str(e))
+
+
+def publish_log(context, data_dict):
+    u"""
+    Create publish_log.
+    """
+    try:
+        publish_log_data = PublishLog.get(data_dict.get('id'))
+        for key in data_dict:
+            setattr(publish_log_data, key, data_dict[key])
+
+        publish_log_data.save()
+
+        return publish_log_data
+    except Exception as e:
+        log.error(e)
+        return None

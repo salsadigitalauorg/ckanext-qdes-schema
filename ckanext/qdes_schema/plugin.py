@@ -5,20 +5,26 @@ import json
 import logging
 
 from ckan.common import request
+from ckan.logic import validators as core_validator
+from ckanext.qdes_schema.cli import get_commands
 from ckanext.qdes_schema import blueprint, helpers, validators, auth
 from ckanext.qdes_schema.logic.action import (
     get,
-    update as update_actions
+    create,
+    update
 )
 from ckanext.relationships import helpers as ckanext_relationships_helpers
 from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_helpers, resource_helpers as res_helpers
 from collections import OrderedDict
 from pprint import pformat
 
+h = toolkit.h
 log = logging.getLogger(__name__)
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
+    plugins.implements(plugins.IConfigurable, inherit=True)
+    plugins.implements(plugins.IClick)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
@@ -28,8 +34,15 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
 
-    # IBlueprint
+    # IConfigurable
+    def configure(self, config):
+        core_validator.object_id_validators['publish external schema'] = core_validator.package_id_exists
 
+    # IClick
+    def get_commands(self):
+        return get_commands()
+
+    # IBlueprint
     def get_blueprint(self):
         return blueprint.qdes_schema
 
@@ -72,6 +85,11 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         for resource in pkg_dict.get('resources', []):
             res_helpers.after_create_and_update(context, resource)
+
+        if request.endpoint == 'dataset.edit':
+            if h.dataset_has_published_to_external_schema(pkg_dict.get('id')):
+                url = h.url_for('qdes_schema.datasets_schema_validation', id=pkg_dict.get('id'))
+                h.flash_success('You have updated a dataset that is publicly available. Please go to the <a href="' + url +'">Publish tab</a> to validate the changes and publish to the relevant data service(s). This will ensure the metadata is updated in all systems.', True)
 
         return pkg_dict
 
@@ -232,6 +250,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'ckanext.qdes_schema.au_bounding_box': [ignore_missing, qdes_validate_geojson],
             'ckanext.qdes_schema.qld_bounding_box': [ignore_missing, qdes_validate_geojson],
             'ckanext.qdes_schema.default_map_zoom': [ignore_missing],
+            'ckanext.qdes_schema.publishing_portals.opendata': [ignore_missing],
+            'ckanext.qdes_schema.publishing_portals.qspatial': [ignore_missing],
+            'ckanext.qdes_schema.publishing_portals.sir': [ignore_missing],
         })
 
         return schema
@@ -264,6 +285,12 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'is_part_of_collection': helpers.is_part_of_collection,
             'qdes_get_field_label': helpers.qdes_get_field_label,
             'qdes_merge_invalid_uris_error': helpers.qdes_merge_invalid_uris_error,
+            'schema_validate': helpers.schema_validate,
+            'schema_publish': helpers.schema_publish,
+            'load_activity_with_full_data': helpers.load_activity_with_full_data,
+            'map_update_schedule': helpers.map_update_schedule,
+            'dataset_has_published_to_external_schema': helpers.dataset_has_published_to_external_schema,
+            'resource_has_published_to_external_schema': helpers.resource_has_published_to_external_schema,
         }
 
     def get_multi_textarea_values(self, value):
@@ -280,11 +307,13 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         return {
             'get_dataservice': get.dataservice,
             'package_autocomplete': get.package_autocomplete,
-            'update_dataservice_datasets_available': update_actions.dataservice_datasets_available,
-            'update_related_resources': update_actions.update_related_resources,
+            'update_dataservice_datasets_available': update.dataservice_datasets_available,
+            'update_related_resources': update.update_related_resources,
             'get_all_successor_versions': get.all_successor_versions,
             'get_all_predecessor_versions': get.all_predecessor_versions,
-            'get_all_relationships': get.all_relationships
+            'get_all_relationships': get.all_relationships,
+            'create_publish_log': create.publish_log,
+            'update_publish_log': update.publish_log
         }
 
     # IFacets

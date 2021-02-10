@@ -14,22 +14,12 @@
     {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris, is_edit=True %}
   {% endif %}
 
-  {% if h.ckan_version() > '2.9' %}
-    {% asset 'qdes_schema/qdes-fancytree' %}
-    {% asset 'qdes_schema/repeater' %}
-    {% asset 'qdes_schema/repeating-fields' %}
-    {% asset 'qdes_schema/autocomplete' %}
-    {% asset 'qdes_schema/iso-8601-duration' %}
-    {% asset 'qdes_schema/style' %}
-  {% else %}
-    {% resource 'qdes_schema/jquery.fancytree-all-deps.min.js' %}
-    {% resource 'qdes_schema/qdes-tree-selector.js' %}
-    {% resource 'qdes_schema/jquery.repeater.js' %}
-    {% resource 'qdes_schema/repeating-fields.js' %}
-    {% resource 'qdes_schema/autocomplete.js' %}
-    {% resource 'qdes_schema/iso-8601-duration.js' %}
-    {% resource 'qdes_schema/style.css' %}
-  {% endif %}
+  {% asset 'qdes_schema/qdes-fancytree' %}
+  {% asset 'qdes_schema/repeater' %}
+  {% asset 'qdes_schema/repeating-fields' %}
+  {% asset 'qdes_schema/autocomplete' %}
+  {% asset 'qdes_schema/iso-8601-duration' %}
+  {% asset 'qdes_schema/style' %}
 
   {%- if not dataset_type -%}
     <p>
@@ -38,6 +28,15 @@
     </p>
   {%- endif -%}
   {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
+
+
+  {% if data.id and h.dataset_has_published_to_external_schema(data.id) %}
+    <div class="alert alert-info" role="alert">
+      This dataset and its distributions are publicly available and updates need to be manually published to all relevant data services via the Publish tab.
+      <br/><br/>
+      Please also ensure changes have gone through the required business review / approval process before updating.
+    </div>
+  {% endif %}
 
   {#
       "namespace" is only available in Jinja2 v 2.10+
