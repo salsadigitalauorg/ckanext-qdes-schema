@@ -1,5 +1,20 @@
 {% import 'macros/form.html' as form %}
 
+{% set is_public = not pkg.private %}
+{% set is_official_public = 'official-public' in pkg.classification_and_access_restrictions %}
+
+{% if not is_public %}
+  <div class="alert alert-info" role="alert">
+    <p>The dataset's visibility is currently set to "Private" and cannot be published. Please change the visibility setting to "Public before publishing."</p>
+  </div>
+{% endif %}
+
+{% if not is_official_public %}
+  <div class="alert alert-info" role="alert">
+    <p>The dataset's classification and access restriction does not permit publishing. Only dataset’s with a classification of "OFFICIAL-PUBLIC" can be published.</p>
+  </div>
+{% endif %}
+
 <details class="row validate-publish" open data-valid="{{ valid }}">
   <summary>Validate and publish records</summary>
   <h2>Validate and publish records</h2>
@@ -102,7 +117,9 @@
         {% endif %}
       </div>
       <div class="col-md-2">
-        <button class="btn btn-default btn-block validate" type="submit" name="action" value="validate" disabled>Validate</button>
+        {% if is_public and is_official_public %}
+          <button class="btn btn-default btn-block validate" type="submit" name="action" value="validate" disabled>Validate</button>
+        {% endif %}
       </div>
     </div>
 
@@ -115,13 +132,15 @@
         {% endif %}
       </div>
       <div class="col-md-2">
-        <button
-          data-module="publish-confirm-action"
-          data-module-content="Has the metadata record gone through the relevant business review / approval process to publish?"
-          data-module-content-cancel="The distribution can not be published without the relevant business review / approval process."
-          data-module-with-data="true"
-          class="btn btn-default btn-block publish"
-          type="submit" name="action" value="publish" disabled>Publish</button>
+        {% if is_public and is_official_public %}
+          <button
+            data-module="publish-confirm-action"
+            data-module-content="Has the metadata record gone through the relevant business review / approval process to publish?"
+            data-module-content-cancel="The distribution can not be published without the relevant business review / approval process."
+            data-module-with-data="true"
+            class="btn btn-default btn-block publish"
+            type="submit" name="action" value="publish" disabled>Publish</button>
+        {% endif %}
       </div>
     </div>
   </form>

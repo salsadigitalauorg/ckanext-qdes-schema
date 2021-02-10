@@ -1,3 +1,4 @@
+import ckanext.qdes_schema.constants as constants
 import datetime
 
 from ckan.model import meta
@@ -49,6 +50,24 @@ class PublishLog(DomainObject):
         query = meta.Session.query(cls) \
             .filter(cls.resource_id == resource_id) \
             .filter(cls.status == status) \
+            .order_by(desc(cls.date_processed))
+        return query.first()
+
+    @classmethod
+    def dataset_has_published_to_external(cls, dataset_id):
+        query = meta.Session.query(cls) \
+            .filter(cls.dataset_id == dataset_id) \
+            .filter(cls.action.in_(tuple([constants.PUBLISH_ACTION_UPDATE, constants.PUBLISH_ACTION_CREATE]))) \
+            .filter(cls.status == constants.PUBLISH_STATUS_SUCCESS) \
+            .order_by(desc(cls.date_processed))
+        return query.first()
+
+    @classmethod
+    def resource_has_published_to_external(cls, resource_id):
+        query = meta.Session.query(cls) \
+            .filter(cls.resource_id == resource_id) \
+            .filter(cls.action.in_(tuple([constants.PUBLISH_ACTION_UPDATE, constants.PUBLISH_ACTION_CREATE]))) \
+            .filter(cls.status == constants.PUBLISH_STATUS_SUCCESS) \
             .order_by(desc(cls.date_processed))
         return query.first()
 

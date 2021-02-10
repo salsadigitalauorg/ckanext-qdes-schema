@@ -284,6 +284,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'schema_validate': helpers.schema_validate,
             'schema_publish': helpers.schema_publish,
             'load_activity_with_full_data': helpers.load_activity_with_full_data,
+            'map_update_schedule': helpers.map_update_schedule,
+            'dataset_has_published_to_external_schema': helpers.dataset_has_published_to_external_schema,
+            'resource_has_published_to_external_schema': helpers.resource_has_published_to_external_schema,
         }
 
     def get_multi_textarea_values(self, value):

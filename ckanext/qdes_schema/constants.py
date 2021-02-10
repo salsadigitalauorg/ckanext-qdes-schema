@@ -6,6 +6,8 @@ PUBLISH_TRIGGER_AUTOMATED = 'automated'
 PUBLISH_STATUS_PENDING = 'pending'
 PUBLISH_STATUS_SUCCESS = 'success'
 PUBLISH_STATUS_FAILED = 'failed'
+PUBLISH_ACTION_CREATE = 'create'
+PUBLISH_ACTION_UPDATE = 'update'
 
 def get_key_name(schema):
     if schema == PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
@@ -14,6 +16,16 @@ def get_key_name(schema):
         return 'QSPATIAL_API_KEY'
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return 'SIR_API_KEY'
+
+    return ''
+
+def get_owner_org(schema):
+    if schema == PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
+        return 'DATA_QLD_OWNER_ORG'
+    elif schema == PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA:
+        return 'QSPATIAL_OWNER_ORG'
+    elif schema == PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
+        return 'SIR_OWNER_ORG'
 
     return ''
 

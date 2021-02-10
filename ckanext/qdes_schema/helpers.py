@@ -11,6 +11,7 @@ from ckan.common import c
 from ckan.model.package_relationship import PackageRelationship
 from ckan.lib import helpers as core_helper
 from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request, _
+from ckanext.qdes_schema.model import PublishLog
 from ckanext.qdes_schema.logic.helpers import relationship_helpers
 from ckanext.invalid_uris.model import InvalidUri
 from ckanext.scheming.plugins import SchemingDatasetsPlugin
@@ -443,7 +444,7 @@ def schema_publish(pkg, data):
 
             # Add to job worker queue.
             if publish_log:
-                toolkit.enqueue_job(jobs.publish_to_external_catalogue, [publish_log.id])
+                toolkit.enqueue_job(jobs.publish_to_external_catalogue, [publish_log.id, c.user])
 
         return True
     except Exception as e:
@@ -453,3 +454,37 @@ def schema_publish(pkg, data):
 
 def load_activity_with_full_data(activity_id):
     return get_action(u'activity_show')({}, {u'id': activity_id, u'include_data': True})
+
+
+def map_update_schedule(uri, schema):
+    frequency_map = {
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/annually': 'annually',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/asNeeded': 'non-regular',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/biannually': 'half-yearly',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/biennially': 'non-regular',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/continual': 'near-realtime',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/daily': 'daily',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/fortnightly': 'fortnightly',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/irregular': 'non-regular',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/monthly': 'monthly',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/notPlanned': 'not-updated',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/periodic': 'non-regular',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/quarterly': 'quarterly',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/semimonthly': 'fortnightly',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/unknown': 'not-updated',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/weekly': 'weekly',
+        },
+        # @todo, in case needed, need to map this against external schema in future.
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+    }
+
+    return frequency_map.get(schema, {}).get(uri, '')
+
+
+def dataset_has_published_to_external_schema(package_id):
+    return PublishLog.dataset_has_published_to_external(package_id)
+
+def resource_has_published_to_external_schema(resource_id):
+    return PublishLog.resource_has_published_to_external(resource_id)

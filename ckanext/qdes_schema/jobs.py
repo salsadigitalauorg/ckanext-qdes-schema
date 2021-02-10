@@ -1,6 +1,7 @@
 import ckan.logic as logic
 import ckan.plugins.toolkit as toolkit
 import ckanext.qdes_schema.constants as constants
+import ckanext.qdes_schema.helpers as helpers
 import ckanext.scheming.helpers as scheming_helpers
 import ckanext.vocabulary_services.helpers as vocabulary_service_helpers
 import ckanext.vocabulary_services.logic.action.get as vocab_get_action
@@ -11,6 +12,7 @@ import sys
 
 from ckan import model
 from ckan.common import c
+from ckan.lib.dictization.model_save import package_extras_save
 from ckan.plugins.toolkit import h
 from ckanapi import RemoteCKAN, ValidationError
 from ckanext.qdes_schema.model import PublishLog
@@ -22,7 +24,7 @@ get_action = logic.get_action
 log = logging.getLogger(__name__)
 
 
-def publish_to_external_catalogue(publish_log_id):
+def publish_to_external_catalogue(publish_log_id, user):
     u"""
     Background job for publishing schema to external.
     """
@@ -44,7 +46,7 @@ def publish_to_external_catalogue(publish_log_id):
     # Get the dataset by name on external schema.
     external_pkg_dict = _get_external_dataset(package_dict.get('name'), destination)
     if external_pkg_dict:
-        publish_log.action = 'update'
+        publish_log.action = constants.PUBLISH_ACTION_UPDATE
         publish_log.destination_identifier = external_pkg_dict.get('id')
 
         # Load recent publish log for this dataset.
@@ -52,35 +54,33 @@ def publish_to_external_catalogue(publish_log_id):
                                                                 constants.PUBLISH_STATUS_SUCCESS)
 
         # Update external dataset.
-        status, detail, external_pkg_dict = _update_external_dataset(publish_log, destination, external_pkg_dict,
-                                                                     package_dict,
-                                                                     recent_publish_log)
+        status, detail, external_pkg_dict = _update_external_dataset(
+            publish_log,
+            destination,
+            external_pkg_dict,
+            package_dict,
+            recent_publish_log
+        )
     else:
-        publish_log.action = 'create'
+        publish_log.action = constants.PUBLISH_ACTION_CREATE
 
         # Update external dataset.
         status, detail, external_pkg_dict = _create_external_dataset(publish_log, destination, package_dict)
 
-    # Update activity stream.
-    resource_name = ''
-    resource_format = ''
-    for resource in package_dict.get('resources', []):
-        if resource.get('id') == publish_log.resource_id:
-            resource_name = resource.get('name')
-            resource_format = _get_vocab_label('dataset', 'resource_fields', 'format', resource.get('format'))
+    # Update dataset identifier.
+    if external_pkg_dict:
+        identifiers = json.loads(package_dict['identifiers']) if package_dict['identifiers'] else []
+        identifiers.append(destination.address + '/dataset/' + external_pkg_dict.get('id'))
+        identifiers = list(set(identifiers))
 
-    site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
-    context = {u'user': site_user[u'name']}
-    toolkit.get_action('activity_create')(context, {
-        'user_id': 'salsa',
-        'object_id': publish_log.dataset_id,
-        'activity_type': 'publish external schema',
-        'data': {
-            'package': package_dict,
-            'status': 'successfully' if status == constants.PUBLISH_STATUS_SUCCESS else 'unsuccessfully',
-            'distribution': resource_format + ' - ' + resource_name
-        }
-    })
+        package = model.Package.get(package_dict.get('id'))
+        package.extras['identifiers'] = json.dumps(identifiers)
+
+        package.save()
+        model.Session.commit()
+
+    # Update activity stream.
+    _update_activity_schema(publish_log, package_dict, status, user)
 
     # Update publish log.
     _update_publish_log(publish_log, status, detail, external_pkg_dict)
@@ -173,14 +173,6 @@ def _update_external_dataset(publish_log, destination, external_pkg_dict, packag
     return constants.PUBLISH_STATUS_SUCCESS if success else constants.PUBLISH_STATUS_FAILED, details, external_package_dict
 
 
-def _update_publish_log(publish_log, status, detail, external_pkg_dict):
-    publish_log.status = status
-    publish_log.details = json.dumps(detail)
-    publish_log.destination_identifier = external_pkg_dict.get('id')
-
-    return get_action('update_publish_log')({}, dict(publish_log.as_dict()))
-
-
 def _build_and_clean_up_dataqld(des_package_dict, external_package_dict={}, recent_publish_log={}):
     # Variable is_update will be true when
     # there is a similar package name on external schema.
@@ -249,13 +241,12 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict={}, rece
         qld_pkg_dict['resources'] = [qld_resource_dict]
 
     # Manual Mapping for dataset field.
-    # @todo, vocab value is not accepted, need a new uri for vocab.
-    # dataset_fields['update_frequency'] = dataset_fields['update_schedule']
-    qld_pkg_dict['update_frequency'] = 'near-realtime'
+    update_freq = helpers.map_update_schedule(des_package_dict['update_schedule'],
+                                              constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
+    qld_pkg_dict['update_frequency'] = update_freq if update_freq else 'not-updated'
 
-    # @todo, fix this hardcoded value here.
-    qld_pkg_dict['owner_org'] = '5e759cce-aa72-4908-987f-df61f7f8e44a'
-    qld_pkg_dict['author_email'] = 'awang@salsadigital.com.au'
+    qld_pkg_dict['owner_org'] = os.getenv(constants.get_owner_org(constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA))
+    qld_pkg_dict['author_email'] = 'opendata@des.qld.gov.au'
     qld_pkg_dict['security_classification'] = 'PUBLIC'
     qld_pkg_dict['data_driven_application'] = 'NO'
     qld_pkg_dict['version'] = '1'
@@ -276,3 +267,33 @@ def _get_vocab_label(dataset_type, field_type, field_name, uri):
         return scheming_helpers.scheming_choices_label(schema_field_choices, uri)
 
     return ''
+
+
+def _update_activity_schema(publish_log, package_dict, status, user):
+    resource_name = ''
+    resource_format = ''
+    for resource in package_dict.get('resources', []):
+        if resource.get('id') == publish_log.resource_id:
+            resource_name = resource.get('name')
+            resource_format = _get_vocab_label('dataset', 'resource_fields', 'format', resource.get('format'))
+
+    site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
+    context = {u'user': site_user[u'name']}
+    toolkit.get_action('activity_create')(context, {
+        'user_id': user,
+        'object_id': publish_log.dataset_id,
+        'activity_type': 'publish external schema',
+        'data': {
+            'package': package_dict,
+            'status': 'successfully' if status == constants.PUBLISH_STATUS_SUCCESS else 'unsuccessfully',
+            'distribution': resource_format + ' - ' + resource_name
+        }
+    })
+
+
+def _update_publish_log(publish_log, status, detail, external_pkg_dict):
+    publish_log.status = status
+    publish_log.details = json.dumps(detail)
+    publish_log.destination_identifier = external_pkg_dict.get('id')
+
+    return get_action('update_publish_log')({}, dict(publish_log.as_dict()))
