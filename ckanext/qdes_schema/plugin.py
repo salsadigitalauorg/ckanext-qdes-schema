@@ -18,6 +18,7 @@ from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_hel
 from collections import OrderedDict
 from pprint import pformat
 
+h = toolkit.h
 log = logging.getLogger(__name__)
 
 
@@ -86,6 +87,11 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         for resource in pkg_dict.get('resources', []):
             res_helpers.after_create_and_update(context, resource)
+
+        if request.endpoint == 'dataset.edit':
+            if h.dataset_has_published_to_external_schema(pkg_dict.get('id')):
+                url = h.url_for('qdes_schema.datasets_schema_validation', id=pkg_dict.get('id'))
+                h.flash_success('You have updated a dataset that is publicly available. Please go to the <a href="' + url +'">Publish tab</a> to validate the changes and publish to the relevant data service(s). This will ensure the metadata in updated in all systems.', True)
 
         return pkg_dict
 
