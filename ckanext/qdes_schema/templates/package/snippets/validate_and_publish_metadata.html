@@ -5,13 +5,13 @@
 
 {% if not is_public %}
   <div class="alert alert-info" role="alert">
-    <p>The dataset's visibility is currently set to "Private" and cannot be published. Please change the visibility setting to "Public before publishing."</p>
+    The dataset's visibility is currently set to "Private" and cannot be published. Please change the visibility setting to "Public before publishing."
   </div>
 {% endif %}
 
 {% if not is_official_public %}
   <div class="alert alert-info" role="alert">
-    <p>The dataset's classification and access restriction does not permit publishing. Only dataset’s with a classification of "OFFICIAL-PUBLIC" can be published.</p>
+    The dataset's classification and access restriction does not permit publishing. Only dataset’s with a classification of "OFFICIAL-PUBLIC" can be published.
   </div>
 {% endif %}
 
