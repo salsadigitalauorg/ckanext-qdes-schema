@@ -305,54 +305,53 @@ def append_migration_log(dataset, resource, action):
     migration_log.append(f'{dataset},"{resource}",{action}')
 
 
-def add_dataservice(resource, resource_match):
+def add_dataservice(resource_match):
     update_package = False
-     # Add data-qld dataservice to existing  data_services
-    if isinstance(resource.get('data_services', []), string_types):
-        existing_data_services = json.loads(resource.get('data_services', [])) or []
+    # Add data-qld dataservice to existing  data_services
+    if isinstance(resource_match.get('data_services', []), string_types):
+        existing_data_services = json.loads(resource_match.get('data_services', [])) or []
     else:
-        existing_data_services = resource.get('data_services', []) or []
+        existing_data_services = resource_match.get('data_services', []) or []
 
     if data_service.get('id') not in existing_data_services:
         existing_data_services.append(data_service.get('id'))
         resource_match['data_services'] = json.dumps(existing_data_services)
         update_package = True
         append_migration_log(dataset_name, resource_match.get('name', None),
-                                'Resource is a duplicate of existing QSpatial resource. New resource not created. Existing resource updated.')
+                             'Resource is a duplicate of existing QSpatial resource. New resource not created. Existing resource updated.')
     return update_package
 
 
 def add_new_resource_to_existing_package(dataset_name, existing_package, resource, row):
-    update_package = False
     # Create new resources
     new_resource = resource_mapping(resource, row)
     existing_package['resources'].append(new_resource)
-    update_package = True
     append_migration_log(dataset_name, new_resource.get('name', None), 'Resource added to existing QSpatial record.')
 
-    return update_package
+    return True
 
 
-def check_for_existing_package(dataset_name):
+def check_for_existing_package(dataset_name, package_dict):
     existing_package = None
     try:
-        update_package = False
+        update_existing_package = False
         existing_package = destination.action.package_show(id=dataset_name)
         # Package already exists so lets update it
         existing_identifiers = json.loads(existing_package.get('identifiers', [])) or []
         if row.get('URL') not in existing_identifiers:
             existing_identifiers.append(row.get('URL'))
             existing_package['identifiers'] = json.dumps(existing_identifiers)
-            update_package = True
+            update_existing_package = True
 
         if 'series' in package_dict['title'].lower():
-           
+
             # Create individual package for each resource that belong to above series dataset.
             if ('resources' in package_dict):
                 for resource in package_dict.get('resources'):
                     resource_name = munge.munge_title_to_name(resource.get('name'))
                     try:
                         existing_series_package = destination.action.package_show(id=resource_name)
+                        update_existing_series_package = False
                         # Find matching resources using resource name and URLs
                         resource_match = next(
                             (
@@ -360,15 +359,27 @@ def check_for_existing_package(dataset_name):
                                 if series_resource.get('name', None) == resource.get('name', None)
                                 # and helpers.fix_url(resource.get('url', '')) == json.loads(existing_resource.get('url', '[""]'))[0]
                             ), None)
-                        if resource_match and 'qldspatial.information.qld.gov.au' in resource.get('url', None):
-                                update_package = add_dataservice(resource, resource_match)
+                        if resource_match:
+                            if 'qldspatial.information.qld.gov.au' in resource.get('url', None):
+                                result = add_dataservice(resource_match)
+                                if result == True and update_existing_series_package == False:
+                                    update_existing_series_package = True
+                            elif resource_match.get('url', None) != resource.get('url', None):
+                                result = add_new_resource_to_existing_package(dataset_name, existing_series_package, resource, row)
+                                if result == True and update_existing_series_package == False:
+                                    update_existing_series_package = True
                         else:
                             #  If resource has 'metadata' in the name and a qspatial rest API url, do not create it
                             if 'metadata' in resource.get('name').lower() and 'qldspatial.information.qld.gov.au/catalogueadmin/rest/document?id=' in resource.get('url'):
                                 append_migration_log(dataset_name, resource.get('name', None),
-                                                        'Resource is a metadata XML of existing QSpatial record. Resource not created.')
+                                                     'Resource is a metadata XML of existing QSpatial record. Resource not created.')
                             else:
-                                update_package = add_new_resource_to_existing_package(dataset_name, existing_package, resource, row)
+                                result = add_new_resource_to_existing_package(dataset_name, existing_series_package, resource, row)
+                                if result == True and update_existing_series_package == False:
+                                    update_existing_series_package = True
+
+                        if update_existing_series_package == True:
+                            destination.action.package_update(**existing_series_package)
                         # Package already exists and key info has been updated so lets move on to the next
                         continue
                     except NotFound:
@@ -378,7 +389,7 @@ def check_for_existing_package(dataset_name):
                     #  If resource has 'metadata' in the name and a qspatial rest API url, do not create it
                     if 'metadata' in resource.get('name').lower() and 'qldspatial.information.qld.gov.au/catalogueadmin/rest/document?id=' in resource.get('url'):
                         append_migration_log(dataset_name, resource.get('name', None),
-                                                'Resource is a metadata XML of existing QSpatial record. Resource not created.')
+                                             'Resource is a metadata XML of existing QSpatial record. Resource not created.')
                     else:
                         # Create new package from series resource
                         new_series_package_dict = resource_to_dataset_mapping(resource, existing_package, existing_package, row)
@@ -399,22 +410,32 @@ def check_for_existing_package(dataset_name):
                         # and helpers.fix_url(resource.get('url', '')) == json.loads(existing_resource.get('url', '[""]'))[0]
                     ), None)
 
-                if resource_match and 'qldspatial.information.qld.gov.au' in resource.get('url', None):
-                   update_package = add_dataservice(resource, resource_match)
+                if resource_match:
+                    if 'qldspatial.information.qld.gov.au' in resource.get('url', None):
+                        result = add_dataservice(resource_match)
+                        if result == True and update_existing_package == False:
+                            update_existing_package = True
+                    elif resource_match.get('url', None) != resource.get('url', None):
+                        result = add_new_resource_to_existing_package(dataset_name, existing_package, resource, row)
+                        if result == True and update_existing_package == False:
+                            update_existing_package = True
                 else:
                     #  If resource has 'metadata' in the name and a qspatial rest API url, do not create it
                     if 'metadata' in resource.get('name').lower() and 'qldspatial.information.qld.gov.au/catalogueadmin/rest/document?id=' in resource.get('url'):
                         append_migration_log(dataset_name, resource.get('name', None),
-                                                'Resource is a metadata XML of existing QSpatial record. Resource not created.')
+                                             'Resource is a metadata XML of existing QSpatial record. Resource not created.')
                     else:
-                        update_package = add_new_resource_to_existing_package(dataset_name, existing_package, resource, row)
+                        result = add_new_resource_to_existing_package(dataset_name, existing_package, resource, row)
+                        if result == True and update_existing_package == False:
+                            update_existing_package = True
 
-        if update_package:
+        if update_existing_package:
             destination.action.package_update(**existing_package)
     except NotFound:
         existing_package = None
 
     return existing_package and isinstance(existing_package, dict)
+
 
 # Set the import source and destination.
 source = RemoteCKAN('https://www.data.qld.gov.au')
@@ -455,14 +476,14 @@ for row in csv_reader:
         continue
 
     dataset_name = source_url.split('/')[-1]
-
+    print('Fetching dataset: {}'.format(dataset_name))
     # Fetch package from Data.Qld.
     package_dict = []
     existing_package_found = False
     try:
         package_dict = source.action.package_show(id=dataset_name)
-        # package_dict = json.load(open(f'json_files/{dataset_name}.json','r'))
-        existing_package_found = check_for_existing_package(dataset_name)
+        # package_dict = json.load(open(f'json_files/{dataset_name}.json', 'r'))
+        existing_package_found = check_for_existing_package(dataset_name, package_dict)
     except Exception as e:
         print(f'Error fetching package {dataset_name}')
         append_error(dataset_name, str(e), source_url)
@@ -525,6 +546,8 @@ if error_log:
     print(pformat(error_log))
 
 if migration_log:
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
     with open('logs/{0}.csv'.format(datetime.now().strftime("%Y%m%d-%H%M%S")), 'w') as log_csv:
         for log in migration_log:
             log_csv.write(f'{log}\n')

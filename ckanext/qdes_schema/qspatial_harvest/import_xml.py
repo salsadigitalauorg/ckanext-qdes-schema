@@ -2,6 +2,7 @@ import glob
 import json
 import os
 import csv
+import pdb
 
 from ckanapi import RemoteCKAN
 from qspatial_object import QSpatialObject
@@ -35,6 +36,7 @@ def get_ckan_packages():
             # Bit of a hack bt easier then doing a regex
             identifier = file.replace('xml_files/', '').replace('.xml', '')
             csv_row = next((row for row in csv_rows if identifier in row.get('URL')), None)
+            print(f"Creating QSpatial object for {csv_row.get('Title')}")
             obj = QSpatialObject(file, csv_row, remoteCKAN, log_file, data_service, owner_org, True)
             ckan_packages.append(obj.get_ckan_package_dict())
 
@@ -45,6 +47,7 @@ def create_package(remoteCKAN, package):
     # print(pformat(package))
 
     try:
+        print(f"Creating CKAN package for {package.get('title', None)}")
         result = remoteCKAN.action.package_create(**package)
         package['id'] = result.get('id')
     except Exception as e:
@@ -122,6 +125,8 @@ def main():
                         distinct_resource_fields[field].append(resource.get(field)) if resource.get(field) not in distinct_resource_fields[field] else distinct_resource_fields[field]
 
             # pprint(package)
+            # Parent package is a series dataset with no resources so we need to remove them
+            package.pop('resources')
             create_package(remoteCKAN, package)
 
         # Create child packages with parent package id
