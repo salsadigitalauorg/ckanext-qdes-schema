@@ -10,6 +10,7 @@ from ckan import model
 from ckan.common import c
 from ckan.model.package_relationship import PackageRelationship
 from ckan.lib import helpers as core_helper
+from ckan.lib.helpers import render_datetime
 from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request, _
 from ckanext.qdes_schema.model import PublishLog
 from ckanext.qdes_schema.logic.helpers import relationship_helpers
@@ -486,5 +487,110 @@ def map_update_schedule(uri, schema):
 def dataset_has_published_to_external_schema(package_id):
     return PublishLog.dataset_has_published_to_external(package_id)
 
+
 def resource_has_published_to_external_schema(resource_id):
     return PublishLog.resource_has_published_to_external(resource_id)
+
+
+def get_distribution_naming(pkg, resource):
+    schema = h.scheming_get_dataset_schema(pkg.get('type'))
+
+    for field in schema.get('resource_fields', []):
+        if field.get('field_name') == 'format':
+            format_field = field
+            return h.scheming_choices_label(h.scheming_field_choices(format_field), resource.get('format')) + ' - ' + resource.get('name')
+
+    return resource.get('name')
+
+
+def get_last_success_publish_date(resource):
+    last_success_log = PublishLog.get_recent_resource_log(
+        resource.get('id'),
+        constants.PUBLISH_STATUS_SUCCESS,
+        [
+            constants.PUBLISH_ACTION_UPDATE,
+            constants.PUBLISH_ACTION_CREATE
+        ]
+    )
+
+    processed_date = None
+    if last_success_log:
+        processed_date = last_success_log.date_processed
+
+    return processed_date
+
+
+def get_publish_activities(pkg):
+    resource_publish_logs = []
+
+    for resource in pkg.get('resources'):
+        resource_publish_log = PublishLog.get_recent_resource_log(resource.get('id'))
+        if resource_publish_log:
+            # Get last success published date.
+            published_date = ''
+            unpublished_date = ''
+            date_format = '%d/%m/%Y %H:%M:%S'
+            processed_date = ''
+            processed_unpublished_date = ''
+            if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS:
+                processed_date = resource_publish_log.date_processed
+            elif resource_publish_log.status == constants.PUBLISH_STATUS_FAILED:
+                # If failed, get the last success published date.
+                processed_date = get_last_success_publish_date(resource)
+
+            # Get status.
+            status = 'Pending'
+            if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS and not resource_publish_log.action == constants.PUBLISH_ACTION_DELETE:
+                status = 'Published'
+
+                # Check if this need update.
+                metadata_modified = resource.get('metadata_modified', None)
+                if processed_date and metadata_modified:
+                    metadata_modified_date = datetime.datetime.strptime(metadata_modified, '%Y-%m-%dT%H:%M:%S.%f')
+
+                    if metadata_modified_date > resource_publish_log.date_processed:
+                        status = 'Needs republish'
+
+            if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS and resource_publish_log.action == constants.PUBLISH_ACTION_DELETE:
+                status = 'Unpublished'
+
+                # Get last published date.
+                processed_date = get_last_success_publish_date(resource)
+
+                # Get unpublished date.
+                processed_unpublished_date = resource_publish_log.date_processed
+
+            if resource_publish_log.status == constants.PUBLISH_STATUS_FAILED:
+                status = 'Publish error'
+
+            # Get portal.
+            portal = ''
+            if resource_publish_log.destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
+                portal = 'Opendata'
+            elif resource_publish_log.destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA:
+                portal = 'QSpatial'
+            elif resource_publish_log.destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
+                portal = 'SIR'
+
+            # Process the published date.
+            if processed_date:
+                offset = render_datetime(processed_date, date_format='%z')
+                published_date = render_datetime(processed_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
+
+            # Process the unpublished date.
+            if processed_unpublished_date:
+                offset = render_datetime(processed_unpublished_date, date_format='%z')
+                unpublished_date = render_datetime(processed_unpublished_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
+
+            data = {
+                'resource': resource,
+                'publish_log': resource_publish_log,
+                'portal': portal,
+                'distribution': get_distribution_naming(pkg, resource),
+                'status': status,
+                'published_date': published_date,
+                'unpublished_date': unpublished_date
+            }
+            resource_publish_logs.append(data)
+
+    return resource_publish_logs
