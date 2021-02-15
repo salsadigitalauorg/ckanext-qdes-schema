@@ -25,14 +25,6 @@
         </div>
         <div class="col-md-8">
           <div class="form-group">
-            {%- set schema = h.scheming_get_dataset_schema(pkg.type) -%}
-            {%- set ns = namespace() -%}
-            {%- for field in schema.resource_fields -%}
-              {% if field.field_name == 'format' %}
-                {%- set ns.format_field = field -%}
-              {% endif %}
-            {%- endfor -%}
-
             {% if not pkg.resources %}
               No distributions.
             {% endif %}
@@ -40,7 +32,7 @@
             {% for resource in pkg.resources %}
               <label class="no-colon">
                 <input class="resources" type="checkbox" name="resources" value="{{ resource.id }}" {{ 'checked="checked"' if resource.id in data['resources'] else '' }} />
-                {{ h.scheming_choices_label(h.scheming_field_choices(ns.format_field), resource.format) }} - {{ resource.name }}
+                {{ h.get_distribution_naming(pkg, resource) }}
               </label>
               {% if not loop.last %}
                 <br/>

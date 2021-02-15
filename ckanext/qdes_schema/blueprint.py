@@ -137,6 +137,9 @@ def datasets_schema_validation(id):
         if not extra_vars['pkg_errors'] and not extra_vars['res_errors'] and not extra_vars['publication_message']:
             extra_vars['valid'] = 1
 
+    # Load publish_log data.
+    extra_vars['publish_activities'] = helpers.get_publish_activities(pkg)
+
     return render('package/publish_metadata.html', extra_vars=extra_vars)
 
 

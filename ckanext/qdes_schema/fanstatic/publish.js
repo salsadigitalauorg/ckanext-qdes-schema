@@ -197,5 +197,12 @@
 
         // Init.
         toggleBtnOnOff(true);
+
+        // Prevent resubmit on refresh,
+        // this is not ideal but since the error/success msg
+        // is on different place than the flash, then this workaround needed.
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
     });
 })(jQuery)
