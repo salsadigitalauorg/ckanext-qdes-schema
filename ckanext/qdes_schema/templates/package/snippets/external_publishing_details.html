@@ -19,7 +19,7 @@
             <td>{{ publish_activity.distribution }}</td>
             <td>
               {{ publish_activity.status }}
-              {% if publish_activity.status == 'Publish error' %}
+              {% if 'error' in publish_activity.status%}
                 <details>
                   <summary><small>View errors</small></summary>
                   <small>
