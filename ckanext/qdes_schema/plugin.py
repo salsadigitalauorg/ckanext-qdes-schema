@@ -291,6 +291,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'map_update_schedule': helpers.map_update_schedule,
             'dataset_has_published_to_external_schema': helpers.dataset_has_published_to_external_schema,
             'resource_has_published_to_external_schema': helpers.resource_has_published_to_external_schema,
+            'get_publish_activities': helpers.get_publish_activities,
+            'get_distribution_naming': helpers.get_distribution_naming,
         }
 
     def get_multi_textarea_values(self, value):
