@@ -1,6 +1,15 @@
-<details class="row unpublish-wrapper" open>
-  <summary>Unpublish records from external portals</summary>
-  <form method="post" action="{{ h.url_for('qdes_schema.unpublish_external_dataset_resource', id=pkg.id) }}" novalidate>
+<article class="unpublish-wrapper">
+  <input id="unpublish-wrapper" type="checkbox" name="tabs" aria-controls="unpublish-wrapper-content" aria-expanded="true"
+         role="checkbox" tabindex="-1" checked>
+  <button class="acc-heading">
+    <label for="unpublish-wrapper" class="no-colon">
+      <span class="title">Unpublish records from external portals</span>
+      <span class="arrow"> <i></i></span>
+    </label>
+  </button>
+
+  <div class="collapsing-section" id="unpublish-wrapper-content">
+    <form method="post" action="{{ h.url_for('qdes_schema.unpublish_external_dataset_resource', id=pkg.id) }}" novalidate>
     <div class="row">
       <div class="col-md-4">
         <label for="unpublish-resource">
@@ -67,4 +76,5 @@
       </div>
     </div>
   </form>
-</details>
+  </div>
+</article>
