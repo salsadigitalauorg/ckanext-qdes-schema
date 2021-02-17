@@ -32,10 +32,12 @@
 
   <div class="no-selected-node-tree">
     <p class="form-group">
-      <strong>Existing {{ field.label_plural }}</strong><br/>
-      <em class="text-muted">
-        {{ field.no_selected_term|safe }}
-      </em>
+      <strong class="title">Existing {{ field.label_plural }}</strong><br/>
+      <small>
+        <em class="text-muted">
+          {{ field.no_selected_term|safe }}
+        </em>
+      </small>
     </p>
   </div>
 
