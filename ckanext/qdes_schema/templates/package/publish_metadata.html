@@ -14,4 +14,8 @@
         data=data, pkg_errors=pkg_errors, res_errors=res_errors, valid=valid,
         publication_message=publication_message
   -%}
+
+  {%-
+      snippet "package/snippets/external_publishing_details.html", publish_activities=publish_activities
+  -%}
 {% endblock %}

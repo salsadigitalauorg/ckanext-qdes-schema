@@ -1,0 +1,42 @@
+<details class="row validate-publish" open data-valid="{{ valid }}">
+  <summary>Publish activity</summary>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Portal</th>
+        <th>Distribution</th>
+        <th>Status</th>
+        <th>Published Date</th>
+        <th>Unpublished Date</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% if publish_activities %}
+        {% for publish_activity in publish_activities %}
+          <tr>
+            <td>{{ publish_activity.portal }}</td>
+            <td>{{ publish_activity.distribution }}</td>
+            <td>
+              {{ publish_activity.status }}
+              {% if publish_activity.status == 'Publish error' %}
+                <details>
+                  <summary><small>View errors</small></summary>
+                  <small>
+                    {{ publish_activity.publish_log.details }}
+                  </small>
+                </details>
+              {% endif %}
+            </td>
+            <td>{{ publish_activity.published_date }}</td>
+            <td>{{ publish_activity.unpublished_date }}</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="5"><em>No publish log data.</em></td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</details>

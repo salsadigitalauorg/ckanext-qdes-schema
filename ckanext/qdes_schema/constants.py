@@ -8,6 +8,7 @@ PUBLISH_STATUS_SUCCESS = 'success'
 PUBLISH_STATUS_FAILED = 'failed'
 PUBLISH_ACTION_CREATE = 'create'
 PUBLISH_ACTION_UPDATE = 'update'
+PUBLISH_ACTION_DELETE = 'delete'
 
 def get_key_name(schema):
     if schema == PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
