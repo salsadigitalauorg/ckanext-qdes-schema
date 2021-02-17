@@ -265,7 +265,10 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict={}, rece
     updated_external_resource_id = None
     if is_update and has_recent_log:
         recent_publish_log_detail = json.loads(recent_publish_log.details)
-        updated_external_resource_id = recent_publish_log_detail.get('external_resource_id')
+        updated_external_resource_id = recent_publish_log_detail.get('external_resource_id', None) or None
+
+        if not updated_external_resource_id:
+            has_recent_log = False
 
     # Load the schema.
     schema = scheming_helpers.scheming_get_dataset_schema(constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
