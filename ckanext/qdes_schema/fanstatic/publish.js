@@ -112,8 +112,7 @@
                 _onModalHidden: function (event) {
                     if (this.options.cancel) {
                         this.confirm();
-                    }
-                    else {
+                    } else {
                         this.modal.find('.btn-cancel').show();
                     }
                 },
@@ -142,7 +141,14 @@
         var $schemaEl = $validatePublishEl.find('#schema');
         var $validateBtnEl = $validatePublishEl.find('.validate');
         var $publishBtnEl = $validatePublishEl.find('.publish');
-        var isValid = $validatePublishEl.attr('data-valid') === "1";
+        var $infoEl = $validatePublishEl.find('.alert.alert-info');
+        var isPublic = $validatePublishEl.attr('data-public') === "1";
+        var isOfficialPublic = $validatePublishEl.attr('data-official-public') === "1";
+        var isQspatialHarvested = $validatePublishEl.attr('data-qspatial-harvested') === "1";
+        var isSeries = $validatePublishEl.attr('data-series') === "1";
+        var isSeriesParent = $validatePublishEl.attr('data-series-parent') === "1";
+        var isValid = $validatePublishEl.attr('data-valid') === "1" && isPublic && isOfficialPublic;
+        var isOpenDataSelected = $schemaEl.val() !== 'dataqld_dataset';
         var resourceChecked = function () {
             var checked = false
             $resourcesEl.each(function () {
@@ -153,10 +159,39 @@
 
             return checked;
         }
-        var toggleBtnOnOff = function (checkValid = false) {
+        var showInfoText = function (isPublic, isOfficialPublic) {
+            if ($schemaEl.val() !== 'none') {
+                if (!isPublic) {
+                    $infoEl.html('The dataset\'s visibility is currently set to "Private" and cannot be published. Please change the visibility setting to "Public before publishing."');
+                    $infoEl.show();
+
+                    return true;
+                } else if (!isOfficialPublic) {
+                    $infoEl.html('The dataset\'s classification and access restriction does not permit publishing. Only dataset’s with a classification of "OFFICIAL-PUBLIC" can be published.');
+                    $infoEl.show();
+
+                    return true;
+                } else if (isOpenDataSelected && isQspatialHarvested && isSeries) {
+                    if (isSeriesParent) {
+                        $infoEl.html('This series/collection distribution was originally sourced from QSpatial. Please publish any changes to QSpatial. The Data.QLD record will be automatically updated via QSpatial.');
+                    } else {
+                        $infoEl.html('This distribution is part of a series/collection that was originally sourced from QSpatial. Please publish any changes to QSpatial. The Data.QLD record will be automatically updated via QSpatial.');
+                    }
+
+                    $infoEl.show();
+
+                    return true;
+                }
+            } else {
+                $infoEl.hide();
+            }
+
+            return false;
+        }
+        var toggleBtnOnOff = function (isPublic, isOfficialPublic, checkValid = false) {
             if ($schemaEl.val() !== 'none' && resourceChecked()) {
                 // Enable button.
-                $validateBtnEl.removeAttr('disabled');
+                $validateBtnEl.attr('disabled', false);
             } else {
                 // Disable buttons.
                 $validateBtnEl.attr('disabled', true);
@@ -180,23 +215,27 @@
                     $validatePublishEl.find('.alert-success').remove();
                 }
             }
-        }
 
+            if (!isPublic || !isOfficialPublic || (isOpenDataSelected && isQspatialHarvested && isSeries)) {
+                // Disable buttons.
+                $validateBtnEl.attr('disabled', true);
+                $publishBtnEl.attr('disabled', true);
+            }
+        }
 
         // Listen on checkbox change event.
         $resourcesEl.on('change', function () {
-            toggleBtnOnOff();
+            toggleBtnOnOff(isPublic, isOfficialPublic);
         });
 
         // Listen to dropdown change event.
         $schemaEl.on('change', function () {
-            toggleBtnOnOff();
+            showInfoText(isPublic, isOfficialPublic);
+            toggleBtnOnOff(isPublic, isOfficialPublic);
         });
 
-        // Listen to cancel button.
-
         // Init.
-        toggleBtnOnOff(true);
+        toggleBtnOnOff(isPublic, isOfficialPublic, true);
 
         // Prevent resubmit on refresh,
         // this is not ideal but since the error/success msg
