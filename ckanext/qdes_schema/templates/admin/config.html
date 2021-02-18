@@ -5,32 +5,57 @@
 {% block admin_form %}
     {{ super() }}
 
+
     <fieldset>
-        <legend>Publishing Portals</legend>
+        {% set options = h.qdes_dataservice_choices() %}
+        <legend>Associate external systems to data services:</legend>
 
-        {{ form.input(
-            'ckanext.qdes_schema.publishing_portals.opendata',
-            id='field-ckanext.qdes_schema.publishing_portals.opendata',
-            label=_('Open Data/Data.Qld'),
-            placeholder='CKAN UUID of Open Data/Data.Qld data service',
-            value=data['ckanext.qdes_schema.publishing_portals.opendata'],
-            error=errors['ckanext.qdes_schema.publishing_portals.opendata']) }}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>External system</th>
+              <th>Data Service</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>QSpatial</td>
+              <td>
+                <select name="ckanext.qdes_schema.publishing_portals.qspatial" class="form-control">
+                  <option value="">Select a Data service</option>
 
-        {{ form.input(
-            'ckanext.qdes_schema.publishing_portals.qspatial',
-            id='field-ckanext.qdes_schema.publishing_portals.qspatial',
-            label=_('QSpatial'),
-            placeholder='CKAN UUID of QSpatial data service',
-            value=data['ckanext.qdes_schema.publishing_portals.qspatial'],
-            error=errors['ckanext.qdes_schema.publishing_portals.qspatial']) }}
+                  {% for option in options %}
+                    <option value="{{ option.value }}" {{ 'selected="selected"' if data['ckanext.qdes_schema.publishing_portals.qspatial'] == option.value else '' }}>{{ option.label }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Data.QLD</td>
+              <td>
+                <select name="ckanext.qdes_schema.publishing_portals.opendata" class="form-control">
+                  <option value="">Select a Data service</option>
 
-        {{ form.input(
-            'ckanext.qdes_schema.publishing_portals.sir',
-            id='field-ckanext.qdes_schema.publishing_portals.sir',
-            label=_('SIR'),
-            placeholder='CKAN UUID of SIR data service',
-            value=data['ckanext.qdes_schema.publishing_portals.sir'],
-            error=errors['ckanext.qdes_schema.publishing_portals.sir']) }}
+                  {% for option in options %}
+                    <option value="{{ option.value }}" {{ 'selected="selected"' if data['ckanext.qdes_schema.publishing_portals.opendata'] == option.value else '' }}>{{ option.label }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>SIR</td>
+              <td>
+                <select name="ckanext.qdes_schema.publishing_portals.sir" class="form-control">
+                  <option value="">Select a Data service</option>
+
+                  {% for option in options %}
+                    <option value="{{ option.value }}" {{ 'selected="selected"' if data['ckanext.qdes_schema.publishing_portals.sir'] == option.value else '' }}>{{ option.label }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
     </fieldset>
 
     {{ form.textarea(
