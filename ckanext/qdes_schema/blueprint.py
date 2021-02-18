@@ -97,6 +97,14 @@ def datasets_available(id):
 
 
 def datasets_schema_validation(id):
+    # Check the user has permission to clone the dataset
+    context = {
+        'model': model,
+        'user': c.user,
+        'auth_user_obj': c.userobj
+    }
+    toolkit.check_access('package_update', context, {'id': id})
+
     extra_vars = {}
     pkg = get_action('package_show')({}, {'id': id})
     pkg_validated = pkg.copy()
@@ -148,6 +156,14 @@ def datasets_schema_validation(id):
 
 
 def unpublish_external_dataset_resource(id):
+    # Check the user has permission to clone the dataset
+    context = {
+        'model': model,
+        'user': c.user,
+        'auth_user_obj': c.userobj
+    }
+    toolkit.check_access('package_update', context, {'id': id})
+
     if not request.method == 'POST':
         return
 
