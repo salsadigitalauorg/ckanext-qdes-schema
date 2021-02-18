@@ -123,7 +123,7 @@
       "required": true,
       "form_include_blank_choice": true,
       "label_plural": "topic or themes",
-      "no_selected_term": "No topics or theme have been added. Please use the interface above to select a <strong>Topic or theme.</strong>"
+      "no_selected_term": "No topics or themes have been added. Please use the interface above to select a <strong>Topic or theme.</strong>"
     },
     {
       "field_name": "tag_string",
