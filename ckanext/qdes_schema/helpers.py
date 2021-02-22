@@ -42,7 +42,7 @@ def get_current_datetime():
     return datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
 
 
-def qdes_dataservice_choices():
+def qdes_dataservice_choices(field=None):
     """
     Return choices for dataservice dropdown.
     """
