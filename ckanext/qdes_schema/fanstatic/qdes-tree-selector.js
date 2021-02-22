@@ -46,7 +46,7 @@
             });
 
             if (!heading) {
-                $row.append('<td><a class="btn btn-danger">Delete</a></td>');
+                $row.append('<td><a class="btn btn-danger btn-xs">Delete</a></td>');
                 $row.find('a.btn').data('data-item-json', item);
                 $table.find('tbody').append($row);
             } else {
