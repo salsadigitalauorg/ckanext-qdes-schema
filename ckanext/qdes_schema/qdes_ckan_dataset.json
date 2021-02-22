@@ -428,12 +428,18 @@
     {
       "field_name": "lineage_responsible_party",
       "label": "Responsible party",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_creator",
+      "preset": "qdes_secure_vocab_service_multi_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
       "display_group": "related and lineage",
       "display_property": "prov:wasAssociatedWith",
       "sub_heading": "lineage",
       "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
+        "data-module-key": "value",
+        "data-module-label": "name",
+        "data-module-minimum-input-length": 3,
+        "data-module-create-search-choice": true,
         "data-module-title": "title"
       }
     },
@@ -474,12 +480,12 @@
       "display_snippet": "text.html",
       "display_property": "dcterms:creator",
       "preset": "qdes_secure_vocab_service_autocomplete",
-      "vocabulary_service_name": "creator",
+      "vocabulary_service_name": "point-of-contact",
       "display_group": "contacts",
       "required": false,
       "form_attrs": {
         "data-module": "qdes_autocomplete",
-        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
         "data-module-key": "value",
         "data-module-label": "name",
         "data-module-minimum-input-length": 3,      
@@ -500,10 +506,10 @@
           "form_snippet": "text.html",
           "display_snippet": "qdes_secure_vocabulary_text.html",
           "display_property": "prov:agent",
-          "vocabulary_service_name": "the-party",
+          "vocabulary_service_name": "point-of-contact",
           "form_attrs": {
             "data-module": "qdes_autocomplete",
-            "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+            "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
             "data-module-key": "value",
             "data-module-label": "name",
             "data-module-minimum-input-length": 3,      
