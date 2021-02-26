@@ -307,6 +307,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_publish_activities': helpers.get_publish_activities,
             'get_distribution_naming': helpers.get_distribution_naming,
             'get_published_distributions': helpers.get_published_distributions,
+            'get_state_list': helpers.get_state_list,
         }
 
     def get_multi_textarea_values(self, value):
