@@ -59,3 +59,9 @@ def before_delete(context, resource, resources):
                 'resource_deleted': True,
                 'resources': resources,
             })
+
+            get_action('delete_invalid_uri')({}, {
+                'entity_type': 'resource',
+                'entity_id': res.get('id'),
+                'parent_entity_id': res.get('package_id')
+            })

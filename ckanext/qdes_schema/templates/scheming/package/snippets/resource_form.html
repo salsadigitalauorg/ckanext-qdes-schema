@@ -1,5 +1,7 @@
 {% extends 'package/snippets/resource_form.html' %}
 
+{% set is_published_to_external = data.id and h.resource_has_published_to_external_schema(data.id) %}
+
 {% block errors %}
   {%- if errors -%}
     {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
@@ -31,7 +33,7 @@
   {%- endif -%}
 
 
-  {% if data.id and h.resource_has_published_to_external_schema(data.id) %}
+  {% if is_published_to_external %}
     <div class="alert alert-info" role="alert">
       This distribution is publicly available and updates need to be manually published to all relevant data services via the Publish tab.
       <br/>
@@ -60,4 +62,26 @@
 
 {% block previous_button %}
   <a class="btn btn-default" href="{{h.url_for(dataset_type ~ '.edit', id=pkg_name)}}">{{ _('Previous') }}</a>
+{% endblock %}
+
+{% block delete_button %}
+  {% if is_published_to_external %}
+    <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#delete-modal">
+      {{ _('Delete') }}
+    </button>
+
+    <div class="modal fade in" id="delete-modal" style="text-align: left">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">WARNING : You are attempting to delete a dataset with distributions published on external systems. Please unpublish from external systems before deleting.</div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- else -%}
+    {{ super() }}
+  {%- endif -%}
+
 {% endblock %}

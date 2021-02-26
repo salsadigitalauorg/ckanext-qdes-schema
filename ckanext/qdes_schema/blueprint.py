@@ -37,7 +37,14 @@ def related_datasets(id_or_name):
 
         for relationship in all_relationships:
             if relationship.get('type') not in ['isPartOf', 'hasPart']:
-                related.append(relationship)
+                # Check for access, don't show to user if user has no permission
+                # Example, non logged-in user should not see delete package.
+                try:
+                    toolkit.check_access('package_show', {}, {'id': relationship.get('pkg_id')})
+                    related.append(relationship)
+                except (NotFound, NotAuthorized):
+                    # Let's continue to the next list.
+                    pass
 
         extra_vars = {
             'pkg_dict': pkg_dict,
@@ -86,9 +93,15 @@ def datasets_available(id):
         extra_vars['pkg_dict'] = dataservice
         datasets_available = []
         for dataset_id in dataservice_helpers.datasets_available_as_list(dataservice):
-            dataset = get_action('package_show')({}, {'id': dataset_id})
-            dataset_url = h.url_for('dataset.read', id=dataset_id)
-            datasets_available.append({'title': dataset.get('title', None), 'url': dataset_url})
+            try:
+                dataset = get_action('package_show')({}, {'id': dataset_id})
+                dataset_url = h.url_for('dataset.read', id=dataset_id)
+                dataset_title = dataset.get('title', None)
+                dataset_title = dataset_title + ' [Deleted]' if dataset.get('state') == 'deleted' else dataset_title
+                datasets_available.append({'title': dataset_title, 'url': dataset_url})
+            except (NotFound, NotAuthorized):
+                # Let's continue to the next list.
+                pass
 
         extra_vars['datasets_available'] = datasets_available
         return render('package/available_datasets.html', extra_vars=extra_vars)
