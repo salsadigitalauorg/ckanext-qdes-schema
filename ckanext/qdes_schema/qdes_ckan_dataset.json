@@ -642,12 +642,6 @@
       "field_name": "owner_org",
       "label": "Organization",
       "preset": "dataset_organization"
-    },
-    {
-      "field_name": "version",
-      "label": "Version",
-      "validators": "ignore_missing unicode package_version_validator",
-      "form_placeholder": "1.0"
     }
   ],
   "resource_fields": [
