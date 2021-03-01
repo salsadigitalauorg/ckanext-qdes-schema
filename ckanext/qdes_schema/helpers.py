@@ -606,3 +606,16 @@ def get_publish_activities(pkg):
 
 def get_published_distributions(pkg):
     return PublishLog.get_published_distributions(pkg)
+
+
+def get_state_list(field=None):
+    return [
+        {
+            'value': model.core.State.ACTIVE,
+            'label': model.core.State.ACTIVE
+        },
+        {
+            'value': model.core.State.DELETED,
+            'label': model.core.State.DELETED
+        }
+    ]
