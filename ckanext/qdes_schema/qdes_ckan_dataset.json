@@ -642,6 +642,13 @@
       "field_name": "owner_org",
       "label": "Organization",
       "preset": "dataset_organization"
+    },
+    {
+      "field_name": "state",
+      "label": "State",
+      "choices_helper": "get_state_list",
+      "preset": "select",
+      "form_snippet": "state_select.html"
     }
   ],
   "resource_fields": [

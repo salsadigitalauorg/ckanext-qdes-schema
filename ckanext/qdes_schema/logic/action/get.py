@@ -253,7 +253,7 @@ def all_relationships(context, id):
     """
     query_select_type = query_select_type.format(id, query_type_case)
 
-    query_select = """SELECT {0}, pr.comment, pr.state, pkg.id, pkg.title, pe."value" AS dataset_creation_date
+    query_select = """SELECT {0}, pr.comment, pr.state, pkg.id, pkg.title, pe."value" AS dataset_creation_date, pkg.state
         FROM package_relationship pr
 
         LEFT JOIN package pkg 
@@ -280,13 +280,16 @@ def all_relationships(context, id):
         cursor.execute(query_select)
         rows = cursor.fetchall()
         for row in rows:
+            pkg_title = row[4] or None
+            pkg_title = row[4] + ' [Deleted]' if pkg_title and row[6] == 'deleted' else pkg_title
             result.append({
                 'type': row[0] or None,
                 'comment': row[1] or None,
                 'state': row[2] or None,
                 'pkg_id': row[3] or None,
-                'pkg_title': row[4] or None,
+                'pkg_title': pkg_title,
                 'dataset_creation_date': row[5] or None,
+                'pkg_state': row[6] or None,
             })
     except (Exception, psycopg2.Error) as e:
         log.error(str(e))
