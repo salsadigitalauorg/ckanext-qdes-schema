@@ -102,7 +102,9 @@ def datasets_available(id):
             except (NotFound, NotAuthorized):
                 # Let's continue to the next list.
                 pass
-
+            except Exception as e:
+                log.error('datasets_available - Exception loading package ID {}'.format(dataset_id))
+                log.error(str(e))
         extra_vars['datasets_available'] = datasets_available
         return render('package/available_datasets.html', extra_vars=extra_vars)
     except (NotFound, NotAuthorized):
