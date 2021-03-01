@@ -86,10 +86,13 @@ def datasets_available(id):
         extra_vars['pkg_dict'] = dataservice
         datasets_available = []
         for dataset_id in dataservice_helpers.datasets_available_as_list(dataservice):
-            dataset = get_action('package_show')({}, {'id': dataset_id})
-            dataset_url = h.url_for('dataset.read', id=dataset_id)
-            datasets_available.append({'title': dataset.get('title', None), 'url': dataset_url})
-
+            try:
+                dataset = get_action('package_show')({}, {'id': dataset_id})
+                dataset_url = h.url_for('dataset.read', id=dataset_id)
+                datasets_available.append({'title': dataset.get('title', None), 'url': dataset_url})
+            except Exception as e:
+                log.error('datasets_available - Exception loading package ID {}'.format(dataset_id))
+                log.error(str(e))
         extra_vars['datasets_available'] = datasets_available
         return render('package/available_datasets.html', extra_vars=extra_vars)
     except (NotFound, NotAuthorized):
