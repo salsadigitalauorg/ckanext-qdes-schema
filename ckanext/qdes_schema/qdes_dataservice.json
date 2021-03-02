@@ -64,33 +64,6 @@
       "display_group": "description"
     },
     {
-      "field_name": "metadata_review_date",
-      "label": "Metadata review date",
-      "preset": "qdes_metadata_review_date",
-      "display_group": "description"
-    },
-    {
-      "field_name": "metadata_contact_point",
-      "label": "Metadata point of contact",
-      "display_property": "dcat:contactPoint",
-      "preset": "qdes_secure_vocab_service_autocomplete",
-      "vocabulary_service_name": "point-of-contact",
-      "display_group": "description",
-      "form_include_blank_choice": true,
-      "form_attrs": {
-        "data-module-title": "title"
-      }
-    },
-    {
-      "field_name": "url",
-      "label": "Source of record",
-      "form_placeholder": "http://example.com/dataset.json",
-      "display_property": "foaf:homepage",
-      "display_snippet": "link.html",
-      "display_group": "description",
-      "validators": "ignore_missing url_validator qdes_uri_validator"
-    },
-    {
       "field_name": "dataset_language",
       "label": "Service language",
       "display_property": "dcterms:language",
@@ -128,7 +101,7 @@
       "label": "Datasets available",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": null,
-      "display_group": "description"
+      "display_group": null
     },
     {
       "field_name": "standards",
@@ -219,7 +192,7 @@
       "field_name": "contact_point",
       "label": "Point of contact",
       "display_property": "dcat:contactPoint",
-      "display_group": "contacts",
+      "display_group": "Contacts and responsibilities",
       "required": true,
       "form_include_blank_choice": true
     },
@@ -227,14 +200,14 @@
       "field_name": "contact_publisher",
       "label": "Publisher",
       "display_property": "dcterms:publisher",
-      "display_group": "contacts",
+      "display_group": "Contacts and responsibilities",
       "required": true
     },
     {
       "field_name": "contact_creator",
       "label": "Creator",
       "display_property": "dcterms:creator",
-      "display_group": "contacts",
+      "display_group": "Contacts and responsibilities",
       "required": false
     },
     {
@@ -242,7 +215,7 @@
       "label": "Other responsible party",
       "display_property": "prov:qualifiedAttribution",
       "preset": "controlled_vocabulary_multi_group",
-      "display_group": "contacts",
+      "display_group": "Contacts and responsibilities",
       "field_group": [
         {
           "field_name": "the-party",
@@ -272,7 +245,7 @@
       "field_name": "classification_and_access_restrictions",
       "label": "Classification and access restrictions",
       "display_property": "dcterms:accessRights",
-      "display_group": "rights & licensing",
+      "display_group": "rights and licensing",
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "classification_and_access_restrictions",
       "form_attrs": {
@@ -287,7 +260,7 @@
       "label": "Rights statement",
       "form_snippet": "textarea.html",
       "display_property": "dcterms:rights",
-      "display_group": "rights & licensing",
+      "display_group": "rights and licensing",
       "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
     },
     {
@@ -309,12 +282,49 @@
       "form_snippet": "textarea.html",
       "display_property": "odrl:hasPolicy",
       "display_snippet": "qdes_text_url.html",
-      "display_group": "rights & licensing"
+      "display_group": "rights and licensing"
+    },
+    {
+      "field_name": "metadata_review_date",
+      "label": "Metadata review date",
+      "preset": "qdes_metadata_review_date",
+      "display_group": "Meta data life cycle"
+    },
+    {
+      "field_name": "metadata_contact_point",
+      "label": "Metadata point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
+      "display_group": "Meta data life cycle",
+      "form_include_blank_choice": true,
+      "form_attrs": {
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "url",
+      "label": "Source of record",
+      "form_placeholder": "http://example.com/dataset.json",
+      "display_property": "foaf:homepage",
+      "display_snippet": "link.html",
+      "display_group": "Meta data life cycle",
+      "validators": "ignore_missing url_validator qdes_uri_validator"
     },
     {
       "field_name": "owner_org",
       "label": "Organization",
-      "preset": "dataset_organization"
+      "preset": "dataset_organization",
+      "display_group": "Meta data life cycle"
+    },
+    {
+      "field_name": "state",
+      "label": "Visibility",
+      "choices_helper": "get_state_list",
+      "preset": "select",
+      "form_snippet": "state_select.html",
+      "display_group": "Meta data life cycle",
+      "required": true
     }
   ]
 }

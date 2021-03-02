@@ -1,5 +1,7 @@
 {% ckan_extends %}
 
+{% set is_published_to_external = data.id and h.dataset_has_published_to_external_schema(data.id) %}
+
 {% block stages %}
   {% if dataset_type != 'dataservice' and form_style == 'new' %}
     {{ h.snippet('package/snippets/stages.html', stages=stage) }}
@@ -30,7 +32,7 @@
   {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
 
 
-  {% if data.id and h.dataset_has_published_to_external_schema(data.id) %}
+  {% if is_published_to_external %}
     <div class="alert alert-info" role="alert">
       This dataset and its distributions are publicly available and updates need to be manually published to all relevant data services via the Publish tab.
       <br/><br/>
@@ -49,10 +51,33 @@
     {% endif %}
 
     {%- if field.display_group is not none and field.display_group != ns.display_group -%}
-        {%- set ns.display_group = field.display_group -%}
-        {%- if ns.display_group not in ['general'] -%}
-            <h2>{{ field.display_group|capitalize }}</h2>
+      {%- if dataset_type == 'dataset' -%}
+        <!-- We need a way to close the HTML element once the display_group changes  -->
+        {%- if ns.display_group is not none -%}
+              </div>
+            </article>
+          </section>
         {%- endif -%}
+        {%- if field.display_group not in ['general'] -%}
+          <section class="qg-accordion qg-dark-accordion" aria-label="Accordion Label">
+            <article class="display-group-{{field.display_group}}" >
+              <input id="display-group-{{field.display_group}}" type="checkbox" name="tabs"
+                     aria-controls="display-group-{{field.display_group}}-content" aria-expanded="false"
+                     role="checkbox" tabindex="-1" >
+              <button class="acc-heading" type="button">
+                <label for="display-group-{{field.display_group}}" class="no-colon">
+                  <span class="title">{{field.display_group|capitalize}}</span>
+                  <span class="arrow"><i></i></span>
+                </label>
+              </button>
+              <div class="collapsing-section" id="display-group-{{field.display_group}}-content">
+        {%- endif -%}
+      {%- else -%} 
+        {%- if field.display_group not in ['general'] -%}
+          <h2>{{ field.display_group|capitalize }}</h2>
+        {%- endif -%}
+      {%- endif -%}
+      {%- set ns.display_group = field.display_group -%}
     {%- endif -%}
 
     {%- if field.sub_heading is not none and field.sub_heading != ns.sub_heading -%}
@@ -84,7 +109,13 @@
       {{ super() }}
     {% endblock %}
     {% block delete_button %}
-      {{ super() }}
+      {% if is_published_to_external %}
+        <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#delete-modal">
+          {{ _('Delete') }}
+        </button>
+      {% else %}
+        {{ super() }}
+      {% endif %}
     {% endblock %}
     {% block save_button %}
       {% if dataset_type == 'dataset' %}
@@ -111,4 +142,17 @@
       {%- endif -%}
     {% endblock %}
   </div>
+
+  {% if is_published_to_external %}
+    <div class="modal fade in" id="delete-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">WARNING : You are attempting to delete a dataset with distributions published on external systems. Please unpublish from external systems before deleting.</div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
 {% endblock %}
