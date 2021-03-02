@@ -319,7 +319,7 @@
     },
     {
       "field_name": "state",
-      "label": "Visibility",
+      "label": "State",
       "choices_helper": "get_state_list",
       "preset": "select",
       "form_snippet": "state_select.html",
