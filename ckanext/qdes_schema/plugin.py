@@ -19,6 +19,7 @@ from collections import OrderedDict
 from pprint import pformat
 
 h = toolkit.h
+get_action = toolkit.get_action
 log = logging.getLogger(__name__)
 
 
@@ -200,24 +201,36 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         temporal_coverage_from = request.params.get('temporal_coverage_from', '') or ''
         temporal_coverage_to = request.params.get('temporal_coverage_to', '') or ''
 
-        # Clean up fq params from temporal start end.
-        search_params['fq'] = search_params['fq'].replace('temporal_coverage_from:"' + temporal_coverage_from + '"', '')
-        search_params['fq'] = search_params['fq'].replace('temporal_coverage_to:"' + temporal_coverage_to + '"', '')
+        if 'fq' in search_params:
+            # Clean up fq params from temporal start end.
+            search_params['fq'] = search_params['fq'].replace('temporal_coverage_from:"' + temporal_coverage_from + '"', '')
+            search_params['fq'] = search_params['fq'].replace('temporal_coverage_to:"' + temporal_coverage_to + '"', '')
 
-        if temporal_coverage_from and not temporal_coverage_to:
-            search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO *]'
+            if temporal_coverage_from and not temporal_coverage_to:
+                search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO *]'
 
-        if temporal_coverage_from and temporal_coverage_to:
-            # Need to make sure to use the last day of the selected month,
-            # otherwise solr will assume this is the first day.
-            to_date = temporal_coverage_to.split('-')
-            last_day = calendar.monthrange(int(to_date[0]), int(to_date[1]))[1]
-            temporal_coverage_to = temporal_coverage_to + '-' + str(last_day)
+            if temporal_coverage_from and temporal_coverage_to:
+                # Need to make sure to use the last day of the selected month,
+                # otherwise solr will assume this is the first day.
+                to_date = temporal_coverage_to.split('-')
+                last_day = calendar.monthrange(int(to_date[0]), int(to_date[1]))[1]
+                temporal_coverage_to = temporal_coverage_to + '-' + str(last_day)
 
-            search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
-            search_params['fq'] += '+temporal_end:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
+                search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
+                search_params['fq'] += '+temporal_end:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
 
         return search_params
+
+    def delete(self, pkg_dict):
+        get_action('delete_invalid_uri')({}, {
+            'entity_type': 'dataset',
+            'entity_id': pkg_dict.id,
+        })
+
+        get_action('delete_invalid_uri')({}, {
+            'entity_type': 'resource',
+            'parent_entity_id': pkg_dict.id,
+        })
 
     # IValidators
     def get_validators(self):
@@ -294,6 +307,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_publish_activities': helpers.get_publish_activities,
             'get_distribution_naming': helpers.get_distribution_naming,
             'get_published_distributions': helpers.get_published_distributions,
+            'get_state_list': helpers.get_state_list,
         }
 
     def get_multi_textarea_values(self, value):
