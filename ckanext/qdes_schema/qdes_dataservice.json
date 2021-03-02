@@ -314,7 +314,6 @@
     {
       "field_name": "owner_org",
       "label": "Organization",
-<<<<<<< HEAD
       "preset": "dataset_organization",
       "display_group": "Meta data life cycle"
     },
@@ -325,16 +324,6 @@
       "preset": "select",
       "form_snippet": "state_select.html",
       "display_group": "Meta data life cycle",
-=======
-      "preset": "dataset_organization"
-    },
-    {
-      "field_name": "state",
-      "label": "State",
-      "choices_helper": "get_state_list",
-      "preset": "select",
-      "form_snippet": "state_select.html",
->>>>>>> develop
       "required": true
     }
   ]
