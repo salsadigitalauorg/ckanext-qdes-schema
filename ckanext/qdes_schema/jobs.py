@@ -144,7 +144,7 @@ def unpublish_external_distribution(publish_log_id, user):
             )
 
     # Update activity stream.
-    _update_activity_schema(publish_log, package_dict, status, user)
+    _update_activity_schema(publish_log, package_dict, status, user, True)
 
     # Update publish log.
     _update_publish_log(publish_log, status, detail, external_pkg_dict)
@@ -352,7 +352,7 @@ def _get_vocab_label(dataset_type, field_type, field_name, uri):
     return ''
 
 
-def _update_activity_schema(publish_log, package_dict, status, user):
+def _update_activity_schema(publish_log, package_dict, status, user, unpublish=False):
     resource_name = ''
     resource_format = ''
     for resource in package_dict.get('resources', []):
@@ -365,7 +365,7 @@ def _update_activity_schema(publish_log, package_dict, status, user):
     toolkit.get_action('activity_create')(context, {
         'user_id': user,
         'object_id': publish_log.dataset_id,
-        'activity_type': 'publish external schema',
+        'activity_type': 'publish external schema' if not unpublish else 'unpublish external schema',
         'data': {
             'package': package_dict,
             'status': 'successfully' if status == constants.PUBLISH_STATUS_SUCCESS else 'unsuccessfully',
