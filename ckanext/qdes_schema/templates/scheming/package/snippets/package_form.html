@@ -90,6 +90,12 @@
         field=field, data=data, errors=errors, licenses=c.licenses,
         entity_type='dataset', object_type=dataset_type, invalid_uris=invalid_uris -%}
     {%- endif -%}
+    <!-- We need a way to close the HTML element for last field group so the action buttons etc are not included -->
+    {%- if dataset_type == 'dataset' and loop.last -%}
+          </div>
+        </article>
+      </section>
+    {%- endif -%}
   {%- endfor -%}
   {%- if 'resource_fields' not in schema -%}
     <!-- force controller to skip resource-editing step for this type -->
