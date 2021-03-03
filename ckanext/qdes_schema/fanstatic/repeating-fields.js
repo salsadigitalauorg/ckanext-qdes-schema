@@ -161,6 +161,11 @@ jQuery(document).ready(function () {
     jQuery(".repeating-field .form-control").blur();
     jQuery(".repeating-field [data-module='qdes_autocomplete']").change();
 
+    // For some reason, element within accordion not populate correctly.
+    jQuery(".qg-accordion input[type='checkbox']").change(function () {
+        jQuery(".repeating-field .form-control").blur();
+    });
+
     // jQuery('.repeating-field .form-control').not('[data-parent-field-name="related_resources"]').blur();
     // jQuery(".repeating-field [data-module='qdes_autocomplete']").not('[data-parent-field-name="related_resources"]').change();
 
