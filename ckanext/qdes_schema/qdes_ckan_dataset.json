@@ -31,16 +31,6 @@
       "validators": "ignore_missing qdes_uri_validator"
     },
     {
-      "field_name": "notes",
-      "label": "Description or abstract",
-      "form_snippet": "markdown.html",
-      "display_snippet": "markdown.html",
-      "form_placeholder": "eg. Some useful notes about the data",
-      "display_property": "dcterms:description",
-      "display_group": "description",
-      "required": true
-    },
-    {
       "field_name": "classification",
       "label": "General classification of dataset type",
       "display_property": "dcterms:type",
@@ -55,6 +45,16 @@
         "data-module-title": "title"
       },
       "form_include_blank_choice": true
+    },
+    {
+      "field_name": "notes",
+      "label": "Description or abstract",
+      "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
+      "form_placeholder": "eg. Some useful notes about the data",
+      "display_property": "dcterms:description",
+      "display_group": "description",
+      "required": true
     },
     {
       "field_name": "purpose",
@@ -73,30 +73,6 @@
       "display_snippet": "qdes_multi_markdown.html",
       "form_placeholder": "e.g. warnings",
       "display_group": "description"
-    },
-    {
-      "field_name": "metadata_review_date",
-      "label": "Metadata review date",
-      "preset": "qdes_metadata_review_date",
-      "display_group": "description"
-    },
-    {
-      "field_name": "metadata_contact_point",
-      "label": "Metadata point of contact",
-      "display_property": "dcat:contactPoint",
-      "preset": "qdes_secure_vocab_service_autocomplete",
-      "vocabulary_service_name": "point-of-contact",
-      "display_group": "description",
-      "form_include_blank_choice": true
-    },
-    {
-      "field_name": "url",
-      "label": "Source of record",
-      "form_placeholder": "http://example.com/dataset.json",
-      "display_property": "foaf:homepage",
-      "display_snippet": "link.html",
-      "display_group": "description",
-      "validators": "ignore_missing url_validator qdes_uri_validator"
     },
     {
       "field_name": "dataset_language",
@@ -191,7 +167,7 @@
     },
     {
       "field_name": "temporal_resolution_range",
-      "label": "Temporal resolution range",
+      "label": "Temporal resolution",
       "display_group": "temporal content",
       "display_property": "tempqdcat:temporalRange",
       "preset": "controlled_vocabulary_single_select",
@@ -449,8 +425,7 @@
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
       "validators": "ignore_missing qdes_uri_validator",
-      "display_group": "related and lineage",
-      "sub_heading": "lineage"
+      "display_group": "related and lineage"
     },
     {
       "field_name": "contact_point",
@@ -458,7 +433,7 @@
       "display_property": "dcat:contactPoint",
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
-      "display_group": "contacts",
+      "display_group": "contacts and responsibilities",
       "required": true
     },
     {
@@ -467,7 +442,7 @@
       "display_property": "dcterms:publisher",
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "contact_publisher",
-      "display_group": "contacts",
+      "display_group": "contacts and responsibilities",
       "required": true,
       "form_include_blank_choice": true,
       "form_attrs": {
@@ -481,14 +456,14 @@
       "display_property": "dcterms:creator",
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
-      "display_group": "contacts",
+      "display_group": "contacts and responsibilities",
       "required": false,
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
         "data-module-key": "value",
         "data-module-label": "name",
-        "data-module-minimum-input-length": 3,      
+        "data-module-minimum-input-length": 3,
         "data-module-create-search-choice": true,
         "data-module-title": "title"
       }
@@ -498,7 +473,7 @@
       "label": "Other responsible party",
       "display_property": "prov:qualifiedAttribution",
       "preset": "controlled_vocabulary_multi_group",
-      "display_group": "contacts",
+      "display_group": "contacts and responsibilities",
       "field_group": [
         {
           "field_name": "the-party",
@@ -512,7 +487,7 @@
             "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
             "data-module-key": "value",
             "data-module-label": "name",
-            "data-module-minimum-input-length": 3,      
+            "data-module-minimum-input-length": 3,
             "data-module-create-search-choice": true,
             "data-module-title": "title"
           }
@@ -536,7 +511,7 @@
       "field_name": "acknowledgements",
       "label": "Acknowledgements",
       "display_property": "qdcat:acknowledgements",
-      "display_group": "contacts",
+      "display_group": "contacts and responsibilities",
       "form_snippet": "textarea.html"
     },
     {
@@ -592,7 +567,7 @@
       "field_name": "classification_and_access_restrictions",
       "label": "Classification and access restrictions",
       "display_property": "dcterms:accessRights",
-      "display_group": "rights & licensing",
+      "display_group": "rights and licensing",
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "classification_and_access_restrictions",
       "form_attrs": {
@@ -607,7 +582,7 @@
       "label": "Rights statement",
       "form_snippet": "textarea.html",
       "display_property": "dcterms:rights",
-      "display_group": "rights & licensing",
+      "display_group": "rights and licensing",
       "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
     },
     {
@@ -616,7 +591,7 @@
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "license",
-      "display_group": "rights & licensing",
+      "display_group": "rights and licensing",
       "required": true,
       "form_include_blank_choice": true,
       "form_attrs": {
@@ -629,7 +604,7 @@
       "form_snippet": "textarea.html",
       "display_property": "odrl:hasPolicy",
       "display_snippet": "qdes_text_url.html",
-      "display_group": "rights & licensing"
+      "display_group": "rights and licensing"
     },
     {
       "field_name": "landing_page",
@@ -639,16 +614,42 @@
       "validators": "ignore_missing url_validator qdes_uri_validator"
     },
     {
+      "field_name": "metadata_review_date",
+      "label": "Metadata review date",
+      "preset": "qdes_metadata_review_date",
+      "display_group": "meta data life cycle"
+    },
+    {
+      "field_name": "metadata_contact_point",
+      "label": "Metadata point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
+      "display_group": "meta data life cycle",
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "url",
+      "label": "Source of record",
+      "form_placeholder": "http://example.com/dataset.json",
+      "display_property": "foaf:homepage",
+      "display_snippet": "link.html",
+      "display_group": "meta data life cycle",
+      "validators": "ignore_missing url_validator qdes_uri_validator"
+    },
+    {
       "field_name": "owner_org",
       "label": "Organization",
-      "preset": "dataset_organization"
+      "preset": "dataset_organization",
+      "display_group": "meta data life cycle"
     },
     {
       "field_name": "state",
       "label": "State",
       "choices_helper": "get_state_list",
       "preset": "select",
-      "form_snippet": "state_select.html"
+      "form_snippet": "state_select.html",
+      "display_group": "meta data life cycle"
     }
   ],
   "resource_fields": [
