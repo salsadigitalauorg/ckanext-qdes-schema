@@ -2,6 +2,7 @@ import ckan.logic as logic
 import ckan.plugins.toolkit as toolkit
 import ckanext.qdes_schema.constants as constants
 import ckanext.qdes_schema.jobs as jobs
+import json
 import re
 import datetime
 import logging
@@ -419,6 +420,28 @@ def schema_validate(extra_vars, pkg_validated, data):
                         'errors': resource_errors.get('resources')
                     })
 
+                # Only add validation error/success if the dataset is published.
+                if resource_has_published_to_external_schema(res.get('id'), data.get('schema')):
+                    if resource_errors.get('resources', None):
+                        get_action('create_publish_log')({}, {
+                            'dataset_id': res.get('package_id'),
+                            'resource_id': res.get('id'),
+                            'trigger': constants.PUBLISH_TRIGGER_MANUAL,
+                            'destination': data.get('schema'),
+                            'status': constants.PUBLISH_STATUS_VALIDATION_ERROR,
+                            'date_processed': datetime.datetime.utcnow(),
+                            'details': json.dumps({'validation_error': resource_errors.get('resources')})
+                        })
+                    else:
+                        get_action('create_publish_log')({}, {
+                            'dataset_id': res.get('package_id'),
+                            'resource_id': res.get('id'),
+                            'trigger': constants.PUBLISH_TRIGGER_MANUAL,
+                            'destination': data.get('schema'),
+                            'status': constants.PUBLISH_STATUS_VALIDATION_SUCCESS,
+                            'date_processed': datetime.datetime.utcnow()
+                        })
+
     extra_vars['pkg_errors'] = pkg_errors
     extra_vars['res_errors'] = res_errors
 
@@ -484,11 +507,11 @@ def map_update_schedule(uri, schema):
     return frequency_map.get(schema, {}).get(uri, '')
 
 
-def dataset_has_published_to_external_schema(package_id):
+def dataset_has_published_to_external_schema(package_id, schema=None):
     return PublishLog.has_published(package_id, 'dataset')
 
 
-def resource_has_published_to_external_schema(resource_id):
+def resource_has_published_to_external_schema(resource_id, schema=None):
     return PublishLog.has_published(resource_id, 'resource')
 
 
@@ -520,6 +543,62 @@ def get_last_success_publish_date(resource):
     return processed_date
 
 
+def resource_needs_republish(resource, pkg, publish_log):
+    res_metadata_modified = resource.get('metadata_modified', None)
+    if not res_metadata_modified:
+        return False
+
+    res_metadata_modified_date = datetime.datetime.strptime(res_metadata_modified, '%Y-%m-%dT%H:%M:%S.%f')
+    processed_date = publish_log.date_processed
+
+    # Determine if this the status is need republish.
+    if publish_log.date_processed and res_metadata_modified_date > processed_date:
+        return True
+
+    if publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
+        return True
+
+    if publish_log.status == constants.PUBLISH_STATUS_PENDING:
+        return False
+
+    return False
+
+
+def dataset_need_republish(pkg):
+    pkg_metadata_modified = pkg.get('metadata_modified', None)
+    if not pkg_metadata_modified:
+        return False
+
+    pkg_metadata_modified_date = datetime.datetime.strptime(pkg_metadata_modified, '%Y-%m-%dT%H:%M:%S.%f')
+
+    has_pending = False
+    has_updated_resource = False
+    most_recent_updated_resource = None
+    for resource in pkg.get('resources', []):
+        res_publish_log = PublishLog.get_recent_resource_log(resource.get('id'))
+        if not res_publish_log:
+            continue
+
+        if res_publish_log.date_processed:
+            if resource_needs_republish(resource, pkg, res_publish_log):
+               has_updated_resource = True
+
+        if res_publish_log.status == constants.PUBLISH_STATUS_PENDING:
+            has_pending = True
+
+        if res_publish_log.date_processed:
+            if not most_recent_updated_resource or most_recent_updated_resource < res_publish_log.date_processed:
+                most_recent_updated_resource = res_publish_log.date_processed
+        elif res_publish_log.date_created:
+            if not most_recent_updated_resource or most_recent_updated_resource < res_publish_log.date_created:
+                most_recent_updated_resource = res_publish_log.date_created
+
+    if not has_updated_resource and not has_pending and pkg_metadata_modified_date > most_recent_updated_resource:
+        return True
+
+    return False
+
+
 def get_publish_activities(pkg):
     resource_publish_logs = []
 
@@ -547,14 +626,6 @@ def get_publish_activities(pkg):
             if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS and not resource_publish_log.action == constants.PUBLISH_ACTION_DELETE:
                 status = 'Published'
 
-                # Check if this need update.
-                metadata_modified = resource.get('metadata_modified', None)
-                if processed_date and metadata_modified:
-                    metadata_modified_date = datetime.datetime.strptime(metadata_modified, '%Y-%m-%dT%H:%M:%S.%f')
-
-                    if metadata_modified_date > resource_publish_log.date_processed:
-                        status = 'Needs republish'
-
             if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS and resource_publish_log.action == constants.PUBLISH_ACTION_DELETE:
                 status = 'Unpublished'
 
@@ -570,6 +641,11 @@ def get_publish_activities(pkg):
                 else:
                     status = 'Publish error'
 
+            if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_ERROR:
+                status = 'Validation error'
+
+            if not resource_publish_log.status == constants.PUBLISH_STATUS_PENDING and (resource_needs_republish(resource, pkg, resource_publish_log) or dataset_need_republish(pkg)):
+                status = 'Needs republish'
 
             # Get portal.
             portal = ''

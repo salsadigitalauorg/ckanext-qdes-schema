@@ -41,7 +41,7 @@ class PublishLog(DomainObject):
     ]
 
     def __init__(self, dataset_id=None, resource_id=None, trigger=None, destination=None, destination_identifier=None,
-                 action=None, status=None, details=None):
+                 action=None, status=None, details=None, date_processed=None):
         self.dataset_id = dataset_id
         self.resource_id = resource_id
         self.trigger = trigger
@@ -50,6 +50,7 @@ class PublishLog(DomainObject):
         self.action = action
         self.status = status
         self.details = details
+        self.date_processed = date_processed
 
     @classmethod
     def get(cls, id):
