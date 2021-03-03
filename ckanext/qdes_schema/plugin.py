@@ -38,6 +38,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     # IConfigurable
     def configure(self, config):
         core_validator.object_id_validators['publish external schema'] = core_validator.package_id_exists
+        core_validator.object_id_validators['unpublish external schema'] = core_validator.package_id_exists
 
     # IClick
     def get_commands(self):
