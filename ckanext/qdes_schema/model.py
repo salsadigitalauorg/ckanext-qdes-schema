@@ -100,8 +100,10 @@ class PublishLog(DomainObject):
             .filter(cls.resource_id == publish_log.resource_id) \
             .filter(cls.action == constants.PUBLISH_ACTION_DELETE) \
             .filter(cls.status == constants.PUBLISH_STATUS_SUCCESS) \
-            .filter(cls.destination == destination) \
-            .filter(cls.date_processed > publish_log.date_processed)
+            .filter(cls.destination == destination)
+
+        if publish_log.date_processed:
+            query = query.filter(cls.date_processed > publish_log.date_processed)
 
         return query.first()
 
