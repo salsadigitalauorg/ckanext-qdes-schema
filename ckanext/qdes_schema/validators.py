@@ -249,6 +249,7 @@ def qdes_validate_geojson_spatial(key, flattened_data, errors, context):
     else:
         flattened_data[key] = ''
 
+
 def qdes_iso_8601_durations(key, flattened_data, errors, context):
     """
     Validate the value against iso 8601 duration.
@@ -256,7 +257,9 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
     has_error = False
 
     try:
-        result = re.split("(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?", flattened_data[key])
+        result = re.split(
+            "(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?",
+            flattened_data[key])
 
         for index, value in enumerate(result):
             if (index > 1) and (index < 10):
@@ -299,11 +302,12 @@ def qdes_validate_multi_groups(field, schema):
     return validator
 
 
-def qdes_validate_replace_relationship(value, context, package, data):
+def qdes_validate_duplicate_replaces_relationships(value, context, package_id, package_title, data):
     """
     Validate replaces relationship, a dataset version can only be replaced by one version.
     Example case: we have v1, v2 and v3,
     v1 is replaced by v2, then v3 should not be able to replace v1.
+    Two dataset can't replace the same dataset
     """
     relationship_type = value.get('relationship')
     if relationship_type == 'isReplacedBy' or relationship_type == 'replaces':
@@ -321,11 +325,11 @@ def qdes_validate_replace_relationship(value, context, package, data):
             target_title = target_dict.get('title')
             replaced_by_dataset_title = data.get(('title',), None)
 
-        elif relationship_type == 'isReplacedBy' and package and package.id:
+        elif relationship_type == 'isReplacedBy' and package_id:
             # This will happen when editor edit v1, and add relationship type 'isReplacedBy'.
             # Get the target id, in this example case, v1 information is available the current package dict.
-            target_id = package.id
-            target_title = package.title
+            target_id = package_id
+            target_title = package_title
             replaced_by_dataset_id = value.get('resource', {}).get('id', None)
             replaced_by_dataset_title = get_action('package_show')(context, {'id': replaced_by_dataset_id}).get('title')
 
@@ -334,11 +338,11 @@ def qdes_validate_replace_relationship(value, context, package, data):
             query = query.filter(model.PackageRelationship.object_package_id == target_id)
             query = query.filter(model.PackageRelationship.type == 'replaces')
 
-            if package:
+            if package_id:
                 # In case where we create a new dataset, new resource screen will be presented,
                 # at this stage the package and its relationship is already created,
                 # this filter will exclude the current dataset from the query.
-                query = query.filter(model.PackageRelationship.subject_package_id != package.id)
+                query = query.filter(model.PackageRelationship.subject_package_id != package_id)
 
             # Run the query.
             relationship = query.first()
@@ -381,20 +385,21 @@ def qdes_validate_related_resources(field, schema):
                             except toolkit.Invalid as e:
                                 errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
                     # Validates the dataset relationship to prevent circular references
-                    # If there is no package.id it must be a new dataset so there will not be any previous relationships
-                    package = context.get('package', None)
+                    # If there is no package_id it must be a new dataset so there will not be any previous relationships
+                    package_id = data.get(('id',), None)
+                    package_title = data.get(('title',), None)
                     dataset = toolkit.get_converter('json_or_string')(value)
-                    if package and package.id and dataset and isinstance(dataset, dict):
+                    if package_id and dataset and isinstance(dataset, dict):
                         dataset_id = dataset.get('resource', {}).get('id', None)
                         relationship_type = dataset.get('relationship', None)
                         try:
-                            qdes_validate_dataset_relationships(package.id, dataset_id, relationship_type, context)
+                            qdes_validate_circular_replaces_relationships(package_id, dataset_id, relationship_type, context)
                         except toolkit.Invalid as e:
-                            errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
+                            errors[key].append(toolkit._(e.error))
 
-                    validate_replace_relationship = qdes_validate_replace_relationship(value, context, package, data)
-                    if validate_replace_relationship:
-                        errors[key].append(toolkit._(validate_replace_relationship))
+                    duplicate_replaces_relationships = qdes_validate_duplicate_replaces_relationships(value, context, package_id, package_title, data)
+                    if duplicate_replaces_relationships:
+                        errors[key].append(toolkit._(duplicate_replaces_relationships))
 
     return validator
 
@@ -440,13 +445,13 @@ def qdes_validate_metadata_review_date(key, flattened_data, errors, context):
         log.error(str(e), exc_info=True)
 
 
-def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset_id, relationship_type, context):
+def qdes_validate_circular_replaces_relationships(current_dataset_id, relationship_dataset_id, relationship_type, context):
     """
     Validates the dataset relationship to prevent circular references
     """
     # Check the value of relationship_dataset_id first
     # in case it is a URI - if it is, exit early
-    data = {'url':relationship_dataset_id}
+    data = {'url': relationship_dataset_id}
     errors = {'url': []}
     toolkit.get_validator('url_validator')('url', data, errors, context)
     if len(errors['url']) == 0:
@@ -454,25 +459,49 @@ def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset
         return True
 
     try:
-        dataset_dict = toolkit.get_action('package_show')(context, {"id": relationship_dataset_id})
+        relationship_dataset = toolkit.get_action('package_show')(context, {"id": relationship_dataset_id})
+        relationship_dataset_title = relationship_dataset.get('title', None)
     except toolkit.ObjectNotFound:
         # Package does not exists so it must be a valid URI from external dataset
         return True
 
     if relationship_type in ['replaces']:
-        # This is to prevent circular relationships to happen
-        # Creating a relationship for Jim1 to replace Jim2
-        # Need to check if there is a relationship where Jim2 replaces Jim1
-        # Jim1.id = subject and Jim2.id = object
-        # Load any relationship where Jim2 is the subject Jim1 is object
+        # This is to prevent circular replace relationships
+        # Eg. If we are creating a relationship for DatasetA to replace DatasetC
+        # We need to check if there is a relationship where DatasetC replaces DatasetB and DatasetB replaces DatasetA
         #
         model = context['model']
-        query = model.Session.query(model.PackageRelationship)
-        query = query.filter(model.PackageRelationship.subject_package_id == relationship_dataset_id)
-        query = query.filter(model.PackageRelationship.object_package_id == current_dataset_id)
-        query = query.filter(model.PackageRelationship.type == relationship_type)
-        relationship = query.first()
-        if relationship:
-            raise toolkit.Invalid("Relationship type '{0}' already exists from dataset '{1}'".format(relationship_type, dataset_dict.get('title', None)))
+        dataset_chain = [relationship_dataset_id]
+        # Lets go down the chain and see if DatasetC replaces any datasets
+        for dataset_id in dataset_chain:
+            query = model.Session.query(model.PackageRelationship)
+            query = query.filter(model.PackageRelationship.subject_package_id == dataset_id)
+            query = query.filter(model.PackageRelationship.type == relationship_type)
+            relationship = query.first()
+            if relationship:
+                # Dataset replace relationship found eg. DatasetC replaces DatasetB or DatasetC replaces DatasetA or DatasetB replaces DatasetA
+                if relationship.object_package_id == current_dataset_id:
+                    # Dataset replaces current dataset eg. DatasetC replaces DatasetA or Dataset B replaces DatasetA
+                    # This is a circular reference!!!
+                    # Create message showing circular reference
+                    current_dataset = get_action('package_show')(context, {'id': current_dataset_id})
+                    current_dataset_url = h.url_for('dataset.read', id=current_dataset.get('name'))
+                    current_dataset_title = current_dataset.get('title', None)
+                    circular_references = [f'<a href="{current_dataset_url}">{current_dataset_title}</a>']
+
+                    for dataset_id in dataset_chain:
+                        subject_package = get_action('package_show')(context, {'id': dataset_id})
+                        subject_package_url = h.url_for('dataset.read', id=subject_package.get('name'))
+                        circular_references.append(f'<a href="{subject_package_url}">{subject_package.get("title", None)}</a>')
+
+                    circular_references.append(f'<a href="{current_dataset_url}">{current_dataset_title}</a>')
+                    circular_references_str = ' <i class="fa fa-long-arrow-right"></i> '.join(circular_references)
+
+                    raise toolkit.Invalid(
+                        f'{current_dataset_title} cannot replace {relationship_dataset_title}, '
+                        f'because this will create a circular relationship {circular_references_str}')
+                else:
+                    # Move down the chain and check if this dataset replaces another dataset eg. Does DatasetB or DatasetA have a replace relationship
+                    dataset_chain.append(relationship.object_package_id)
 
     return True
