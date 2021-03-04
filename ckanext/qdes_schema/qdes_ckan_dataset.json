@@ -649,7 +649,8 @@
       "choices_helper": "get_state_list",
       "preset": "select",
       "form_snippet": "state_select.html",
-      "display_group": "meta data life cycle"
+      "display_group": "meta data life cycle",
+      "form_restrict_choices_to": ["active", "deleted"]
     }
   ],
   "resource_fields": [
