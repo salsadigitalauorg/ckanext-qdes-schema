@@ -21,7 +21,7 @@
                 {% endif %}
             {% endif %}
 
-            <div data-repeater-item class="row{{ ' recommended-field' if field.recommended else '' }}">
+            <div data-repeater-item class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
                 <div class="col-xs-11">
                     {%
                         call form.input(
@@ -44,7 +44,6 @@
                     {% endcall %}
                 </div>
                 <div class="col-xs-1">
-                    <label class="invisible">&nbsp;</label>
                     <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
                 </div>
             </div>
