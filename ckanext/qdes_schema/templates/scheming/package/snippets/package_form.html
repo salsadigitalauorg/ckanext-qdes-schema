@@ -53,7 +53,7 @@
     {%- if field.display_group is not none and field.display_group != ns.display_group -%}
       {%- if dataset_type == 'dataset' -%}
         <!-- We need a way to close the HTML element once the display_group changes  -->
-        {%- if ns.display_group is not none -%}
+        {%- if ns.display_group is not none and ns.display_group not in ['general'] -%}
               </div>
             </article>
           </section>
