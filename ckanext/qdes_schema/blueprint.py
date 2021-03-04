@@ -36,7 +36,7 @@ def related_datasets(id_or_name):
         all_relationships = helpers.get_all_relationships(pkg_dict['id'])
 
         for relationship in all_relationships:
-            if relationship.get('type') not in ['isPartOf', 'hasPart']:
+            if relationship.get('type') not in ['Is Part Of', 'Has Part']:
                 # Check for access, don't show to user if user has no permission
                 # Example, non logged-in user should not see delete package.
                 try:

@@ -67,7 +67,7 @@ def qdes_relationship_types_choices(field):
     """
     def search_term_definition(terms, search_string):
         for term in terms:
-            if search_string.lower() in term['uri'].lower():
+            if search_string.lower() in term['label'].lower():
                 return term['title']
 
         return ''
@@ -116,7 +116,7 @@ def update_related_resources(context, pkg_dict, reconcile_relationships=False):
         reconcile_package_relationships(context, pkg_dict['id'], pkg_dict.get('related_resources', None))
 
     if pkg_dict.get('type') == 'dataset':
-        create_related_relationships(context, pkg_dict, 'series_or_collection', 'isPartOf')
+        create_related_relationships(context, pkg_dict, 'series_or_collection', 'Is Part Of')
         create_related_relationships(context, pkg_dict, 'related_datasets', 'unspecified relationship')
     elif pkg_dict.get('type') == 'dataservice':
         create_related_relationships(context, pkg_dict, 'related_services', 'unspecified relationship')
@@ -339,23 +339,23 @@ def get_series_relationship(package):
     is_part_of = []
     for relationship in relationships:
         type = relationship.get('type')
-        if type == 'hasPart':
+        if type == 'Has Part':
             has_part.append(relationship)
-        elif type == 'isPartOf':
+        elif type == 'Is Part Of':
             is_part_of.append(relationship)
 
-    return {'hasPart': has_part, 'isPartOf': is_part_of}
+    return {'Has Part': has_part, 'Is Part Of': is_part_of}
 
 
 def is_collection(series_relationship):
-    if series_relationship.get('hasPart'):
+    if series_relationship.get('Has Part'):
         return True
 
     return False
 
 
 def is_part_of_collection(series_relationship):
-    if series_relationship.get('isPartOf'):
+    if series_relationship.get('Is Part Of'):
         return True
 
     return False

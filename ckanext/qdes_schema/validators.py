@@ -306,14 +306,14 @@ def qdes_validate_replace_relationship(value, context, package, data):
     v1 is replaced by v2, then v3 should not be able to replace v1.
     """
     relationship_type = value.get('relationship')
-    if relationship_type == 'isReplacedBy' or relationship_type == 'replaces':
+    if relationship_type == 'Is Replaced By' or relationship_type == 'Replaces':
         model = context['model']
         query = model.Session.query(model.PackageRelationship)
         replaced_by_dataset_title = ''
         target_title = ''
         target_id = None
 
-        if relationship_type == 'replaces':
+        if relationship_type == 'Replaces':
             # This will happen when editor create/edit v3, and add relationship type 'replaces'.
             # Get the target id, in this example case, v1 information is available on value of the field.
             target_id = value.get('resource', {}).get('id', None)
@@ -321,7 +321,7 @@ def qdes_validate_replace_relationship(value, context, package, data):
             target_title = target_dict.get('title')
             replaced_by_dataset_title = data.get(('title',), None)
 
-        elif relationship_type == 'isReplacedBy' and package and package.id:
+        elif relationship_type == 'Is Replaced By' and package and package.id:
             # This will happen when editor edit v1, and add relationship type 'isReplacedBy'.
             # Get the target id, in this example case, v1 information is available the current package dict.
             target_id = package.id
@@ -332,7 +332,7 @@ def qdes_validate_replace_relationship(value, context, package, data):
         if target_id:
             # Let's add a query to filter 'replaces' that has object_package_id of the target.
             query = query.filter(model.PackageRelationship.object_package_id == target_id)
-            query = query.filter(model.PackageRelationship.type == 'replaces')
+            query = query.filter(model.PackageRelationship.type == 'Replaces')
 
             if package:
                 # In case where we create a new dataset, new resource screen will be presented,
@@ -459,7 +459,7 @@ def qdes_validate_dataset_relationships(current_dataset_id, relationship_dataset
         # Package does not exists so it must be a valid URI from external dataset
         return True
 
-    if relationship_type in ['replaces']:
+    if relationship_type in ['Replaces']:
         # This is to prevent circular relationships to happen
         # Creating a relationship for Jim1 to replace Jim2
         # Need to check if there is a relationship where Jim2 replaces Jim1
