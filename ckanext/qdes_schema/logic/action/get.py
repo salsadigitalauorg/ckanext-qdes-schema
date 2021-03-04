@@ -126,7 +126,7 @@ def all_successor_versions(context, id):
             return []
 
         # Load successor, this can be multiple items, let's use the index 0.
-        successor_version = list(item for item in relationships if item.get('type') == 'isReplacedBy')
+        successor_version = list(item for item in relationships if item.get('type') == 'Is Replaced By')
         if successor_version:
             return load_successor_versions([successor_version[0]] + data, successor_version[0].get('object'))
         else:
@@ -153,7 +153,7 @@ def all_predecessor_versions(context, id):
             return []
 
         # Load predecessor, this can be multiple items, let's use the index 0.
-        predecessor_version = list(item for item in relationships if item.get('type') == 'replaces')
+        predecessor_version = list(item for item in relationships if item.get('type') == 'Replaces')
         if predecessor_version:
             return load_predecessor_versions(data + [predecessor_version[0]], predecessor_version[0].get('object'))
         else:
