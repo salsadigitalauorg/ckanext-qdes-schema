@@ -17,7 +17,12 @@
       {% set parent_pkg = h.get_package_dict(parent.pkg_id) %}
       <p>
         <span class="pill small">Collection</span>
-        <a href="{{ h.url_for('dataset_read', id=parent_pkg.id) }}">{{ parent_pkg.title if parent_pkg.title else parent_pkg.name }}</a>
+        <a href="{{ h.url_for('dataset_read', id=parent_pkg.id) }}">
+          {{ parent_pkg.title if parent_pkg.title else parent_pkg.name }}
+          {%- if parent_pkg.state == 'deleted' %}
+           [DELETED]
+          {%- endif -%}
+        </a>
       </p>
       <p>
         {{ parent_pkg.notes|truncate(200) }}
