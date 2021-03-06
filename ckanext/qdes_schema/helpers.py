@@ -21,6 +21,7 @@ from pprint import pformat
 
 Session = model.Session
 log = logging.getLogger(__name__)
+h = toolkit.h
 
 
 def is_legacy_ckan():
@@ -284,7 +285,7 @@ def get_related_versions(id):
     except Exception as e:
         log.error(str(e))
 
-    return list(version for version in versions if version.get('state') != 'deleted')
+    return list(version for version in versions)
 
 
 def get_all_relationships(id):
@@ -703,3 +704,18 @@ def get_state_list(field=None):
             'label': model.core.State.PENDING
         }
     ]
+
+
+def get_pkg_title(name_or_id, pkg_dict=[]):
+    try:
+        if not pkg_dict:
+            pkg_dict = get_action('package_show')({}, {'name_or_id': name_or_id})
+
+        pkg_name = h.dataset_display_name(pkg_dict)
+
+        if pkg_dict.get('state') == model.core.State.DELETED:
+            return pkg_name + ' [DELETED]'
+
+        return pkg_name
+    except Exception as e:
+        return ''
