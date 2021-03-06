@@ -24,7 +24,7 @@
                 <div class="alert alert-danger">
                     This dataset replaces
                     <strong><a href="{{ h.url_for('dataset.read', id=superseded_version.id) }}">
-                        {{ superseded_version.title }}</a></strong>
+                        {{ h.get_pkg_title(superseded_version.id) }}</a></strong>
                     - please update the <strong>Publication status</strong> of that dataset to "superseded".
                 </div>
             {% endif %}

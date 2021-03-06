@@ -11,7 +11,8 @@ from ckanext.qdes_schema import blueprint, helpers, validators, auth
 from ckanext.qdes_schema.logic.action import (
     get,
     create,
-    update
+    update,
+    delete
 )
 from ckanext.relationships import helpers as ckanext_relationships_helpers
 from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_helpers, resource_helpers as res_helpers
@@ -309,6 +310,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_distribution_naming': helpers.get_distribution_naming,
             'get_published_distributions': helpers.get_published_distributions,
             'get_state_list': helpers.get_state_list,
+            'get_pkg_title': helpers.get_pkg_title,
         }
 
     def get_multi_textarea_values(self, value):
@@ -331,7 +333,9 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_all_predecessor_versions': get.all_predecessor_versions,
             'get_all_relationships': get.all_relationships,
             'create_publish_log': create.publish_log,
-            'update_publish_log': update.publish_log
+            'update_publish_log': update.publish_log,
+            'dataservice_purge': delete.dataservice_purge,
+            'dataset_purge': delete.dataset_purge
         }
 
     # IFacets
