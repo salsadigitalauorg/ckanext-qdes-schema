@@ -107,7 +107,9 @@ def qdes_relationship_types_choices(field):
 def update_related_resources(context, pkg_dict, reconcile_relationships=False):
     if reconcile_relationships:
         # Combine existing related_resources and new related_resources together
-        existing_related_resources = get_converter('json_or_string')(request.form.get('existing_related_resources', '')) or []
+        existing_related_resources = []
+        if request:
+            existing_related_resources = get_converter('json_or_string')(request.form.get('existing_related_resources', '')) or []
         new_related_resources = get_converter('json_or_string')(pkg_dict.get('related_resources', '')) or []
         combined_related_resources = existing_related_resources + new_related_resources
         pkg_dict['related_resources'] = h.dump_json(combined_related_resources)

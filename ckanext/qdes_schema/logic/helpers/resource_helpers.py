@@ -1,8 +1,10 @@
 import json
 import logging
 
+from ckan import model
 from ckan.logic import NotFound
 from ckan.plugins.toolkit import c, g, config, get_action, h
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -65,3 +67,18 @@ def before_delete(context, resource, resources):
                 'entity_id': res.get('id'),
                 'parent_entity_id': res.get('package_id')
             })
+
+
+def add_dataservice(context, dataservice_id, resource):
+    try:
+        data_services = []
+        if resource.get('data_services', None):
+            data_services = json.loads(resource.get('data_services', '[]'))
+
+        data_services.append(dataservice_id)
+        resource['data_services'] = json.dumps(list(set(data_services)))
+
+        get_action('resource_update')(context, resource)
+
+    except json.JSONDecodeError as e:
+        log.error(str(e))

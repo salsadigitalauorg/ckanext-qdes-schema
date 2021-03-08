@@ -11,10 +11,11 @@ import os
 import sys
 
 from ckan import model
-from ckan.common import c
+from ckan.common import c, config
 from ckan.lib.dictization.model_save import package_extras_save
 from ckan.plugins.toolkit import h
 from ckanapi import RemoteCKAN, ValidationError
+from ckanext.qdes_schema.logic.helpers import resource_helpers
 from ckanext.qdes_schema.model import PublishLog
 from datetime import datetime
 from pprint import pformat
@@ -34,9 +35,6 @@ def publish_to_external_catalogue(publish_log_id, user):
     if not publish_log:
         return
 
-    # Update publish_log processed time.
-    publish_log.date_processed = datetime.utcnow()
-
     package_dict = get_action('package_show')({}, {'id': publish_log.dataset_id})
 
     # Get the api ket.
@@ -45,39 +43,63 @@ def publish_to_external_catalogue(publish_log_id, user):
 
     # Get the dataset by name on external schema.
     detail, external_pkg_dict = _get_external_dataset(package_dict.get('name'), destination)
-    if external_pkg_dict:
-        publish_log.action = constants.PUBLISH_ACTION_UPDATE
-        publish_log.destination_identifier = external_pkg_dict.get('id')
 
-        # Load recent publish log for this dataset.
-        recent_publish_log = PublishLog.get_recent_resource_log(publish_log.resource_id,
-                                                                constants.PUBLISH_STATUS_SUCCESS)
+    try:
+        if external_pkg_dict:
+            publish_log.action = constants.PUBLISH_ACTION_UPDATE
+            publish_log.destination_identifier = external_pkg_dict.get('id')
 
-        # Update external dataset.
-        status, detail, external_pkg_dict = _update_external_dataset(
-            publish_log,
-            destination,
-            external_pkg_dict,
-            package_dict,
-            recent_publish_log
-        )
-    else:
-        publish_log.action = constants.PUBLISH_ACTION_CREATE
+            # Load recent publish log for this dataset.
+            recent_publish_log = PublishLog.get_recent_resource_log(publish_log.resource_id,
+                                                                    constants.PUBLISH_STATUS_SUCCESS)
 
-        # Create external dataset.
-        status, detail, external_pkg_dict = _create_external_dataset(publish_log, destination, package_dict)
+            # Update external dataset.
+            status, detail, external_pkg_dict = _update_external_dataset(
+                publish_log,
+                destination,
+                external_pkg_dict,
+                package_dict,
+                recent_publish_log
+            )
+        else:
+            publish_log.action = constants.PUBLISH_ACTION_CREATE
 
-    # Update dataset identifier.
-    if external_pkg_dict:
-        identifiers = json.loads(package_dict['identifiers']) if package_dict['identifiers'] else []
-        identifiers.append(destination.address + '/dataset/' + external_pkg_dict.get('id'))
-        identifiers = list(set(identifiers))
+            # Create external dataset.
+            status, detail, external_pkg_dict = _create_external_dataset(publish_log, destination, package_dict)
 
-        package = model.Package.get(package_dict.get('id'))
-        package.extras['identifiers'] = json.dumps(identifiers)
+        # Update dataset identifier.
+        if external_pkg_dict:
+            identifiers = json.loads(package_dict['identifiers']) if package_dict['identifiers'] else []
+            identifiers.append(destination.address + '/dataset/' + external_pkg_dict.get('id'))
+            identifiers = list(set(identifiers))
 
-        package.save()
-        model.Session.commit()
+            package = model.Package.get(package_dict.get('id'))
+            package.extras['identifiers'] = json.dumps(identifiers)
+
+            for resource in package.resources:
+                if resource.id == publish_log.resource_id:
+                    dataservice_id = config.get(constants.get_dataservice_id(publish_log.destination), '')
+                    resource.extras['data_services'] = '["' + dataservice_id + '"]'
+                    resource.save()
+
+            package.save()
+            model.Session.commit()
+
+            # Update resource dataservice.
+            resource = _get_selected_resource_to_publish(package_dict, publish_log)
+            dataservice_id = config.get(constants.get_dataservice_id(publish_log.destination), None)
+
+            if dataservice_id:
+                site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
+                context = {u'user': site_user[u'name']}
+                resource_helpers.add_dataservice(context, dataservice_id, resource[0])
+
+    except Exception as e:
+        status = constants.PUBLISH_STATUS_FAILED
+        detail = {'type': 'system_error', 'error': str(e)}
+
+    # Update publish_log processed time.
+    publish_log.date_processed = datetime.utcnow()
 
     # Update activity stream.
     _update_activity_schema(publish_log, package_dict, status, user)
@@ -92,9 +114,6 @@ def unpublish_external_distribution(publish_log_id, user):
 
     if not publish_log:
         return
-
-    # Update publish_log processed time.
-    publish_log.date_processed = datetime.utcnow()
 
     package_dict = get_action('package_show')({}, {'id': publish_log.dataset_id})
 
@@ -160,7 +179,7 @@ def _get_external_dataset(dataset_name, destination):
     try:
         package_dict = destination.action.package_show(name_or_id=dataset_name)
     except Exception as e:
-        detail = str(e)
+        detail = {'error': str(e)}
         package_dict = {}
 
     return detail, package_dict
