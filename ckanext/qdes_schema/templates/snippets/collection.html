@@ -13,7 +13,7 @@
     <h2>Collection</h2>
     <p>This dataset is part of the following collection:</p>
 
-    {% for parent in relationships.get('isPartOf') %}
+    {% for parent in relationships.get('Is Part Of') %}
       {% set parent_pkg = h.get_package_dict(parent.pkg_id) %}
       <p>
         <span class="pill small">Collection</span>
