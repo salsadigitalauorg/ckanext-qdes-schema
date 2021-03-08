@@ -25,7 +25,7 @@ class QDESSchemaResourcesPlugin(plugins.SingletonPlugin):
 
         if request and request.endpoint == 'resource.edit':
             if h.resource_has_published_to_external_schema(resource.get('id')):
-                url = h.url_for('qdes_schema.datasets_schema_validation', id=resource.get('id'))
+                url = h.url_for('qdes_schema.datasets_schema_validation', id=resource.get('package_id'))
                 h.flash_success('You have updated a dataset resource that is publicly available. Please go to the <a href="' + url +'">Publish tab</a> to validate the changes and publish to the relevant data service(s). This will ensure the metadata in updated in all systems.', True)
 
     def before_update(self, context, current, resource):
