@@ -162,6 +162,18 @@ def unpublish_external_distribution(publish_log_id, user):
                 True
             )
 
+        # Update resource dataservice.
+        resource = _get_selected_resource_to_publish(package_dict, publish_log)
+        dataservice_id = config.get(constants.get_dataservice_id(publish_log.destination), None)
+
+        if dataservice_id:
+            site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
+            context = {u'user': site_user[u'name']}
+            resource_helpers.add_dataservice(context, dataservice_id, resource[0], True)
+
+    # Update publish_log processed time.
+    publish_log.date_processed = datetime.utcnow()
+
     # Update activity stream.
     _update_activity_schema(publish_log, package_dict, status, user, True)
 

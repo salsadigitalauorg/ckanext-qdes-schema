@@ -69,16 +69,21 @@ def before_delete(context, resource, resources):
             })
 
 
-def add_dataservice(context, dataservice_id, resource):
+def add_dataservice(context, dataservice_id, resource, remove=False):
     try:
         data_services = []
         if resource.get('data_services', None):
             data_services = json.loads(resource.get('data_services', '[]'))
 
-        data_services.append(dataservice_id)
-        resource['data_services'] = json.dumps(list(set(data_services)))
+        if remove and dataservice_id in data_services:
+            data_services.remove(dataservice_id)
+        else:
+            data_services.append(dataservice_id)
+
+        resource['data_services'] = json.dumps(list(set(data_services))) if data_services else ''
 
         get_action('resource_update')(context, resource)
 
     except json.JSONDecodeError as e:
         log.error(str(e))
+

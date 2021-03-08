@@ -688,6 +688,15 @@ def get_published_distributions(pkg):
     return PublishLog.get_published_distributions(pkg)
 
 
+def is_unpublish_pending(publish_log_id):
+    publish_log = PublishLog.get(publish_log_id)
+
+    if publish_log:
+        return publish_log.status == constants.PUBLISH_STATUS_PENDING
+
+    return True
+
+
 def get_state_list(field=None):
     return [
         {
