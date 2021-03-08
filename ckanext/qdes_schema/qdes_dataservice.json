@@ -269,7 +269,7 @@
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "license",
-      "display_group": "rights & licensing",
+      "display_group": "rights and licensing",
       "recommended": true,
       "form_include_blank_choice": true,
       "form_attrs": {
