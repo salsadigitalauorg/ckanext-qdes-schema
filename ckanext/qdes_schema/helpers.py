@@ -477,7 +477,9 @@ def schema_publish(pkg, data):
 
 
 def load_activity_with_full_data(activity_id):
-    return get_action(u'activity_show')({}, {u'id': activity_id, u'include_data': True})
+    site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
+    context = {u'user': site_user[u'name']}
+    return get_action(u'activity_show')(context, {u'id': activity_id, u'include_data': True})
 
 
 def map_update_schedule(uri, schema):
