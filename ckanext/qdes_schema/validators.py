@@ -317,15 +317,14 @@ def qdes_validate_replace_relationship(value, context, package, data):
             # This will happen when editor create/edit v3, and add relationship type 'replaces'.
             # Get the target id, in this example case, v1 information is available on value of the field.
             target_id = value.get('resource', {}).get('id', None)
-            target_dict = get_action('package_show')(context, {'id': target_id})
-            target_title = target_dict.get('title')
+            target_title = h.get_pkg_title(target_id)
             replaced_by_dataset_title = data.get(('title',), None)
 
         elif relationship_type == 'Is Replaced By' and package and package.id:
             # This will happen when editor edit v1, and add relationship type 'isReplacedBy'.
             # Get the target id, in this example case, v1 information is available the current package dict.
             target_id = package.id
-            target_title = package.title
+            target_title = h.get_pkg_title(target_id, package)
             replaced_by_dataset_id = value.get('resource', {}).get('id', None)
             replaced_by_dataset_title = get_action('package_show')(context, {'id': replaced_by_dataset_id}).get('title')
 
@@ -344,7 +343,7 @@ def qdes_validate_replace_relationship(value, context, package, data):
             relationship = query.first()
             if relationship:
                 # Get the dataset that already replaced the target.
-                current_dataset_replacement_title = get_action('package_show')(context, {'id': relationship.subject_package_id}).get('title')
+                current_dataset_replacement_title = h.get_pkg_title(relationship.subject_package_id)
                 current_dataset_replacement_url = h.url_for('dataset.read', id=relationship.subject_package_id)
 
                 # If the v1 already has relationship, then throw an error.

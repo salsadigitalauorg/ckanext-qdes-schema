@@ -96,8 +96,7 @@ def datasets_available(id):
             try:
                 dataset = get_action('package_show')({}, {'id': dataset_id})
                 dataset_url = h.url_for('dataset.read', id=dataset_id)
-                dataset_title = dataset.get('title', None)
-                dataset_title = dataset_title + ' [Deleted]' if dataset.get('state') == 'deleted' else dataset_title
+                dataset_title = h.get_pkg_title(dataset_id, dataset)
                 datasets_available.append({'title': dataset_title, 'url': dataset_url})
             except (NotFound, NotAuthorized):
                 # Let's continue to the next list.

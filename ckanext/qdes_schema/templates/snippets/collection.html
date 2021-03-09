@@ -18,10 +18,7 @@
       <p>
         <span class="pill small">Collection</span>
         <a href="{{ h.url_for('dataset_read', id=parent_pkg.id) }}">
-          {{ parent_pkg.title if parent_pkg.title else parent_pkg.name }}
-          {%- if parent_pkg.state == 'deleted' %}
-           [DELETED]
-          {%- endif -%}
+          {{ h.get_pkg_title(parent_pkg.id, parent_pkg) }}
         </a>
       </p>
       <p>
