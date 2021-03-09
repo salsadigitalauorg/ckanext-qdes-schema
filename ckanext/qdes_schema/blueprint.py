@@ -164,7 +164,11 @@ def datasets_schema_validation(id):
     extra_vars['publish_activities'] = helpers.get_publish_activities(pkg)
 
     # Process unpublish status.
-    extra_vars['unpublish'] = request.params.get('unpublish', None)
+    unpublish_log_id = request.params.get('unpublish', None)
+    if unpublish_log_id == "0":
+        extra_vars['unpublish'] = 0
+    elif unpublish_log_id:
+        extra_vars['unpublish'] = 1 if helpers.is_unpublish_pending(unpublish_log_id) else ''
 
     return render('package/publish_metadata.html', extra_vars=extra_vars)
 
@@ -207,7 +211,7 @@ def unpublish_external_dataset_resource(id):
         # Add to job worker queue.
         if publish_log:
             toolkit.enqueue_job(jobs.unpublish_external_distribution, [publish_log.id, c.user])
-            unpublish = 1
+            unpublish = publish_log.id
 
     except Exception as e:
         log.error(str(e))

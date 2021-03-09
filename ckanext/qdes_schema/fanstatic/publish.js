@@ -162,12 +162,12 @@
         var showInfoText = function (isPublic, isOfficialPublic) {
             if ($schemaEl.val() !== 'none') {
                 if (!isPublic) {
-                    $infoEl.html('The dataset\'s visibility is currently set to "Private" and cannot be published. Please change the visibility setting to "Public before publishing."');
+                    $infoEl.html('The dataset\'s visibility is currently set to "Private" and cannot be published. Please change the visibility setting to "Public" before publishing.');
                     $infoEl.show();
 
                     return true;
                 } else if (!isOfficialPublic) {
-                    $infoEl.html('The dataset\'s classification and access restriction does not permit publishing. Only dataset’s with a classification of "OFFICIAL-PUBLIC" can be published.');
+                    $infoEl.html('The dataset\'s classification and access restriction does not permit publishing. Only datasets with a classification of "OFFICIAL-PUBLIC" can be published.');
                     $infoEl.show();
 
                     return true;
