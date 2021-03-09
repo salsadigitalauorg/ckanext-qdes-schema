@@ -12,6 +12,7 @@ from pprint import pformat
 
 log = logging.getLogger(__name__)
 _check_access = toolkit.check_access
+h = toolkit.h
 
 
 def dataservice(context, name):
@@ -280,8 +281,7 @@ def all_relationships(context, id):
         cursor.execute(query_select)
         rows = cursor.fetchall()
         for row in rows:
-            pkg_title = row[4] or None
-            pkg_title = row[4] + ' [Deleted]' if pkg_title and row[6] == 'deleted' else pkg_title
+            pkg_title = h.get_pkg_title(row[3])
             result.append({
                 'type': row[0] or None,
                 'comment': row[1] or None,
