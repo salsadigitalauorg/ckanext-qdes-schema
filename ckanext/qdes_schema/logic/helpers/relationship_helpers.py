@@ -60,7 +60,7 @@ def get_superseded_versions(package_id, versions):
 
     try:
         for relationship in toolkit.h.get_subject_package_relationship_objects(package_id):
-            if relationship['type'] == 'replaces':
+            if relationship['type'] == 'Replaces':
                 superseded_dataset_id = relationship['object']
                 break
 
