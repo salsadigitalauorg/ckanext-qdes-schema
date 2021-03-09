@@ -9,7 +9,7 @@ def get_collection_ids(pkg):
     ids = []
     series_relationships = h.get_series_relationship(pkg)
 
-    for relationship in series_relationships.get('isPartOf'):
+    for relationship in series_relationships.get('Is Part Of'):
         ids.append(relationship.get('pkg_id'))
 
     return ids

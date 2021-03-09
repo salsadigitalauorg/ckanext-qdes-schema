@@ -36,7 +36,7 @@ def related_datasets(id_or_name):
         all_relationships = helpers.get_all_relationships(pkg_dict['id'])
 
         for relationship in all_relationships:
-            if relationship.get('type') not in ['isPartOf', 'hasPart']:
+            if relationship.get('type') not in ['Is Part Of', 'Has Part']:
                 # Check for access, don't show to user if user has no permission
                 # Example, non logged-in user should not see delete package.
                 try:
@@ -96,8 +96,7 @@ def datasets_available(id):
             try:
                 dataset = get_action('package_show')({}, {'id': dataset_id})
                 dataset_url = h.url_for('dataset.read', id=dataset_id)
-                dataset_title = dataset.get('title', None)
-                dataset_title = dataset_title + ' [Deleted]' if dataset.get('state') == 'deleted' else dataset_title
+                dataset_title = h.get_pkg_title(dataset_id, dataset)
                 datasets_available.append({'title': dataset_title, 'url': dataset_url})
             except (NotFound, NotAuthorized):
                 # Let's continue to the next list.
