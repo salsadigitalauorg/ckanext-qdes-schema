@@ -3,6 +3,7 @@ import logging
 
 from ckan.logic import NotFound
 from ckan.plugins.toolkit import c, g, config, get_action, h
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -65,3 +66,20 @@ def before_delete(context, resource, resources):
                 'entity_id': res.get('id'),
                 'parent_entity_id': res.get('package_id')
             })
+
+
+def delete_resource_dataservice(context, dataservice_id, datasets_available):
+    for dataset_id in datasets_available:
+        pkg_dict = get_action('package_show')(context, {'id': dataset_id})
+
+        for resource in pkg_dict.get('resources', []):
+            if dataservice_id in resource.get('data_services'):
+                try:
+                    data_services = json.loads(resource.get('data_services'))
+                    data_services.remove(dataservice_id)
+
+                    resource['data_services'] = json.dumps(data_services)
+
+                    get_action('resource_update')(context, resource)
+                except json.JSONDecodeError as e:
+                    log.error(str(e))

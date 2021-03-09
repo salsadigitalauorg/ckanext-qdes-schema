@@ -310,23 +310,22 @@ def qdes_validate_duplicate_replaces_relationships(value, context, package_id, p
     Two dataset can't replace the same dataset
     """
     relationship_type = value.get('relationship')
-    if relationship_type == 'isReplacedBy' or relationship_type == 'replaces':
+    if relationship_type == 'Is Replaced By' or relationship_type == 'Replaces':
         model = context['model']
         query = model.Session.query(model.PackageRelationship)
         replaced_by_dataset_title = ''
         target_title = ''
         target_id = None
 
-        if relationship_type == 'replaces':
+        if relationship_type == 'Replaces':
             # This will happen when editor create/edit v3, and add relationship type 'replaces'.
             # Get the target id, in this example case, v1 information is available on value of the field.
             target_id = value.get('resource', {}).get('id', None)
-            target_dict = get_action('package_show')(context, {'id': target_id})
-            target_title = target_dict.get('title')
+            target_title = h.get_pkg_title(target_id)
             replaced_by_dataset_title = data.get(('title',), None)
 
-        elif relationship_type == 'isReplacedBy' and package_id:
-            # This will happen when editor edit v1, and add relationship type 'isReplacedBy'.
+        elif relationship_type == 'Is Replaced By' and package_id:
+            # This will happen when editor edit v1, and add relationship type 'Is Replaced By'.
             # Get the target id, in this example case, v1 information is available the current package dict.
             target_id = package_id
             target_title = package_title
@@ -336,7 +335,7 @@ def qdes_validate_duplicate_replaces_relationships(value, context, package_id, p
         if target_id:
             # Let's add a query to filter 'replaces' that has object_package_id of the target.
             query = query.filter(model.PackageRelationship.object_package_id == target_id)
-            query = query.filter(model.PackageRelationship.type == 'replaces')
+            query = query.filter(model.PackageRelationship.type == 'Replaces')
 
             if package_id:
                 # In case where we create a new dataset, new resource screen will be presented,
@@ -348,7 +347,7 @@ def qdes_validate_duplicate_replaces_relationships(value, context, package_id, p
             relationship = query.first()
             if relationship:
                 # Get the dataset that already replaced the target.
-                current_dataset_replacement_title = get_action('package_show')(context, {'id': relationship.subject_package_id}).get('title')
+                current_dataset_replacement_title = h.get_pkg_title(relationship.subject_package_id)
                 current_dataset_replacement_url = h.url_for('dataset.read', id=relationship.subject_package_id)
 
                 # If the v1 already has relationship, then throw an error.
@@ -465,7 +464,7 @@ def qdes_validate_circular_replaces_relationships(current_dataset_id, relationsh
         # Package does not exists so it must be a valid URI from external dataset
         return True
 
-    if relationship_type in ['replaces']:
+    if relationship_type in ['Replaces']:
         # This is to prevent circular replace relationships
         # Eg. If we are creating a relationship for DatasetA to replace DatasetC
         # We need to check if there is a relationship where DatasetC replaces DatasetB and DatasetB replaces DatasetA
