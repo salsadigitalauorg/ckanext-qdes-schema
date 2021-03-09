@@ -12,6 +12,7 @@ PUBLISH_ACTION_CREATE = 'create'
 PUBLISH_ACTION_UPDATE = 'update'
 PUBLISH_ACTION_DELETE = 'delete'
 
+
 def get_key_name(schema):
     if schema == PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
         return 'DATA_QLD_API_KEY'
@@ -21,6 +22,7 @@ def get_key_name(schema):
         return 'SIR_API_KEY'
 
     return ''
+
 
 def get_owner_org(schema):
     if schema == PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
@@ -32,6 +34,7 @@ def get_owner_org(schema):
 
     return ''
 
+
 def get_external_schema_url(schema):
     if schema == PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
         return 'DATA_QLD_URL'
@@ -39,5 +42,16 @@ def get_external_schema_url(schema):
         return 'QSPATIAL_URL'
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return 'SIR_URL'
+
+    return ''
+
+
+def get_dataservice_id(schema):
+    if schema == PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
+        return 'ckanext.qdes_schema.publishing_portals.opendata'
+    elif schema == PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA:
+        return 'ckanext.qdes_schema.publishing_portals.qspatial'
+    elif schema == PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
+        return 'ckanext.qdes_schema.publishing_portals.sir'
 
     return ''
