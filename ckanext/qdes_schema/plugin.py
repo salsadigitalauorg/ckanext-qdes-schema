@@ -311,6 +311,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_published_distributions': helpers.get_published_distributions,
             'get_state_list': helpers.get_state_list,
             'get_pkg_title': helpers.get_pkg_title,
+            'get_collection_parent_title': relationship_helpers.get_collection_parent_title,
         }
 
     def get_multi_textarea_values(self, value):
