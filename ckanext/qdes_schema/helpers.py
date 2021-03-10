@@ -312,7 +312,10 @@ def get_default_map_zoom():
 
 
 def get_package_dict(id):
-    return get_action('package_show')({}, {'id': id})
+    try:
+        return get_action('package_show')({}, {'id': id})
+    except Exception as e:
+        log.error(str(e))
 
 
 def get_invalid_uris(entity_id, pkg_dict):
