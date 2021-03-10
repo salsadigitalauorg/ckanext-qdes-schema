@@ -87,7 +87,7 @@
                 <tr>
                     <td>
                         {% set resource = relationship.object if relationship.object else relationship.comment %}
-                        {% set title = relationship.title if relationship.object else relationship.comment %}
+                        {% set title = h.get_pkg_title(relationship.object) if relationship.object else relationship.comment %}
                         {{ title }}
                     </td>
                     <td>{{ relationship.type }}</td>
