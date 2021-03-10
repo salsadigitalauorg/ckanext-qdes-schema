@@ -32,6 +32,14 @@
                   {%- endif -%}
                 </td>
               </tr>
+
+              {%- if field.field_name == 'publication_status' -%}
+                <tr>
+                  <td colspan="2">
+                    {%- snippet 'package/snippets/lifecycle.html', pkg_dict=pkg_dict, field=field -%}
+                  </td>
+                </tr>
+              {%- endif -%}
             {%- endif -%}
           {%- endfor -%}
         {% endblock %}
