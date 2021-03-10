@@ -2,7 +2,7 @@ import ckan.plugins.toolkit as toolkit
 import json
 import logging
 
-from ckan.model import PackageRelationship, Session
+from ckan.model import Package, PackageRelationship, Session
 
 log = logging.getLogger(__name__)
 
@@ -97,5 +97,23 @@ def get_existing_relationship(subject_package_id, object_package_id, type):
             .filter(PackageRelationship.object_package_id == object_package_id) \
             .filter(PackageRelationship.type == type) \
             .first()
+    except Exception as e:
+        log.error(str(e))
+
+
+def get_collection_parent_title(pkg_id):
+    """
+    Could use a `package_show` action call with context `ignore_auth` set to True, but
+    unsure what knock-on effect that has, so using a Package query here
+    :param id:
+    :return:
+    """
+    try:
+        collection_parent = Session.query(Package.title, Package.state) \
+            .filter(Package.id == pkg_id) \
+            .first()
+        if collection_parent:
+            suffix = ' [{}]'.format(toolkit._('Deleted')) if collection_parent.state == 'deleted' else ''
+            return '{0}{1}'.format(collection_parent.title, suffix)
     except Exception as e:
         log.error(str(e))

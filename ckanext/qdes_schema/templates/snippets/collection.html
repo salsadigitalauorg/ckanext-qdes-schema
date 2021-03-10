@@ -14,15 +14,19 @@
     <p>This dataset is part of the following collection:</p>
 
     {% for parent in relationships.get('Is Part Of') %}
-      {% set parent_pkg = h.get_package_dict(parent.pkg_id) %}
       <p>
         <span class="pill small">Collection</span>
-        <a href="{{ h.url_for('dataset_read', id=parent_pkg.id) }}">
-          {{ h.get_pkg_title(parent_pkg.id, parent_pkg) }}
-        </a>
-      </p>
-      <p>
-        {{ parent_pkg.notes|truncate(200) }}
+        {% set parent_pkg = h.get_package_dict(parent.pkg_id) %}
+        {% if parent_pkg %}
+            <a href="{{ h.url_for('dataset_read', id=parent_pkg.id) }}">
+              {{ parent.pkg_title }}
+            </a>
+          </p>
+          <p>
+            {{ parent_pkg.notes|truncate(200) }}
+        {% else %}
+          {{ h.get_collection_parent_title(parent.pkg_id) }}
+        {% endif %}
       </p>
     {% endfor %}
   </div>
