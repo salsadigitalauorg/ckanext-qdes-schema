@@ -1,0 +1,34 @@
+<section class="qg-accordion qg-dark-accordion">
+  <article class="lifecycle">
+    <input id="lifecycle" type="checkbox" name="tabs" aria-controls="lifecycle-content" aria-expanded="true"
+           role="checkbox" tabindex="-1">
+    <button class="acc-heading">
+      <label for="lifecycle" class="no-colon">
+        <span class="title">{{ _('View life cycle (history)') }}</span>
+        <span class="arrow"> <i></i></span>
+      </label>
+    </button>
+
+    <div class="collapsing-section" id="lifecycle-content">
+        {% set choices = h.scheming_field_choices(field) %}
+        {% for history in h.get_publication_status_history(pkg_dict['id']) %}
+          <small>
+              <strong>Date:</strong> {{ history['date'] }}
+              <br>
+              <strong>Publication status:</strong>
+              {# temporary generation of labels from URI or from a lookup list if the URIs are from BFO #}
+              {% set label = history['publication_status'].split('/')[-1] %}
+              {% if label is not none %}
+                  <a href="{{ history['publication_status'] }}">{{ h.scheming_choices_label(
+                      choices,
+                      history['publication_status']) }}</a>
+              {% else %}
+                {# if we really can't generate a sensible label, just use the whole URI #}
+                <a href="{{ history['publication_status'] }}">{{ history['publication_status'] }}</a>
+              {% endif %}
+          </small>
+          <br/>
+        {% endfor %}
+    </div>
+  </article>
+</section>
