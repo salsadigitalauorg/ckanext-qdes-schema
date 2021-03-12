@@ -652,7 +652,9 @@ def get_publish_activities(pkg):
             if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_ERROR:
                 status = 'Validation error'
 
-            if not resource_publish_log.status == constants.PUBLISH_STATUS_PENDING and (resource_needs_republish(resource, pkg, resource_publish_log) or dataset_need_republish(pkg)):
+            if not resource_publish_log.status == constants.PUBLISH_STATUS_PENDING \
+                    and not resource_publish_log.action == constants.PUBLISH_ACTION_DELETE \
+                    and (resource_needs_republish(resource, pkg, resource_publish_log) or dataset_need_republish(pkg)):
                 status = 'Needs republish'
 
             # Get portal.
