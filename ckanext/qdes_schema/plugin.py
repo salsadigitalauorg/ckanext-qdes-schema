@@ -92,7 +92,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         if request and request.endpoint == 'dataset.edit':
             if h.dataset_has_published_to_external_schema(pkg_dict.get('id')):
                 url = h.url_for('qdes_schema.datasets_schema_validation', id=pkg_dict.get('id'))
-                h.flash_success('You have updated a dataset that is publicly available. Please go to the <a href="' + url +'">Publish tab</a> to validate the changes and publish to the relevant data service(s). This will ensure the metadata is updated in all systems.', True)
+                h.flash_success('You have updated a dataset that is publicly available. Please go to the <a href="' + url +
+                                '">Publish tab</a> to validate the changes and publish to the relevant data service(s). This will ensure the metadata is updated in all systems.', True)
 
         return pkg_dict
 
@@ -399,6 +400,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     # IAuthFunctions
     def get_auth_functions(self):
         return {
+            'package_show': auth.package_show,
             'package_create': auth.package_create,
             'package_update': auth.package_update,
             'package_patch': auth.package_patch,
