@@ -2,6 +2,8 @@ import ckan.authz as authz
 import ckan.plugins.toolkit as toolkit
 import logging
 
+from ckan.logic.auth import get_package_object
+
 _ = toolkit._
 log = logging.getLogger(__name__)
 
@@ -23,6 +25,22 @@ def user_can_manage_dataservices(next_auth, context, data_dict=None):
         return {'success': False, 'msg': _('User not authorized to perform action')}
 
     return next_auth(context, data_dict)
+
+
+@toolkit.chained_auth_function
+def package_show(next_auth, context, data_dict):
+    result = next_auth(context, data_dict)
+
+    if not result.get('success', False):
+        # Check to see if the dataset is private
+        package = get_package_object(context, data_dict)
+        if package and package.private:
+            # Make sure the call is coming from dataset view instead of api view
+            if toolkit.get_endpoint()[0] == 'dataset':
+                toolkit.abort(403, 'Record not accessible')
+
+    # return default ckan package_show auth result
+    return result
 
 
 @toolkit.chained_auth_function
