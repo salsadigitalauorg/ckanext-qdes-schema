@@ -6,6 +6,7 @@ import json
 import re
 import datetime
 import logging
+import os
 
 from ckan import model
 from ckan.common import c
@@ -676,6 +677,12 @@ def get_publish_activities(pkg):
                 offset = render_datetime(processed_unpublished_date, date_format='%z')
                 unpublished_date = render_datetime(processed_unpublished_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
 
+            # Get detail.
+            try:
+                details = json.loads(resource_publish_log.details)
+            except Exception as e:
+                details = []
+
             data = {
                 'resource': resource,
                 'publish_log': resource_publish_log,
@@ -683,7 +690,8 @@ def get_publish_activities(pkg):
                 'distribution': get_distribution_naming(pkg, resource),
                 'status': status,
                 'published_date': published_date,
-                'unpublished_date': unpublished_date
+                'unpublished_date': unpublished_date,
+                'details': details
             }
             resource_publish_logs.append(data)
 
@@ -737,3 +745,11 @@ def get_pkg_title(name_or_id, pkg_dict=[]):
         return pkg_name
     except Exception as e:
         return ''
+
+
+def get_external_distribution_url(schema, external_dataset_id, external_distribution_id):
+    if schema == constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
+        domain = os.getenv(constants.get_external_schema_url(schema))
+        return domain + '/dataset/' + external_dataset_id + '/resource/' + external_distribution_id
+
+    return ''
