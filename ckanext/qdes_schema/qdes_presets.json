@@ -120,6 +120,7 @@
         "form_snippet": "qdes_multi_group.html",
         "display_snippet": "qdes_multi_group.html",
         "validators": "ignore_missing qdes_validate_related_resources",
+        "help_text": "Add a related resource when the nature of the relationship is specified",
         "field_group": [
           {
             "field_name": "resource",
