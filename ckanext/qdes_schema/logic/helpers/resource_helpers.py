@@ -42,7 +42,7 @@ def before_update(context, current, resource):
             data_services_removed.append(current_dt)
 
     if data_services_removed:
-        pkg_dict = get_action('package_show')({}, {'id': current.get('package_id')})
+        pkg_dict = get_action('package_show')(context, {'id': current.get('package_id')})
         resources = pkg_dict.get('resources')
         for res in resources:
             if res.get('id') == resource.get('id'):
