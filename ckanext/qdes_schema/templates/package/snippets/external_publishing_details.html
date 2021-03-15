@@ -26,7 +26,15 @@
         {% for publish_activity in publish_activities %}
           <tr>
             <td>{{ publish_activity.portal }}</td>
-            <td>{{ publish_activity.distribution }}</td>
+            <td>
+              {% if publish_activity.status == 'Published' %}
+                <a href="{{ h.get_external_distribution_url(publish_activity.publish_log.destination, publish_activity.publish_log.destination_identifier, publish_activity.details.external_resource_id) }}" target="_blank">
+                  {{ publish_activity.distribution }}
+                </a>
+              {% else %}
+                {{ publish_activity.distribution }}
+              {% endif %}
+            </td>
             <td>
               {{ publish_activity.status }}
               {% if 'error' in publish_activity.status %}
