@@ -366,6 +366,7 @@ def qdes_validate_related_resources(field, schema):
     """
 
     def validator(key, data, errors, context):
+        model = context['model']
         key_data = data.get(key)
         field_groups = field.get('field_group')
         if key_data and field_groups:
@@ -383,6 +384,7 @@ def qdes_validate_related_resources(field, schema):
                                 qdes_validate_related_dataset([field_value], context)
                             except toolkit.Invalid as e:
                                 errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
+
                     # Validates the dataset relationship to prevent circular references
                     # If there is no package_id it must be a new dataset so there will not be any previous relationships
                     package_id = data.get(('id',), None)
@@ -392,6 +394,9 @@ def qdes_validate_related_resources(field, schema):
                         dataset_id = dataset.get('resource', {}).get('id', None)
                         relationship_type = dataset.get('relationship', None)
                         try:
+                            if not relationship_type in model.PackageRelationship.get_forward_types():
+                                raise toolkit.Invalid(toolkit._('Only forward relationship is accepted'))
+
                             qdes_validate_circular_replaces_relationships(package_id, dataset_id, relationship_type, context)
                         except toolkit.Invalid as e:
                             errors[key].append(toolkit._(e.error))
