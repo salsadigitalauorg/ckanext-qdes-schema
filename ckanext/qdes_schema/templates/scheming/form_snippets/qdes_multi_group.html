@@ -14,6 +14,8 @@
 
 <div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="select">
     <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
+    {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
+
     {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ')|safe }}</span>{% endif %}
     <div id="{{ 'field-' + field.field_name }}" data-repeater-list="{{ field.field_name }}">
 
@@ -68,7 +70,6 @@
     classes=ns.field_classes,
     )
 %}
-    {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
 {% endcall %}
 {# END: The actual form field the multiple values will be captured & submitted in #}
 

@@ -28,7 +28,8 @@
       "form_snippet": "qdes_multi_text.html",
       "form_placeholder": "doi:10.25901/5e3ba30f141b7",
       "display_group": "general",
-      "validators": "ignore_missing qdes_uri_validator"
+      "validators": "ignore_missing qdes_uri_validator",
+      "help_text": "Add any unique identifiers associated with the dataset. Input is a URI."
     },
     {
       "field_name": "classification",
@@ -148,7 +149,8 @@
       "preset": "date",
       "validators": "qdes_temporal_start_end_date",
       "display_group": "temporal content",
-      "sub_heading": "temporal coverage"
+      "sub_heading": "temporal coverage",
+      "sub_heading_help_text": "The start and end date of the dataset"
     },
     {
       "field_name": "temporal_end",
@@ -163,7 +165,8 @@
       "field_name": "temporal_precision_spacing",
       "label": "Time precision or spacing",
       "preset": "iso_8601_durations",
-      "display_group": "temporal content"
+      "display_group": "temporal content",
+      "display_group_help_text": "Minimum time period resolvable in the dataset"
     },
     {
       "field_name": "temporal_resolution_range",
@@ -187,7 +190,8 @@
       },
       "display_property": "dcterms:spatial",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "help_text": "The geographical area covered by the dataset"
     },
     {
       "field_name": "spatial_lower_left",
@@ -196,7 +200,8 @@
       "validators": "ignore_missing qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "qdcat:lowerLeft",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "help_text": "Bounding box of spatial region covered by the dataset in GeoJSON"
     },
     {
       "field_name": "spatial_upper_right",
@@ -205,7 +210,8 @@
       "validators": "ignore_missing qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "qdcat:upperRight",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "help_text": "Bounding box of spatial region covered by the dataset in GeoJSON"
     },
     {
       "field_name": "spatial_centroid",
@@ -214,7 +220,8 @@
       "validators": "ignore_missing qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "dcat:centroid",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "help_text": "Centroid of spatial region covered by the dataset in GeoJSON"
     },
     {
       "field_name": "spatial_geometry",
@@ -223,14 +230,16 @@
       "validators": "ignore_missing qdes_validate_geojson_polygon",
       "display_property": "qdcat:asGeoJSON",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "help_text": "Spatial region covered by the dataset as a polygon in GeoJSON"
     },
     {
       "field_name": "spatial_content_resolution",
       "label": "Spatial resolution in meters",
       "validators": "ignore_missing qdes_validate_decimal",
       "display_property": "dcat:spatialResolutionInMeters",
-      "display_group": "spatial content"
+      "display_group": "spatial content",
+      "help_text": "The minimum spatial separation resolvable in a dataset, measured in meters."
     },
     {
       "field_name": "spatial",
@@ -358,7 +367,8 @@
     {
       "field_name": "related_datasets",
       "label": "Related dataset",
-      "preset": "dataset_related_multi_text"
+      "preset": "dataset_related_multi_text",
+      "help_text": "Add a related resource when the nature of the relationship is unspecified"
     },
     {
       "preset": "related_resources_multi_group"
@@ -379,7 +389,8 @@
       "validators": "ignore_missing url_validator qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "prov:hadPlan",
-      "sub_heading": "lineage"
+      "sub_heading": "lineage",
+      "help_text": "Input is a URI"
     },
     {
       "field_name": "lineage_inputs",
@@ -389,7 +400,8 @@
       "validators": "ignore_missing qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "prov:used",
-      "sub_heading": "lineage"
+      "sub_heading": "lineage",
+      "help_text": "Input is a URI"
     },
     {
       "field_name": "lineage_sensor",
@@ -399,7 +411,8 @@
       "validators": "ignore_missing qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "sosa:madeBySensor",
-      "sub_heading": "lineage"
+      "sub_heading": "lineage",
+      "help_text": "Input is a URI"
     },
     {
       "field_name": "lineage_responsible_party",
@@ -425,7 +438,8 @@
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
       "validators": "ignore_missing qdes_uri_validator",
-      "display_group": "related and lineage"
+      "display_group": "related and lineage",
+      "help_text": "A report or paper that cites this dataset. Input is a URI."
     },
     {
       "field_name": "contact_point",
@@ -434,7 +448,8 @@
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
       "display_group": "contacts and responsibilities",
-      "required": true
+      "required": true,
+      "help_text": "A person or position to contact for more information about the dataset"
     },
     {
       "field_name": "contact_publisher",
@@ -447,7 +462,8 @@
       "form_include_blank_choice": true,
       "form_attrs": {
         "data-module-title": "title"
-      }
+      },
+      "help_text": "Organization responsible for the dataset"
     },
     {
       "field_name": "contact_creator",
@@ -466,7 +482,8 @@
         "data-module-minimum-input-length": 3,
         "data-module-create-search-choice": true,
         "data-module-title": "title"
-      }
+      },
+      "help_text": "Person, position, or organization who created the dataset"
     },
     {
       "field_name": "contact_other_party",
@@ -521,6 +538,7 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "publication_status",
       "display_group": "status",
+      "display_group_help_text": "Fields under status relate to the dataset",
       "required": true,
       "form_attrs": {
         "data-module-title": "title"
@@ -575,7 +593,8 @@
         "data-module-title": "title"
       },
       "form_include_blank_choice": true,
-      "required": true
+      "required": true,
+      "help_text": "Security classification using the Queensland Government Information and Security Classification Framework"
     },
     {
       "field_name": "rights_statement",
@@ -611,7 +630,8 @@
       "label": "Web-page (landing page) for this dataset",
       "display_property": "dcat:landingPage",
       "display_group": "data access",
-      "validators": "ignore_missing url_validator qdes_uri_validator"
+      "validators": "ignore_missing url_validator qdes_uri_validator",
+      "help_text": "This landing page may have links to download the data"
     },
     {
       "field_name": "metadata_review_date",
@@ -626,7 +646,8 @@
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
       "display_group": "meta data life cycle",
-      "form_include_blank_choice": true
+      "form_include_blank_choice": true,
+      "help_text": "Person or position responsible for the metadata record"
     },
     {
       "field_name": "url",
@@ -635,7 +656,8 @@
       "display_property": "foaf:homepage",
       "display_snippet": "link.html",
       "display_group": "meta data life cycle",
-      "validators": "ignore_missing url_validator qdes_uri_validator"
+      "validators": "ignore_missing url_validator qdes_uri_validator",
+      "help_text": "If the metadata record was generated outside of the catalogue add the source where it originated from"
     },
     {
       "field_name": "owner_org",
@@ -666,7 +688,8 @@
       "display_property": "dcterms:conformsTo",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "ignore_missing qdes_uri_validator"
+      "validators": "ignore_missing qdes_uri_validator",
+      "help_text": "Indicates the schema, data-structure or vocabularies used by the resource"
     },
     {
       "field_name": "format",
@@ -718,7 +741,8 @@
       "display_property": "dcat:downloadURL",
       "display_snippet": "qdes_text_url.html",
       "validators": "ignore_missing url_validator qdes_uri_validator",
-      "recommended": true
+      "recommended": true,
+      "help_text": "URL to download a file directly"
     },
     {
       "field_name": "service_api_endpoint",
@@ -726,7 +750,8 @@
       "display_property": "dcterms:conformsTo",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "ignore_missing qdes_uri_validator"
+      "validators": "ignore_missing qdes_uri_validator",
+      "help_text": "URL of a service from where data can be queried or downloaded"
     },
     {
       "field_name": "data_services",
