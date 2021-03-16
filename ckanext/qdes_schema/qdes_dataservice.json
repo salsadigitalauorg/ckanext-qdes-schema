@@ -28,7 +28,8 @@
       "form_snippet": "qdes_multi_text.html",
       "form_placeholder": "doi:10.25901/5e3ba30f141b7",
       "display_group": "general",
-      "validators": "ignore_missing qdes_uri_validator"
+      "validators": "ignore_missing qdes_uri_validator",
+      "help_text": "Add any unique identifiers associated with the dataset. Input is a URI."
     },
     {
       "field_name": "classification",
@@ -151,6 +152,7 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "service_status",
       "display_group": "status",
+      "sub_heading_help_text": "Minimum time period resolvable in the dataset",
       "form_attrs": {
         "data-module-title": "title"
       }
@@ -194,7 +196,8 @@
       "display_property": "dcat:contactPoint",
       "display_group": "Contacts and responsibilities",
       "required": true,
-      "form_include_blank_choice": true
+      "form_include_blank_choice": true,
+      "help_text": "A person or position to contact for more information about the dataset"
     },
     {
       "field_name": "contact_publisher",
@@ -208,7 +211,8 @@
       "label": "Creator",
       "display_property": "dcterms:creator",
       "display_group": "Contacts and responsibilities",
-      "required": false
+      "required": false,
+      "help_text": "Person, position, or organization who created the dataset"
     },
     {
       "field_name": "contact_other_party",
@@ -253,7 +257,8 @@
         "data-module-title": "title"
       },
       "form_include_blank_choice": true,
-      "recommended": true
+      "recommended": true,
+      "help_text": "Security classification using the Queensland Government Information and Security Classification Framework"
     },
     {
       "field_name": "rights_statement",
@@ -300,7 +305,8 @@
       "form_include_blank_choice": true,
       "form_attrs": {
         "data-module-title": "title"
-      }
+      },
+      "help_text": "Person or position responsible for the metadata record"
     },
     {
       "field_name": "url",
@@ -309,7 +315,8 @@
       "display_property": "foaf:homepage",
       "display_snippet": "link.html",
       "display_group": "Meta data life cycle",
-      "validators": "ignore_missing url_validator qdes_uri_validator"
+      "validators": "ignore_missing url_validator qdes_uri_validator",
+      "help_text": "If the metadata record was generated outside of the catalogue add the source where it originated from"
     },
     {
       "field_name": "owner_org",

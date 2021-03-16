@@ -64,3 +64,10 @@ qdes-fancytree:
   contents:
     - jquery.fancytree-all-deps.min.js
     - qdes-tree-selector.js
+
+help-text:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - help-text.js

@@ -1,0 +1,13 @@
+{% import 'macros/form.html' as form %}
+
+{%- if field.help_text -%}
+    <i class="help-text qdes-help-text fa fa-info-circle" title="{{ h.scheming_language_text(field.help_text) }}"></i>
+{%- endif -%}
+
+{%- if field.display_group_help_text -%}
+    <i class="help-text qdes-display-group-help-text fa fa-info-circle" title="{{ h.scheming_language_text(field.display_group_help_text) }}"></i>
+{%- endif -%}
+
+{%- if field.sub_heading_help_text -%}
+    <i class="help-text qdes-sub-heading-help-text fa fa-info-circle" title="{{ h.scheming_language_text(field.sub_heading_help_text) }}"></i>
+{%- endif -%}
