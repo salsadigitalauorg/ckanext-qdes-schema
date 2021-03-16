@@ -14,7 +14,8 @@
               label=h.scheming_language_text(field.label),
               classes=[field.field_name + '-search', 'tree-search'],
               is_required=h.scheming_field_required(field),
-              error=errors[field.field_name]
+              error=errors[field.field_name],
+              placeholder=h.scheming_language_text(field.form_placeholder)
           )
       %}
           {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
