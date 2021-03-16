@@ -8,7 +8,7 @@
       "field_name": "title",
       "label": "Title",
       "preset": "title",
-      "form_placeholder": "eg. A descriptive title",
+      "form_placeholder": "A descriptive title of the dataset",
       "display_group": "general",
       "required": true,
       "validators": "scheming_required if_empty_same_as(name) unicode"
@@ -17,7 +17,6 @@
       "field_name": "name",
       "label": "URL",
       "preset": "dataset_slug",
-      "form_placeholder": "eg. my-dataset",
       "display_group": "general"
     },
     {
@@ -26,7 +25,6 @@
       "display_property": "dcterms:identifier",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "form_placeholder": "doi:10.25901/5e3ba30f141b7",
       "display_group": "general",
       "validators": "ignore_missing qdes_uri_validator",
       "help_text": "Add any unique identifiers associated with the dataset. Input is a URI."
@@ -35,7 +33,6 @@
       "field_name": "classification",
       "label": "General classification of dataset type",
       "display_property": "dcterms:type",
-      "form_placeholder": "eg. 'image', 'map', 'section', 'gridded data', etc.",
       "display_group": "description",
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "classification",
@@ -52,7 +49,7 @@
       "label": "Description or abstract",
       "form_snippet": "markdown.html",
       "display_snippet": "markdown.html",
-      "form_placeholder": "eg. Some useful notes about the data",
+      "form_placeholder": "Some useful notes about the data",
       "display_property": "dcterms:description",
       "display_group": "description",
       "required": true
@@ -63,7 +60,7 @@
       "form_snippet": "markdown.html",
       "display_snippet": "markdown.html",
       "display_property": "qdcat:purpose",
-      "form_placeholder": "This map provides supporting information for assessments under the Vegetation Management Act.",
+      "form_placeholder": "e.g. This map provides supporting information for assessments under the Vegetation Management Act",
       "display_group": "description"
     },
     {
@@ -72,7 +69,7 @@
       "form_snippet": "qdes_multi_markdown.html",
       "display_property": "rdfs:comment",
       "display_snippet": "qdes_multi_markdown.html",
-      "form_placeholder": "e.g. warnings",
+      "form_placeholder": "e.g. warnings etc",
       "display_group": "description"
     },
     {
@@ -100,13 +97,14 @@
       "required": true,
       "form_include_blank_choice": true,
       "label_plural": "topic or themes",
-      "no_selected_term": "No topics or themes have been added. Please use the interface above to select a <strong>Topic or theme.</strong>"
+      "no_selected_term": "No topics or themes have been added. Please use the interface above to select a <strong>Topic or theme.</strong>",
+      "form_placeholder": "Select a topic or theme"
     },
     {
       "field_name": "tag_string",
       "label": "Keyword",
       "preset": "tag_string_autocomplete",
-      "form_placeholder": "eg. economy, mental health, government",
+      "form_placeholder": "e.g. Burdekin, imagery, government",
       "display_group": "description"
     },
     {
@@ -150,7 +148,8 @@
       "validators": "qdes_temporal_start_end_date",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage",
-      "sub_heading_help_text": "The start and end date of the dataset"
+      "sub_heading_help_text": "The start and end date of the dataset",
+      "form_placeholder": "dd/mm/yyyy"
     },
     {
       "field_name": "temporal_end",
@@ -159,7 +158,8 @@
       "preset": "date",
       "validators": "qdes_temporal_start_end_date",
       "display_group": "temporal content",
-      "sub_heading": "temporal coverage"
+      "sub_heading": "temporal coverage",
+      "form_placeholder": "dd/mm/yyyy"
     },
     {
       "field_name": "temporal_precision_spacing",
@@ -201,7 +201,8 @@
       "display_property": "qdcat:lowerLeft",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage",
-      "help_text": "Bounding box of spatial region covered by the dataset in GeoJSON"
+      "help_text": "Bounding box of spatial region covered by the dataset in GeoJSON",
+      "form_placeholder": "e.g. \n{     \"type\": \"Point\",     \"coordinates\": [100.0, 0.0]     }"
     },
     {
       "field_name": "spatial_upper_right",
@@ -211,7 +212,8 @@
       "display_property": "qdcat:upperRight",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage",
-      "help_text": "Bounding box of spatial region covered by the dataset in GeoJSON"
+      "help_text": "Bounding box of spatial region covered by the dataset in GeoJSON",
+      "form_placeholder": "e.g. \n{     \"type\": \"Point\",     \"coordinates\": [101.0, 1.0]     }"
     },
     {
       "field_name": "spatial_centroid",
@@ -221,7 +223,8 @@
       "display_property": "dcat:centroid",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage",
-      "help_text": "Centroid of spatial region covered by the dataset in GeoJSON"
+      "help_text": "Centroid of spatial region covered by the dataset in GeoJSON",
+      "form_placeholder": "e.g. \n{     \"type\": \"Point\",     \"coordinates\": [100.0, 0.0]     }"
     },
     {
       "field_name": "spatial_geometry",
@@ -231,7 +234,8 @@
       "display_property": "qdcat:asGeoJSON",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage",
-      "help_text": "Spatial region covered by the dataset as a polygon in GeoJSON"
+      "help_text": "Spatial region covered by the dataset as a polygon in GeoJSON",
+      "form_placeholder": "e.g.\n{\n     \"type\": \"Polygon\", \n     \"coordinates\": [\n          [ \n               [100.0, 0.0], \n               [101.0, 0.0], \n               [101.0, 1.0], \n               [100.0, 1.0], \n               [100.0, 0.0] \n           ] \n       ] \n }"
     },
     {
       "field_name": "spatial_content_resolution",
@@ -239,7 +243,8 @@
       "validators": "ignore_missing qdes_validate_decimal",
       "display_property": "dcat:spatialResolutionInMeters",
       "display_group": "spatial content",
-      "help_text": "The minimum spatial separation resolvable in a dataset, measured in meters."
+      "help_text": "The minimum spatial separation resolvable in a dataset, measured in meters.",
+      "form_placeholder": "e.g. 50"
     },
     {
       "field_name": "spatial",
@@ -293,7 +298,8 @@
       "validators": "ignore_missing qdes_uri_validator",
       "display_property": "dcterms:conformsTo",
       "display_group": "data quality",
-      "recommended": true
+      "recommended": true,
+      "form_placeholder": "e.g. Australian Land Use and Management Classification - Version 8"
     },
     {
       "field_name": "quality_measure",
@@ -362,13 +368,15 @@
     {
       "field_name": "series_or_collection",
       "label": "Series or collection",
-      "preset": "dataset_related_multi_text"
+      "preset": "dataset_related_multi_text",
+      "form_placeholder": "Select a series or collection this dataset is part of"
     },
     {
       "field_name": "related_datasets",
       "label": "Related dataset",
       "preset": "dataset_related_multi_text",
-      "help_text": "Add a related resource when the nature of the relationship is unspecified"
+      "help_text": "Add a related resource when the nature of the relationship is unspecified",
+      "form_placeholder": ""
     },
     {
       "preset": "related_resources_multi_group"
@@ -422,6 +430,7 @@
       "display_group": "related and lineage",
       "display_property": "prov:wasAssociatedWith",
       "sub_heading": "lineage",
+      "form_placeholder": "",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
@@ -499,6 +508,7 @@
           "display_snippet": "qdes_secure_vocabulary_text.html",
           "display_property": "prov:agent",
           "vocabulary_service_name": "point-of-contact",
+          "form_placeholder": "",
           "form_attrs": {
             "data-module": "qdes_autocomplete",
             "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
@@ -594,7 +604,8 @@
       },
       "form_include_blank_choice": true,
       "required": true,
-      "help_text": "Security classification using the Queensland Government Information and Security Classification Framework"
+      "help_text": "Security classification using the Queensland Government Information and Security Classification Framework",
+      "form_placeholder": "Select a classification and access restriction"
     },
     {
       "field_name": "rights_statement",
@@ -602,7 +613,8 @@
       "form_snippet": "textarea.html",
       "display_property": "dcterms:rights",
       "display_group": "rights and licensing",
-      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>",
+      "form_placeholder": "© State of Queensland (Department of Environment and Science) 2021"
     },
     {
       "field_name": "license_id",
@@ -663,7 +675,8 @@
       "field_name": "owner_org",
       "label": "Organization",
       "preset": "dataset_organization",
-      "display_group": "meta data life cycle"
+      "display_group": "meta data life cycle",
+      "form_placeholder": "Department of Environment and Science"
     },
     {
       "field_name": "state",
@@ -679,7 +692,7 @@
     {
       "field_name": "name",
       "label": "Title",
-      "form_placeholder": "eg. January 2011 Gold Prices",
+      "form_placeholder": "A descriptive title of the resource",
       "display_property": "dcterms:title"
     },
     {
@@ -760,28 +773,31 @@
       "preset": "controlled_dataservice_multi_select",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
-      }
+      },
+      "form_placeholder": ""
     },
     {
       "field_name": "description",
       "label": "Description",
       "form_snippet": "markdown.html",
       "display_snippet": "markdown.html",
-      "form_placeholder": "Some useful notes about the data",
+      "form_placeholder": "Some useful notes about the resource",
       "display_property": "dcterms:description"
     },
     {
       "field_name": "additional_info",
       "label": "Additional information",
       "form_snippet": "qdes_multi_markdown.html",
-      "display_snippet": "qdes_multi_markdown.html"
+      "display_snippet": "qdes_multi_markdown.html",
+      "form_placeholder": "e.g. warnings etc"
     },
     {
       "field_name": "rights_statement",
       "label": "Rights statement",
       "form_snippet": "textarea.html",
       "display_property": "dcterms:rights",
-      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>",
+      "form_placeholder": "© State of Queensland (Department of Environment and Science) 2021"
     },
     {
       "field_name": "license",

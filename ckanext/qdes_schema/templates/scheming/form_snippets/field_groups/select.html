@@ -36,7 +36,7 @@
       {"data-group": true, 
       "data-field-name": field_group.field_name, 
       "data-parent-field-name": field.field_name, 
-      "data-placeholder":"Select a {0}".format(field_group.label)
+      "data-placeholder": h.scheming_language_text(field_group.form_placeholder)
       }, 
       **(field_group.get('form_attrs', {}))),
     is_required=h.scheming_field_required(field_group)
