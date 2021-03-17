@@ -29,6 +29,12 @@ qdes_schema = Blueprint('qdes_schema', __name__)
 
 def related_datasets(id_or_name):
     try:
+        context = {
+            u'model': model,
+            u'user': toolkit.g.user,
+            u'auth_user_obj': toolkit.g.userobj
+        }
+
         related = []
 
         pkg_dict = get_action('package_show')({}, {'id': id_or_name})
@@ -40,7 +46,7 @@ def related_datasets(id_or_name):
                 # Check for access, don't show to user if user has no permission
                 # Example, non logged-in user should not see delete package.
                 try:
-                    toolkit.check_access('package_show', {}, {'id': relationship.get('pkg_id')})
+                    toolkit.check_access('package_show', context, {'id': relationship.get('pkg_id')})
                     related.append(relationship)
                 except (NotFound, NotAuthorized):
                     # Let's continue to the next list.
