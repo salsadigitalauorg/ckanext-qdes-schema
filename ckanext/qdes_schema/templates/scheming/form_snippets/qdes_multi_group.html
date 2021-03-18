@@ -16,7 +16,7 @@
     <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
     {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
 
-    {% if errors[field.field_name] and errors[field.field_name] is iterable %}<span class="error-block">{{ errors[field.field_name]|join(', ')|safe }}</span>{% endif %}
+    {% if errors[field.field_name] and errors[field.field_name] is iterable and not 'field_groups' in errors[field.field_name]|last %}<span class="error-block">{{ errors[field.field_name]|join(', ')|safe }}</span>{% endif %}
     <div id="{{ 'field-' + field.field_name }}" data-repeater-list="{{ field.field_name }}">
 
         {# Default behaviour to re-populate all existing inputs #}
@@ -31,14 +31,25 @@
             {% endif %}
         {% endif %}
 
+
+        {% set field_groups = {} %}
+        {% if 'field_groups' in errors[field.field_name]|last %}
+            {% set last_item = errors[field.field_name]|last %}
+            {% set field_groups = last_item.field_groups %}
+        {% endif %}
+
         {% for group_data in group_values or [''] %}
-        
+            {% set field_group_error = field_groups[loop.index-1] if field_groups[loop.index-1] else {} %}
+
             <div data-repeater-item class="repeater-wrapper">
                 <div class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
                     {% for field_group in field.get('field_group') or [] %}
                         <div class="col-lg-{{ 12 // field.get('field_group')|length }}">
                             {% if field_group.form_snippet %}
-                                {%- snippet 'scheming/form_snippets/field_groups/{0}'.format(field_group.form_snippet), field=field, field_group=field_group, group_data=group_data, errors=errors, data=data or {} -%}
+                                {% if 'field_groups' in errors[field.field_name]|last %}
+                                    {{ errors[field.field_name].field_groups }}
+                                {% endif %}
+                                {%- snippet 'scheming/form_snippets/field_groups/{0}'.format(field_group.form_snippet), field=field, field_group=field_group, group_data=group_data, errors=field_group_error, data=data or {} -%}
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -46,6 +57,10 @@
                         <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
                     </div>
                 </div>
+
+                {% if field_group_error.group %}
+                    <div class="alert alert-error">{{ field_group_error.group|join(', ')|safe }}</div>
+                {% endif %}
 
                 <div class="supersede-alert hidden alert alert-warning">Please update the publication status of the version being replaced to "superseded"</div>
             </div>

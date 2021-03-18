@@ -372,18 +372,27 @@ def qdes_validate_related_resources(field, schema):
         if key_data and field_groups:
             values = toolkit.get_converter('json_or_string')(key_data)
             if values and isinstance(values, list):
+                field_group_errors = []
+                field_group_error = {}
                 for value in values:
                     for field_group in field_groups:
+                        field_name = field_group.get('field_name')
                         field_value = value.get(field_group.get('field_name', ''))
+
+                        if field_name == 'resource':
+                            val = field_value.get('id', None) or None
+                            if not val:
+                                field_value = val
+
                         # Check if there are any missing empty values in the group
-                        if field_value == None:
-                            errors[key].append(toolkit._('{0} field should not be empty'.format(field_group.get('label'))))
-                        elif field_group.get('field_name') == 'resource':
+                        if field_value is None:
+                            field_group_error[field_name] = [toolkit._('{0} field should not be empty'.format(field_group.get('label')))]
+                        elif field_name == 'resource':
                             # Check if dataset name exists or is a valid URL
                             try:
                                 qdes_validate_related_dataset([field_value], context)
                             except toolkit.Invalid as e:
-                                errors[key].append(toolkit._('{0} - {1}'.format(field_group.get('label'), e.error)))
+                                field_group_error[field_name] = [toolkit._(e.error)]
 
                     # Validates the dataset relationship to prevent circular references
                     # If there is no package_id it must be a new dataset so there will not be any previous relationships
@@ -399,11 +408,41 @@ def qdes_validate_related_resources(field, schema):
 
                             qdes_validate_circular_replaces_relationships(package_id, dataset_id, relationship_type, context)
                         except toolkit.Invalid as e:
-                            errors[key].append(toolkit._(e.error))
+                            if field_group_error.get('group', None) or None is None:
+                                field_group_error['group'] = []
+
+                            field_group_error['group'].append(toolkit._(e.error))
 
                     duplicate_replaces_relationships = qdes_validate_duplicate_replaces_relationships(value, context, package_id, package_title, data)
                     if duplicate_replaces_relationships:
-                        errors[key].append(toolkit._(duplicate_replaces_relationships))
+                        if field_group_error.get('group', None) or None is None:
+                            field_group_error['group'] = []
+                        field_group_error['group'].append(toolkit._(duplicate_replaces_relationships))
+
+
+                    if field_group_error:
+                        field_group_errors.append(field_group_error)
+                        field_group_error = {}
+                    else:
+                        field_group_errors.append({})
+
+
+                # Only the first array is displayed at top of the screen,
+                # so let's combine them.
+                error_for_display = []
+                for field_group_error in field_group_errors:
+                    for err_key, value in field_group_error.items():
+                        error_for_display.append(', '.join(value))
+
+                if error_for_display:
+                    # Multiple errors doesn't seems make sense and hard to read.
+                    if len(error_for_display) > 1:
+                        errors[key].append(toolkit._('Multiple errors occurred, please see the form for details.'))
+                    else:
+                        errors[key].append(', '.join(error_for_display))
+
+                if field_group_errors and error_for_display:
+                    errors[key].append({'field_groups': field_group_errors})
 
     return validator
 
@@ -427,7 +466,7 @@ def qdes_validate_related_dataset(value, context):
                     raise toolkit.Invalid(errors['url'][0])
 
                 if not toolkit.get_validator('qdes_uri_validator')(dataset_id):
-                    raise toolkit.Invalid('Unsuccessful connecting to URI "{}'.format(dataset_id))
+                    raise toolkit.Invalid('Unsuccessful connecting to URI {}'.format(dataset_id))
 
     return value
 
