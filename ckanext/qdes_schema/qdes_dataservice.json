@@ -37,7 +37,7 @@
       "display_property": "dcterms:type",
       "display_group": "description",
       "preset": "controlled_vocabulary_multi_select",
-      "vocabulary_service_name": "classification",
+      "vocabulary_service_name": "dataservice_classification",
       "validators": "scheming_required",
       "recommended": true,
       "form_attrs": {
