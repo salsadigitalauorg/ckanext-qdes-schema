@@ -90,7 +90,11 @@ def add_dataservice(context, dataservice_id, resource, remove=False):
 
 def delete_resource_dataservice(context, dataservice_id, datasets_available):
     for dataset_id in datasets_available:
-        pkg_dict = get_action('package_show')(context, {'id': dataset_id})
+        pkg_dict = {}
+        try:
+            pkg_dict = get_action('package_show')(context, {'id': dataset_id})
+        except Exception as e:
+            log.error(str(e))
 
         for resource in pkg_dict.get('resources', []):
             if dataservice_id in resource.get('data_services'):

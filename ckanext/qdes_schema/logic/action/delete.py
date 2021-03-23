@@ -20,13 +20,17 @@ def dataservice_purge(context, data_dict):
 @toolkit.chained_action
 def dataset_purge(original_action, context, data_dict):
     # We need to remove dataservice that listed in any resources.
-    pkg_dict = get_action('package_show')(context, {'id': data_dict.get('id')})
-    if pkg_dict.get('type') == 'dataservice':
-        resource_helpers.delete_resource_dataservice(
-            context,
-            data_dict.get('id'),
-            dataservice_helpers.datasets_available_as_list(pkg_dict)
-        )
+    try:
+        pkg_dict = get_action('package_show')(context, {'id': data_dict.get('id')})
+
+        if pkg_dict.get('type') == 'dataservice':
+            resource_helpers.delete_resource_dataservice(
+                context,
+                data_dict.get('id'),
+                dataservice_helpers.datasets_available_as_list(pkg_dict)
+            )
+    except Exception as e:
+        log.error(str(e))
 
     return original_action(context, data_dict)
 
