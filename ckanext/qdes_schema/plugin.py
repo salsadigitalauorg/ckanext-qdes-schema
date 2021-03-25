@@ -77,6 +77,10 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         Extensions will receive the validated data dict after the dataset
         has been updated.
         '''
+        # Don't run this function when adding or editing a resource
+        if toolkit.g and toolkit.g.controller == 'resource':
+            return pkg_dict
+
         helpers.update_related_resources(context, pkg_dict, True)
 
         # Remove `ignore_auth` from the context - in case it was set
