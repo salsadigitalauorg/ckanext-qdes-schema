@@ -63,9 +63,9 @@ def dataservice_datasets_available(context, data):
 
                     # ref.: https://docs.ckan.org/en/2.9/api/#ckan.logic.action.patch.package_update
                     # "You must be authorized to edit the dataset and the groups that it belongs to."
-                    context['ignore_auth'] = True
-                    # package_patch seems to be failing validation here
-                    get_action('package_update')(context, dataservice_dict)
+                    site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
+                    ctx = {u'user': site_user[u'name'], 'ignore_auth': True}
+                    get_action('package_update')(ctx, dataservice_dict)
         except Exception as e:
             log.error(str(e))
 

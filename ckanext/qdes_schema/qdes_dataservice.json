@@ -101,7 +101,7 @@
       "field_name": "datasets_available",
       "label": "Datasets available",
       "display_snippet": "qdes_multi_text_url.html",
-      "form_snippet": null,
+      "form_snippet": "qdes_multi_text.html",
       "display_group": null
     },
     {
