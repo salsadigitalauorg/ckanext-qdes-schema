@@ -366,11 +366,16 @@ def qdes_validate_related_resources(field, schema):
     """
 
     def validator(key, data, errors, context):
+        # Don't run this validator when adding or editing a resource
+        if toolkit.g and toolkit.g.controller == 'resource':
+            return validator
+
         model = context['model']
-        key_data = data.get(key)
+        related_resources_data = data.get(key)
         field_groups = field.get('field_group')
-        if key_data and field_groups:
-            values = toolkit.get_converter('json_or_string')(key_data)
+
+        if related_resources_data and field_groups:
+            values = toolkit.get_converter('json_or_string')(related_resources_data)
             if values and isinstance(values, list):
                 field_group_errors = []
                 field_group_error = {}
