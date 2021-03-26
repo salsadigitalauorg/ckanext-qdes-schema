@@ -76,7 +76,7 @@
               </button>
               <div class="collapsing-section" id="display-group-{{field.display_group}}-content">
         {%- endif -%}
-      {%- else -%} 
+      {%- else -%}
         {%- if field.display_group not in ['general'] -%}
           <h2>{{ field.display_group|capitalize }}</h2>
         {%- endif -%}
@@ -100,6 +100,8 @@
         </article>
       </section>
     {%- endif -%}
+
+
   {%- endfor -%}
   {%- if 'resource_fields' not in schema -%}
     <!-- force controller to skip resource-editing step for this type -->
