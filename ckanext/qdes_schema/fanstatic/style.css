@@ -8,3 +8,6 @@
     margin-bottom: 10px;
 }
 
+#datasets_available-repeater {
+    display: none;
+}
