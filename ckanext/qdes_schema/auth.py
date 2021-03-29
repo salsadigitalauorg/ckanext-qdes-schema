@@ -35,8 +35,11 @@ def package_show(next_auth, context, data_dict):
         # Check to see if the dataset is private
         package = get_package_object(context, data_dict)
         if package and package.private:
+            # Allow access for the related datasets tab to view the private dataset
+            if toolkit.get_endpoint() == ('qdes_schema', 'related_datasets'):
+                return {'success': True}
             # Make sure the call is coming from dataset view instead of api view
-            if toolkit.get_endpoint()[0] == 'dataset':
+            elif toolkit.get_endpoint()[0] == 'dataset':
                 toolkit.abort(403, 'Record not accessible')
 
     # return default ckan package_show auth result
