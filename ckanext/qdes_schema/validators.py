@@ -403,20 +403,27 @@ def qdes_validate_related_resources(field, schema):
                     # If there is no package_id it must be a new dataset so there will not be any previous relationships
                     package_id = data.get(('id',), None)
                     package_title = data.get(('title',), None)
-                    dataset = toolkit.get_converter('json_or_string')(value)
-                    if package_id and dataset and isinstance(dataset, dict):
-                        dataset_id = dataset.get('resource', {}).get('id', None)
-                        relationship_type = dataset.get('relationship', None)
+                    related_dataset = toolkit.get_converter('json_or_string')(value)
+                    dataset_id = related_dataset.get('resource', {}).get('id', None)
+                    relationship_type = related_dataset.get('relationship', None)
+                    if package_id and related_dataset and isinstance(related_dataset, dict):
                         try:
-                            if not relationship_type in model.PackageRelationship.get_forward_types():
-                                raise toolkit.Invalid(toolkit._('Only forward relationship is accepted'))
-
                             qdes_validate_circular_replaces_relationships(package_id, dataset_id, relationship_type, context)
                         except toolkit.Invalid as e:
                             if field_group_error.get('group', None) or None is None:
                                 field_group_error['group'] = []
 
                             field_group_error['group'].append(toolkit._(e.error))
+
+                    # Only forward relationship accepted.
+                    try:
+                        if related_dataset and isinstance(related_dataset, dict) and not relationship_type in model.PackageRelationship.get_forward_types():
+                            raise toolkit.Invalid(toolkit._('Only forward relationship is accepted'))
+                    except toolkit.Invalid as e:
+                        if field_group_error.get('group', None) or None is None:
+                            field_group_error['group'] = []
+
+                        field_group_error['group'].append(toolkit._(e.error))
 
                     duplicate_replaces_relationships = qdes_validate_duplicate_replaces_relationships(value, context, package_id, package_title, data)
                     if duplicate_replaces_relationships:
