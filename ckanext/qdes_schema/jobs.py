@@ -259,7 +259,7 @@ def _create_external_dataset(publish_log, destination, package_dict):
     return constants.PUBLISH_STATUS_SUCCESS if success else constants.PUBLISH_STATUS_FAILED, details, external_package_dict
 
 
-def _update_external_dataset(publish_log, destination, external_pkg_dict, package_dict, recent_publish_log, delete_distribution = False):
+def _update_external_dataset(publish_log, destination, external_pkg_dict, package_dict, recent_publish_log, delete_distribution=False):
     if not delete_distribution:
         package_dict['resources'] = _get_selected_resource_to_publish(package_dict, publish_log)
         # Modify the external_pkg_dict.
@@ -372,6 +372,9 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict={}, rece
     update_freq = helpers.map_update_schedule(des_package_dict['update_schedule'],
                                               constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
     qld_pkg_dict['update_frequency'] = update_freq if update_freq else 'not-updated'
+
+    qld_pkg_dict['license_id'] = helpers.map_license(des_package_dict['license_id'],
+                                                     constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
 
     qld_pkg_dict['owner_org'] = os.getenv(
         constants.get_owner_org(constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA))
