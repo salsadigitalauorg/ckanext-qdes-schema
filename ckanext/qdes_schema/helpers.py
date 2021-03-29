@@ -388,7 +388,6 @@ def qdes_merge_invalid_uris_error(invalid_uris, field_name, current_errors, erro
     return current_errors
 
 
-
 def schema_validate(extra_vars, pkg_validated, data):
     res_errors = []
     for selected_opt in extra_vars['options']:
@@ -516,6 +515,21 @@ def map_update_schedule(uri, schema):
     return frequency_map.get(schema, {}).get(uri, '')
 
 
+def map_license(uri, schema):
+    license_map = {
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {
+            'http://linked.data.gov.au/def/licence-document/cc-by-4.0': 'cc-by-4',
+            'http://linked.data.gov.au/def/licence-document/cc-by-nd-4.0': 'cc-by-nd-4',
+            'http://linked.data.gov.au/def/licence-document/cc-by-sa-4.0': 'cc-by-sa-4'
+        },
+        # @todo, in case needed, need to map this against external schema in future.
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+    }
+
+    return license_map.get(schema, {}).get(uri, '')
+
+
 def dataset_has_published_to_external_schema(package_id, schema=None):
     return PublishLog.has_published(package_id, 'dataset')
 
@@ -590,7 +604,7 @@ def dataset_need_republish(pkg):
 
         if res_publish_log.date_processed:
             if resource_needs_republish(resource, pkg, res_publish_log):
-               has_updated_resource = True
+                has_updated_resource = True
 
         if res_publish_log.status == constants.PUBLISH_STATUS_PENDING:
             has_pending = True
