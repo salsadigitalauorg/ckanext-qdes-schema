@@ -103,7 +103,7 @@ def build_versions(tree):
     versions = []
     for version in tree:
         try:
-            package_dict = get_action('package_show')({}, {'id': version.get('object')})
+            package_dict = get_action('package_show')({'ignore_auth': True}, {'id': version.get('object')})
             versions.append(package_dict)
         except Exception as e:
             log.error(str(e))
