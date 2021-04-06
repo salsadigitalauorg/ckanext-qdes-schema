@@ -749,7 +749,7 @@ def get_state_list(field=None):
 def get_pkg_title(name_or_id, pkg_dict=[]):
     try:
         if not pkg_dict:
-            pkg_dict = get_action('package_show')({}, {'name_or_id': name_or_id})
+            pkg_dict = get_action('package_show')({'ignore_auth': True}, {'name_or_id': name_or_id})
 
         pkg_name = h.dataset_display_name(pkg_dict)
 
