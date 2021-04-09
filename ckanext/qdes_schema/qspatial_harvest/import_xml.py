@@ -36,10 +36,13 @@ def get_ckan_packages():
             # Bit of a hack bt easier then doing a regex
             identifier = file.replace('xml_files/', '').replace('.xml', '')
             csv_row = next((row for row in csv_rows if identifier in row.get('URL')), None)
-            print(f"Creating QSpatial object for {csv_row.get('Title')}")
-            obj = QSpatialObject(file, csv_row, remoteCKAN, log_file, data_service, owner_org, True)
-            ckan_packages.append(obj.get_ckan_package_dict())
-
+            try:
+                print(f"Creating QSpatial object for {csv_row.get('Title')}")
+                obj = QSpatialObject(file, csv_row, remoteCKAN, log_file, data_service, owner_org, True)
+                ckan_packages.append(obj.get_ckan_package_dict())
+            except Exception as ex:
+                print(f'ERROR: {pformat(ex)}')
+                append_error(csv_row.get('Title'), 'Error creating QSpatialObject', {'url': csv_row.get('URL')})
     return ckan_packages
 
 

@@ -41,15 +41,19 @@ def fetch_and_save_xml(package):
         remote_url = 'http://qldspatial.information.qld.gov.au/catalogue/rest/document?id=' + package['fid'] + '&f=xml'
         response = requests.get(remote_url)
 
-        if response.status_code == 200:
+        if response.status_code == 200 and 'Unable to return the document associated with the supplied identifier' not in response.text:
             # Write the xml to file.
             file = open('xml_files/' + package['fid'] + '.xml', 'w')
             file.write(response.text)
             file.close()
 
             return True
+        else:
+            print(f"Failed to retrieve [{package['title']}] with identifier [{package['fid']}]")
+            print(pformat(vars(response)))
+
     except Exception as e:
-        print(str(e))
+        print(pformat(e))
 
     return False
 
