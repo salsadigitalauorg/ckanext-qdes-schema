@@ -764,6 +764,7 @@ def get_pkg_title(name_or_id, pkg_dict=[]):
 def get_external_distribution_url(schema, external_dataset_id, external_distribution_id):
     if schema == constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
         domain = os.getenv(constants.get_external_schema_url(schema))
-        return domain + '/dataset/' + external_dataset_id + '/resource/' + external_distribution_id
+        if domain and external_dataset_id and external_distribution_id:
+            return domain + '/dataset/' + external_dataset_id + '/resource/' + external_distribution_id
 
     return ''
