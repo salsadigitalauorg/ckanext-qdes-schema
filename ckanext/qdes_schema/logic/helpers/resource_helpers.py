@@ -1,3 +1,4 @@
+import ckan.logic as logic
 import json
 import logging
 
@@ -69,7 +70,7 @@ def before_delete(context, resource, resources):
             })
 
 
-def add_dataservice(context, dataservice_id, resource, remove=False):
+def add_dataservice(dataservice_id, resource, pkg_dict, remove=False):
     try:
         data_services = []
         if resource.get('data_services', None):
@@ -81,9 +82,14 @@ def add_dataservice(context, dataservice_id, resource, remove=False):
             data_services.append(dataservice_id)
 
         resource['data_services'] = json.dumps(list(set(data_services))) if data_services else ''
+        res_id = resource.get('id')
+        for n, p in enumerate(pkg_dict['resources']):
+            if p['id'] == res_id:
+                pkg_dict['resources'][n] = resource
 
-        get_action('resource_update')(context, resource)
-
+                site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
+                context = {u'user': site_user[u'name'], u'return_id_only': True}
+                get_action('package_update')(context, pkg_dict)
     except json.JSONDecodeError as e:
         log.error(str(e))
 

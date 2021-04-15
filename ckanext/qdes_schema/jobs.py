@@ -9,6 +9,7 @@ import json
 import logging
 import os
 import sys
+import traceback
 
 from ckan import model
 from ckan.common import c, config
@@ -100,9 +101,11 @@ def publish_to_external_catalogue(publish_log_id, user):
             dataservice_id = config.get(constants.get_dataservice_id(publish_log.destination), None)
 
             if dataservice_id:
-                resource_helpers.add_dataservice(context, dataservice_id, resource[0])
+                resource_helpers.add_dataservice(dataservice_id, resource[0], package_dict)
 
     except Exception as e:
+        log.error(''.join(traceback.format_tb(e.__traceback__)))
+        log.error(str(e))
         status = constants.PUBLISH_STATUS_FAILED
         detail = {'type': 'system_error', 'error': str(e)}
 
@@ -181,8 +184,10 @@ def unpublish_external_distribution(publish_log_id, user):
             dataservice_id = config.get(constants.get_dataservice_id(publish_log.destination), None)
 
             if dataservice_id:
-                resource_helpers.add_dataservice(context, dataservice_id, resource[0], True)
+                resource_helpers.add_dataservice(dataservice_id, resource[0], package_dict, True)
     except Exception as e:
+        log.error(''.join(traceback.format_tb(e.__traceback__)))
+        log.error(str(e))
         status = constants.PUBLISH_STATUS_FAILED
         detail = {'type': 'system_error', 'error': str(e)}
 
