@@ -239,16 +239,17 @@ def _get_selected_resource_to_publish(package_dict, publish_log):
 
 
 def _create_external_dataset(publish_log, destination, package_dict):
-    package_dict['resources'] = _get_selected_resource_to_publish(package_dict, publish_log)
+    pkg_dict = package_dict.copy()
+    pkg_dict['resources'] = _get_selected_resource_to_publish(package_dict, publish_log)
 
     # Clean up the package_dict as per destination schema requirement.
-    package_dict = _build_and_clean_up_dataqld(package_dict)
+    pkg_dict = _build_and_clean_up_dataqld(pkg_dict)
 
     # Send to external schema.
     external_package_dict = {}
     success = False
     try:
-        external_package_dict = destination.action.package_create(**package_dict)
+        external_package_dict = destination.action.package_create(**pkg_dict)
         success = True
         details = {
             'external_package_dict': external_package_dict,
@@ -265,16 +266,17 @@ def _create_external_dataset(publish_log, destination, package_dict):
 
 
 def _update_external_dataset(publish_log, destination, external_pkg_dict, package_dict, recent_publish_log, delete_distribution=False):
+    pkg_dict = package_dict.copy()
     if not delete_distribution:
-        package_dict['resources'] = _get_selected_resource_to_publish(package_dict, publish_log)
+        pkg_dict['resources'] = _get_selected_resource_to_publish(pkg_dict, publish_log)
         # Modify the external_pkg_dict.
-        package_dict = _build_and_clean_up_dataqld(package_dict, external_pkg_dict, recent_publish_log)
+        pkg_dict = _build_and_clean_up_dataqld(pkg_dict, external_pkg_dict, recent_publish_log)
 
     # Send the modified dict to external schema.
     external_package_dict = {}
     success = False
     try:
-        external_package_dict = destination.action.package_update(**package_dict)
+        external_package_dict = destination.action.package_update(**pkg_dict)
 
         # Load external resource id. Since this is update,
         # the possibility external_package_dict has multiple resources are big.
