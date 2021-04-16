@@ -644,6 +644,12 @@ def get_publish_activities(pkg):
                 # If failed, get the last success published date.
                 processed_date = get_last_success_publish_date(resource)
 
+            # Get detail.
+            try:
+                details = json.loads(resource_publish_log.details)
+            except Exception as e:
+                details = []
+
             # Get status.
             status = 'Pending'
             if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS and not resource_publish_log.action == constants.PUBLISH_ACTION_DELETE:
@@ -670,7 +676,10 @@ def get_publish_activities(pkg):
             if not resource_publish_log.status == constants.PUBLISH_STATUS_PENDING \
                     and not resource_publish_log.action == constants.PUBLISH_ACTION_DELETE \
                     and (resource_needs_republish(resource, pkg, resource_publish_log) or dataset_need_republish(pkg)):
-                status = 'Needs republish'
+                # For publish error that cause by the external dataset is deleted (in trash),
+                # don't change the status.
+                if not details.get('external_distribution_deleted', False):
+                    status = 'Need republish'
 
             # Get portal.
             portal = ''
@@ -690,12 +699,6 @@ def get_publish_activities(pkg):
             if processed_unpublished_date:
                 offset = render_datetime(processed_unpublished_date, date_format='%z')
                 unpublished_date = render_datetime(processed_unpublished_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
-
-            # Get detail.
-            try:
-                details = json.loads(resource_publish_log.details)
-            except Exception as e:
-                details = []
 
             data = {
                 'resource': resource,

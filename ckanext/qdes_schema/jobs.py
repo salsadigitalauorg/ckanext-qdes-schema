@@ -55,6 +55,7 @@ def publish_to_external_catalogue(publish_log_id, user):
             if external_pkg_dict.get('state') == 'deleted':
                 status = constants.PUBLISH_STATUS_FAILED
                 detail = {
+                    'external_distribution_deleted': True,
                     'error': 'The distribution cannot be published as it already exists in Data.QLD in a deleted state. The deleted dataset needs to be purged before it can be republished. Please contact the catalogue administrator.'}
             else:
                 publish_log.action = constants.PUBLISH_ACTION_UPDATE
