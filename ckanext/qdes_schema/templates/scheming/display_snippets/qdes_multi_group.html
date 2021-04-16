@@ -10,9 +10,6 @@
                     {% else %}
                         {% set value_data = group_data.get(field_group.field_name, '') %}
                         {% set value = value_data.get('text', '')|string if not value_data is string and 'text' in value_data else value_data|string %}
-                        {% if field.field_name == 'related_resources' and field_group.field_name == 'resource' %}
-                            {% set value = h.get_pkg_title(value_data.get('id')) %}
-                        {% endif %}
 
                         {% if h.is_url(value) %}
                             <a href="{{ value }}"{% if display_property %} property="{{ display_property }}"{% endif %}>
@@ -23,6 +20,9 @@
                                 {% endif %}
                             </a>
                         {% else %}
+                            {% if field.field_name == 'related_resources' and field_group.field_name == 'resource' %}
+                                {% set value = h.get_pkg_title(value_data.get('id')) %}
+                            {% endif %}
                             <span {% if field_group.display_property %} property="{{ field_group.display_property }}"{% endif %}>
                                 {{ value }}
                             </span>
