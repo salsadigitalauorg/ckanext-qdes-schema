@@ -648,6 +648,8 @@ def get_publish_activities(pkg):
             try:
                 details = json.loads(resource_publish_log.details)
             except Exception as e:
+                log.warning('get_publish_activities json.loads error: {0}'.format(e))
+                log.warning('{0}'.format(resource_publish_log))
                 details = {}
 
             # Get status.
