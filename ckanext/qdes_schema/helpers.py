@@ -648,7 +648,7 @@ def get_publish_activities(pkg):
             try:
                 details = json.loads(resource_publish_log.details)
             except Exception as e:
-                details = []
+                details = {}
 
             # Get status.
             status = 'Pending'
@@ -678,7 +678,7 @@ def get_publish_activities(pkg):
                     and (resource_needs_republish(resource, pkg, resource_publish_log) or dataset_need_republish(pkg)):
                 # For publish error that cause by the external dataset is deleted (in trash),
                 # don't change the status.
-                if not details.get('external_distribution_deleted', False):
+                if details and not details.get('external_distribution_deleted', False):
                     status = 'Need republish'
 
             # Get portal.
