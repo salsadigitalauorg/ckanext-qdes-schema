@@ -61,8 +61,8 @@ class PublishLog(DomainObject):
     def get_recent_resource_log(cls, resource_id, status=False, action=[]):
         query = meta.Session.query(cls) \
             .filter(cls.resource_id == resource_id) \
-            .order_by(desc(cls.date_created)) \
-            .order_by(desc(cls.date_processed))
+            .order_by(desc(cls.date_processed)) \
+            .order_by(desc(cls.date_created))
 
         if status:
             query = query.filter(cls.status == status)
