@@ -195,11 +195,12 @@ def get_related_object_or_url(context, resource):
     try:
         get_validator('package_id_exists')(resource_id, context)
         object_package_id = resource_id
-    except Invalid:
+    except Exception as e:
         # Dataset does not exist so must be an external dataset URL
         # Validation should have already happened in validator 'qdes_validate_related_dataset'
         # so the `resource` should be a URL to external dataset
         url = resource_id
+        log.error(str(e))
 
     return object_package_id, url
 
