@@ -82,31 +82,12 @@ def update_related_resources(context, data_dict):
         try:
             dataset = model.Package.get(dataset_id)
             if dataset:
-                # Create related_resources from datasets relationships as they are the source of truth
-                relationships = h.get_subject_package_relationship_objects(dataset_id)
-                related_resources = []
-                if relationships:
-                    for relationship in relationships:
-                        id = relationship['object'] if relationship['object'] else relationship['comment']
-                        text = relationship['title'] if relationship['object'] else relationship['comment']
-                        type = relationship['type']
-                        related_resources.append({"resource": {"id": id, "text": text}, "relationship": type})
-
-                log.debug('related_resources: {}'.format(related_resources))
-
-                if len(related_resources) > 0:
-                    new_related_resources_value = json.dumps(related_resources)
-                else:
-                    new_related_resources_value = ''
-
+                # The below values are only used on the form to compile into a list of relationships to add
+                # Once the package has been created/updated the method helpers.update_related_resources will use the below fields to reconcile the relationships
+                # We do not need to keep these values any more which can be potentially causing other undesired issues
                 current_related_resources = dataset._extras.get('related_resources', None)
-                if not current_related_resources:
-                    # Create a new PackageExtra object for related_resources
-                    dataset._extras['related_resources'] = model.PackageExtra(key='related_resources',
-                                                                              value=new_related_resources_value)
-                else:
-                    current_related_resources.value = new_related_resources_value
-                # Always set the below values to None as they should have been included above in related_resources
+                if current_related_resources:
+                    current_related_resources.value = None
                 series_or_collection = dataset._extras.get('series_or_collection', None)
                 if series_or_collection:
                     series_or_collection.value = None
