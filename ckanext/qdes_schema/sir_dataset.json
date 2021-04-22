@@ -260,7 +260,7 @@
       "label": "Spatial",
       "preset": "json_object",
       "form_snippet": "qdes_hidden_json.html",
-      "validators": "ignore_missing qdes_validate_geojson_spatial",
+      "validators": "qdes_validate_geojson_spatial",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage"
     },
