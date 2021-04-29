@@ -81,7 +81,10 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         if toolkit.g and toolkit.g.controller == 'resource':
             return pkg_dict
 
-        helpers.update_related_resources(context, pkg_dict, True)
+        # Only reconcile relationships if the request has come from the Web UI form via the dataset controller
+        # We do not want to reconcile relationships from the API
+        reconcile_relationships = True if toolkit.g and toolkit.g.controller == 'dataset' else False
+        helpers.update_related_resources(context, pkg_dict, reconcile_relationships)
 
         # Remove `ignore_auth` from the context - in case it was set
         # lower in the chain, i.e. by ckanext-relationships
