@@ -35,14 +35,17 @@ def get_ckan_packages():
             # Get dataset identifier from file name
             # Bit of a hack bt easier then doing a regex
             identifier = file.replace('xml_files/', '').replace('.xml', '')
-            csv_row = next((row for row in csv_rows if identifier in row.get('URL')), None)
+            csv_row = next((row for row in csv_rows if identifier in row.get('URL', '')), None)
+            if csv_row is None:
+                append_error('Error finding csv row', f'Identifier {identifier}', {})
+                continue
             try:
                 print(f"Creating QSpatial object for {csv_row.get('Title')}")
                 obj = QSpatialObject(file, csv_row, remoteCKAN, log_file, data_service, owner_org, True)
                 ckan_packages.append(obj.get_ckan_package_dict())
             except Exception as ex:
                 print(f'ERROR: {pformat(ex)}')
-                append_error(csv_row.get('Title'), 'Error creating QSpatialObject', {'url': csv_row.get('URL')})
+                append_error(csv_row.get('Title') or 'No title', 'Error creating QSpatialObject', {'url': csv_row.get('URL') or 'No URL'})
     return ckan_packages
 
 
@@ -131,6 +134,10 @@ def main():
             # Parent package is a series dataset with no resources so we need to remove them
             package.pop('resources')
             create_package(remoteCKAN, package)
+            print(f"Dataset id {package.get('id')} created for PARENT {package.get('name')}")
+            if package.get('id') is None:
+                print(f"<--------- NO DATASET ID FOR PARENT {package.get('name')}----------->")
+                exit()
 
         # Create child packages with parent package id
         for package in child_packages:
@@ -145,7 +152,7 @@ def main():
 
             parent_package = next((parent_package for parent_package in parent_packages if package.get('parent_identifier', None) == parent_package.get('file_identifier', None)), None)
             if parent_package:
-                # print('{0}: parent package found {1} for {2}'.format(parent_package.get('id'), parent_package.get('title'), package.get('title')))
+                print('{0}: parent package found {1} for {2}'.format(parent_package.get('id'), parent_package.get('title'), package.get('title')))
                 package['series_or_collection'] = json.dumps([{"id": parent_package.get('id'), "text": parent_package.get('title')}])
 
             # pprint(package)
