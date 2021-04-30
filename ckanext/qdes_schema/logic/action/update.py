@@ -91,9 +91,6 @@ def update_related_resources(context, data_dict):
                 series_or_collection = dataset._extras.get('series_or_collection', None)
                 if series_or_collection:
                     series_or_collection.value = None
-                related_datasets = dataset._extras.get('related_datasets', None)
-                if related_datasets:
-                    related_datasets.value = None
                 related_services = dataset._extras.get('related_services', None)
                 if related_services:
                     related_services.value = None

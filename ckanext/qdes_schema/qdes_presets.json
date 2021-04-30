@@ -120,22 +120,8 @@
         "form_snippet": "qdes_multi_group.html",
         "display_snippet": "qdes_multi_group.html",
         "validators": "ignore_missing qdes_validate_related_resources",
-        "help_text": "Add a related resource when the nature of the relationship is specified",
         "form_placeholder": "",
         "field_group": [
-          {
-            "field_name": "resource",
-            "label": "Resource",
-            "form_snippet": "text.html",
-            "form_attrs": {
-              "data-module": "qdes_autocomplete",
-              "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
-              "data-module-create-search-choice": true,
-              "data-module-key": "id",
-              "data-module-label": "title",
-              "class": "form-control"
-            }
-          },
           {
             "field_name": "relationship",
             "label": "Relationship",
@@ -145,6 +131,20 @@
               "class": "form-control"
             },
             "form_include_blank_choice": true
+          },
+          {
+            "field_name": "resource",
+            "label": "Related dataset",
+            "help_text": "Add a related resource when the nature of the relationship is specified",
+            "form_snippet": "text.html",
+            "form_attrs": {
+              "data-module": "qdes_autocomplete",
+              "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
+              "data-module-create-search-choice": true,
+              "data-module-key": "id",
+              "data-module-label": "title",
+              "class": "form-control"
+            }
           }
         ]
       }
