@@ -48,4 +48,5 @@ ckanext/qdes_schema/qspatial_harvest/json_files/
 ckanext/qdes_schema/qspatial_harvest/logs/
 ckanext/qdes_schema/qld_harvest/json_files/
 ckanext/qdes_schema/qld_harvest/logs/
+ckanext/qdes_schema/qld_harvest/json_files_data_qld
 
