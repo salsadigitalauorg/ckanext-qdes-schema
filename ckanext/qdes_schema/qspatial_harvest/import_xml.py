@@ -137,7 +137,6 @@ def main():
             print(f"Dataset id {package.get('id')} created for PARENT {package.get('name')}")
             if package.get('id') is None:
                 print(f"<--------- NO DATASET ID FOR PARENT {package.get('name')}----------->")
-                exit()
 
         # Create child packages with parent package id
         for package in child_packages:
@@ -151,7 +150,7 @@ def main():
                         distinct_resource_fields[field].append(resource.get(field)) if resource.get(field) not in distinct_resource_fields[field] else distinct_resource_fields[field]
 
             parent_package = next((parent_package for parent_package in parent_packages if package.get('parent_identifier', None) == parent_package.get('file_identifier', None)), None)
-            if parent_package:
+            if parent_package and parent_package.get('id'):
                 print('{0}: parent package found {1} for {2}'.format(parent_package.get('id'), parent_package.get('title'), package.get('title')))
                 package['series_or_collection'] = json.dumps([{"id": parent_package.get('id'), "text": parent_package.get('title')}])
 
