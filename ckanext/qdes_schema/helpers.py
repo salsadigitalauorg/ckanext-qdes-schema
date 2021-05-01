@@ -623,6 +623,33 @@ def dataset_need_republish(pkg):
     return False
 
 
+def get_publish_activity_status(publish_logs, resource, pkg, details):
+    status = constants.PUBLISH_LOG_PENDING
+    if publish_logs.status == constants.PUBLISH_STATUS_SUCCESS and not publish_logs.action == constants.PUBLISH_ACTION_DELETE:
+        status = constants.PUBLISH_LOG_PUBLISHED
+
+    if publish_logs.status == constants.PUBLISH_STATUS_SUCCESS and publish_logs.action == constants.PUBLISH_ACTION_DELETE:
+        status = constants.PUBLISH_LOG_UNPUBLISHED
+
+    if publish_logs.status == constants.PUBLISH_STATUS_FAILED:
+        if publish_logs.action == constants.PUBLISH_ACTION_DELETE:
+            status = constants.PUBLISH_LOG_UNPUBLISH_ERROR
+        else:
+            status = constants.PUBLISH_LOG_PUBLISH_ERROR
+
+    if publish_logs.status == constants.PUBLISH_STATUS_VALIDATION_ERROR:
+        status = constants.PUBLISH_LOG_VALIDATION_ERROR
+
+    if not publish_logs.status == constants.PUBLISH_STATUS_PENDING \
+            and not publish_logs.action == constants.PUBLISH_ACTION_DELETE \
+            and (resource_needs_republish(resource, pkg, publish_logs) or dataset_need_republish(pkg)):
+        # For publish error that cause by the external dataset is deleted (in trash),
+        # don't change the status.
+        if details and not details.get('external_distribution_deleted', False):
+            status = constants.PUBLISH_LOG_NEED_REPUBLISH
+
+    return status
+
 def get_publish_activities(pkg):
     resource_publish_logs = []
 
@@ -654,35 +681,19 @@ def get_publish_activities(pkg):
                 details = {}
 
             # Get status.
-            status = 'Pending'
-            if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS and not resource_publish_log.action == constants.PUBLISH_ACTION_DELETE:
-                status = 'Published'
+            status = get_publish_activity_status(resource_publish_log, resource, pkg, details)
 
-            if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS and resource_publish_log.action == constants.PUBLISH_ACTION_DELETE:
-                status = 'Unpublished'
+            # If status validation success, keep the last status.
+            if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS and status == constants.PUBLISH_LOG_PENDING and resource_has_published_to_external_schema(resource.get('id'), resource_publish_log.destination):
+                status = constants.PUBLISH_LOG_PUBLISHED
 
+            # Get published and unpublished date for distribution that unpublished.
+            if status == constants.PUBLISH_LOG_UNPUBLISHED:
                 # Get last published date.
                 processed_date = get_last_success_publish_date(resource)
 
                 # Get unpublished date.
                 processed_unpublished_date = resource_publish_log.date_processed
-
-            if resource_publish_log.status == constants.PUBLISH_STATUS_FAILED:
-                if resource_publish_log.action == constants.PUBLISH_ACTION_DELETE:
-                    status = 'Unpublish error'
-                else:
-                    status = 'Publish error'
-
-            if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_ERROR:
-                status = 'Validation error'
-
-            if not resource_publish_log.status == constants.PUBLISH_STATUS_PENDING \
-                    and not resource_publish_log.action == constants.PUBLISH_ACTION_DELETE \
-                    and (resource_needs_republish(resource, pkg, resource_publish_log) or dataset_need_republish(pkg)):
-                # For publish error that cause by the external dataset is deleted (in trash),
-                # don't change the status.
-                if details and not details.get('external_distribution_deleted', False):
-                    status = 'Need republish'
 
             # Get portal.
             portal = ''
