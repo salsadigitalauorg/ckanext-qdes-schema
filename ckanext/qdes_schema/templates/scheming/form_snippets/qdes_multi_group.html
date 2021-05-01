@@ -13,8 +13,10 @@
 
 
 <div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="select">
-    <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
-    {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
+    {% if field.field_name != 'related_resources' %}
+        <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
+        {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
+    {% endif %}
 
     {% if errors[field.field_name] and errors[field.field_name] is iterable and not 'field_groups' in errors[field.field_name]|last %}<span class="error-block">{{ errors[field.field_name]|join(', ')|safe }}</span>{% endif %}
     <div id="{{ 'field-' + field.field_name }}" data-repeater-list="{{ field.field_name }}">
@@ -67,7 +69,7 @@
 
         {% endfor %}
     </div>
-    <div class="row" align="center">
+    <div class="row form-group" align="center">
         <input data-repeater-create type="button" class="btn" value="+" />
     </div>
 </div>
@@ -89,24 +91,24 @@
 {# END: The actual form field the multiple values will be captured & submitted in #}
 
 {% if field.field_name == 'related_resources' and g.controller in ['dataset', 'dataservice'] and g.action == 'edit' %}
-    <h4>Existing related resources</h4>
+    <h4>Existing relationships</h4>
     {% set relationships = h.get_subject_package_relationship_objects(data['id']) %}
     {% if relationships %}
         <table id="existing-related-resources" class="table">
             <thead>
-            <th>Resource</th>
             <th>Nature of relationship</th>
+            <th>Dataset</th>
             <th>&nbsp;</th>
             </thead>
             <tbody>
             {% for relationship in relationships %}
                 <tr>
+                    <td>{{ relationship.type }}</td>
                     <td>
                         {% set resource = relationship.object if relationship.object else relationship.comment %}
                         {% set title = h.get_pkg_title(relationship.object) if relationship.object else relationship.comment %}
                         {{ title }}
                     </td>
-                    <td>{{ relationship.type }}</td>
                     <td>
                         <a href="" class="remove btn btn-xs btn-danger"
                             data-resource="{{ resource }}"
