@@ -384,11 +384,6 @@
       "preset": "dataset_related_multi_text"
     },
     {
-      "field_name": "related_datasets",
-      "label": "Related dataset",
-      "preset": "dataset_related_multi_text"
-    },
-    {
       "preset": "related_resources_multi_group",
       "validators": "ignore_missing"
     },

@@ -121,7 +121,6 @@ def update_related_resources(context, pkg_dict, reconcile_relationships=False):
 
     if pkg_dict.get('type') == 'dataset':
         create_related_relationships(context, pkg_dict, 'series_or_collection', 'Is Part Of')
-        create_related_relationships(context, pkg_dict, 'related_datasets', 'unspecified relationship')
     elif pkg_dict.get('type') == 'dataservice':
         create_related_relationships(context, pkg_dict, 'related_services', 'unspecified relationship')
 
