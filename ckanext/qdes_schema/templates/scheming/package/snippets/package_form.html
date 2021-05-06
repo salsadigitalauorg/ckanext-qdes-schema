@@ -71,6 +71,9 @@
               <button class="acc-heading" type="button">
                 <label for="display-group-{{field.display_group}}" class="no-colon">
                   <span class="title">{{field.display_group|capitalize}}</span>
+                  {%- if h.has_display_group_required_fields(schema.dataset_fields, field.display_group) -%}
+                    <i class="has-mandatory-fields fa fa-asterisk"></i>
+                  {%- endif -%}
                   <span class="arrow"><i></i></span>
                 </label>
               </button>
