@@ -149,6 +149,7 @@
       "display_group": "temporal content",
       "sub_heading": "temporal coverage",
       "sub_heading_help_text": "The start and end date of the dataset",
+      "sub_heading_info_text": "Some spatial coverage fields are recorded in GeoJSON format. Read more on <a href='https://itpqld.sharepoint.com/sites/DES/ST/SciComp/SitePages/DataCatalogue.aspx'> how to create GeoJSON.</a>",
       "form_placeholder": "dd/mm/yyyy"
     },
     {
