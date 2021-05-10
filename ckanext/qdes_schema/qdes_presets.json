@@ -114,7 +114,7 @@
       "preset_name": "related_resources_multi_group",
       "values": {
         "field_name": "related_resources",
-        "label": "Related resource",
+        "label": "Related Datasets",
         "display_group": "related and lineage",
         "sub_heading": "related",
         "form_snippet": "qdes_multi_group.html",
