@@ -19,7 +19,7 @@ apiKey = os.environ['HARVEST_API_KEY']
 dataservice_name = 'data-qld'
 
 DEBUG = False
-SOURCE_FILENAME = 'DES_Datasets_Open_data_V1.csv'
+SOURCE_FILENAME = 'DES_Datasets_Open_data_v2.csv'
 
 
 def get_dataset_schema_fields():
@@ -231,7 +231,7 @@ def resource_mapping(res, source_dict):
         raise e
 
 
-def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_dict):
+def resource_to_dataset_mapping(res, parent_dataset, source_dict):
     """
     Map resource to dataset for series.
     """
@@ -275,7 +275,7 @@ def resource_to_dataset_mapping(res, parent_dataset, parent_dataset_id, source_d
         mapped_dataset['notes'] = resource_description if resource_description else parent_dataset.get('notes', '')
 
         # Set isPartOf relationship.
-        mapped_dataset['series_or_collection'] = json.dumps([{"id": parent_dataset_id.get('id'), "text": parent_dataset_id.get('title')}])
+        mapped_dataset['series_or_collection'] = json.dumps([{"id": parent_dataset.get('id'), "text": parent_dataset.get('title')}])
 
         # Create a resource for the dataset based on the resource we are working with
         # AND connect it to the data service
@@ -380,6 +380,10 @@ def check_for_existing_package(dataset_name, package_dict):
 
                         if update_existing_series_package == True:
                             destination.action.package_update(**existing_series_package)
+                            success_log.append({
+                                'package_id': dataset_name,
+                                'message': 'Successfully updated.'
+                            })
                         # Package already exists and key info has been updated so lets move on to the next
                         continue
                     except NotFound:
@@ -392,10 +396,14 @@ def check_for_existing_package(dataset_name, package_dict):
                                              'Resource is a metadata XML of existing QSpatial record. Resource not created.')
                     else:
                         # Create new package from series resource
-                        new_series_package_dict = resource_to_dataset_mapping(resource, existing_package, existing_package, row)
+                        new_series_package_dict = resource_to_dataset_mapping(resource, existing_package, row)
                         try:
                             new_series_package_dict_id = destination.action.package_create(**new_series_package_dict)
                             append_migration_log(dataset_name, resource.get('name', None), 'New dataset created for QSpatial series')
+                            success_log.append({
+                                'package_id': dataset_name,
+                                'message': 'Successfully migrated.'
+                            })
                         except Exception as e:
                             print(e)
                             append_error(new_series_package_dict.get('name'), str(e), source_url)
@@ -431,6 +439,10 @@ def check_for_existing_package(dataset_name, package_dict):
 
         if update_existing_package:
             destination.action.package_update(**existing_package)
+            success_log.append({
+                'package_id': dataset_name,
+                'message': 'Successfully updated.'
+            })
     except NotFound:
         existing_package = None
 
@@ -482,7 +494,12 @@ for row in csv_reader:
     existing_package_found = False
     try:
         package_dict = source.action.package_show(id=dataset_name)
+        if not os.path.exists('json_files'):
+            os.makedirs('json_files')
+        with open(f'json_files/{dataset_name}.json', 'w') as json_csv:
+            json_csv.write(json.dumps(package_dict, indent=2))
         # package_dict = json.load(open(f'json_files/{dataset_name}.json', 'r'))
+
         existing_package_found = check_for_existing_package(dataset_name, package_dict)
     except Exception as e:
         print(f'Error fetching package {dataset_name}')
@@ -504,22 +521,33 @@ for row in csv_reader:
         # This will be resource-less package.
         new_package_dict['resources'] = []
         error = False
-        new_package_dict_id = {}
 
         # Create the parent of series dataset.
         try:
-            new_package_dict_id = destination.action.package_create(**new_package_dict)
+            new_package_dict = destination.action.package_create(**new_package_dict)
+            append_migration_log(dataset_name, new_package_dict.get('name', None), 'New parent of series dataset created for DataQLD')
+            success_log.append({
+                'package_id': dataset_name,
+                'message': 'Successfully migrated.'
+            })
         except Exception as e:
             append_error(dataset_name, str(e), source_url)
             continue
 
         # Create individual package for each resource that belong to above series dataset.
         if ('resources' in package_dict) and not error:
-            for resource in package_dict.get('resources'):
-                new_series_package_dict = resource_to_dataset_mapping(resource, new_package_dict, new_package_dict_id, row)
+            # Filter out resource names with meta in them
+            for resource in [resource for resource in package_dict.get('resources') if 'meta' not in resource.get('name').lower()]:
+                new_series_package_dict = resource_to_dataset_mapping(resource, new_package_dict, row)
 
                 try:
                     new_series_package_dict_id = destination.action.package_create(**new_series_package_dict)
+                    append_migration_log(dataset_name, new_series_package_dict.get('name', None),
+                                         f'New child of series dataset created for DataQLD parent series {new_package_dict.get("name")}')
+                    success_log.append({
+                        'package_id': dataset_name,
+                        'message': 'Successfully migrated.'
+                    })
                 except Exception as e:
                     append_error(new_series_package_dict.get('name'), str(e), source_url)
     else:
@@ -528,10 +556,12 @@ for row in csv_reader:
 
         try:
             if 'resources' in package_dict:
-                for resource in package_dict.get('resources'):
+                # Filter out resource names with meta in them
+                for resource in [resource for resource in package_dict.get('resources') if 'meta' not in resource.get('name').lower()]:
                     new_package_dict['resources'].append(resource_mapping(resource, row))
 
             new_package_dict_id = destination.action.package_create(**new_package_dict)
+            append_migration_log(dataset_name, new_package_dict.get('name', None), f'New DataQLD dataset created')
             success_log.append({
                 'package_id': dataset_name,
                 'message': 'Successfully migrated.'
@@ -540,15 +570,25 @@ for row in csv_reader:
             append_error(dataset_name, str(e), source_url)
 
 if success_log:
-    print(pformat(success_log))
+    # print(pformat(success_log))
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+    with open('logs/success-{0}.csv'.format(datetime.now().strftime("%Y%m%d-%H%M%S")), 'w') as log_csv:
+        for log in success_log:
+            log_csv.write(f'{log}\n')
 
 if error_log:
     print(pformat(error_log))
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+    with open('logs/errors-{0}.csv'.format(datetime.now().strftime("%Y%m%d-%H%M%S")), 'w') as log_csv:
+        for log in error_log:
+            log_csv.write(f'{log}\n')
 
 if migration_log:
     if not os.path.exists('logs'):
         os.makedirs('logs')
-    with open('logs/{0}.csv'.format(datetime.now().strftime("%Y%m%d-%H%M%S")), 'w') as log_csv:
+    with open('logs/migration-{0}.csv'.format(datetime.now().strftime("%Y%m%d-%H%M%S")), 'w') as log_csv:
         for log in migration_log:
             log_csv.write(f'{log}\n')
 
@@ -559,6 +599,10 @@ print('>>> Unique license_url values from Data.Qld:')
 print(pformat(unique_license_urls))
 
 print(f'\nRows in CSV: {count}')
+
+print(f'\nRows migrated: {len(success_log)}')
+
+print(f'\nRows failed: {len(error_log)}')
 
 print('>>> Unique formats from Data.Qld:')
 print(pformat(unique_formats))

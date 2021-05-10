@@ -138,6 +138,7 @@ def get_mapped_format(format):
         'shp': 'http://publications.europa.eu/resource/authority/file-type/SHP',
         'geotiff': 'http://publications.europa.eu/resource/authority/file-type/TIFF', #geotiff
         'tiff': 'http://publications.europa.eu/resource/authority/file-type/TIFF',
+        'tif': 'http://publications.europa.eu/resource/authority/file-type/TIFF',
         'rest': 'http://publications.europa.eu/resource/authority/file-type/REST',
         'geojson': 'http://publications.europa.eu/resource/authority/file-type/GEOJSON',
         'html': 'http://publications.europa.eu/resource/authority/file-type/HTML_SIMPL',
