@@ -24,7 +24,7 @@ def get_ckan_packages():
     files = glob.glob('xml_files/*.xml')
     log_file = 'logs/{0}.txt'.format(dt.now().strftime("%Y%m%d-%H%M%S"))
     count = 0
-    csv_rows = [row for row in csv.DictReader(open('DES_Datasets_QSpatial_v1.csv', "r"))]
+    csv_rows = [row for row in csv.DictReader(open('DES_Datasets_QSpatial_v2.csv', "r"))]
     with get_remote_ckan() as remoteCKAN:
         data_service = remoteCKAN.action.package_show(id='qspatial')
         owner_org = os.environ['OWNER_ORG']
@@ -56,6 +56,7 @@ def create_package(remoteCKAN, package):
         print(f"Creating CKAN package for {package.get('title', None)}")
         result = remoteCKAN.action.package_create(**package)
         package['id'] = result.get('id')
+        append_audit(package, 'Dataset imported')
     except Exception as e:
         append_error(package.get('title'), str(e), package)
 
@@ -65,6 +66,11 @@ def append_error(dataset_title, error, package):
     # error_log.append(log) if log not in error_log else error_log
     log = [dataset_title, package.get('url'), error]
     error_log.append(log) if log not in error_log else error_log
+
+
+def append_audit(package, message):
+    log = [package.get('title'), package.get('name'), package.get('url'), message]
+    audit_log.append(log) if log not in audit_log else audit_log
 
 
 def main():
@@ -169,8 +175,17 @@ def main():
             error_log_file.write(f"{error[0]},{error[1]},{json.dumps(error[2],indent=2)}\n")
         error_log_file.close()
 
+    if audit_log:
+        log_file = 'logs/audit_{0}.csv'.format(dt.now().strftime("%Y%m%d-%H%M%S"))
+        audit_log_file = open(log_file, 'a')
+        audit_log_file.write("Dataset Title, Name, URL\n")
+        for audit in audit_log:
+            audit_log_file.write(f'"{audit[0]}",{audit[1]},{json.dumps(audit[2],indent=2)}\n')
+        audit_log_file.close()
+
 
 error_log = []
+audit_log = []
 
 if __name__ == '__main__':
     main()
