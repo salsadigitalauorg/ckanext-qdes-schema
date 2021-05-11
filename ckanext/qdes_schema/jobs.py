@@ -351,8 +351,9 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict={}, rece
         # It is always index 0.
         qld_resource_dict[field] = des_resource[0].get(field)
 
-        if field == 'format':
-            qld_resource_dict[field] = _get_vocab_label('dataset', 'resource_fields', field, qld_resource_dict[field])
+        #TODO: Remove this line
+        # if field == 'format':
+        #     qld_resource_dict[field] = _get_vocab_label('dataset', 'resource_fields', field, qld_resource_dict[field])
 
     if is_update:
         new_resources = []
@@ -383,6 +384,7 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict={}, rece
 
     qld_pkg_dict['license_id'] = helpers.map_license(des_package_dict['license_id'],
                                                      constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
+    qld_pkg_dict['format'] = helpers.map_formats(des_package_dict['format'], constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
 
     qld_pkg_dict['owner_org'] = os.getenv(
         constants.get_owner_org(constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA))

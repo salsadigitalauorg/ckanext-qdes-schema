@@ -530,6 +530,43 @@ def map_license(uri, schema):
     return license_map.get(schema, {}).get(uri, '')
 
 
+def map_formats(format, schema):
+    formats_map = {
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {
+            'http://publications.europa.eu/resource/authority/file-type/CSV': 'CSV',
+            'http://publications.europa.eu/resource/authority/file-type/ECW': 'ECW', # Not in Open Data
+            'http://publications.europa.eu/resource/authority/file-type/GRID_ASCII': 'ESRI',
+            'http://publications.europa.eu/resource/authority/file-type/GDB': 'ESRI GEODATABASE',
+            'http://publications.europa.eu/resource/authority/file-type/REST': 'ESRI',
+            'http://publications.europa.eu/resource/authority/file-type/SHP': 'ESRI SHAPE',
+            'http://publications.europa.eu/resource/authority/file-type/GRID': 'ESRI',
+            'http://publications.europa.eu/resource/authority/file-type/XLSX': 'XLSX',
+            'http://publications.europa.eu/resource/authority/file-type/GEOJSON': 'GeoJSON',
+            'http://publications.europa.eu/resource/authority/file-type/HTML_SIMPL': 'HTML',
+            'http://publications.europa.eu/resource/authority/file-type/JPEG': 'JPEG',
+            'http://publications.europa.eu/resource/authority/file-type/JSON': 'JSON',
+            'http://publications.europa.eu/resource/authority/file-type/KML': 'KML',
+            'http://publications.europa.eu/resource/authority/file-type/KMZ': 'KMZ',
+            'http://publications.europa.eu/resource/authority/file-type/MDB': 'MDB', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/NETCDF': 'NetCDF', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/PDF': 'PDF',
+            'http://publications.europa.eu/resource/authority/file-type/TXT': 'TXT',
+            'http://publications.europa.eu/resource/authority/file-type/PPTX': 'PPTX', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/TIFF': 'TIF',
+            'http://publications.europa.eu/resource/authority/file-type/TSV': 'TAB SEPARATED VALUES',
+            'http://publications.europa.eu/resource/authority/file-type/WFS_SRVC': 'WFS', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/WMS_SRVC': 'WMS', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/DOCX': 'DOCX',
+            'http://publications.europa.eu/resource/authority/file-type/XML': 'XML'
+        },
+        # @todo, in case needed, need to map this against external schema in future.
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+    }
+
+    return formats_map.get(schema, {}).get(format, '')
+
+
 def dataset_has_published_to_external_schema(package_id, schema=None):
     return PublishLog.has_published(package_id, 'dataset')
 
