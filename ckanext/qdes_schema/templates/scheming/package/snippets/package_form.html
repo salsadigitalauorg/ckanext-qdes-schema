@@ -87,14 +87,15 @@
       {%- set ns.display_group = field.display_group -%}
     {%- endif -%}
 
-    {%- if field.sub_heading_info_text is not none and field.sub_heading_info_text != ns.sub_heading_info_text -%}
-        {%- set ns.sub_heading_info_text = field.sub_heading_info_text -%}
-        <div class="small">{{ h.render_markdown(field.sub_heading_info_text, allow_html=True)}}</div>
-    {%- endif -%}
-
     {%- if field.sub_heading is not none and field.sub_heading != ns.sub_heading -%}
-    
-    {% endif %}
+        {%- set ns.sub_heading = field.sub_heading -%}
+        <h3>{{ field.sub_heading|capitalize }}</h3>
+
+      {%- if field.sub_heading_info_text is not none and field.sub_heading_info_text != ns.sub_heading_info_text -%}
+        {%- set ns.sub_heading_info_text = field.sub_heading_info_text -%}
+        <div class="small">{{ h.render_markdown(field.sub_heading_info_text, allow_html=True) }}</div>
+      {%- endif -%}
+    {%- endif -%}
 
     {%- if field.form_snippet is not none -%}
       {%- snippet 'scheming/snippets/form_field.html',
