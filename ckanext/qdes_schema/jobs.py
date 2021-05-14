@@ -355,10 +355,10 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
     for field in resource_fields:
         # It is always index 0, because each job will create/update single distribution.
         qld_resource_dict[field] = des_resource[0].get(field)
-
         if field == 'format':
-            qld_resource_dict[field] = _get_vocab_label('dataset', 'resource_fields', field, qld_resource_dict[field])
-
+            # Manually map resource format
+            qld_resource_dict[field] = helpers.map_formats(des_resource[0].get(field),
+                                                           constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
     if is_update:
         new_resources = []
         if has_recent_log:
