@@ -549,7 +549,7 @@ def get_distribution_naming(pkg, resource):
     return resource.get('name')
 
 
-def get_last_success_publish_date(resource):
+def get_last_success_publish_log(resource):
     last_success_log = PublishLog.get_recent_resource_log(
         resource.get('id'),
         constants.PUBLISH_STATUS_SUCCESS,
@@ -558,6 +558,12 @@ def get_last_success_publish_date(resource):
             constants.PUBLISH_ACTION_CREATE
         ]
     )
+
+    return last_success_log
+
+
+def get_last_success_publish_date(resource):
+    last_success_log = get_last_success_publish_log(resource)
 
     processed_date = None
     if last_success_log:
@@ -579,7 +585,10 @@ def resource_needs_republish(resource, pkg, publish_log):
         return True
 
     if publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
-        return True
+        # Load last published log and determine if this resource updated since then.
+        last_success_publish_date = get_last_success_publish_date(resource)
+        if last_success_publish_date:
+            return res_metadata_modified_date > last_success_publish_date
 
     if publish_log.status == constants.PUBLISH_STATUS_PENDING:
         return False
@@ -599,6 +608,11 @@ def dataset_need_republish(pkg):
     most_recent_updated_resource = None
     for resource in pkg.get('resources', []):
         res_publish_log = PublishLog.get_recent_resource_log(resource.get('id'))
+        if not res_publish_log:
+            continue
+
+        if res_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
+            res_publish_log = get_last_success_publish_log(resource)
         if not res_publish_log:
             continue
 
@@ -644,7 +658,9 @@ def get_publish_activity_status(publish_logs, resource, pkg, details):
             and (resource_needs_republish(resource, pkg, publish_logs) or dataset_need_republish(pkg)):
         # For publish error that cause by the external dataset is deleted (in trash),
         # don't change the status.
-        if details and not details.get('external_distribution_deleted', False):
+        # When the status is validation_success, the details will be empty
+        # but we need to detect if the current distribution need republish.
+        if not details or (details and not details.get('external_distribution_deleted', False)):
             status = constants.PUBLISH_LOG_NEED_REPUBLISH
 
     return status
@@ -667,8 +683,8 @@ def get_publish_activities(pkg):
             processed_unpublished_date = ''
             if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS:
                 processed_date = resource_publish_log.date_processed
-            elif resource_publish_log.status == constants.PUBLISH_STATUS_FAILED:
-                # If failed, get the last success published date.
+            elif resource_publish_log.status == constants.PUBLISH_STATUS_FAILED or resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
+                # If failed or validation_success, get the last success published date.
                 processed_date = get_last_success_publish_date(resource)
 
             # Get detail.
@@ -685,6 +701,7 @@ def get_publish_activities(pkg):
             # If status validation success, keep the last status.
             if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS and status == constants.PUBLISH_LOG_PENDING and resource_has_published_to_external_schema(resource.get('id'), resource_publish_log.destination):
                 status = constants.PUBLISH_LOG_PUBLISHED
+
 
             # Get published and unpublished date for distribution that unpublished.
             if status == constants.PUBLISH_LOG_UNPUBLISHED:
