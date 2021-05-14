@@ -287,7 +287,8 @@ def _update_external_dataset(publish_log, destination, external_pkg_dict, packag
             if recent_publish_log:
                 recent_publish_log_detail = json.loads(recent_publish_log.details)
                 updated_external_resource_id = recent_publish_log_detail.get('external_resource_id')
-            else:
+
+            if not updated_external_resource_id or not _check_resource_id_exist(updated_external_resource_id, external_package_dict.get('resources', [])):
                 # Return the last list, and record the external resource id.
                 last_resource = external_package_dict.get('resources', [])[-1]
                 updated_external_resource_id = last_resource.get('id')
@@ -306,7 +307,7 @@ def _update_external_dataset(publish_log, destination, external_pkg_dict, packag
     return constants.PUBLISH_STATUS_SUCCESS if success else constants.PUBLISH_STATUS_FAILED, details, external_package_dict
 
 
-def _build_and_clean_up_dataqld(des_package_dict, external_package_dict={}, recent_publish_log={}):
+def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, recent_publish_log=None):
     # Variable is_update will be true when
     # there is a similar package name on external schema.
     is_update = True if external_package_dict else False
@@ -323,6 +324,10 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict={}, rece
 
         if not updated_external_resource_id:
             has_recent_log = False
+
+        # Check if the updated_external_resource_id is exist in external_package_dict.
+        external_resources = external_package_dict.get('resources', [])
+        has_recent_log = _check_resource_id_exist(updated_external_resource_id, external_resources)
 
     # Load the schema.
     schema = scheming_helpers.scheming_get_dataset_schema(constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
@@ -348,7 +353,7 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict={}, rece
     # Build resource.
     des_resource = des_package_dict.get('resources')
     for field in resource_fields:
-        # It is always index 0.
+        # It is always index 0, because each job will create/update single distribution.
         qld_resource_dict[field] = des_resource[0].get(field)
 
         if field == 'format':
@@ -439,3 +444,11 @@ def _update_publish_log(publish_log, status, detail, external_pkg_dict):
         publish_log.destination_identifier = external_pkg_dict.get('id')
 
     return get_action('update_publish_log')({}, dict(publish_log.as_dict()))
+
+
+def _check_resource_id_exist(res_id, resources):
+    for res in resources:
+        if res.get('id') == res_id:
+            return True
+
+    return False
