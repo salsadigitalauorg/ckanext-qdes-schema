@@ -216,7 +216,9 @@ def unpublish_external_dataset_resource(id):
 
         # Add to job worker queue.
         if publish_log:
-            toolkit.enqueue_job(jobs.unpublish_external_distribution, [publish_log.id, c.user])
+            # Improvements for job worker visibility when troubleshooting via logs
+            job_title = f'Unpublish external dataset resource: dataset_id={publish_log.dataset_id}, resource_id={publish_log.resource_id}, destination={publish_log.destination}'
+            toolkit.enqueue_job(jobs.unpublish_external_distribution, [publish_log.id, c.user], title=job_title)
             unpublish = publish_log.id
 
     except Exception as e:

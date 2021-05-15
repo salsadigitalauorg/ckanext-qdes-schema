@@ -474,7 +474,9 @@ def schema_publish(pkg, data):
 
             # Add to job worker queue.
             if publish_log:
-                toolkit.enqueue_job(jobs.publish_to_external_catalogue, [publish_log.id, c.user])
+                # Improvements for job worker visibility when troubleshooting via logs
+                job_title = f'Publish external dataset resource: dataset_id={publish_log.dataset_id}, resource_id={publish_log.resource_id}, destination={publish_log.destination}'
+                toolkit.enqueue_job(jobs.publish_to_external_catalogue, [publish_log.id, c.user], title=job_title)
 
         return True
     except Exception as e:
