@@ -191,7 +191,7 @@
       "display_property": "dcterms:spatial",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage",
-      "sub_heading_info_text": "Some spatial coverage fields are recorded in GeoJSON format. Read more on <a href='https://itpqld.sharepoint.com/sites/DES/ST/SciComp/SitePages/DataCatalogue.aspx'> how to create GeoJSON.</a>",
+      "sub_heading_info_text": "Some spatial coverage fields are recorded in GeoJSON format. Read more on <a href='https://itpqld.sharepoint.com/sites/DES/ST/SciComp/SitePages/QESDCat-Home.aspx'> how to create GeoJSON.</a>",
       "help_text": "The geographical area covered by the dataset"
     },
     {
