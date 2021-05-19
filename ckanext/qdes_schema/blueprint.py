@@ -13,11 +13,12 @@ from flask import Blueprint
 from pprint import pformat
 from ckanext.qdes_schema.logic.helpers import dataservice_helpers as dataservice_helpers
 
-abort = base.abort
-get_action = logic.get_action
+abort = toolkit.abort
+get_action = toolkit.get_action
 log = logging.getLogger(__name__)
-NotFound = logic.NotFound
-NotAuthorized = logic.NotAuthorized
+NotFound = toolkit.ObjectNotFound
+NotAuthorized = toolkit.NotAuthorized
+ValidationError = toolkit.ValidationError
 render = toolkit.render
 h = toolkit.h
 clean_dict = logic.clean_dict
@@ -46,10 +47,14 @@ def related_datasets(id_or_name):
                 # Check for access, don't show to user if user has no permission
                 # Example, non logged-in user should not see delete package.
                 try:
-                    toolkit.check_access('package_show', context, {'id': relationship.get('pkg_id')})
+                    # Only do check_access on internal datasets not external
+                    # Internal datasets will have a pkg_id where external datasets do not
+                    if relationship.get('pkg_id'):
+                        toolkit.check_access('package_show', context, {'id': relationship.get('pkg_id')})
                     related.append(relationship)
-                except (NotFound, NotAuthorized):
+                except (NotFound, NotAuthorized, ValidationError) as e:
                     # Let's continue to the next list.
+                    log.warning(f"related_datasets: Relationship dataset {relationship.get('pkg_id')} access check error = {e}")
                     pass
 
         extra_vars = {
