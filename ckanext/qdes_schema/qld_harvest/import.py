@@ -91,7 +91,7 @@ def dataset_mapping(dataset, source_dict):
 
         # Mandatory field default values hardcoded
         mapped_dataset['type'] = 'dataset'
-        mapped_dataset['license_id'] = 'http://linked.data.gov.au/def/licence-document/cc-by-4.0'
+        mapped_dataset['license_id'] = 'https://linked.data.gov.au/def/licence-document/cc-by-4.0'
         mapped_dataset['owner_org'] = owner_org
         today = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
         mapped_dataset['dataset_last_modified_date'] = today
