@@ -6,12 +6,14 @@ import ckan.model as model
 import ckanext.qdes_schema.constants as constants
 import ckanext.qdes_schema.jobs as jobs
 import logging
+import six
 
 from ckan.common import _, c, request
 from ckanext.qdes_schema import helpers
 from flask import Blueprint
 from pprint import pformat
 from ckanext.qdes_schema.logic.helpers import dataservice_helpers as dataservice_helpers
+from flask import send_file
 
 abort = toolkit.abort
 get_action = toolkit.get_action
@@ -232,6 +234,43 @@ def unpublish_external_dataset_resource(id):
     return h.redirect_to('/dataset/{}/publish?unpublish={}'.format(id, unpublish))
 
 
+def dataset_export(id, format):
+    try:
+        context = {
+            u'model': model,
+            u'user': toolkit.g.user,
+            u'auth_user_obj': toolkit.g.userobj
+        }
+        dataset = get_action('package_show')(context, {'id': id})
+        # TODO: We might need to load some vocab serivce as objects to get label etc
+        # if dataset['contact_publisher']:
+        #     term = get_action('get_vocabulary_service_term')(context, {'term_uri': dataset['contact_publisher']})
+        #     if term:
+        #         dataset['contact_publisher'] = term
+
+        # TODO: Need to load all secure vocabs as dict objects
+        if dataset['contact_point']:
+            secure_vocabulary_record = get_action('get_secure_vocabulary_record')(
+                context, {'vocabulary_name': 'point-of-contact', 'query': dataset['contact_point']})
+            if secure_vocabulary_record:
+                dataset['contact_point'] = secure_vocabulary_record
+
+        extra_vars = {}
+        extra_vars['dataset'] = dataset
+        data = None
+        if format == 'XML (ISO-19139)':
+            data = render(f'package/export/{format}.xml.j2', extra_vars=extra_vars)
+        else:
+            abort(400, _('Invalid export format'))
+
+        if data:
+            return send_file(six.BytesIO(data.encode('utf8')),
+                             as_attachment=True,
+                             attachment_filename=f'{dataset.get("title")}.xml')
+    except (NotFound, NotAuthorized):
+        abort(404, _('Dataset not found'))
+
+
 qdes_schema.add_url_rule(u'/dataset/<id_or_name>/related-datasets', view_func=related_datasets)
 qdes_schema.add_url_rule(u'/dataset/<id>/metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/metadata', endpoint='dataservice_metadata', view_func=dataset_metadata)
@@ -241,3 +280,5 @@ qdes_schema.add_url_rule(u'/dataset/<id>/publish', methods=[u'GET', u'POST'],
                          view_func=datasets_schema_validation)
 qdes_schema.add_url_rule(u'/dataset/<id>/unpublish-external', methods=[u'POST'],
                          view_func=unpublish_external_dataset_resource)
+qdes_schema.add_url_rule(u'/dataset/<id>/export/<format>',
+                         view_func=dataset_export)

@@ -1,0 +1,443 @@
+<MD_Metadata xmlns="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:srv="http://www.isotc211.org/2005/srv" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <fileIdentifier>
+    <gco:CharacterString>{{ dataset.get('id') }}</gco:CharacterString>
+  </fileIdentifier>
+  <parentIdentifier>
+    <gco:CharacterString>Soils series</gco:CharacterString>
+  </parentIdentifier>
+  <language>
+    <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng" codeSpace="ISO639-2">eng</LanguageCode>
+  </language>
+  <characterSet>
+    <MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="ISOTC211/19115">utf8</MD_CharacterSetCode>
+  </characterSet>
+  <hierarchyLevel>
+    <MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset" codeSpace="ISOTC211/19115">dataset</MD_ScopeCode>
+  </hierarchyLevel>
+  <hierarchyLevelName>
+    <gco:CharacterString>{{ dataset.get('type') }}</gco:CharacterString>
+  </hierarchyLevelName>
+  <contact>
+    <CI_ResponsibleParty>
+      <individualName>
+        <gco:CharacterString>{{dataset.get('contact_point', {}).get('Name', '')}}</gco:CharacterString>
+      </individualName>
+      <role>
+        <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact" codeSpace="ISOTC211/19115">pointOfContact</CI_RoleCode>
+      </role>
+    </CI_ResponsibleParty>
+    <CI_ResponsibleParty>
+      <individualName>
+        <gco:CharacterString>{{dataset.get('organization', {}).get('title', '')}}</gco:CharacterString>
+      </individualName>
+      <role>
+        <CI_RoleCode codeSpace="ISOTC211/19115" codeListValue="publisher" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode">publisher</CI_RoleCode>
+      </role>
+    </CI_ResponsibleParty>
+    <CI_ResponsibleParty id="metadataContact">
+      <individualName>
+        <gco:CharacterString>Daniel Brough</gco:CharacterString>
+      </individualName>
+      <positionName>
+        <gco:CharacterString>Science Leader</gco:CharacterString>
+      </positionName>      
+      <contactInfo>
+        <CI_Contact>
+          <address>
+            <CI_Address>
+              <electronicMailAddress>
+                <gco:CharacterString>qdes+Daniel.Brough@salsadigital.com.au</gco:CharacterString>
+              </electronicMailAddress>
+            </CI_Address>
+          </address>
+        </CI_Contact>
+      </contactInfo>      
+      <role>
+        <CI_RoleCode codeSpace="ISOTC211/19115" codeListValue="pointOfContact" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode">pointOfContact</CI_RoleCode>
+      </role>
+    </CI_ResponsibleParty>  
+  </contact>
+  <dateStamp>
+    <gco:Date>2020-01-18T10:00:00+10:00</gco:Date>
+  </dateStamp>
+  <metadataStandardName>
+    <gco:CharacterString>ISO 19139 Geographic Information - Metadata - Implementation Specification</gco:CharacterString>
+  </metadataStandardName>
+  <metadataStandardVersion>
+    <gco:CharacterString>2007</gco:CharacterString>
+  </metadataStandardVersion>
+  <locale>
+    <PT_Locale>
+      <languageCode>
+        <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng" codeSpace="ISO639-2">eng</LanguageCode>
+      </languageCode>
+      <country>
+        <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="AU" codeSpace="ISO3166-1">AU</Country>
+      </country>
+      <characterEncoding>
+        <MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="ISOTC211/19115">utf8</MD_CharacterSetCode>
+      </characterEncoding>
+    </PT_Locale>
+  </locale>
+  <referenceSystemInfo>
+    <MD_ReferenceSystem>
+      <referenceSystemIdentifier>
+        <RS_Identifier>
+          <code>
+            <gco:CharacterString>GDA94</gco:CharacterString>
+          </code>
+        </RS_Identifier>
+      </referenceSystemIdentifier>
+    </MD_ReferenceSystem>
+  </referenceSystemInfo>
+  <identificationInfo>
+    <MD_DataIdentification>
+      <citation>
+        <CI_Citation>
+        {% for identifier in h.get_multi_textarea_values(dataset.get('identifiers', [])) %}
+          <identifier>
+            <MD_Identifier>
+                <code>
+                    <gco:CharacterString>{{ identifier }}</gco:CharacterString>
+                </code>
+            </MD_Identifier>    
+          </identifier>
+        {% endfor %}         
+          <title>
+            <gco:CharacterString>Soils - Burdekin delta soils - BDS</gco:CharacterString>
+          </title>
+          <alternateTitle>
+            <gco:CharacterString>Soils - Burdekin delta soils - BDS</gco:CharacterString>
+          </alternateTitle>
+          <date>
+            <CI_Date>
+              <date>
+                <gco:Date>2020-01-18T10:00:00+10:00</gco:Date>
+              </date>
+              <dateType>
+                <CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="creation" codeSpace="ISOTC211/19115">creation</CI_DateTypeCode>
+              </dateType>
+            </CI_Date>
+          </date>
+          <date>
+            <CI_Date>
+              <date>
+                <gco:Date>2020-01-18T10:00:00+10:00</gco:Date>
+              </date>
+              <dateType>
+                <CI_DateTypeCode codeSpace="ISOTC211/19115" codeListValue="publication" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode">publication</CI_DateTypeCode>
+              </dateType>
+            </CI_Date>
+          </date>
+          <date>
+            <CI_Date>
+              <date>
+                <gco:Date>2021-05-22T07:32:17+10:00</gco:Date>
+              </date>
+              <dateType>
+                <CI_DateTypeCode codeSpace="ISOTC211/19115" codeListValue="revision" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode">revision</CI_DateTypeCode>
+              </dateType>
+            </CI_Date>
+          </date>          
+          <citedResponsibleParty>
+            <CI_ResponsibleParty>
+              <individualName>
+                <gco:CharacterString>Brooke Ryan</gco:CharacterString>
+              </individualName>
+              <positionName>
+                <gco:CharacterString>Environmental Officer</gco:CharacterString>
+              </positionName>
+              <contactInfo>
+                <CI_Contact>
+                  <address>
+                    <CI_Address>
+                      <electronicMailAddress>
+                        <gco:CharacterString>Brooke.Ryan@des.qld.gov.au</gco:CharacterString>
+                      </electronicMailAddress>
+                    </CI_Address>
+                  </address>
+                </CI_Contact>
+              </contactInfo> 
+              <role>
+                <CI_RoleCode codeSpace="ISOTC211/19115" codeListValue="originator" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode">originator</CI_RoleCode>
+              </role>
+            </CI_ResponsibleParty>
+          </citedResponsibleParty>
+          <presentationForm>
+            <CI_PresentationFormCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_PresentationFormCode" codeListValue="mapDigital" codeSpace="ISOTC211/19115">mapDigital</CI_PresentationFormCode>
+          </presentationForm>
+        </CI_Citation>
+      </citation>
+      <abstract>
+        <gco:CharacterString>These datasets are soil survey mapping available in Queensland. These surveys were conducted for different purposes and are mapped at different scales. Refer to individual records for more information.</gco:CharacterString>
+      </abstract>
+      <purpose>
+        <gco:CharacterString>Example purpose text</gco:CharacterString>
+      </purpose>
+      <credit>
+        <gco:CharacterString>© State of Queensland (Department of Environment and Science) 2020</gco:CharacterString>
+      </credit>
+      <resourceConstraints>
+        <MD_LegalContraints>
+          <useLimitation>
+            <gco:CharacterString>© State of Queensland (Department of Environment and Science) 2020</gco:CharacterString>
+          <useLimitation>
+          <useConstraints>
+              <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="copyright" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">copyright</MD_RestrictionCode>
+          </useConstraints>
+        </MD_LegalContraints>
+      </resourceConstraints>
+      <status>
+        <gco:CharacterString>completed</gco:CharacterString>
+        <MD_ProgressCode codeSpace="ISOTC211/19115" codeListValue="completed" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode">completed</MD_ProgressCode>
+      </status>
+      <resourceMaintenance>
+        <MD_MaintenanceInformation>
+          <maintenanceAndUpdateFrequency>
+            <MD_MaintenanceFrequencyCode codeSpace="ISOTC211/19115" codeListValue="as Needed" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode">as Needed</MD_MaintenanceFrequencyCode>
+          </maintenanceAndUpdateFrequency>
+        </MD_MaintenanceInformation>
+      </resourceMaintenance>
+      <descriptiveKeywords>
+        <MD_Keywords>
+          <keyword>
+            <gco:CharacterString>SOILS</gco:CharacterString>
+          </keyword>
+          <type>
+            <MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme" codeSpace="ISOTC211/19115">theme</MD_KeywordTypeCode>
+          </type>
+        </MD_Keywords>
+      </descriptiveKeywords>
+      <descriptiveKeywords>
+        <MD_Keywords>
+          <keyword>
+            <gco:CharacterString>SOIL</gco:CharacterString>
+          </keyword>
+          <keyword>
+            <gco:CharacterString>Sciences</gco:CharacterString>
+          </keyword>
+          <type>
+            <MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme" codeSpace="ISOTC211/19115">theme</MD_KeywordTypeCode>
+          </type>
+        </MD_Keywords>
+      </descriptiveKeywords>
+      <resourceConstraints>
+        <MD_SecurityConstraints>
+          <useLimitation>
+            <gco:CharacterString>OFFICIAL</gco:CharacterString>
+          </useLimitation>
+          <useConstraints>
+            <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="otherResrictions" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">otherRestrictions</MD_RestrictionCode>
+          </useConstraints>
+        </MD_SecurityConstraints>
+      </resourceConstraints>
+      <resourceConstraints>
+        <MD_LegalContraints>
+          <useLimitation>
+            <gco:CharacterString>© State of Queensland (Department of Environment and Science) 2020</gco:CharacterString>
+          </useLimitation>
+          <useConstraints>
+            <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="copyright" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">copyright</MD_RestrictionCode>
+          </useConstraints>
+        </MD_LegalContraints>
+      </resourceConstraints>
+      <resourceConstraints>
+        <MD_LegalContraints>
+          <useLimitation>
+            <gco:CharacterString>Creative Commons Attribution 4.0 International</gco:CharacterString>
+          </useLimitation>
+          <useConstraints>
+            <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="license" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">license</MD_RestrictionCode>
+          </useConstraints>
+        </MD_LegalContraints>
+      </resourceConstraints>
+      <spatialRepresentationType>
+        <MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector" codeSpace="ISOTC211/19115">vector</MD_SpatialRepresentationTypeCode>
+      </spatialRepresentationType>
+      <spatialResolution>
+        <MD_Resolution>
+          <distance>
+            <gco:Distance uom="m">30</gco:Distance>
+          </distance>
+        </MD_Resolution>
+      </spatialResolution>
+      <language>
+        <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng" codeSpace="ISO639-2">eng</LanguageCode>
+      </language>
+      <characterSet>
+        <MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="ISOTC211/19115">utf8</MD_CharacterSetCode>
+      </characterSet>
+      <supplementalInformation>
+        <gco:CharacterString>SALI project code BDS. Agricultural Land Classification (ALC) codes updated in 2013 as part of the Agricultural Land Audit.</gco:CharacterString>
+      </supplementalInformation>
+    </MD_DataIdentification>
+  </identificationInfo>
+  <distributionInfo>
+    <MD_Distribution>
+      <distributionFormat>
+        <MD_Format>
+          <name>
+            <gco:CharacterString>Esri File Geodatabase</gco:CharacterString>
+          </name>
+          <version>
+            <gco:CharacterString>1</gco:CharacterString>
+          </version>
+        </MD_Format>
+      </distributionFormat>
+      <distributor>
+        <MD_Distributor>
+          <distributorContact>
+            <CI_ResponsibleParty>
+              <individualName>
+                <gco:CharacterString>Kelly Bryant</gco:CharacterString>
+              </individualName>
+              <organisationName>
+                <gco:CharacterString>Department of Environment and Science</gco:CharacterString>
+              </organisationName>
+              <positionName>
+                <gco:CharacterString>Environmental Scientist Product Owner for ASDI</gco:CharacterString>
+              </positionName>
+              <contactInfo>
+                <CI_Contact>
+                  <address>
+                    <CI_Address>
+                      <electronicMailAddress>
+                        <gco:CharacterString>qdes+Kelly.Bryant@salsadigital.com.au</gco:CharacterString>
+                      </electronicMailAddress>
+                    </CI_Address>
+                  </address>
+                </CI_Contact>
+              </contactInfo>
+              <role>
+                <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor" codeSpace="ISOTC211/19115">distributor</CI_RoleCode>
+              </role>
+            </CI_ResponsibleParty>
+          </distributorContact>
+          <distributorFormat>
+            <MD_Format>
+              <name>
+                <gco:CharacterString>Esri File Geodatabase</gco:CharacterString>
+              </name>
+              <specification>
+                <gco:CharacterString>Esri File Geodatabase</gco:CharacterString>
+              </specification>
+              <version>
+                <gco:CharacterString>1</gco:CharacterString>
+              </version>
+            </MD_Format>
+          </distributorFormat>
+          <distributorTransferOptions>
+            <MD_DigitalTransferOptions>
+              <transferSize>
+                <gco:Real>5120</gco:Real>
+              </transferSize>
+            </MD_DigitalTransferOptions>
+          </distributorTransferOptions>
+        </MD_Distributor>
+      </distributor>
+    </MD_Distribution>
+  </distributionInfo>
+  <dataQualityInfo>
+    <DQ_DataQuality>
+      <scope>
+        <DQ_Scope>
+          <level>
+            <MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset" codeSpace="ISOTC211/19115">dataset</MD_ScopeCode>
+          </level>
+        </DQ_Scope>
+      </scope>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Schema or standard: Australian Land Use Classification</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Accessibility: Good</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Accuracy: 0.96 </gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Custodian: Paul Smith</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Confidence: 0.95</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Credibility: 0.98</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>This dataset can be viewed in the Queensland Globe at https://qldglobe.information.qld.gov.au. The dataset is in the GeoScientific Information layer group, under 'Soils - 1:50,000 scale'.
+
+Soil site information associated with this dataset can be accessed in the Queensland Globe under GeoScientific Information, or by downloading the Queensland Soil Survey Sites dataset at https://qldspatial.information.qld.gov.au/catalogue/custom/search.page?q=%22SALI_SITE%22
+
+Further information on this dataset can be found in the associated project reporting, which is accessible from  https://publications.qld.gov.au/dataset/soil-survey-burdekin-river-delta-bds and is also available from the Environment, Land and Water library catalogue at https://www.qld.gov.au/environment/library.
+
+A spatial index of soil and land resource surveys published in Queensland can be accessed from http://qldspatial.information.qld.gov.au/catalogue/custom/search.page?q=%22soil+and+land+resource+project+boundaries%22</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Plan: https://www.data.qld.gov.au/dataset/soils-series</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Inputs: https://www.data.qld.gov.au/dataset/soils-series/resource/684c9530-06bb-462f-8045-88e5508097cb</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Sensor: https://qldspatial.information.qld.gov.au/catalogue/custom/search.page?q=%22Soils%20of%20the%20Lower%20Burdekin%20Valley%20-%20Redbank%20to%20Bob%27s%20Creek%20and%20south%20to%20Bowen%20River%20-%20BSA%22</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Responsible Party: Dan Kelman - Botanist</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Cited in: https://theconversation.com/au</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
+    </DQ_DataQuality>
+  </dataQualityInfo>
+  <metadataConstraints>
+  </metadataConstraints>
+</MD_Metadata>
