@@ -137,6 +137,7 @@
             "label": "Related dataset",
             "help_text": "Add a related resource when the nature of the relationship is specified",
             "form_snippet": "text.html",
+            "form_placeholder": " ",
             "form_attrs": {
               "data-module": "qdes_autocomplete",
               "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
