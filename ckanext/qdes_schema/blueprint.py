@@ -43,19 +43,18 @@ def related_datasets(id_or_name):
         all_relationships = helpers.get_all_relationships(pkg_dict['id'])
 
         for relationship in all_relationships:
-            if relationship.get('type') not in ['Is Part Of', 'Has Part']:
-                # Check for access, don't show to user if user has no permission
-                # Example, non logged-in user should not see delete package.
-                try:
-                    # Only do check_access on internal datasets not external
-                    # Internal datasets will have a pkg_id where external datasets do not
-                    if relationship.get('pkg_id'):
-                        toolkit.check_access('package_show', context, {'id': relationship.get('pkg_id')})
-                    related.append(relationship)
-                except (NotFound, NotAuthorized, ValidationError) as e:
-                    # Let's continue to the next list.
-                    log.warning(f"related_datasets: Relationship dataset {relationship.get('pkg_id')} access check error = {e}")
-                    pass
+            # Check for access, don't show to user if user has no permission
+            # Example, non logged-in user should not see delete package.
+            try:
+                # Only do check_access on internal datasets not external
+                # Internal datasets will have a pkg_id where external datasets do not
+                if relationship.get('pkg_id'):
+                    toolkit.check_access('package_show', context, {'id': relationship.get('pkg_id')})
+                related.append(relationship)
+            except (NotFound, NotAuthorized, ValidationError) as e:
+                # Let's continue to the next list.
+                log.warning(f"related_datasets: Relationship dataset {relationship.get('pkg_id')} access check error = {e}")
+                pass
 
         extra_vars = {
             'pkg_dict': pkg_dict,
