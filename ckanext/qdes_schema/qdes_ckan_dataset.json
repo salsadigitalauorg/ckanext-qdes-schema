@@ -424,7 +424,7 @@
       "display_group": "related and lineage",
       "display_property": "prov:wasAssociatedWith",
       "sub_heading": "lineage",
-      "form_placeholder": "",
+      "form_placeholder": " ",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
@@ -452,7 +452,8 @@
       "vocabulary_service_name": "point-of-contact",
       "display_group": "contacts and responsibilities",
       "required": true,
-      "help_text": "A person or position to contact for more information about the dataset"
+      "help_text": "A person or position to contact for more information about the dataset",
+      "form_placeholder": " "
     },
     {
       "field_name": "contact_publisher",
@@ -477,6 +478,7 @@
       "vocabulary_service_name": "point-of-contact",
       "display_group": "contacts and responsibilities",
       "required": false,
+      "form_placeholder": " ",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
@@ -502,7 +504,7 @@
           "display_snippet": "qdes_secure_vocabulary_text.html",
           "display_property": "prov:agent",
           "vocabulary_service_name": "point-of-contact",
-          "form_placeholder": "",
+          "form_placeholder": " ",
           "form_attrs": {
             "data-module": "qdes_autocomplete",
             "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
@@ -653,7 +655,8 @@
       "vocabulary_service_name": "point-of-contact",
       "display_group": "meta data life cycle",
       "form_include_blank_choice": true,
-      "help_text": "Person or position responsible for the metadata record"
+      "help_text": "Person or position responsible for the metadata record",
+      "form_placeholder": " "
     },
     {
       "field_name": "url",

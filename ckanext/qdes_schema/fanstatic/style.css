@@ -11,3 +11,31 @@
 #datasets_available-repeater {
     display: none;
 }
+
+.input-date {
+    position: relative;
+}
+
+.clear-btn {
+    display: none;
+    content: " ";
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    right: 35px;
+    top: 37px;
+    font-size: 1px;
+    text-decoration: none;
+    border: 0;
+    background: url(/base/vendor/select2/select2.png) right top no-repeat;
+    cursor: pointer;
+    outline: 0;
+}
+
+.clear-btn:hover {
+    background-position: right -11px;
+}
+
+.show-clear-btn .clear-btn {
+    display: block;
+}
