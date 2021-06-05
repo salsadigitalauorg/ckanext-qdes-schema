@@ -71,3 +71,10 @@ help-text:
       - vendor/jquery
   contents:
     - help-text.js
+
+input-date-helper:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - input-date-helper.js
