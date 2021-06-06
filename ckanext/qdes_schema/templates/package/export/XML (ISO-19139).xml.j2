@@ -8,6 +8,9 @@
   <language>
     <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng" codeSpace="ISO639-2">eng</LanguageCode>
   </language>
+  <!-- topicCategory>
+   <MD_TopicCategoryCode>{{ dataset.get('topic') }}</MD_TopicCategoryCode>
+  </topicCategory -->
   <characterSet>
     <MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="ISOTC211/19115">utf8</MD_CharacterSetCode>
   </characterSet>
@@ -79,35 +82,39 @@
       </characterEncoding>
     </PT_Locale>
   </locale>
-  <referenceSystemInfo>
-    <MD_ReferenceSystem>
-      <referenceSystemIdentifier>
-        <RS_Identifier>
-          <code>
-            <gco:CharacterString>GDA94</gco:CharacterString>
-          </code>
-        </RS_Identifier>
-      </referenceSystemIdentifier>
-    </MD_ReferenceSystem>
-  </referenceSystemInfo>
+  {% if dataset.get('spatial_datum_crs') %}
+      <referenceSystemInfo>
+        <MD_ReferenceSystem>
+          <referenceSystemIdentifier>
+            <RS_Identifier>
+              <code>
+                <gco:CharacterString>{{dataset.get('spatial_datum_crs')}}</gco:CharacterString>
+              </code>
+            </RS_Identifier>
+          </referenceSystemIdentifier>
+        </MD_ReferenceSystem>
+      </referenceSystemInfo>
+  {% endif %}
   <identificationInfo>
     <MD_DataIdentification>
       <citation>
         <CI_Citation>
-        {% for identifier in h.get_multi_textarea_values(dataset.get('identifiers', [])) %}
-          <identifier>
-            <MD_Identifier>
-                <code>
-                    <gco:CharacterString>{{ identifier }}</gco:CharacterString>
-                </code>
-            </MD_Identifier>    
-          </identifier>
-        {% endfor %}         
+        {% if dataset.get('identifiers') %}
+          {% for identifier in dataset.get('identifiers') %}
+            <identifier>
+              <MD_Identifier>
+                  <code>
+                      <gco:CharacterString>{{ identifier }}</gco:CharacterString>
+                  </code>
+              </MD_Identifier>    
+            </identifier>
+          {% endfor %}
+        {% endif%}}         
           <title>
-            <gco:CharacterString>Soils - Burdekin delta soils - BDS</gco:CharacterString>
+            <gco:CharacterString>{{dataset.get('title')}}</gco:CharacterString>
           </title>
           <alternateTitle>
-            <gco:CharacterString>Soils - Burdekin delta soils - BDS</gco:CharacterString>
+            <gco:CharacterString>{{dataset.get('title')}}</gco:CharacterString>
           </alternateTitle>
           <date>
             <CI_Date>
@@ -169,11 +176,13 @@
         </CI_Citation>
       </citation>
       <abstract>
-        <gco:CharacterString>These datasets are soil survey mapping available in Queensland. These surveys were conducted for different purposes and are mapped at different scales. Refer to individual records for more information.</gco:CharacterString>
+        <gco:CharacterString>{{dataset.get('notes')}}</gco:CharacterString>
       </abstract>
-      <purpose>
-        <gco:CharacterString>Example purpose text</gco:CharacterString>
-      </purpose>
+      {% if dataset.get('purpose') %}
+        <purpose>
+          <gco:CharacterString>{{dataset.get('purpose')}}</gco:CharacterString>
+        </purpose>
+      {% endif %}
       <credit>
         <gco:CharacterString>© State of Queensland (Department of Environment and Science) 2020</gco:CharacterString>
       </credit>
@@ -198,29 +207,32 @@
           </maintenanceAndUpdateFrequency>
         </MD_MaintenanceInformation>
       </resourceMaintenance>
-      <descriptiveKeywords>
+       <descriptiveKeywords>
         <MD_Keywords>
+        {% for topic in {{ dataset.get('topic') }}%}
           <keyword>
-            <gco:CharacterString>SOILS</gco:CharacterString>
+            <gco:CharacterString>{{ topic }}</gco:CharacterString>
           </keyword>
           <type>
             <MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme" codeSpace="ISOTC211/19115">theme</MD_KeywordTypeCode>
           </type>
+        {% endfor %}
         </MD_Keywords>
       </descriptiveKeywords>
+      {% if dataset.get('keywords') %}
       <descriptiveKeywords>
         <MD_Keywords>
+         {% for keyword in dataset.get('keywords')%}
           <keyword>
-            <gco:CharacterString>SOIL</gco:CharacterString>
-          </keyword>
-          <keyword>
-            <gco:CharacterString>Sciences</gco:CharacterString>
+            <gco:CharacterString>{{ keyword }}</gco:CharacterString>
           </keyword>
           <type>
             <MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme" codeSpace="ISOTC211/19115">theme</MD_KeywordTypeCode>
           </type>
+          {% endfor %}
         </MD_Keywords>
       </descriptiveKeywords>
+      {% endif %}
       <resourceConstraints>
         <MD_SecurityConstraints>
           <useLimitation>
@@ -254,13 +266,15 @@
       <spatialRepresentationType>
         <MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector" codeSpace="ISOTC211/19115">vector</MD_SpatialRepresentationTypeCode>
       </spatialRepresentationType>
-      <spatialResolution>
-        <MD_Resolution>
-          <distance>
-            <gco:Distance uom="m">30</gco:Distance>
-          </distance>
-        </MD_Resolution>
-      </spatialResolution>
+      {% if dataset.get('spatial_resolution')%}
+          <spatialResolution>
+            <MD_Resolution>
+              <distance>
+                <gco:Distance uom="m">{{ dataset.get('spatial_resolution')}}}</gco:Distance>
+              </distance>
+            </MD_Resolution>
+          </spatialResolution>
+        {% endif %}
       <language>
         <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng" codeSpace="ISO639-2">eng</LanguageCode>
       </language>
@@ -346,96 +360,53 @@
           </level>
         </DQ_Scope>
       </scope>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Schema or standard: Australian Land Use Classification</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Accessibility: Good</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Accuracy: 0.96 </gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Custodian: Paul Smith</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Confidence: 0.95</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Credibility: 0.98</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>This dataset can be viewed in the Queensland Globe at https://qldglobe.information.qld.gov.au. The dataset is in the GeoScientific Information layer group, under 'Soils - 1:50,000 scale'.
+     {% if dataset.get('schema_standards')%}
+       {% for schema_standard in dataset.get('schema_standards') %}
+          <lineage>
+            <LI_Lineage>
+              <statement>
+                <gco:CharacterString>Schema or standard: {{ schema_standard }}</gco:CharacterString>
+              </statement>
+            </LI_Lineage>
+          </lineage>
+        {% endfor %}
+    {% endif %}
 
-Soil site information associated with this dataset can be accessed in the Queensland Globe under GeoScientific Information, or by downloading the Queensland Soil Survey Sites dataset at https://qldspatial.information.qld.gov.au/catalogue/custom/search.page?q=%22SALI_SITE%22
+    {% if dataset.get('quality_measure')%}
+       {% for quality_measure in dataset.get('quality_measure') %}
+          <lineage>
+            <LI_Lineage>
+              <statement>
+                <gco:CharacterString>Measurment: {{ quality_measure }}</gco:CharacterString>
+              </statement>
+            </LI_Lineage>
+          </lineage>
+        {% endfor %}
+    {% endif %}
 
-Further information on this dataset can be found in the associated project reporting, which is accessible from  https://publications.qld.gov.au/dataset/soil-survey-burdekin-river-delta-bds and is also available from the Environment, Land and Water library catalogue at https://www.qld.gov.au/environment/library.
+     {% if dataset.get('quality_description')%}
+       {% for quality_description in dataset.get('quality_description') %}
+          <lineage>
+            <LI_Lineage>
+              <statement>
+                <gco:CharacterString> Label: {{ quality_description }}</gco:CharacterString>
+              </statement>
+            </LI_Lineage>
+          </lineage>
+        {% endfor %}
+    {% endif %}
 
-A spatial index of soil and land resource surveys published in Queensland can be accessed from http://qldspatial.information.qld.gov.au/catalogue/custom/search.page?q=%22soil+and+land+resource+project+boundaries%22</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Plan: https://www.data.qld.gov.au/dataset/soils-series</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Inputs: https://www.data.qld.gov.au/dataset/soils-series/resource/684c9530-06bb-462f-8045-88e5508097cb</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Sensor: https://qldspatial.information.qld.gov.au/catalogue/custom/search.page?q=%22Soils%20of%20the%20Lower%20Burdekin%20Valley%20-%20Redbank%20to%20Bob%27s%20Creek%20and%20south%20to%20Bowen%20River%20-%20BSA%22</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Responsible Party: Dan Kelman - Botanist</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Cited in: https://theconversation.com/au</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
+        {% if dataset.get('quality_description')%}
+       {% for quality_description in dataset.get('quality_description') %}
+          <lineage>
+            <LI_Lineage>
+              <statement>
+                <gco:CharacterString> Label: {{ quality_description }}</gco:CharacterString>
+              </statement>
+            </LI_Lineage>
+          </lineage>
+        {% endfor %}
+    {% endif %}
     </DQ_DataQuality>
   </dataQualityInfo>
   <metadataConstraints>

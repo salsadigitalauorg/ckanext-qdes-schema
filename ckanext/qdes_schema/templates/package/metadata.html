@@ -7,6 +7,18 @@
 
   <section class="additional-info">
     <h3>{{ _('Metadata') }}</h3>
+    <div class="pull-right">
+     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span><i class="fa fa-arrow-circle-o-down"></i> {{ _('Download') }}
+                  </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="{{ h.url_for('qdes_schema.dataset_export', id=pkg_dict['id'], format='XML (ISO-19139)') }}"
+                      target="_blank"><span>XML (ISO-19139)</span></a>
+                  </li>
+                </ul>
+    </div>
+    <a href="{{ h.url_for('qdes_schema.dataset_export', id=pkg_dict['id'], format='XML (ISO-19139)') }}" title="{{ _('Export') }}">Export</a>
     <table class="table table-striped table-bordered table-condensed">
       <thead>
         <tr>

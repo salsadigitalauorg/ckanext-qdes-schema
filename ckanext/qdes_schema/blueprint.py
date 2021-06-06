@@ -249,11 +249,29 @@ def dataset_export(id, format):
         #         dataset['contact_publisher'] = term
 
         # TODO: Need to load all secure vocabs as dict objects
+        # Load vocabualry service contact_point
         if dataset['contact_point']:
             secure_vocabulary_record = get_action('get_secure_vocabulary_record')(
                 context, {'vocabulary_name': 'point-of-contact', 'query': dataset['contact_point']})
             if secure_vocabulary_record:
                 dataset['contact_point'] = secure_vocabulary_record
+        breakpoint()
+        # Load vocabualry service spatial_representation
+        if dataset.get('spatial_representation', None):
+            secure_vocabulary_record = get_action('get_vocabulary_service_term')(
+                context, {'vocabulary_name': 'spatial_representation', 'term_uri': dataset['spatial_representation']})
+            if secure_vocabulary_record:
+                dataset['spatial_representation'] = secure_vocabulary_record
+        # Load vocabualry service spatial_datum_crs
+        if dataset.get('spatial_datum_crs',None):
+            secure_vocabulary_record = get_action('get_vocabulary_service_term')(
+                context, {'vocabulary_name': 'spatial_datum_crs', 'term_uri': dataset['spatial_datum_crs']})
+            if secure_vocabulary_record:
+                dataset['spatial_datum_crs'] = secure_vocabulary_record
+
+        # Get the identifiers 
+        dataset['identifiers'] = h.get_multi_textarea_values(dataset.get('identifiers', []))
+        dataset['topic'] = h.get_multi_textarea_values(dataset.get('topic', []))
 
         extra_vars = {}
         extra_vars['dataset'] = dataset
