@@ -284,18 +284,18 @@ def dataset_export(id, format):
                 dataset['spatial_datum_crs'] = secure_vocabulary_record
 
         # Get the identifiers 
-        dataset['additional_info'] = json.loads(dataset.get('additional_info', []))
+        dataset['additional_info'] = h.get_multi_textarea_values(dataset.get('additional_info', []))
         dataset['identifiers'] = h.get_multi_textarea_values(dataset.get('identifiers', []))
         dataset['topic'] = h.get_multi_textarea_values(dataset.get('topic', []))
-        dataset['quality_measure'] = json.loads(dataset.get('quality_measure', []))
-        dataset['quality_description'] = json.loads(dataset.get('quality_description', []))
+        dataset['quality_measure'] = h.get_multi_textarea_values(dataset.get('quality_measure', []))
+        dataset['quality_description'] = h.get_multi_textarea_values(dataset.get('quality_description', []))
         dataset['lineage_description'] = h.get_multi_textarea_values(dataset.get('lineage_description', []))
         #dataset['lineage_plan'] = dataset.get('lineage_plan', [])
-        dataset['lineage_inputs'] = json.loads(dataset.get('lineage_inputs', []))
-        dataset['lineage_sensor'] = json.loads(dataset.get('lineage_sensor', []))
+        dataset['lineage_inputs'] = h.get_multi_textarea_values(dataset.get('lineage_inputs', []))
+        dataset['lineage_sensor'] = h.get_multi_textarea_values(dataset.get('lineage_sensor', []))
         dataset['lineage_responsible_party'] = h.get_multi_textarea_values(dataset.get('lineage_responsible_party', []))
-        dataset['cited_in'] = json.loads(dataset.get('cited_in', []))
-        dataset['classification_and_access_restrictions'] = json.loads(dataset.get('classification_and_access_restrictions', []))
+        dataset['cited_in'] = h.get_multi_textarea_values(dataset.get('cited_in', []))
+        dataset['classification_and_access_restrictions'] = h.get_multi_textarea_values(dataset.get('classification_and_access_restrictions', []))
         # dataset['rights_statement'] = dataset.get('rights_statement', [])
         dataset['series_or_relationships'] = relationships
 

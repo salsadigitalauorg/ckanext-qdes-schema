@@ -388,12 +388,17 @@
             </CI_ResponsibleParty>
           </distributorContact>
           <distributorTransferOptions>
+          {% for resource in dataset.get('resources', []) %}
             <MD_DigitalTransferOptions>
+            {% if resource.get('size') %}
               <transferSize>
-                <gco:Real>5120</gco:Real>
+                <gco:Real>{{resource.get('size')}}</gco:Real>
               </transferSize>
+            {% endif %}
             </MD_DigitalTransferOptions>
+            
           </distributorTransferOptions>
+          {% endfor %}
         </MD_Distributor>
       </distributor>
     </MD_Distribution>
@@ -421,6 +426,7 @@
 
     {% if dataset.get('quality_measure')%}
        {% for quality_measure in dataset.get('quality_measure') %}
+        {% if quality_measure != ''%}
           <lineage>
             <LI_Lineage>
               <statement>
@@ -428,18 +434,21 @@
               </statement>
             </LI_Lineage>
           </lineage>
+          {% endif %}
         {% endfor %}
     {% endif %}
 
     {% if dataset.get('quality_description')%}
        {% for quality_description in dataset.get('quality_description') %}
-          <lineage>
-            <LI_Lineage>
-              <statement>
-                <gco:CharacterString>{{ quality_description.get('dimension') }}: {{ quality_description.get('value') }}</gco:CharacterString>
-              </statement>
-            </LI_Lineage>
-          </lineage>
+         {% if quality_description != '' %}
+            <lineage>
+              <LI_Lineage>
+                <statement>
+                  <gco:CharacterString>{{ quality_description.get('dimension') }}: {{ quality_description.get('value') }}</gco:CharacterString>
+                </statement>
+              </LI_Lineage>
+            </lineage>
+          {% endif %}
         {% endfor %}
     {% endif %}
     {% if dataset.get('lineage_description')%}
