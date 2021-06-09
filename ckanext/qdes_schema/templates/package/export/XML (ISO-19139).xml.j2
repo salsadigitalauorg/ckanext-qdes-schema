@@ -2,16 +2,14 @@
   <fileIdentifier>
     <gco:CharacterString>{{ dataset.get('id') }}</gco:CharacterString>
   </fileIdentifier>
-  {{ dataset.get('series_or_relationship') }}
-  {% if dataset.get('series_or_relationship')%}
-    {% for relationship in dataset.get('series_or_relationship',[])%}
-    {{ realtionship }}
+  {% if dataset.get('series_or_relationships')%}
+    {% for relationship in dataset.get('series_or_relationships',[])%}
     <parentIdentifier>
-      {% if relationship.get('pkg_id')%}
-      <gco:CharacterString>{{ realtionship.get('pkg_title')}}</gco:CharacterString>
-      {% else %}
-       <gco:CharacterString>{{ realtionship.get('pkg_comment')}}</gco:CharacterString>
-      {% endif %}
+      {% if relationship.get('pkg_id') %}
+            <gco:CharacterString>{{ relationship.get('pkg_title')}}</gco:CharacterString>
+       {% else %}
+           <gco:CharacterString>{{ relationship.get('comment') }}</gco:CharacterString>
+       {% endif %}
     </parentIdentifier>
     {% endfor%}
   {% endif %}
@@ -286,7 +284,7 @@
       <resourceConstraints>
         <MD_LegalContraints>
           <useLimitation>
-            <gco:CharacterString>{{dataset.get('license_id').get('title')}}</gco:CharacterString>
+            <gco:CharacterString>{{dataset.get('license_id')}}</gco:CharacterString>
           </useLimitation>
           <useConstraints>
             <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="license" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">license</MD_RestrictionCode>
@@ -456,15 +454,13 @@
       {% endfor %}
     {% endif %}
     {% if dataset.get('lineage_plan')%}
-       {% for lineage_plan in dataset.get('lineage_plan') %}
           <lineage>
             <LI_Lineage>
               <statement>
-                <gco:CharacterString>Plan: {{ lineage_plan }}</gco:CharacterString>
+                <gco:CharacterString>Plan: {{ dataset.get('lineage_plan') }}</gco:CharacterString>
               </statement>
             </LI_Lineage>
           </lineage>
-        {% endfor %}
     {% endif %}  
       {% if dataset.get('lineage_inputs')%}
        {% for lineage_inputs in dataset.get('lineage_inputs') %}
@@ -517,8 +513,9 @@
   <metadatareviewDate>
     <gco:Date>{{ dataset.get('metadata_review_date')}}</gco:Date>
 </metadatareviewDate>
-
-<recordSource>
-    <gco:CharacterString>{{ dataset.get('url')}}</gco:CharacterString>
-</recordSource>
+{% if dataset.get('url')%}
+  <recordSource>
+      <gco:CharacterString>{{ dataset.get('url') }}</gco:CharacterString>
+  </recordSource>
+{% endif %}
 </MD_Metadata>

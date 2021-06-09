@@ -290,12 +290,13 @@ def dataset_export(id, format):
         dataset['quality_measure'] = json.loads(dataset.get('quality_measure', []))
         dataset['quality_description'] = json.loads(dataset.get('quality_description', []))
         dataset['lineage_description'] = h.get_multi_textarea_values(dataset.get('lineage_description', []))
-        dataset['lineage_plan'] = h.get_multi_textarea_values(dataset.get('lineage_plan', []))
+        #dataset['lineage_plan'] = dataset.get('lineage_plan', [])
         dataset['lineage_inputs'] = json.loads(dataset.get('lineage_inputs', []))
         dataset['lineage_sensor'] = json.loads(dataset.get('lineage_sensor', []))
+        dataset['lineage_responsible_party'] = h.get_multi_textarea_values(dataset.get('lineage_responsible_party', []))
         dataset['cited_in'] = json.loads(dataset.get('cited_in', []))
         dataset['classification_and_access_restrictions'] = json.loads(dataset.get('classification_and_access_restrictions', []))
-        dataset['rights_statement'] = list(dataset.get('rights_statement', []))
+        # dataset['rights_statement'] = dataset.get('rights_statement', [])
         dataset['series_or_relationships'] = relationships
 
         extra_vars = {}
