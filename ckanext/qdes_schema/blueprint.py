@@ -7,6 +7,7 @@ import ckanext.qdes_schema.constants as constants
 import ckanext.qdes_schema.jobs as jobs
 import logging
 import six
+import json
 
 from ckan.common import _, c, request
 from ckanext.qdes_schema import helpers
@@ -241,13 +242,21 @@ def dataset_export(id, format):
             u'user': toolkit.g.user,
             u'auth_user_obj': toolkit.g.userobj
         }
+        if context.get('__auth_audit', None):
+            context['__auth_audit'].pop()
         dataset = get_action('package_show')(context, {'id': id})
         # TODO: We might need to load some vocab serivce as objects to get label etc
         # if dataset['contact_publisher']:
         #     term = get_action('get_vocabulary_service_term')(context, {'term_uri': dataset['contact_publisher']})
         #     if term:
         #         dataset['contact_publisher'] = term
-
+        all_relationships = helpers.get_all_relationships(dataset['id'])
+        relationships = []
+        
+        for relationship in all_relationships:
+            if relationship.get('type') in ['Is Part Of']:
+                relationships.append(relationship)
+                
         # TODO: Need to load all secure vocabs as dict objects
         # Load vocabualry service contact_point
         if dataset['contact_point']:
@@ -255,23 +264,39 @@ def dataset_export(id, format):
                 context, {'vocabulary_name': 'point-of-contact', 'query': dataset['contact_point']})
             if secure_vocabulary_record:
                 dataset['contact_point'] = secure_vocabulary_record
-        breakpoint()
+
+        # if dataset['contact_creator']:
+        #     secure_vocabulary_record = get_action('get_secure_vocabulary_record')(
+        #         context, {'vocabulary_name': 'point-of-contact', 'query': dataset['contact_creator']})
+        #     if secure_vocabulary_record:
+        #         dataset['contact_creator'] = secure_vocabulary_record
         # Load vocabualry service spatial_representation
         if dataset.get('spatial_representation', None):
             secure_vocabulary_record = get_action('get_vocabulary_service_term')(
-                context, {'vocabulary_name': 'spatial_representation', 'term_uri': dataset['spatial_representation']})
+                {}, {'vocabulary_name': 'spatial_representation', 'term_uri': dataset['spatial_representation']})
             if secure_vocabulary_record:
                 dataset['spatial_representation'] = secure_vocabulary_record
         # Load vocabualry service spatial_datum_crs
         if dataset.get('spatial_datum_crs',None):
             secure_vocabulary_record = get_action('get_vocabulary_service_term')(
-                context, {'vocabulary_name': 'spatial_datum_crs', 'term_uri': dataset['spatial_datum_crs']})
+                {}, {'vocabulary_name': 'spatial_datum_crs', 'term_uri': dataset['spatial_datum_crs']})
             if secure_vocabulary_record:
                 dataset['spatial_datum_crs'] = secure_vocabulary_record
 
         # Get the identifiers 
+        dataset['additional_info'] = json.loads(dataset.get('additional_info', []))
         dataset['identifiers'] = h.get_multi_textarea_values(dataset.get('identifiers', []))
         dataset['topic'] = h.get_multi_textarea_values(dataset.get('topic', []))
+        dataset['quality_measure'] = json.loads(dataset.get('quality_measure', []))
+        dataset['quality_description'] = json.loads(dataset.get('quality_description', []))
+        dataset['lineage_description'] = h.get_multi_textarea_values(dataset.get('lineage_description', []))
+        dataset['lineage_plan'] = h.get_multi_textarea_values(dataset.get('lineage_plan', []))
+        dataset['lineage_inputs'] = json.loads(dataset.get('lineage_inputs', []))
+        dataset['lineage_sensor'] = json.loads(dataset.get('lineage_sensor', []))
+        dataset['cited_in'] = json.loads(dataset.get('cited_in', []))
+        dataset['classification_and_access_restrictions'] = json.loads(dataset.get('classification_and_access_restrictions', []))
+        dataset['rights_statement'] = list(dataset.get('rights_statement', []))
+        dataset['series_or_relationships'] = relationships
 
         extra_vars = {}
         extra_vars['dataset'] = dataset

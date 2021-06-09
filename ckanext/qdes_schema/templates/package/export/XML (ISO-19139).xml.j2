@@ -2,9 +2,19 @@
   <fileIdentifier>
     <gco:CharacterString>{{ dataset.get('id') }}</gco:CharacterString>
   </fileIdentifier>
-  <parentIdentifier>
-    <gco:CharacterString>Soils series</gco:CharacterString>
-  </parentIdentifier>
+  {{ dataset.get('series_or_relationship') }}
+  {% if dataset.get('series_or_relationship')%}
+    {% for relationship in dataset.get('series_or_relationship',[])%}
+    {{ realtionship }}
+    <parentIdentifier>
+      {% if relationship.get('pkg_id')%}
+      <gco:CharacterString>{{ realtionship.get('pkg_title')}}</gco:CharacterString>
+      {% else %}
+       <gco:CharacterString>{{ realtionship.get('pkg_comment')}}</gco:CharacterString>
+      {% endif %}
+    </parentIdentifier>
+    {% endfor%}
+  {% endif %}
   <language>
     <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng" codeSpace="ISO639-2">eng</LanguageCode>
   </language>
@@ -25,13 +35,27 @@
       <individualName>
         <gco:CharacterString>{{dataset.get('contact_point', {}).get('Name', '')}}</gco:CharacterString>
       </individualName>
+        <positionName>
+        <gco:CharacterString>{{dataset.get('contact_point', {}).get('Position', '')}}</gco:CharacterString>
+      </positionName> 
+      <contactInfo>
+        <CI_Contact>
+          <address>
+            <CI_Address>
+              <electronicMailAddress>
+                <gco:CharacterString>{{dataset.get('contact_point', {}).get('Email', '')}}</gco:CharacterString>
+              </electronicMailAddress>
+            </CI_Address>
+          </address>
+        </CI_Contact>
+      </contactInfo>         
       <role>
         <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact" codeSpace="ISOTC211/19115">pointOfContact</CI_RoleCode>
       </role>
     </CI_ResponsibleParty>
     <CI_ResponsibleParty>
       <individualName>
-        <gco:CharacterString>{{dataset.get('organization', {}).get('title', '')}}</gco:CharacterString>
+        <gco:CharacterString>{{ dataset.get('contact_publisher') }}</gco:CharacterString>
       </individualName>
       <role>
         <CI_RoleCode codeSpace="ISOTC211/19115" codeListValue="publisher" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode">publisher</CI_RoleCode>
@@ -109,57 +133,64 @@
               </MD_Identifier>    
             </identifier>
           {% endfor %}
-        {% endif%}}         
+        {% endif %}         
           <title>
             <gco:CharacterString>{{dataset.get('title')}}</gco:CharacterString>
           </title>
           <alternateTitle>
             <gco:CharacterString>{{dataset.get('title')}}</gco:CharacterString>
           </alternateTitle>
+          {% if dataset.get('dataset_creation_date')%}
           <date>
             <CI_Date>
               <date>
-                <gco:Date>2020-01-18T10:00:00+10:00</gco:Date>
+                <gco:Date>{{ dataset.get('dataset_creation_date')}}</gco:Date>
               </date>
               <dateType>
                 <CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="creation" codeSpace="ISOTC211/19115">creation</CI_DateTypeCode>
               </dateType>
             </CI_Date>
           </date>
+          {% endif %}
+          {% if dataset.get('dataset_release_date')%}
           <date>
             <CI_Date>
               <date>
-                <gco:Date>2020-01-18T10:00:00+10:00</gco:Date>
+                <gco:Date>{{ dataset.get('dataset_release_date')}}</gco:Date>
               </date>
               <dateType>
                 <CI_DateTypeCode codeSpace="ISOTC211/19115" codeListValue="publication" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode">publication</CI_DateTypeCode>
               </dateType>
             </CI_Date>
           </date>
+          {% endif %}
+          {% if dataset.get('dataset_last_modified_date')%}
           <date>
             <CI_Date>
               <date>
-                <gco:Date>2021-05-22T07:32:17+10:00</gco:Date>
+                <gco:Date>{{ dataset.get('dataset_last_modified_date')}}</gco:Date>
               </date>
               <dateType>
                 <CI_DateTypeCode codeSpace="ISOTC211/19115" codeListValue="revision" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode">revision</CI_DateTypeCode>
               </dateType>
             </CI_Date>
-          </date>          
+          </date>  
+          {% endif %}  
+          {% if dataset.get('contact_creator')%}      
           <citedResponsibleParty>
             <CI_ResponsibleParty>
               <individualName>
-                <gco:CharacterString>Brooke Ryan</gco:CharacterString>
+                <gco:CharacterString>{{ dataset.get('contact_creator')}}</gco:CharacterString>
               </individualName>
               <positionName>
-                <gco:CharacterString>Environmental Officer</gco:CharacterString>
+                <gco:CharacterString>{{  dataset.get('contact_creator') }}</gco:CharacterString>
               </positionName>
               <contactInfo>
                 <CI_Contact>
                   <address>
                     <CI_Address>
                       <electronicMailAddress>
-                        <gco:CharacterString>Brooke.Ryan@des.qld.gov.au</gco:CharacterString>
+                        <gco:CharacterString>{{ dataset.get('contact_creator')}}</gco:CharacterString>
                       </electronicMailAddress>
                     </CI_Address>
                   </address>
@@ -170,6 +201,7 @@
               </role>
             </CI_ResponsibleParty>
           </citedResponsibleParty>
+          {% endif %}  
           <presentationForm>
             <CI_PresentationFormCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_PresentationFormCode" codeListValue="mapDigital" codeSpace="ISOTC211/19115">mapDigital</CI_PresentationFormCode>
           </presentationForm>
@@ -184,32 +216,26 @@
         </purpose>
       {% endif %}
       <credit>
-        <gco:CharacterString>© State of Queensland (Department of Environment and Science) 2020</gco:CharacterString>
+        <gco:CharacterString>{{dataset.get('rights_statement')}}</gco:CharacterString>
       </credit>
-      <resourceConstraints>
-        <MD_LegalContraints>
-          <useLimitation>
-            <gco:CharacterString>© State of Queensland (Department of Environment and Science) 2020</gco:CharacterString>
-          <useLimitation>
-          <useConstraints>
-              <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="copyright" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">copyright</MD_RestrictionCode>
-          </useConstraints>
-        </MD_LegalContraints>
-      </resourceConstraints>
-      <status>
-        <gco:CharacterString>completed</gco:CharacterString>
-        <MD_ProgressCode codeSpace="ISOTC211/19115" codeListValue="completed" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode">completed</MD_ProgressCode>
-      </status>
+      {% if dataset.get('publication_status') %}
+        <status>
+          <gco:CharacterString>{{ dataset.get('publication_status')}}</gco:CharacterString>
+          <MD_ProgressCode codeSpace="ISOTC211/19115" codeListValue="completed" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode">{{ dataset.get('publication_status')}}</MD_ProgressCode>
+        </status>
+      {% endif %}
+      {% if dataset.get('update_schedule') %}
       <resourceMaintenance>
         <MD_MaintenanceInformation>
           <maintenanceAndUpdateFrequency>
-            <MD_MaintenanceFrequencyCode codeSpace="ISOTC211/19115" codeListValue="as Needed" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode">as Needed</MD_MaintenanceFrequencyCode>
+            <MD_MaintenanceFrequencyCode codeSpace="ISOTC211/19115" codeListValue={{ dataset.get('update_schedule') }} codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode">{{ dataset.get('update_schedule')}}</MD_MaintenanceFrequencyCode>
           </maintenanceAndUpdateFrequency>
         </MD_MaintenanceInformation>
       </resourceMaintenance>
+      {% endif %}
        <descriptiveKeywords>
         <MD_Keywords>
-        {% for topic in {{ dataset.get('topic') }}%}
+        {% for topic in dataset.get('topic') %}
           <keyword>
             <gco:CharacterString>{{ topic }}</gco:CharacterString>
           </keyword>
@@ -233,36 +259,52 @@
         </MD_Keywords>
       </descriptiveKeywords>
       {% endif %}
+      {% for access in dataset.get('classification_and_access_restrictions')%}
       <resourceConstraints>
         <MD_SecurityConstraints>
           <useLimitation>
-            <gco:CharacterString>OFFICIAL</gco:CharacterString>
+            <gco:CharacterString>{{ access}}</gco:CharacterString>
           </useLimitation>
           <useConstraints>
             <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="otherResrictions" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">otherRestrictions</MD_RestrictionCode>
           </useConstraints>
         </MD_SecurityConstraints>
       </resourceConstraints>
+       {% endfor %}
+       {% if dataset.get('rights_statement') %}
       <resourceConstraints>
         <MD_LegalContraints>
           <useLimitation>
-            <gco:CharacterString>© State of Queensland (Department of Environment and Science) 2020</gco:CharacterString>
+            <gco:CharacterString>{{ dataset.get('rights_statement') }}</gco:CharacterString>
           </useLimitation>
           <useConstraints>
             <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="copyright" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">copyright</MD_RestrictionCode>
           </useConstraints>
         </MD_LegalContraints>
       </resourceConstraints>
+      {% endif %}
       <resourceConstraints>
         <MD_LegalContraints>
           <useLimitation>
-            <gco:CharacterString>Creative Commons Attribution 4.0 International</gco:CharacterString>
+            <gco:CharacterString>{{dataset.get('license_id').get('title')}}</gco:CharacterString>
           </useLimitation>
           <useConstraints>
             <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="license" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">license</MD_RestrictionCode>
           </useConstraints>
         </MD_LegalContraints>
       </resourceConstraints>
+      {% if dataset.get('specialized_license') %}
+      <resourceConstraints>
+        <MD_LegalContraints>
+          <useLimitation>
+            <gco:CharacterString>{{dataset.get('specialized_license')}}</gco:CharacterString>
+          </useLimitation>
+          <useConstraints>
+            <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="license" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">license</MD_RestrictionCode>
+          </useConstraints>
+        </MD_LegalContraints>
+      </resourceConstraints>
+      {% endif%}
       <spatialRepresentationType>
         <MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector" codeSpace="ISOTC211/19115">vector</MD_SpatialRepresentationTypeCode>
       </spatialRepresentationType>
@@ -281,42 +323,62 @@
       <characterSet>
         <MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="ISOTC211/19115">utf8</MD_CharacterSetCode>
       </characterSet>
+      {% if dataset.get('additional_info') %}
+        {% for info in dataset.get('additional_info') %}
       <supplementalInformation>
-        <gco:CharacterString>SALI project code BDS. Agricultural Land Classification (ALC) codes updated in 2013 as part of the Agricultural Land Audit.</gco:CharacterString>
+        <gco:CharacterString>{{ info }}</gco:CharacterString>
       </supplementalInformation>
+        {%endfor %}
+      {% endif %}
     </MD_DataIdentification>
   </identificationInfo>
   <distributionInfo>
     <MD_Distribution>
+    {% for resource in dataset.get('resources', []) %}
       <distributionFormat>
         <MD_Format>
           <name>
-            <gco:CharacterString>Esri File Geodatabase</gco:CharacterString>
+            <gco:CharacterString>{{resource.get('format')}}</gco:CharacterString>
           </name>
           <version>
             <gco:CharacterString>1</gco:CharacterString>
           </version>
         </MD_Format>
+        {% if resource.get('compression')%}
+            <MD_CompressionFormat>
+            <name>
+              <gco:CharacterString>{{resource.get('compression').get('title','')}}</gco:CharacterString>
+            </name>
+          </MD_CompressionFormat>
+        {% endif %}
+        {% if resource.get('packaging')%}
+            <MD_CompressionFormat>
+            <name>
+              <gco:CharacterString>{{resource.get('packaging').get('title','')}}</gco:CharacterString>
+            </name>
+          </MD_CompressionFormat>
+        {% endif %}      
       </distributionFormat>
+      {% endfor %}
       <distributor>
         <MD_Distributor>
           <distributorContact>
             <CI_ResponsibleParty>
               <individualName>
-                <gco:CharacterString>Kelly Bryant</gco:CharacterString>
+                <gco:CharacterString>{{dataset.get('contact_point', {}).get('Name', '')}}</gco:CharacterString>
               </individualName>
               <organisationName>
-                <gco:CharacterString>Department of Environment and Science</gco:CharacterString>
+                <gco:CharacterString>{{dataset.get('organisation', {}).get('name', '')}}</gco:CharacterString>
               </organisationName>
               <positionName>
-                <gco:CharacterString>Environmental Scientist Product Owner for ASDI</gco:CharacterString>
+                <gco:CharacterString>{{dataset.get('contact_point', {}).get('Position', '')}}</gco:CharacterString>
               </positionName>
               <contactInfo>
                 <CI_Contact>
                   <address>
                     <CI_Address>
                       <electronicMailAddress>
-                        <gco:CharacterString>qdes+Kelly.Bryant@salsadigital.com.au</gco:CharacterString>
+                        <gco:CharacterString>{{dataset.get('contact_point', {}).get('Email', '')}}</gco:CharacterString>
                       </electronicMailAddress>
                     </CI_Address>
                   </address>
@@ -327,19 +389,6 @@
               </role>
             </CI_ResponsibleParty>
           </distributorContact>
-          <distributorFormat>
-            <MD_Format>
-              <name>
-                <gco:CharacterString>Esri File Geodatabase</gco:CharacterString>
-              </name>
-              <specification>
-                <gco:CharacterString>Esri File Geodatabase</gco:CharacterString>
-              </specification>
-              <version>
-                <gco:CharacterString>1</gco:CharacterString>
-              </version>
-            </MD_Format>
-          </distributorFormat>
           <distributorTransferOptions>
             <MD_DigitalTransferOptions>
               <transferSize>
@@ -377,31 +426,85 @@
           <lineage>
             <LI_Lineage>
               <statement>
-                <gco:CharacterString>Measurment: {{ quality_measure }}</gco:CharacterString>
+                <gco:CharacterString>{{ quality_measure.get('measurement') }}: {{ quality_measure.get('value') }}</gco:CharacterString>
               </statement>
             </LI_Lineage>
           </lineage>
         {% endfor %}
     {% endif %}
 
-     {% if dataset.get('quality_description')%}
+    {% if dataset.get('quality_description')%}
        {% for quality_description in dataset.get('quality_description') %}
           <lineage>
             <LI_Lineage>
               <statement>
-                <gco:CharacterString> Label: {{ quality_description }}</gco:CharacterString>
+                <gco:CharacterString>{{ quality_description.get('dimension') }}: {{ quality_description.get('value') }}</gco:CharacterString>
               </statement>
             </LI_Lineage>
           </lineage>
         {% endfor %}
     {% endif %}
-
-        {% if dataset.get('quality_description')%}
-       {% for quality_description in dataset.get('quality_description') %}
+    {% if dataset.get('lineage_description')%}
+      {% for lineage_description in dataset.get('lineage_description') %}
+        <lineage>
+          <LI_Lineage>
+            <statement>
+              <gco:CharacterString>{{lineage_description }}</gco:CharacterString>
+            </statement>
+          </LI_Lineage>
+        </lineage>
+      {% endfor %}
+    {% endif %}
+    {% if dataset.get('lineage_plan')%}
+       {% for lineage_plan in dataset.get('lineage_plan') %}
           <lineage>
             <LI_Lineage>
               <statement>
-                <gco:CharacterString> Label: {{ quality_description }}</gco:CharacterString>
+                <gco:CharacterString>Plan: {{ lineage_plan }}</gco:CharacterString>
+              </statement>
+            </LI_Lineage>
+          </lineage>
+        {% endfor %}
+    {% endif %}  
+      {% if dataset.get('lineage_inputs')%}
+       {% for lineage_inputs in dataset.get('lineage_inputs') %}
+          <lineage>
+            <LI_Lineage>
+              <statement>
+                <gco:CharacterString>Inputs: {{ lineage_inputs }}</gco:CharacterString>
+              </statement>
+            </LI_Lineage>
+          </lineage>
+        {% endfor %}
+    {% endif %}
+    {% if dataset.get('lineage_sensor')%}
+       {% for lineage_sensor in dataset.get('lineage_sensor') %}
+          <lineage>
+            <LI_Lineage>
+              <statement>
+                <gco:CharacterString>Sensor: {{ lineage_sensor }}</gco:CharacterString>
+              </statement>
+            </LI_Lineage>
+          </lineage>
+        {% endfor %}
+    {% endif %}
+    {% if dataset.get('lineage_responsible_party')%}
+       {% for lineage_responsible_party in dataset.get('lineage_responsible_party') %}
+          <lineage>
+            <LI_Lineage>
+              <statement>
+                <gco:CharacterString>Repsonsible party: {{ lineage_responsible_party }}</gco:CharacterString>
+              </statement>
+            </LI_Lineage>
+          </lineage>
+        {% endfor %}
+    {% endif %}
+    {% if dataset.get('cited_in')%}
+       {% for cited_in in dataset.get('cited_in') %}
+          <lineage>
+            <LI_Lineage>
+              <statement>
+                <gco:CharacterString>Cited in: {{ cited_in }}</gco:CharacterString>
               </statement>
             </LI_Lineage>
           </lineage>
@@ -411,4 +514,11 @@
   </dataQualityInfo>
   <metadataConstraints>
   </metadataConstraints>
+  <metadatareviewDate>
+    <gco:Date>{{ dataset.get('metadata_review_date')}}</gco:Date>
+</metadatareviewDate>
+
+<recordSource>
+    <gco:CharacterString>{{ dataset.get('url')}}</gco:CharacterString>
+</recordSource>
 </MD_Metadata>
