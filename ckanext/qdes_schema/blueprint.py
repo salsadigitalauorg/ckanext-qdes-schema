@@ -235,6 +235,27 @@ def unpublish_external_dataset_resource(id):
     return h.redirect_to('/dataset/{}/publish?unpublish={}'.format(id, unpublish))
 
 
+def _get_term_obj(field_value, vocab_service_name):
+    if isinstance(field_value, list):
+        terms = []
+        for uri in field_value:
+            term = get_action('get_vocabulary_service_term')({}, {'vocabulary_service_name': vocab_service_name, 'term_uri': uri})
+            if term:
+                terms.append(dict(term))
+
+        if terms:
+            field_value = terms
+    else:
+        term = get_action('get_vocabulary_service_term')({}, {
+            'vocabulary_service_name': vocab_service_name,
+            'term_uri': field_value
+        })
+
+        if term:
+            field_value = dict(term)
+
+    return field_value
+
 def dataset_export(id, format):
     try:
         context = {
@@ -298,6 +319,43 @@ def dataset_export(id, format):
         dataset['classification_and_access_restrictions'] = h.get_multi_textarea_values(dataset.get('classification_and_access_restrictions', []))
         # dataset['rights_statement'] = dataset.get('rights_statement', [])
         dataset['series_or_relationships'] = relationships
+
+        # Load schema.
+        single_multi_vocab_fields = [
+            'topic',
+            'spatial_representation',
+            'spatial_datum_crs',
+            'spatial_resolution',
+            'contact_publisher',
+            'publication_status',
+            'update_schedule',
+            'classification_and_access_restrictions',
+            'license_id',
+        ]
+
+        group_vocab_fields = {
+            'quality_measure': ['measurement'],
+            'quality_description': ['dimension'],
+        }
+
+        schema = h.scheming_get_dataset_schema(dataset.get('type'))
+        for field in schema.get('dataset_fields', {}):
+            if group_vocab_fields.get(field.get('field_name'), None):
+                group = group_vocab_fields.get(field.get('field_name'))
+                values = []
+                for item in dataset.get(field.get('field_name')):
+                    for group_vocab_field in group:
+                        if item.get(group_vocab_field, None):
+                            for field_group in field.get('field_group', {}):
+                                if field_group.get('field_name') == group_vocab_field:
+                                    group_field_value = item.get(group_vocab_field, {})
+                                    group_field_vocab_name = field_group.get('vocabulary_service_name')
+                                    item[group_vocab_field] = _get_term_obj(group_field_value, group_field_vocab_name)
+                                    values.append(item)
+
+            if field.get('vocabulary_service_name'):
+                if field.get('field_name') in single_multi_vocab_fields:
+                    dataset[field.get('field_name')] = _get_term_obj(dataset.get(field.get('field_name')), field.get('vocabulary_service_name'))
 
         extra_vars = {}
         extra_vars['dataset'] = dataset

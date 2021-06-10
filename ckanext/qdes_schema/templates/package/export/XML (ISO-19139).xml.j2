@@ -16,9 +16,6 @@
   <language>
     <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng" codeSpace="ISO639-2">eng</LanguageCode>
   </language>
-  <!-- topicCategory>
-   <MD_TopicCategoryCode>{{ dataset.get('topic') }}</MD_TopicCategoryCode>
-  </topicCategory -->
   <characterSet>
     <MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="ISOTC211/19115">utf8</MD_CharacterSetCode>
   </characterSet>
@@ -53,7 +50,7 @@
     </CI_ResponsibleParty>
     <CI_ResponsibleParty>
       <individualName>
-        <gco:CharacterString>{{ dataset.get('contact_publisher') }}</gco:CharacterString>
+        <gco:CharacterString>{{ dataset.get('contact_publisher', {}).get('label') }}</gco:CharacterString>
       </individualName>
       <role>
         <CI_RoleCode codeSpace="ISOTC211/19115" codeListValue="publisher" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode">publisher</CI_RoleCode>
@@ -110,7 +107,7 @@
           <referenceSystemIdentifier>
             <RS_Identifier>
               <code>
-                <gco:CharacterString>{{dataset.get('spatial_datum_crs')}}</gco:CharacterString>
+                <gco:CharacterString>{{ dataset.get('spatial_datum_crs', {}).get('label') }}</gco:CharacterString>
               </code>
             </RS_Identifier>
           </referenceSystemIdentifier>
@@ -131,7 +128,7 @@
               </MD_Identifier>    
             </identifier>
           {% endfor %}
-        {% endif %}         
+        {% endif %}
           <title>
             <gco:CharacterString>{{dataset.get('title')}}</gco:CharacterString>
           </title>
@@ -218,15 +215,15 @@
       </credit>
       {% if dataset.get('publication_status') %}
         <status>
-          <gco:CharacterString>{{ dataset.get('publication_status')}}</gco:CharacterString>
-          <MD_ProgressCode codeSpace="ISOTC211/19115" codeListValue="completed" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode">{{ dataset.get('publication_status')}}</MD_ProgressCode>
+          <gco:CharacterString>{{ dataset.get('publication_status', {}).get('label') }}</gco:CharacterString>
+          <MD_ProgressCode codeSpace="ISOTC211/19115" codeListValue="{{ dataset.get('publication_status', {}).get('label') }}" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode">{{ dataset.get('publication_status', {}).get('label') }}</MD_ProgressCode>
         </status>
       {% endif %}
       {% if dataset.get('update_schedule') %}
       <resourceMaintenance>
         <MD_MaintenanceInformation>
           <maintenanceAndUpdateFrequency>
-            <MD_MaintenanceFrequencyCode codeSpace="ISOTC211/19115" codeListValue={{ dataset.get('update_schedule') }} codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode">{{ dataset.get('update_schedule')}}</MD_MaintenanceFrequencyCode>
+            <MD_MaintenanceFrequencyCode codeSpace="ISOTC211/19115" codeListValue={{ dataset.get('update_schedule', {}).get('label') }} codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode">{{ dataset.get('update_schedule', {}).get('label') }}</MD_MaintenanceFrequencyCode>
           </maintenanceAndUpdateFrequency>
         </MD_MaintenanceInformation>
       </resourceMaintenance>
@@ -235,7 +232,7 @@
         <MD_Keywords>
         {% for topic in dataset.get('topic') %}
           <keyword>
-            <gco:CharacterString>{{ topic }}</gco:CharacterString>
+            <gco:CharacterString>{{ topic.get('label') }}</gco:CharacterString>
           </keyword>
           <type>
             <MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme" codeSpace="ISOTC211/19115">theme</MD_KeywordTypeCode>
@@ -257,11 +254,11 @@
         </MD_Keywords>
       </descriptiveKeywords>
       {% endif %}
-      {% for access in dataset.get('classification_and_access_restrictions')%}
+      {% for access in dataset.get('classification_and_access_restrictions') %}
       <resourceConstraints>
         <MD_SecurityConstraints>
           <useLimitation>
-            <gco:CharacterString>{{ access}}</gco:CharacterString>
+            <gco:CharacterString>{{ access.get('label') }}</gco:CharacterString>
           </useLimitation>
           <useConstraints>
             <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="otherResrictions" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">otherRestrictions</MD_RestrictionCode>
@@ -284,7 +281,7 @@
       <resourceConstraints>
         <MD_LegalContraints>
           <useLimitation>
-            <gco:CharacterString>{{dataset.get('license_id')}}</gco:CharacterString>
+            <gco:CharacterString>{{ dataset.get('license_id', {}).get('label') }}</gco:CharacterString>
           </useLimitation>
           <useConstraints>
             <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="license" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">license</MD_RestrictionCode>
@@ -303,14 +300,16 @@
         </MD_LegalContraints>
       </resourceConstraints>
       {% endif%}
+      {% if dataset.get('spatial_representation') %}
       <spatialRepresentationType>
-        <MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector" codeSpace="ISOTC211/19115">vector</MD_SpatialRepresentationTypeCode>
+        <MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="{{ dataset.get('spatial_representation', {}).get('label') }}" codeSpace="ISOTC211/19115">{{ dataset.get('spatial_representation', {}).get('label') }}</MD_SpatialRepresentationTypeCode>
       </spatialRepresentationType>
-      {% if dataset.get('spatial_resolution')%}
+      {% endif %}
+      {% if dataset.get('spatial_resolution') %}
           <spatialResolution>
             <MD_Resolution>
               <distance>
-                <gco:Distance uom="m">{{ dataset.get('spatial_resolution')}}}</gco:Distance>
+                <gco:Distance uom="m">{{ dataset.get('spatial_resolution', {}).get('label') }}</gco:Distance>
               </distance>
             </MD_Resolution>
           </spatialResolution>
@@ -396,7 +395,7 @@
               </transferSize>
             {% endif %}
             </MD_DigitalTransferOptions>
-            
+
           </distributorTransferOptions>
           {% endfor %}
         </MD_Distributor>
@@ -424,13 +423,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if dataset.get('quality_measure')%}
+    {% if dataset.get('quality_measure') %}
        {% for quality_measure in dataset.get('quality_measure') %}
-        {% if quality_measure != ''%}
+        {% if quality_measure != '' %}
           <lineage>
             <LI_Lineage>
               <statement>
-                <gco:CharacterString>{{ quality_measure.get('measurement') }}: {{ quality_measure.get('value') }}</gco:CharacterString>
+                <gco:CharacterString>{{ quality_measure.get('measurement', {}).get('label') }}: {{ quality_measure.get('value') }}</gco:CharacterString>
               </statement>
             </LI_Lineage>
           </lineage>
@@ -438,13 +437,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if dataset.get('quality_description')%}
+    {% if dataset.get('quality_description') %}
        {% for quality_description in dataset.get('quality_description') %}
          {% if quality_description != '' %}
             <lineage>
               <LI_Lineage>
                 <statement>
-                  <gco:CharacterString>{{ quality_description.get('dimension') }}: {{ quality_description.get('value') }}</gco:CharacterString>
+                  <gco:CharacterString>{{ quality_description.get('dimension', {}).get('label') }}: {{ quality_description.get('value') }}</gco:CharacterString>
                 </statement>
               </LI_Lineage>
             </lineage>
