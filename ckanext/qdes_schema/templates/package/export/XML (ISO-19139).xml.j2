@@ -425,7 +425,7 @@
 
     {% if dataset.get('quality_measure') %}
        {% for quality_measure in dataset.get('quality_measure') %}
-        {% if quality_measure != '' %}
+        {% if quality_measure != '' and quality_measure.get('measurement', {}).get('label') != '' %}
           <lineage>
             <LI_Lineage>
               <statement>
@@ -439,7 +439,7 @@
 
     {% if dataset.get('quality_description') %}
        {% for quality_description in dataset.get('quality_description') %}
-         {% if quality_description != '' %}
+         {% if quality_description != '' and quality_description.get('dimension', {}).get('label') != '' %}
             <lineage>
               <LI_Lineage>
                 <statement>
@@ -452,13 +452,15 @@
     {% endif %}
     {% if dataset.get('lineage_description')%}
       {% for lineage_description in dataset.get('lineage_description') %}
+        {% if lineage_description != '' %}
         <lineage>
           <LI_Lineage>
             <statement>
-              <gco:CharacterString>{{lineage_description }}</gco:CharacterString>
+              <gco:CharacterString>{{ lineage_description }}</gco:CharacterString>
             </statement>
           </LI_Lineage>
         </lineage>
+        {% endif %}
       {% endfor %}
     {% endif %}
     {% if dataset.get('lineage_plan')%}

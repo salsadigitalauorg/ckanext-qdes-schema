@@ -345,7 +345,7 @@ def dataset_export(id, format):
                 values = []
                 for item in dataset.get(field.get('field_name')):
                     for group_vocab_field in group:
-                        if item.get(group_vocab_field, None):
+                        if item and item.get(group_vocab_field, None):
                             for field_group in field.get('field_group', {}):
                                 if field_group.get('field_name') == group_vocab_field:
                                     group_field_value = item.get(group_vocab_field, {})
