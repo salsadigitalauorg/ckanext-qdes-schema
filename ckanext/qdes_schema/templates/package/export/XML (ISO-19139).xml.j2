@@ -335,23 +335,23 @@
       <distributionFormat>
         <MD_Format>
           <name>
-            <gco:CharacterString>{{resource.get('format')}}</gco:CharacterString>
+            <gco:CharacterString>{{ resource.get('format', {}).get('label') }}</gco:CharacterString>
           </name>
           <version>
             <gco:CharacterString>1</gco:CharacterString>
           </version>
         </MD_Format>
-        {% if resource.get('compression')%}
+        {% if resource.get('compression') %}
             <MD_CompressionFormat>
             <name>
-              <gco:CharacterString>{{resource.get('compression').get('title','')}}</gco:CharacterString>
+              <gco:CharacterString>{{ resource.get('compression', {}).get('label') }}</gco:CharacterString>
             </name>
           </MD_CompressionFormat>
         {% endif %}
-        {% if resource.get('packaging')%}
+        {% if resource.get('packaging') %}
             <MD_CompressionFormat>
             <name>
-              <gco:CharacterString>{{resource.get('packaging').get('title','')}}</gco:CharacterString>
+              <gco:CharacterString>{{ resource.get('packaging', {}).get('label') }}</gco:CharacterString>
             </name>
           </MD_CompressionFormat>
         {% endif %}      

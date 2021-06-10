@@ -338,6 +338,12 @@ def dataset_export(id, format):
             'quality_description': ['dimension'],
         }
 
+        res_single_multi_vocab_fields = [
+            'format',
+            'compression',
+            'packaging'
+        ]
+
         schema = h.scheming_get_dataset_schema(dataset.get('type'))
         for field in schema.get('dataset_fields', {}):
             if group_vocab_fields.get(field.get('field_name'), None):
@@ -356,6 +362,17 @@ def dataset_export(id, format):
             if field.get('vocabulary_service_name'):
                 if field.get('field_name') in single_multi_vocab_fields:
                     dataset[field.get('field_name')] = _get_term_obj(dataset.get(field.get('field_name')), field.get('vocabulary_service_name'))
+
+        new_resources = []
+        for res in dataset.get('resources'):
+            for field in schema.get('resource_fields', {}):
+                if field.get('field_name') in res_single_multi_vocab_fields:
+                    res[field.get('field_name')] = _get_term_obj(res.get(field.get('field_name')), field.get('vocabulary_service_name'))
+                    new_resources.append(res)
+
+        if new_resources:
+            dataset['resources'] = new_resources
+
 
         extra_vars = {}
         extra_vars['dataset'] = dataset
