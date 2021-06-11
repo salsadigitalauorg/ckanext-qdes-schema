@@ -384,7 +384,7 @@ def qdes_validate_related_resources(field, schema):
                         field_name = field_group.get('field_name')
                         field_value = value.get(field_group.get('field_name', ''))
 
-                        if field_name == 'resource':
+                        if field_name == 'resource' and field_value:
                             val = field_value.get('id', None) or None
                             if not val:
                                 field_value = val

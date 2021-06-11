@@ -243,6 +243,7 @@
 
                 // Remove value on the search input.
                 $searchInputEl.val('');
+                $searchInputEl.keyup();
 
                 // Remove value on the other field
                 if (isMultiGrp) {

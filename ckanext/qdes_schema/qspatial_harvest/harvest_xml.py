@@ -61,7 +61,7 @@ def fetch_and_save_xml(package):
 def main():
     if not os.path.exists('xml_files'):
         os.makedirs('xml_files')
-    with open('DES_Datasets_QSpatial_v1.csv', "rt") as file:
+    with open('DES_Datasets_QSpatial_v2.csv', "rt") as file:
         data = file.read().split('\n')
 
     csv_reader = csv.DictReader(data)

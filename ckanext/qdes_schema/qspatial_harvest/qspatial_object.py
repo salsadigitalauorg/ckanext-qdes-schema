@@ -281,7 +281,7 @@ class QSpatialObject:
         # /MD_Metadata/identificationInfo/MD_DataIdentification/citation/CI_Citation/citedResponsibleParty[4]/CI_ResponsibleParty/role/CI_RoleCode/@codeListValue
         # URL = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:citedResponsibleParty/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode[@codeListValue="custodian"]', self.ns)
         if URL != None:
-            the_party_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, URL.text, 'the-party')
+            the_party_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, URL.text, 'point-of-contact')
 
         if the_party_term == None:
             # Set default value
@@ -289,7 +289,7 @@ class QSpatialObject:
             # Get 'Kelly Bryant' as the default
             # the_party_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, 'Kelly Bryant', 'the-party')
 
-        contact_other_party = [{"the-party": the_party_term, "nature-of-their-responsibility": "http://linked.data.gov.au/def/dataciteroles/DataCurator"}]
+        contact_other_party = [{"the-party": the_party_term, "nature-of-their-responsibility": "http://linked.data.gov.au/def/gsq-roles/data-creator"}]
         # self.log('contact_other_party: {}'.format(contact_other_party))
         return {'contact_other_party': json.dumps(contact_other_party) if the_party_term else None}
 
@@ -324,7 +324,7 @@ class QSpatialObject:
 
     def get_license_id(self):
         # Set default value to Creative Commons Attribution 4.0 International
-        license_id = 'http://linked.data.gov.au/def/licence-document/cc-by-4.0'
+        license_id = 'https://linked.data.gov.au/def/licence-document/cc-by-4.0'
         # self.log('license_id: {}'.format(license_id))
         return {'license_id': license_id}
 
@@ -686,7 +686,7 @@ class QSpatialObject:
 
     def get_resource_license(self):
         # Set default value to Creative Commons Attribution 4.0 International
-        resource_license = 'http://linked.data.gov.au/def/licence-document/cc-by-4.0'
+        resource_license = 'https://linked.data.gov.au/def/licence-document/cc-by-4.0'
         # self.log('resource_license: {}'.format(resource_license))
         return {'license': resource_license}
 

@@ -474,7 +474,9 @@ def schema_publish(pkg, data):
 
             # Add to job worker queue.
             if publish_log:
-                toolkit.enqueue_job(jobs.publish_to_external_catalogue, [publish_log.id, c.user])
+                # Improvements for job worker visibility when troubleshooting via logs
+                job_title = f'Publish external dataset resource: dataset_id={publish_log.dataset_id}, resource_id={publish_log.resource_id}, destination={publish_log.destination}'
+                toolkit.enqueue_job(jobs.publish_to_external_catalogue, [publish_log.id, c.user], title=job_title)
 
         return True
     except Exception as e:
@@ -518,9 +520,9 @@ def map_update_schedule(uri, schema):
 def map_license(uri, schema):
     license_map = {
         constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {
-            'http://linked.data.gov.au/def/licence-document/cc-by-4.0': 'cc-by-4',
-            'http://linked.data.gov.au/def/licence-document/cc-by-nd-4.0': 'cc-by-nd-4',
-            'http://linked.data.gov.au/def/licence-document/cc-by-sa-4.0': 'cc-by-sa-4'
+            'https://linked.data.gov.au/def/licence-document/cc-by-4.0': 'cc-by-4',
+            'https://linked.data.gov.au/def/licence-document/cc-by-nd-4.0': 'cc-by-nd-4',
+            'https://linked.data.gov.au/def/licence-document/cc-by-sa-4.0': 'cc-by-sa-4'
         },
         # @todo, in case needed, need to map this against external schema in future.
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
@@ -528,6 +530,43 @@ def map_license(uri, schema):
     }
 
     return license_map.get(schema, {}).get(uri, '')
+
+
+def map_formats(format, schema):
+    formats_map = {
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {
+            'http://publications.europa.eu/resource/authority/file-type/CSV': 'CSV',
+            'http://publications.europa.eu/resource/authority/file-type/ECW': 'ECW', # Not in Open Data
+            'http://publications.europa.eu/resource/authority/file-type/GRID_ASCII': 'ESRI',
+            'http://publications.europa.eu/resource/authority/file-type/GDB': 'ESRI GEODATABASE',
+            'http://publications.europa.eu/resource/authority/file-type/REST': 'ESRI',
+            'http://publications.europa.eu/resource/authority/file-type/SHP': 'ESRI SHAPE',
+            'http://publications.europa.eu/resource/authority/file-type/GRID': 'ESRI',
+            'http://publications.europa.eu/resource/authority/file-type/XLSX': 'XLSX',
+            'http://publications.europa.eu/resource/authority/file-type/GEOJSON': 'GeoJSON',
+            'http://publications.europa.eu/resource/authority/file-type/HTML_SIMPL': 'HTML',
+            'http://publications.europa.eu/resource/authority/file-type/JPEG': 'JPEG',
+            'http://publications.europa.eu/resource/authority/file-type/JSON': 'JSON',
+            'http://publications.europa.eu/resource/authority/file-type/KML': 'KML',
+            'http://publications.europa.eu/resource/authority/file-type/KMZ': 'KMZ',
+            'http://publications.europa.eu/resource/authority/file-type/MDB': 'MDB', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/NETCDF': 'NetCDF', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/PDF': 'PDF',
+            'http://publications.europa.eu/resource/authority/file-type/TXT': 'TXT',
+            'http://publications.europa.eu/resource/authority/file-type/PPTX': 'PPTX', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/TIFF': 'TIF',
+            'http://publications.europa.eu/resource/authority/file-type/TSV': 'TAB SEPARATED VALUES',
+            'http://publications.europa.eu/resource/authority/file-type/WFS_SRVC': 'WFS', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/WMS_SRVC': 'WMS', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/DOCX': 'DOCX',
+            'http://publications.europa.eu/resource/authority/file-type/XML': 'XML'
+        },
+        # @todo, in case needed, need to map this against external schema in future.
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+    }
+
+    return formats_map.get(schema, {}).get(format, '')
 
 
 def dataset_has_published_to_external_schema(package_id, schema=None):
@@ -549,7 +588,7 @@ def get_distribution_naming(pkg, resource):
     return resource.get('name')
 
 
-def get_last_success_publish_date(resource):
+def get_last_success_publish_log(resource):
     last_success_log = PublishLog.get_recent_resource_log(
         resource.get('id'),
         constants.PUBLISH_STATUS_SUCCESS,
@@ -558,6 +597,12 @@ def get_last_success_publish_date(resource):
             constants.PUBLISH_ACTION_CREATE
         ]
     )
+
+    return last_success_log
+
+
+def get_last_success_publish_date(resource):
+    last_success_log = get_last_success_publish_log(resource)
 
     processed_date = None
     if last_success_log:
@@ -579,7 +624,10 @@ def resource_needs_republish(resource, pkg, publish_log):
         return True
 
     if publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
-        return True
+        # Load last published log and determine if this resource updated since then.
+        last_success_publish_date = get_last_success_publish_date(resource)
+        if last_success_publish_date:
+            return res_metadata_modified_date > last_success_publish_date
 
     if publish_log.status == constants.PUBLISH_STATUS_PENDING:
         return False
@@ -599,6 +647,11 @@ def dataset_need_republish(pkg):
     most_recent_updated_resource = None
     for resource in pkg.get('resources', []):
         res_publish_log = PublishLog.get_recent_resource_log(resource.get('id'))
+        if not res_publish_log:
+            continue
+
+        if res_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
+            res_publish_log = get_last_success_publish_log(resource)
         if not res_publish_log:
             continue
 
@@ -644,7 +697,9 @@ def get_publish_activity_status(publish_logs, resource, pkg, details):
             and (resource_needs_republish(resource, pkg, publish_logs) or dataset_need_republish(pkg)):
         # For publish error that cause by the external dataset is deleted (in trash),
         # don't change the status.
-        if details and not details.get('external_distribution_deleted', False):
+        # When the status is validation_success, the details will be empty
+        # but we need to detect if the current distribution need republish.
+        if not details or (details and not details.get('external_distribution_deleted', False)):
             status = constants.PUBLISH_LOG_NEED_REPUBLISH
 
     return status
@@ -667,8 +722,8 @@ def get_publish_activities(pkg):
             processed_unpublished_date = ''
             if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS:
                 processed_date = resource_publish_log.date_processed
-            elif resource_publish_log.status == constants.PUBLISH_STATUS_FAILED:
-                # If failed, get the last success published date.
+            elif resource_publish_log.status == constants.PUBLISH_STATUS_FAILED or resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
+                # If failed or validation_success, get the last success published date.
                 processed_date = get_last_success_publish_date(resource)
 
             # Get detail.
@@ -685,6 +740,7 @@ def get_publish_activities(pkg):
             # If status validation success, keep the last status.
             if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS and status == constants.PUBLISH_LOG_PENDING and resource_has_published_to_external_schema(resource.get('id'), resource_publish_log.destination):
                 status = constants.PUBLISH_LOG_PUBLISHED
+
 
             # Get published and unpublished date for distribution that unpublished.
             if status == constants.PUBLISH_LOG_UNPUBLISHED:
@@ -784,3 +840,15 @@ def get_external_distribution_url(schema, external_dataset_id, external_distribu
             return domain + '/dataset/' + external_dataset_id + '/resource/' + external_distribution_id
 
     return ''
+
+
+def has_display_group_required_fields(fields, display_group):
+    if display_group == 'meta data life cycle':
+        return True
+
+    # Iterate each field and return true if there is a required field.
+    for field in fields:
+        if field.get('display_group', None) == display_group and field.get('required', False):
+            return True
+
+    return False

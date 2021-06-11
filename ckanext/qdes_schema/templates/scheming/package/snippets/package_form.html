@@ -22,6 +22,7 @@
   {% asset 'qdes_schema/repeating-fields' %}
   {% asset 'qdes_schema/autocomplete' %}
   {% asset 'qdes_schema/iso-8601-duration' %}
+  {% asset 'qdes_schema/input-date-helper' %}
   {% asset 'qdes_schema/style' %}
 
   {%- if not dataset_type -%}
@@ -71,6 +72,9 @@
               <button class="acc-heading" type="button">
                 <label for="display-group-{{field.display_group}}" class="no-colon">
                   <span class="title">{{field.display_group|capitalize}}</span>
+                  {%- if h.has_display_group_required_fields(schema.dataset_fields, field.display_group) -%}
+                    <i class="has-mandatory-fields fa fa-asterisk"></i>
+                  {%- endif -%}
                   <span class="arrow"><i></i></span>
                 </label>
               </button>
@@ -87,6 +91,11 @@
     {%- if field.sub_heading is not none and field.sub_heading != ns.sub_heading -%}
         {%- set ns.sub_heading = field.sub_heading -%}
         <h3>{{ field.sub_heading|capitalize }}</h3>
+
+      {%- if field.sub_heading_info_text is not none and field.sub_heading_info_text != ns.sub_heading_info_text -%}
+        {%- set ns.sub_heading_info_text = field.sub_heading_info_text -%}
+        <div class="small">{{ h.render_markdown(field.sub_heading_info_text, allow_html=True) }}</div>
+      {%- endif -%}
     {%- endif -%}
 
     {%- if field.form_snippet is not none -%}

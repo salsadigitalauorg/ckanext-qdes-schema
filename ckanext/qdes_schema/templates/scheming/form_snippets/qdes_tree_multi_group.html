@@ -28,6 +28,7 @@
                     is_required=h.scheming_field_required(field_group)
                 )
             %}
+                <div class="clear-btn"></div>
                 {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
             {% endcall %}
           {%- elif field_group.form_snippet -%}
