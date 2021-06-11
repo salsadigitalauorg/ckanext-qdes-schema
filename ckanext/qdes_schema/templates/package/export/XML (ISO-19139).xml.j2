@@ -223,7 +223,7 @@
       <resourceMaintenance>
         <MD_MaintenanceInformation>
           <maintenanceAndUpdateFrequency>
-            <MD_MaintenanceFrequencyCode codeSpace="ISOTC211/19115" codeListValue={{ dataset.get('update_schedule', {}).get('label') }} codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode">{{ dataset.get('update_schedule', {}).get('label') }}</MD_MaintenanceFrequencyCode>
+            <MD_MaintenanceFrequencyCode codeSpace="ISOTC211/19115" codeListValue="{{ dataset.get('update_schedule', {}).get('label') }}" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode">{{ dataset.get('update_schedule', {}).get('label') }}</MD_MaintenanceFrequencyCode>
           </maintenanceAndUpdateFrequency>
         </MD_MaintenanceInformation>
       </resourceMaintenance>
@@ -342,18 +342,18 @@
           </version>
         </MD_Format>
         {% if resource.get('compression') %}
-            <MD_CompressionFormat>
-            <name>
-              <gco:CharacterString>{{ resource.get('compression', {}).get('label') }}</gco:CharacterString>
-            </name>
-          </MD_CompressionFormat>
+        <MD_CompressionFormat>
+          <name>
+            <gco:CharacterString>{{ resource.get('compression', {}).get('label') }}</gco:CharacterString>
+          </name>
+        </MD_CompressionFormat>
         {% endif %}
         {% if resource.get('packaging') %}
-            <MD_CompressionFormat>
-            <name>
-              <gco:CharacterString>{{ resource.get('packaging', {}).get('label') }}</gco:CharacterString>
-            </name>
-          </MD_CompressionFormat>
+        <MD_CompressionFormat>
+          <name>
+            <gco:CharacterString>{{ resource.get('packaging', {}).get('label') }}</gco:CharacterString>
+          </name>
+        </MD_CompressionFormat>
         {% endif %}      
       </distributionFormat>
       {% endfor %}
@@ -387,7 +387,7 @@
             </CI_ResponsibleParty>
           </distributorContact>
           <distributorTransferOptions>
-          {% for resource in dataset.get('resources', []) %}
+            {% for resource in dataset.get('resources', []) %}
             <MD_DigitalTransferOptions>
             {% if resource.get('size') %}
               <transferSize>
@@ -395,9 +395,8 @@
               </transferSize>
             {% endif %}
             </MD_DigitalTransferOptions>
-
+            {% endfor %}
           </distributorTransferOptions>
-          {% endfor %}
         </MD_Distributor>
       </distributor>
     </MD_Distribution>
