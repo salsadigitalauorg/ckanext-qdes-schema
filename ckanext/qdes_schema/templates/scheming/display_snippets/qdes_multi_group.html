@@ -1,6 +1,6 @@
 {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 {% for group_data in values  %}
-    {% if group_data %}
+    {% if group_data and  not group_data is string %}
         <div class="row">
             {% set columns = (12 / field.get('field_group')|length)|int %}
             {% for field_group in field.get('field_group') or [] %}
@@ -10,6 +10,7 @@
                     {% else %}
                         {% set value_data = group_data.get(field_group.field_name, '') %}
                         {% set value = value_data.get('text', '')|string if not value_data is string and 'text' in value_data else value_data|string %}
+
                         {% if h.is_url(value) %}
                             <a href="{{ value }}"{% if display_property %} property="{{ display_property }}"{% endif %}>
                                 {% if 'choices_helper' in field_group %}
@@ -19,6 +20,9 @@
                                 {% endif %}
                             </a>
                         {% else %}
+                            {% if field.field_name == 'related_resources' and field_group.field_name == 'resource' %}
+                                {% set value = h.get_pkg_title(value_data.get('id')) %}
+                            {% endif %}
                             <span {% if field_group.display_property %} property="{{ field_group.display_property }}"{% endif %}>
                                 {{ value }}
                             </span>

@@ -25,7 +25,7 @@ jQuery(document).ready(function () {
         hide: function (deleteElement) {
             if (confirm('Are you sure you want to remove this item?')) {
                 // Remove value and trigger events
-                jQuery(this).hide();
+                jQuery(this).addClass('hidden');
                 jQuery(this).find('.form-control, [data-module="qdes_autocomplete"]').val('').blur().change();
             }
         },
@@ -36,7 +36,7 @@ jQuery(document).ready(function () {
     });
 
     function collate_inputs(repeater_id, target_field_id, field_type) {
-        var multi_groups = jQuery('#' + repeater_id + ' [data-repeater-item]:visible' + ' [data-group="True"]')
+        var multi_groups = jQuery('#' + repeater_id + ' [data-repeater-item]:not(.hidden)' + ' [data-group="True"]')
         var collated_values = [];
 
         if (multi_groups.length > 0) {
@@ -70,8 +70,8 @@ jQuery(document).ready(function () {
                 if (value) {
                     var field_name = jQuery(this).data('field-name');
                     // Find the parent element index
-                    var parentElement = jQuery(this).parents('#' + repeater_id + ' [data-repeater-item]:visible').first()
-                    var parentIndex = jQuery('#' + repeater_id + ' [data-repeater-item]:visible').index(parentElement);
+                    var parentElement = jQuery(this).parents('#' + repeater_id + ' [data-repeater-item]:not(.hidden)').first()
+                    var parentIndex = jQuery('#' + repeater_id + ' [data-repeater-item]:not(.hidden)').index(parentElement);
                     // Get multi_group or initialize a new one if it does not exist
                     var multi_group = collated_values[parentIndex] || {};
                     multi_group[field_name] = value;
@@ -140,7 +140,7 @@ jQuery(document).ready(function () {
         var target_field_id = parent_field_name ? 'field-' + parent_field_name : 'field-' + field_name;
         var field_type = jQuery('#' + repeater_id).data('field-type');
 
-        collate_inputs(repeater_id, target_field_id, field_type);
+        collate_inputs(repeater_id, target_field_id + '-hidden', field_type);
         related_resource_replaces_relationship(element);
     }
 

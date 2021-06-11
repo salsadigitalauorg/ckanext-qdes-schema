@@ -1,0 +1,61 @@
+<article class="external-publishing-details" open data-valid="{{ valid }}">
+  <input id="external-publishing-details" type="checkbox" name="tabs"
+         aria-controls="external-publishing-details-content" aria-expanded="true"
+         role="checkbox" tabindex="-1" checked>
+  <button class="acc-heading">
+    <label for="external-publishing-details" class="no-colon">
+      <span class="title">Publish activity</span>
+      <span class="arrow"> <i></i></span>
+    </label>
+  </button>
+
+  <div class="collapsing-section" id="external-publishing-details-content">
+    <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Portal</th>
+        <th>Distribution</th>
+        <th>Status</th>
+        <th>Published Date</th>
+        <th>Unpublished Date</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% if publish_activities %}
+        {% for publish_activity in publish_activities %}
+          <tr>
+            <td>{{ publish_activity.portal }}</td>
+            <td>
+              {% if publish_activity.status == 'Published' %}
+                <a href="{{ h.get_external_distribution_url(publish_activity.publish_log.destination, publish_activity.publish_log.destination_identifier, publish_activity.details.external_resource_id) }}" target="_blank">
+                  {{ publish_activity.distribution }}
+                </a>
+              {% else %}
+                {{ publish_activity.distribution }}
+              {% endif %}
+            </td>
+            <td>
+              {{ publish_activity.status }}
+              {% if 'error' in publish_activity.status %}
+                <details>
+                  <summary><small>View errors</small></summary>
+                  <small>
+                    {{ publish_activity.publish_log.details }}
+                  </small>
+                </details>
+              {% endif %}
+            </td>
+            <td>{{ publish_activity.published_date }}</td>
+            <td>{{ publish_activity.unpublished_date }}</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="5"><em>No publish log data.</em></td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  </div>
+</article>

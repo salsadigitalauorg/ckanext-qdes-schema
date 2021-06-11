@@ -1,0 +1,83 @@
+{% import 'macros/form.html' as form %}
+
+{% set ns = namespace() %}
+{% for field_group in field.get('field_group') or [] %}
+  {%- if field_group.get('preset') == 'controlled_vocabulary_tree_single' -%}
+    {% set ns.tree_field_name = field_group.field_name %}
+    {% set ns.tree_field_label = field_group.label %}
+    {% set ns.vocabulary_service_name = field_group.vocabulary_service_name %}
+  {% endif %}
+{% endfor %}
+
+
+<div class="tree-wrapper tree-multi-group form-group"
+     data-fieldname="{{ ns.tree_field_name }}"
+     data-fieldlabel="{{ ns.tree_field_label }}"
+     data-model="{{ h.url_for('vocabulary_services.vocabulary_service_term_json', term_name=ns.vocabulary_service_name) }}">
+  <label class="control-label" for="field-{{ field.field_name }}">{{ field.label }}</label>
+  <div class="row">
+    {% for field_group in field.get('field_group') or [] %}
+        <div class="col-md-{{ 10 // field.get('field_group')|length }}">
+          {%- if field_group.get('preset') == 'controlled_vocabulary_tree_single' -%}
+            {%
+                call form.input(
+                    field_group.field_name + '_search_tree',
+                    id='field-' + field_group.field_name + '-search-tree',
+                    label=h.scheming_language_text(field_group.label),
+                    classes=[field_group.field_name + '-search', 'tree-search'],
+                    is_required=h.scheming_field_required(field_group)
+                )
+            %}
+                <div class="clear-btn"></div>
+                {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
+            {% endcall %}
+          {%- elif field_group.form_snippet -%}
+            {% snippet 'scheming/form_snippets/field_groups/{0}'.format(field_group.form_snippet), field=field, field_group=field_group, group_data=group_data, errors=errors, data=data or {} %}
+          {%- endif -%}
+        </div>
+    {% endfor %}
+    <div class="col-md-2">
+      <button type="button" class="btn btn-default add-selected-node-tree" disabled style="margin-top: 25px">Add</button>
+    </div>
+  </div>
+
+  <div class="tree form-group"></div>
+
+
+  <div class="no-selected-node-tree">
+    <p class="form-group">
+      <strong class="title">Existing {{ field.label_plural }}</strong><br/>
+      <small>
+        <em class="text-muted">
+          {{ field.no_selected_term|safe }}
+        </em>
+      </small>
+    </p>
+  </div>
+
+  <div class="has-selected-node-tree" style="display: none">
+    <h4>Existing {{ field.label_plural }}</h4>
+    <table class="selected-tree-table table">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  {% set visibility = [] if g.debug else ['hidden'] %}
+  {% set default_classes = field.classes if 'classes' in field else ['control-medium'] %}
+
+  {%
+      call form.textarea(
+        field.field_name,
+        id='field-' + field.field_name + '-hidden',
+        label=h.scheming_language_text(field.label),
+        value=data[field.field_name],
+        error=errors[field.field_name],
+        classes=default_classes + visibility + ['hidden-input'],
+        is_required=h.scheming_field_required(field),
+      )
+  %}
+      {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
+  {% endcall %}
+
+</div>

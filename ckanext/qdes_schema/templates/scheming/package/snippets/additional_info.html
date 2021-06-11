@@ -55,7 +55,6 @@
               <tr>
                 <th scope="row" colspan="2">{{ _('Spatial coverage') }}</th>
               </tr>
-
               {% do spatial_coverage_has_value.update({'show_label': 0}) %}
             {% endif %}
 
@@ -70,8 +69,16 @@
         {%- endfor -%}
 
       {% endblock %}
+      <tr>
+        <th scope="row" class="dataset-label">
+          Data Catalogue ID
+        </th>
+        <td class="dataset-details">
+          {{ pkg_dict.get('id') }}
+        </td>
+      </tr>
     </tbody>
   </table>
 
-  <a href="{{ h.url_for('qdes_schema.dataset_metadata', id=pkg_dict['id']) }}">{{ _('View all metadata') }}</a>
+  <a href="{{ h.url_for('qdes_schema.dataset_metadata', id=pkg_dict['name']) }}">{{ _('View all metadata') }}</a>
 </section>

@@ -1,4 +1,4 @@
-{% import 'macros/form.html' as form %}
+{% import 'macros/qdes_form.html' as qdes_form %}
 
 {%- set options=[] -%}
 {%- set form_restrict_choices_to=field_group.get('form_restrict_choices_to') -%}
@@ -9,8 +9,9 @@
 {%- for c in h.scheming_field_choices(field_group) -%}
   {%- if not form_restrict_choices_to or c.value in form_restrict_choices_to -%}
     {%- do options.append({
-      'value': c.value|string,
-      'text': h.scheming_language_text(c.label) }) -%}
+        'value': c.value|string,
+        'text': h.scheming_language_text(c.label),
+        'title': c.title|string if c.title is not none else '' }) -%}
   {%- endif -%}
 {%- endfor -%}
 {%- if field_group.get('sorted_choices') -%}
@@ -19,13 +20,13 @@
 {%- if field_group.get('first_choice') -%}
   {%- set options = h.set_first_option(options, field_group.get('first_choice')) -%}
 {%- endif -%}
-{%- if  field_group.field_name in group_data -%}
+{%- if not group_data is string and field_group.field_name in group_data-%}
   {%- set option_selected = group_data.get(field_group.field_name, '')|string -%}
 {%- else -%}
   {%- set option_selected = None -%}
 {%- endif -%}
 
-{% call form.select(
+{% call qdes_form.select(
     label=h.scheming_language_text(field_group.label),
     options=options,
     selected=option_selected,
@@ -35,7 +36,7 @@
       {"data-group": true, 
       "data-field-name": field_group.field_name, 
       "data-parent-field-name": field.field_name, 
-      "data-placeholder":"Select a {0}".format(field_group.label)
+      "data-placeholder": h.scheming_language_text(field_group.form_placeholder)
       }, 
       **(field_group.get('form_attrs', {}))),
     is_required=h.scheming_field_required(field_group)

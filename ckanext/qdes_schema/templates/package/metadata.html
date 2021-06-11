@@ -3,6 +3,21 @@
 {%- set schema = h.scheming_get_dataset_schema(pkg_dict['type']) -%}
 
 {% block primary_content_inner %}
+  {% snippet "/snippets/invalid_uris_error.html", entity_id=pkg_dict.id , entity=pkg_dict %}
+
+ <div class="dropdown  pull-right">
+        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+          <i class="fa fa-download"></i>
+          {{ _('Export') }}
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+              <a href="{{ h.url_for('qdes_schema.dataset_export', id=pkg_dict['id'], format='XML (ISO-19139)') }}"
+                          target="_blank"><span>XML (ISO-19139)</span></a>
+            </li>
+        </ul>
+    </div>
   <section class="additional-info">
     <h3>{{ _('Metadata') }}</h3>
     <table class="table table-striped table-bordered table-condensed">
@@ -22,12 +37,34 @@
                 </th>
                 <td class="dataset-details"{%
                   if field.display_property %} property="{{ field.display_property
-                  }}"{% endif %}>{%- snippet 'scheming/snippets/display_field.html',
-                  field=field, data=pkg_dict, schema=schema -%}</td>
+                  }}"{% endif %}>
+                  {%- if field.field_name == 'owner_org' -%}
+                    {{ pkg_dict['organization']['title'] }}
+                  {%- else -%}
+                    {%- snippet 'scheming/snippets/display_field.html', field=field, data=pkg_dict, schema=schema -%}
+                  {%- endif -%}
+                </td>
               </tr>
+
+              {%- if field.field_name == 'publication_status' -%}
+                <tr>
+                  <td colspan="2">
+                    {%- snippet 'package/snippets/lifecycle.html', pkg_dict=pkg_dict, field=field -%}
+                  </td>
+                </tr>
+              {%- endif -%}
             {%- endif -%}
           {%- endfor -%}
         {% endblock %}
+
+        <tr>
+          <th scope="row" class="dataset-label">
+            Data Catalogue ID
+          </th>
+          <td class="dataset-details">
+            {{ pkg_dict.get('id') }}
+          </td>
+        </tr>
       </tbody>
     </table>
   </section>
