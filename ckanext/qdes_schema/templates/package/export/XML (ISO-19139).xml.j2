@@ -31,7 +31,7 @@
         <gco:CharacterString>{{dataset.get('contact_point', {}).get('Name', '')}}</gco:CharacterString>
       </individualName>
         <positionName>
-        <gco:CharacterString>{{dataset.get('contact_point', {}).get('Position', '')}}</gco:CharacterString>
+        <gco:CharacterString>{{dataset.get('contact_point', {}).get('Functional Position', '')}}</gco:CharacterString>
       </positionName> 
       <contactInfo>
         <CI_Contact>
@@ -58,17 +58,17 @@
     </CI_ResponsibleParty>
     <CI_ResponsibleParty id="metadataContact">
       <individualName>
-        <gco:CharacterString>Daniel Brough</gco:CharacterString>
+        <gco:CharacterString>{{dataset.get('metadata_contact_point', {}).get('Name', '')}}</gco:CharacterString>
       </individualName>
       <positionName>
-        <gco:CharacterString>Science Leader</gco:CharacterString>
+        <gco:CharacterString>{{dataset.get('metadata_contact_point', {}).get('Functional Position', '')}}</gco:CharacterString>
       </positionName>      
       <contactInfo>
         <CI_Contact>
           <address>
             <CI_Address>
               <electronicMailAddress>
-                <gco:CharacterString>qdes+Daniel.Brough@salsadigital.com.au</gco:CharacterString>
+                <gco:CharacterString>{{dataset.get('metadata_contact_point', {}).get('Email', '')}}</gco:CharacterString>
               </electronicMailAddress>
             </CI_Address>
           </address>
@@ -268,36 +268,36 @@
        {% endfor %}
        {% if dataset.get('rights_statement') %}
       <resourceConstraints>
-        <MD_LegalContraints>
+        <MD_LegalConstraints>
           <useLimitation>
             <gco:CharacterString>{{ dataset.get('rights_statement') }}</gco:CharacterString>
           </useLimitation>
           <useConstraints>
             <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="copyright" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">copyright</MD_RestrictionCode>
           </useConstraints>
-        </MD_LegalContraints>
+        </MD_LegalConstraints>
       </resourceConstraints>
       {% endif %}
       <resourceConstraints>
-        <MD_LegalContraints>
+        <MD_LegalConstraints>
           <useLimitation>
             <gco:CharacterString>{{ dataset.get('license_id', {}).get('label') }}</gco:CharacterString>
           </useLimitation>
           <useConstraints>
             <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="license" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">license</MD_RestrictionCode>
           </useConstraints>
-        </MD_LegalContraints>
+        </MD_LegalConstraints>
       </resourceConstraints>
       {% if dataset.get('specialized_license') %}
       <resourceConstraints>
-        <MD_LegalContraints>
+        <MD_LegalConstraints>
           <useLimitation>
             <gco:CharacterString>{{dataset.get('specialized_license')}}</gco:CharacterString>
           </useLimitation>
           <useConstraints>
             <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="license" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">license</MD_RestrictionCode>
           </useConstraints>
-        </MD_LegalContraints>
+        </MD_LegalConstraints>
       </resourceConstraints>
       {% endif%}
       {% if dataset.get('spatial_representation') %}
@@ -368,7 +368,7 @@
                 <gco:CharacterString>{{dataset.get('organisation', {}).get('name', '')}}</gco:CharacterString>
               </organisationName>
               <positionName>
-                <gco:CharacterString>{{dataset.get('contact_point', {}).get('Position', '')}}</gco:CharacterString>
+                <gco:CharacterString>{{dataset.get('contact_point', {}).get('Functional Position', '')}}</gco:CharacterString>
               </positionName>
               <contactInfo>
                 <CI_Contact>
