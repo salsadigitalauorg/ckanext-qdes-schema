@@ -285,6 +285,12 @@ def dataset_export(id, format):
             if secure_vocabulary_record:
                 dataset['contact_point'] = secure_vocabulary_record
 
+        if dataset['metadata_contact_point']:
+            secure_vocabulary_record = get_action('get_secure_vocabulary_record')(
+                context, {'vocabulary_name': 'point-of-contact', 'query': dataset['metadata_contact_point']})
+            if secure_vocabulary_record:
+                dataset['metadata_contact_point'] = secure_vocabulary_record
+
         # if dataset['contact_creator']:
         #     secure_vocabulary_record = get_action('get_secure_vocabulary_record')(
         #         context, {'vocabulary_name': 'point-of-contact', 'query': dataset['contact_creator']})
