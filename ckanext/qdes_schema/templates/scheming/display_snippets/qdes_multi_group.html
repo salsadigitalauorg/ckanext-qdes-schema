@@ -11,6 +11,10 @@
                         {% set value_data = group_data.get(field_group.field_name, '') %}
                         {% set value = value_data.get('text', '')|string if not value_data is string and 'text' in value_data else value_data|string %}
 
+                        {% if value_data is not string and h.is_url(value_data.get('id')) %}
+                            {% set value = value_data.get('id') %}
+                        {% endif %}
+                    
                         {% if h.is_url(value) %}
                             <a href="{{ value }}"{% if display_property %} property="{{ display_property }}"{% endif %}>
                                 {% if 'choices_helper' in field_group %}
