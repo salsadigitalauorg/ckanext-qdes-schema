@@ -74,6 +74,11 @@ def dataset_metadata(id):
         extra_vars = {}
         extra_vars['pkg_dict'] = get_action('package_show')({}, {'id': id})
 
+        # Load existing relationship.
+        relationships = h.get_subject_package_relationship_objects(extra_vars['pkg_dict'].get('id'))
+        if relationships:
+            extra_vars['pkg_dict']['related_resources'] = h.convert_relationships_to_related_resources(relationships)
+
         return render('package/metadata.html', extra_vars=extra_vars)
     except (NotFound, NotAuthorized):
         abort(404, _('Dataset metadata not found'))
