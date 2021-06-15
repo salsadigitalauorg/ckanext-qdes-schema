@@ -284,37 +284,23 @@ def dataset_export(id, format):
                 
         # TODO: Need to load all secure vocabs as dict objects
         # Load vocabualry service contact_point
-        if dataset['contact_point']:
+        vocab_value = {}
+        if len(dataset.get('contact_point', '')) > 0:
             secure_vocabulary_record = get_action('get_secure_vocabulary_record')(
                 context, {'vocabulary_name': 'point-of-contact', 'query': dataset['contact_point']})
             if secure_vocabulary_record:
-                dataset['contact_point'] = secure_vocabulary_record
+                vocab_value = secure_vocabulary_record
 
-        if dataset['metadata_contact_point']:
+        dataset['contact_point'] = vocab_value
+
+        vocab_value = {}
+        if len(dataset.get('metadata_contact_point', '')) > 0:
             secure_vocabulary_record = get_action('get_secure_vocabulary_record')(
                 context, {'vocabulary_name': 'point-of-contact', 'query': dataset['metadata_contact_point']})
             if secure_vocabulary_record:
-                dataset['metadata_contact_point'] = secure_vocabulary_record
-        else:
-            dataset['metadata_contact_point'] = {}
+                vocab_value = secure_vocabulary_record
 
-        # if dataset['contact_creator']:
-        #     secure_vocabulary_record = get_action('get_secure_vocabulary_record')(
-        #         context, {'vocabulary_name': 'point-of-contact', 'query': dataset['contact_creator']})
-        #     if secure_vocabulary_record:
-        #         dataset['contact_creator'] = secure_vocabulary_record
-        # Load vocabualry service spatial_representation
-        if dataset.get('spatial_representation', None):
-            secure_vocabulary_record = get_action('get_vocabulary_service_term')(
-                {}, {'vocabulary_name': 'spatial_representation', 'term_uri': dataset['spatial_representation']})
-            if secure_vocabulary_record:
-                dataset['spatial_representation'] = secure_vocabulary_record
-        # Load vocabualry service spatial_datum_crs
-        if dataset.get('spatial_datum_crs',None):
-            secure_vocabulary_record = get_action('get_vocabulary_service_term')(
-                {}, {'vocabulary_name': 'spatial_datum_crs', 'term_uri': dataset['spatial_datum_crs']})
-            if secure_vocabulary_record:
-                dataset['spatial_datum_crs'] = secure_vocabulary_record
+        dataset['metadata_contact_point'] = vocab_value
 
         # Get the identifiers 
         dataset['additional_info'] = h.get_multi_textarea_values(dataset.get('additional_info', []))
