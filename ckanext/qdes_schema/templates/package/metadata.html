@@ -4,22 +4,29 @@
 
 {% block primary_content_inner %}
   {% snippet "/snippets/invalid_uris_error.html", entity_id=pkg_dict.id , entity=pkg_dict %}
+  {% if pkg_dict.private %}
+    <span class="dataset-private label label-inverse pull-right">
+      <i class="fa fa-lock"></i>
+      {{ _('Private') }}
+    </span><br/><br/>
+  {% endif %}
 
- <div class="dropdown  pull-right">
-        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-          <i class="fa fa-download"></i>
-          {{ _('Export') }}
-          <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            <li>
-              <a href="{{ h.url_for('qdes_schema.dataset_export', id=pkg_dict['id'], format='XML (ISO-19139)') }}"
-                          target="_blank"><span>XML (ISO-19139)</span></a>
-            </li>
-        </ul>
-    </div>
   <section class="additional-info">
-    <h3>{{ _('Metadata') }}</h3>
+    <h3 class="pull-left">{{ _('Metadata') }}</h3>
+    <div class="dropdown pull-right">
+      <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="fa fa-download"></i>
+        {{ _('Export') }}
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li>
+          <a href="{{ h.url_for('qdes_schema.dataset_export', id=pkg_dict['id'], format='XML (ISO-19139)') }}"
+             target="_blank"><span>XML (ISO-19139)</span></a>
+        </li>
+      </ul>
+    </div>
+
     <table class="table table-striped table-bordered table-condensed">
       <thead>
         <tr>
