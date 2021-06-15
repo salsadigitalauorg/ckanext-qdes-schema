@@ -120,6 +120,22 @@ def qdes_validate_decimal(value):
     return value
 
 
+def qdes_validate_decimal_positive(value):
+    """
+    Validate the string provided is float, decimal or integer and must be positive.
+    """
+    if len(value) > 0:
+        try:
+            val = float(value)
+        except:
+            raise toolkit.Invalid('Not a valid decimal value.')
+
+        if val < 0:
+            raise toolkit.Invalid('Value must be positive.')
+
+    return value
+
+
 def qdes_validate_geojson(value):
     """
     Validate the format of GeoJSON.
@@ -257,12 +273,16 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
     has_error = False
 
     try:
-        result = re.split(
-            "(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?",
+        result_period = re.split(
+            "(-)?P(?:([-.,\d]+)Y)?(?:([-.,\d]+)M)?(?:([-.,\d]+)W)?(?:([-.,\d]+)D)?",
             flattened_data[key])
 
+        result_time = re.split("T(?:([-.,\d]+)H)?(?:([-.,\d]+)M)?(?:([-.,\d]+)S)?", flattened_data[key])
+
+        result = result_period + result_time
+
         for index, value in enumerate(result):
-            if (index > 1) and (index < 10):
+            if (index > 1) and (index < 10) and (not index == 6) and (not index == 7):
                 try:
                     if (value is None) or len(value) == 0:
                         value = 0

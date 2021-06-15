@@ -258,6 +258,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_dataset_last_modified_date_before_today': validators.qdes_dataset_last_modified_date_before_today,
             'qdes_uri_validator': validators.qdes_uri_validator,
             'qdes_validate_decimal': validators.qdes_validate_decimal,
+            'qdes_validate_decimal_positive': validators.qdes_validate_decimal_positive,
             'qdes_validate_geojson': validators.qdes_validate_geojson,
             'qdes_validate_geojson_point': validators.qdes_validate_geojson_point,
             'qdes_validate_geojson_polygon': validators.qdes_validate_geojson_polygon,
