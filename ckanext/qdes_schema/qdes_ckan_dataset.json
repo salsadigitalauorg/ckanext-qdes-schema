@@ -241,7 +241,7 @@
     {
       "field_name": "spatial_content_resolution",
       "label": "Spatial resolution in meters",
-      "validators": "ignore_missing qdes_validate_decimal",
+      "validators": "ignore_missing qdes_validate_decimal_positive",
       "display_property": "dcat:spatialResolutionInMeters",
       "display_group": "spatial content",
       "help_text": "The minimum spatial separation resolvable in a dataset, measured in meters.",
@@ -741,7 +741,7 @@
       "label": "Size",
       "display_property": "dcat:byteSize",
       "display_snippet": "qdes_byte_size.html",
-      "validators": "ignore_missing int_validator",
+      "validators": "ignore_missing int_validator is_positive_integer",
       "form_placeholder": "Enter exact or approximate file size in bytes (integer)",
       "recommended": true
     },
