@@ -124,86 +124,94 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             # Process the package's CKAN resources (aka "Data Access" (QDCAT), aka "Distribution" (DCAT))
             # The values stored in `res_format` are URIs for the vocabulary term
             # A new field was added to the solr schema.xml to store the labels of the resource formats
-            resource_format_labels = indexing_helpers.get_resource_format_labels(
-                dataset_type,
-                pkg_dict.get('res_format', None)
-            )
+            if 'res_format' in pkg_dict:
+                resource_format_labels = indexing_helpers.get_resource_format_labels(
+                    dataset_type,
+                    pkg_dict.get('res_format', None)
+                )
 
-            # If we have some resource format labels - include these in the
-            # details being sent to Solr for indexing
-            if resource_format_labels:
-                pkg_dict['resource_format_labels'] = resource_format_labels
+                # If we have some resource format labels - include these in the
+                # details being sent to Solr for indexing
+                if resource_format_labels:
+                    pkg_dict['resource_format_labels'] = resource_format_labels
 
             # "Topic or theme" terms are stored as URIs, so also need to be indexed
             # by their labels for searching on keyword
-            topic_labels = indexing_helpers.convert_vocabulary_terms_json_to_labels(
-                dataset_type,
-                'topic',
-                pkg_dict.get('topic', '')
-            )
+            if 'topic' in pkg_dict:
+                topic_labels = indexing_helpers.convert_vocabulary_terms_json_to_labels(
+                    dataset_type,
+                    'topic',
+                    pkg_dict.get('topic', '')
+                )
 
-            if topic_labels:
-                pkg_dict['topic_labels'] = topic_labels
+                if topic_labels:
+                    pkg_dict['topic_labels'] = topic_labels
 
             # Make license searchable via vocabulary term label
-            license_label = indexing_helpers.convert_license_uri_to_label(
-                dataset_type,
-                # Check `license_id` first, fall-back to `license` or None if empty string
-                pkg_dict.get('license_id', None) or pkg_dict.get('license', None) or None
-            )
+            if 'license_id' in pkg_dict:
+                license_label = indexing_helpers.convert_license_uri_to_label(
+                    dataset_type,
+                    # Check `license_id` first, fall-back to `license` or None if empty string
+                    pkg_dict.get('license_id', None) or pkg_dict.get('license', None) or None
+                )
 
-            if license_label:
-                pkg_dict['license_label'] = license_label
+                if license_label:
+                    pkg_dict['license_label'] = license_label
 
             # General classification.
-            general_classification = indexing_helpers.convert_vocabulary_terms_json_to_labels(
-                dataset_type,
-                'classification',
-                pkg_dict.get('classification', '')
-            )
+            if 'classification' in pkg_dict:
+                general_classification = indexing_helpers.convert_vocabulary_terms_json_to_labels(
+                    dataset_type,
+                    'classification',
+                    pkg_dict.get('classification', '')
+                )
 
-            if general_classification:
-                pkg_dict['general_classification'] = general_classification
+                if general_classification:
+                    pkg_dict['general_classification'] = general_classification
 
             # Publication status.
-            publication_status_label = indexing_helpers.convert_term_uri_to_label(
-                dataset_type,
-                'publication_status',
-                pkg_dict.get('publication_status', '')
-            )
+            if 'publication_status' in pkg_dict:
+                publication_status_label = indexing_helpers.convert_term_uri_to_label(
+                    dataset_type,
+                    'publication_status',
+                    pkg_dict.get('publication_status', '')
+                )
 
-            if publication_status_label:
-                pkg_dict['publication_status_label'] = publication_status_label
+                if publication_status_label:
+                    pkg_dict['publication_status_label'] = publication_status_label
 
             # Access restriction.
-            classification_and_access_restrictions_label = indexing_helpers.convert_vocabulary_terms_json_to_labels(
-                dataset_type,
-                'classification_and_access_restrictions',
-                pkg_dict.get('classification_and_access_restrictions', '')
-            )
+            if 'classification_and_access_restrictions' in pkg_dict:
+                classification_and_access_restrictions_label = indexing_helpers.convert_vocabulary_terms_json_to_labels(
+                    dataset_type,
+                    'classification_and_access_restrictions',
+                    pkg_dict.get('classification_and_access_restrictions', '')
+                )
 
-            if classification_and_access_restrictions_label:
-                pkg_dict['classification_and_access_restrictions_label'] = classification_and_access_restrictions_label
+                if classification_and_access_restrictions_label:
+                    pkg_dict['classification_and_access_restrictions_label'] = classification_and_access_restrictions_label
 
             # Service status.
-            service_status_label = indexing_helpers.convert_term_uri_to_label(
-                dataset_type,
-                'service_status',
-                pkg_dict.get('service_status', '')
-            )
+            if 'service_status' in pkg_dict:
+                service_status_label = indexing_helpers.convert_term_uri_to_label(
+                    dataset_type,
+                    'service_status',
+                    pkg_dict.get('service_status', '')
+                )
 
-            if service_status_label:
-                pkg_dict['service_status_label'] = service_status_label
+                if service_status_label:
+                    pkg_dict['service_status_label'] = service_status_label
 
             # Standards.
-            standards_label = indexing_helpers.convert_vocabulary_terms_json_to_labels(
-                dataset_type,
-                'standards',
-                pkg_dict.get('standards', '')
-            )
+            if 'standards' in pkg_dict:
+                standards_label = indexing_helpers.convert_vocabulary_terms_json_to_labels(
+                    dataset_type,
+                    'standards',
+                    pkg_dict.get('standards', '')
+                )
 
-            if standards_label:
-                pkg_dict['standards_label'] = standards_label
+                if standards_label:
+                    pkg_dict['standards_label'] = standards_label
 
         return pkg_dict
 
