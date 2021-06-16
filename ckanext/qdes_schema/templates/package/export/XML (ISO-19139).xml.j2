@@ -240,19 +240,19 @@
         {% endfor %}
         </MD_Keywords>
       </descriptiveKeywords>
-      {% if dataset.get('keywords') %}
-      <descriptiveKeywords>
-        <MD_Keywords>
-         {% for keyword in dataset.get('keywords')%}
-          <keyword>
-            <gco:CharacterString>{{ keyword }}</gco:CharacterString>
-          </keyword>
-          <type>
-            <MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme" codeSpace="ISOTC211/19115">theme</MD_KeywordTypeCode>
-          </type>
-          {% endfor %}
-        </MD_Keywords>
-      </descriptiveKeywords>
+      {% if dataset.get('tags') %}
+        <descriptiveKeywords>
+          <MD_Keywords>
+           {% for keyword in dataset.get('tags')%}
+            <keyword>
+              <gco:CharacterString>{{ keyword.get('display_name', "") }}</gco:CharacterString>
+            </keyword>
+            <type>
+              <MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme" codeSpace="ISOTC211/19115">theme</MD_KeywordTypeCode>
+            </type>
+            {% endfor %}
+          </MD_Keywords>
+        </descriptiveKeywords>
       {% endif %}
       {% for access in dataset.get('classification_and_access_restrictions') %}
       <resourceConstraints>
@@ -301,19 +301,19 @@
       </resourceConstraints>
       {% endif%}
       {% if dataset.get('spatial_representation') %}
-      <spatialRepresentationType>
-        <MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="{{ dataset.get('spatial_representation', {}).get('label') }}" codeSpace="ISOTC211/19115">{{ dataset.get('spatial_representation', {}).get('label') }}</MD_SpatialRepresentationTypeCode>
-      </spatialRepresentationType>
+        <spatialRepresentationType>
+          <MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="{{ dataset.get('spatial_representation', {}).get('label') }}" codeSpace="ISOTC211/19115">{{ dataset.get('spatial_representation', {}).get('label') }}</MD_SpatialRepresentationTypeCode>
+        </spatialRepresentationType>
       {% endif %}
-      {% if dataset.get('spatial_resolution') %}
-          <spatialResolution>
-            <MD_Resolution>
-              <distance>
-                <gco:Distance uom="m">{{ dataset.get('spatial_resolution', {}).get('label') }}</gco:Distance>
-              </distance>
-            </MD_Resolution>
-          </spatialResolution>
-        {% endif %}
+      {% if dataset.get('spatial_content_resolution') %}
+        <spatialResolution>
+          <MD_Resolution>
+            <distance>
+              <gco:Distance uom="m">{{ dataset.get('spatial_content_resolution') }}</gco:Distance>
+            </distance>
+          </MD_Resolution>
+        </spatialResolution>
+      {% endif %}
       <language>
         <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng" codeSpace="ISO639-2">eng</LanguageCode>
       </language>
@@ -388,13 +388,33 @@
           </distributorContact>
           <distributorTransferOptions>
             {% for resource in dataset.get('resources', []) %}
-            <MD_DigitalTransferOptions>
-            {% if resource.get('size') %}
-              <transferSize>
-                <gco:Real>{{resource.get('size')}}</gco:Real>
-              </transferSize>
-            {% endif %}
-            </MD_DigitalTransferOptions>
+              <MD_DigitalTransferOptions>
+                {% if resource.get('size') %}
+                  <transferSize>
+                    <gco:Real>{{resource.get('size')}}</gco:Real>
+                  </transferSize>
+                {% endif %}
+                {% if resource.get('url') %}
+                  <onLine>
+                    <CI_OnlineResource>
+                      <linkage>
+                         <URL>{{resource.get('url')}}</URL>
+                      </linkage>
+                    </CI_OnlineResource>
+                  </onLine>
+                {% endif %}
+                {% if resource.get('data_services') %}
+                  {% for data_service in resource.get('data_services') %}
+                    <onLine>
+                      <CI_OnlineResource>
+                        <name>
+                          <gco:CharacterString>{{data_services}}</gco:CharacterString>
+                        </name>
+                      </CI_OnlineResource>
+                    </onLine>
+                  {% endfor %}
+                {% endif %}
+              </MD_DigitalTransferOptions>
             {% endfor %}
           </distributorTransferOptions>
         </MD_Distributor>
@@ -410,121 +430,117 @@
           </level>
         </DQ_Scope>
       </scope>
-     {% if dataset.get('schema_standards')%}
-      {% for schema_standard in dataset.get('schema_standards') %}
-        {% if schema_standard != '' %}
-          <lineage>
-            <LI_Lineage>
-              <statement>
-                <gco:CharacterString>Schema or standard: {{ schema_standard }}</gco:CharacterString>
-              </statement>
-            </LI_Lineage>
-          </lineage>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
+       {% if dataset.get('conforms_to')%}
+        {% for schema_standard in dataset.get('conforms_to') %}
+          {% if schema_standard != '' %}
+            <lineage>
+              <LI_Lineage>
+                <statement>
+                  <gco:CharacterString>Schema or standard: {{ schema_standard }}</gco:CharacterString>
+                </statement>
+              </LI_Lineage>
+            </lineage>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
 
-    {% if dataset.get('quality_measure') %}
-      {% for quality_measure in dataset.get('quality_measure') %}
-        {% if quality_measure != '' and quality_measure.get('measurement', {}).get('label') != '' %}
-          <lineage>
-            <LI_Lineage>
-              <statement>
-                <gco:CharacterString>{{ quality_measure.get('measurement', {}).get('label') }}: {{ quality_measure.get('value') }}</gco:CharacterString>
-              </statement>
-            </LI_Lineage>
-          </lineage>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
+      {% if dataset.get('quality_measure') %}
+        {% for quality_measure in dataset.get('quality_measure') %}
+          {% if quality_measure != '' and quality_measure.get('measurement', {}).get('label') != '' %}
+            <lineage>
+              <LI_Lineage>
+                <statement>
+                  <gco:CharacterString>{{ quality_measure.get('measurement', {}).get('label') }}: {{ quality_measure.get('value') }}</gco:CharacterString>
+                </statement>
+              </LI_Lineage>
+            </lineage>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
 
-    {% if dataset.get('quality_description') %}
-      {% for quality_description in dataset.get('quality_description') %}
-        {% if quality_description != '' and quality_description.get('dimension', {}).get('label') != '' %}
-          <lineage>
-            <LI_Lineage>
-              <statement>
-                <gco:CharacterString>{{ quality_description.get('dimension', {}).get('label') }}: {{ quality_description.get('value') }}</gco:CharacterString>
-              </statement>
-            </LI_Lineage>
-          </lineage>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-    {% if dataset.get('lineage_description')%}
-      {% for lineage_description in dataset.get('lineage_description') %}
-        {% if lineage_description != '' %}
-          <lineage>
-            <LI_Lineage>
-              <statement>
-                <gco:CharacterString>{{ lineage_description }}</gco:CharacterString>
-              </statement>
-            </LI_Lineage>
-          </lineage>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-    {% if dataset.get('lineage_plan')%}
-      <lineage>
-        <LI_Lineage>
-          <statement>
-            <gco:CharacterString>Plan: {{ dataset.get('lineage_plan') }}</gco:CharacterString>
-          </statement>
-        </LI_Lineage>
-      </lineage>
-    {% endif %}  
-    {% if dataset.get('lineage_inputs')%}
-      {% for lineage_inputs in dataset.get('lineage_inputs') %}
-        {% if lineage_inputs != '' %}
-          <lineage>
-            <LI_Lineage>
-              <statement>
-                <gco:CharacterString>Inputs: {{ lineage_inputs }}</gco:CharacterString>
-              </statement>
-            </LI_Lineage>
-          </lineage>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-    {% if dataset.get('lineage_sensor')%}
-      {% for lineage_sensor in dataset.get('lineage_sensor') %}
-        {% if lineage_sensor != '' %}
-          <lineage>
-            <LI_Lineage>
-              <statement>
-                <gco:CharacterString>Sensor: {{ lineage_sensor }}</gco:CharacterString>
-              </statement>
-            </LI_Lineage>
-          </lineage>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-    {% if dataset.get('lineage_responsible_party')%}
-      {% for lineage_responsible_party in dataset.get('lineage_responsible_party') %}
-        {% if lineage_responsible_party != '' %}
-          <lineage>
-            <LI_Lineage>
-              <statement>
-                <gco:CharacterString>Repsonsible party: {{ lineage_responsible_party }}</gco:CharacterString>
-              </statement>
-            </LI_Lineage>
-          </lineage>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-    {% if dataset.get('cited_in')%}
-      {% for cited_in in dataset.get('cited_in') %}
-        {% if cited_in != '' %}
-          <lineage>
-            <LI_Lineage>
-              <statement>
-                <gco:CharacterString>Cited in: {{ cited_in }}</gco:CharacterString>
-              </statement>
-            </LI_Lineage>
-          </lineage>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
+      {% if dataset.get('quality_description') %}
+        {% for quality_description in dataset.get('quality_description') %}
+          {% if quality_description != '' and quality_description.get('dimension', {}).get('label') != '' %}
+            <lineage>
+              <LI_Lineage>
+                <statement>
+                  <gco:CharacterString>{{ quality_description.get('dimension', {}).get('label') }}: {{ quality_description.get('value') }}</gco:CharacterString>
+                </statement>
+              </LI_Lineage>
+            </lineage>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      {% if dataset.get('lineage_description') %}
+        <lineage>
+          <LI_Lineage>
+            <statement>
+              <gco:CharacterString>{{ dataset.get('lineage_description') }}</gco:CharacterString>
+            </statement>
+          </LI_Lineage>
+        </lineage>
+      {% endif %}
+      {% if dataset.get('lineage_plan')%}
+        <lineage>
+          <LI_Lineage>
+            <statement>
+              <gco:CharacterString>Plan: {{ dataset.get('lineage_plan') }}</gco:CharacterString>
+            </statement>
+          </LI_Lineage>
+        </lineage>
+      {% endif %}
+      {% if dataset.get('lineage_inputs')%}
+        {% for lineage_inputs in dataset.get('lineage_inputs') %}
+          {% if lineage_inputs != '' %}
+            <lineage>
+              <LI_Lineage>
+                <statement>
+                  <gco:CharacterString>Inputs: {{ lineage_inputs }}</gco:CharacterString>
+                </statement>
+              </LI_Lineage>
+            </lineage>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      {% if dataset.get('lineage_sensor')%}
+        {% for lineage_sensor in dataset.get('lineage_sensor') %}
+          {% if lineage_sensor != '' %}
+            <lineage>
+              <LI_Lineage>
+                <statement>
+                  <gco:CharacterString>Sensor: {{ lineage_sensor }}</gco:CharacterString>
+                </statement>
+              </LI_Lineage>
+            </lineage>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      {% if dataset.get('lineage_responsible_party')%}
+        {% for lineage_responsible_party in dataset.get('lineage_responsible_party') %}
+          {% if lineage_responsible_party != '' %}
+            <lineage>
+              <LI_Lineage>
+                <statement>
+                  <gco:CharacterString>Repsonsible party: {{ lineage_responsible_party }}</gco:CharacterString>
+                </statement>
+              </LI_Lineage>
+            </lineage>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      {% if dataset.get('cited_in')%}
+        {% for cited_in in dataset.get('cited_in') %}
+          {% if cited_in != '' %}
+            <lineage>
+              <LI_Lineage>
+                <statement>
+                  <gco:CharacterString>Cited in: {{ cited_in }}</gco:CharacterString>
+                </statement>
+              </LI_Lineage>
+            </lineage>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
     </DQ_DataQuality>
   </dataQualityInfo>
   <metadataConstraints>
