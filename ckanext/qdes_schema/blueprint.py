@@ -310,14 +310,12 @@ def dataset_export(id, format):
         dataset['topic'] = h.get_multi_textarea_values(dataset.get('topic', []))
         dataset['quality_measure'] = h.get_multi_textarea_values(dataset.get('quality_measure', []))
         dataset['quality_description'] = h.get_multi_textarea_values(dataset.get('quality_description', []))
-        dataset['lineage_description'] = h.get_multi_textarea_values(dataset.get('lineage_description', []))
-        #dataset['lineage_plan'] = dataset.get('lineage_plan', [])
+        dataset['conforms_to'] = h.get_multi_textarea_values(dataset.get('conforms_to', []))
         dataset['lineage_inputs'] = h.get_multi_textarea_values(dataset.get('lineage_inputs', []))
         dataset['lineage_sensor'] = h.get_multi_textarea_values(dataset.get('lineage_sensor', []))
         dataset['lineage_responsible_party'] = h.get_multi_textarea_values(dataset.get('lineage_responsible_party', []))
         dataset['cited_in'] = h.get_multi_textarea_values(dataset.get('cited_in', []))
         dataset['classification_and_access_restrictions'] = h.get_multi_textarea_values(dataset.get('classification_and_access_restrictions', []))
-        # dataset['rights_statement'] = dataset.get('rights_statement', [])
         dataset['series_or_relationships'] = relationships
 
         # Load schema.
@@ -368,6 +366,8 @@ def dataset_export(id, format):
             for field in schema.get('resource_fields', {}):
                 if field.get('field_name') in res_single_multi_vocab_fields:
                     res[field.get('field_name')] = _get_term_obj(res.get(field.get('field_name')), field.get('vocabulary_service_name'))
+
+            res['data_services'] = h.get_multi_textarea_values(res.get('data_services', []))
 
             new_resources.append(res)
 
