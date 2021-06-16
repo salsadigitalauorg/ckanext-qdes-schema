@@ -2,16 +2,16 @@
   <fileIdentifier>
     <gco:CharacterString>{{ dataset.get('id') }}</gco:CharacterString>
   </fileIdentifier>
-  {% if dataset.get('series_or_relationships')%}
-    {% for relationship in dataset.get('series_or_relationships',[])%}
-    <parentIdentifier>
-      {% if relationship.get('pkg_id') %}
-            <gco:CharacterString>{{ relationship.get('pkg_title')}}</gco:CharacterString>
-       {% else %}
-           <gco:CharacterString>{{ relationship.get('comment') }}</gco:CharacterString>
-       {% endif %}
-    </parentIdentifier>
-    {% endfor%}
+  {% if dataset.get('series_or_relationships') %}
+    {% for relationship in dataset.get('series_or_relationships',[]) %}
+      <parentIdentifier>
+        {% if relationship.get('pkg_id') %}
+          <gco:CharacterString>{{ relationship.get('pkg_title')}}</gco:CharacterString>
+        {% else %}
+          <gco:CharacterString>{{ relationship.get('comment') }}</gco:CharacterString>
+        {% endif %}
+      </parentIdentifier>
+    {% endfor %}
   {% endif %}
   <language>
     <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng" codeSpace="ISO639-2">eng</LanguageCode>
@@ -411,7 +411,8 @@
         </DQ_Scope>
       </scope>
      {% if dataset.get('schema_standards')%}
-       {% for schema_standard in dataset.get('schema_standards') %}
+      {% for schema_standard in dataset.get('schema_standards') %}
+        {% if schema_standard != '' %}
           <lineage>
             <LI_Lineage>
               <statement>
@@ -419,11 +420,12 @@
               </statement>
             </LI_Lineage>
           </lineage>
-        {% endfor %}
+        {% endif %}
+      {% endfor %}
     {% endif %}
 
     {% if dataset.get('quality_measure') %}
-       {% for quality_measure in dataset.get('quality_measure') %}
+      {% for quality_measure in dataset.get('quality_measure') %}
         {% if quality_measure != '' and quality_measure.get('measurement', {}).get('label') != '' %}
           <lineage>
             <LI_Lineage>
@@ -432,47 +434,48 @@
               </statement>
             </LI_Lineage>
           </lineage>
-          {% endif %}
-        {% endfor %}
+        {% endif %}
+      {% endfor %}
     {% endif %}
 
     {% if dataset.get('quality_description') %}
-       {% for quality_description in dataset.get('quality_description') %}
-         {% if quality_description != '' and quality_description.get('dimension', {}).get('label') != '' %}
-            <lineage>
-              <LI_Lineage>
-                <statement>
-                  <gco:CharacterString>{{ quality_description.get('dimension', {}).get('label') }}: {{ quality_description.get('value') }}</gco:CharacterString>
-                </statement>
-              </LI_Lineage>
-            </lineage>
-          {% endif %}
-        {% endfor %}
+      {% for quality_description in dataset.get('quality_description') %}
+        {% if quality_description != '' and quality_description.get('dimension', {}).get('label') != '' %}
+          <lineage>
+            <LI_Lineage>
+              <statement>
+                <gco:CharacterString>{{ quality_description.get('dimension', {}).get('label') }}: {{ quality_description.get('value') }}</gco:CharacterString>
+              </statement>
+            </LI_Lineage>
+          </lineage>
+        {% endif %}
+      {% endfor %}
     {% endif %}
     {% if dataset.get('lineage_description')%}
       {% for lineage_description in dataset.get('lineage_description') %}
         {% if lineage_description != '' %}
-        <lineage>
-          <LI_Lineage>
-            <statement>
-              <gco:CharacterString>{{ lineage_description }}</gco:CharacterString>
-            </statement>
-          </LI_Lineage>
-        </lineage>
+          <lineage>
+            <LI_Lineage>
+              <statement>
+                <gco:CharacterString>{{ lineage_description }}</gco:CharacterString>
+              </statement>
+            </LI_Lineage>
+          </lineage>
         {% endif %}
       {% endfor %}
     {% endif %}
     {% if dataset.get('lineage_plan')%}
-          <lineage>
-            <LI_Lineage>
-              <statement>
-                <gco:CharacterString>Plan: {{ dataset.get('lineage_plan') }}</gco:CharacterString>
-              </statement>
-            </LI_Lineage>
-          </lineage>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Plan: {{ dataset.get('lineage_plan') }}</gco:CharacterString>
+          </statement>
+        </LI_Lineage>
+      </lineage>
     {% endif %}  
-      {% if dataset.get('lineage_inputs')%}
-       {% for lineage_inputs in dataset.get('lineage_inputs') %}
+    {% if dataset.get('lineage_inputs')%}
+      {% for lineage_inputs in dataset.get('lineage_inputs') %}
+        {% if lineage_inputs != '' %}
           <lineage>
             <LI_Lineage>
               <statement>
@@ -480,10 +483,12 @@
               </statement>
             </LI_Lineage>
           </lineage>
-        {% endfor %}
+        {% endif %}
+      {% endfor %}
     {% endif %}
     {% if dataset.get('lineage_sensor')%}
-       {% for lineage_sensor in dataset.get('lineage_sensor') %}
+      {% for lineage_sensor in dataset.get('lineage_sensor') %}
+        {% if lineage_sensor != '' %}
           <lineage>
             <LI_Lineage>
               <statement>
@@ -491,10 +496,12 @@
               </statement>
             </LI_Lineage>
           </lineage>
-        {% endfor %}
+        {% endif %}
+      {% endfor %}
     {% endif %}
     {% if dataset.get('lineage_responsible_party')%}
-       {% for lineage_responsible_party in dataset.get('lineage_responsible_party') %}
+      {% for lineage_responsible_party in dataset.get('lineage_responsible_party') %}
+        {% if lineage_responsible_party != '' %}
           <lineage>
             <LI_Lineage>
               <statement>
@@ -502,10 +509,12 @@
               </statement>
             </LI_Lineage>
           </lineage>
-        {% endfor %}
+        {% endif %}
+      {% endfor %}
     {% endif %}
     {% if dataset.get('cited_in')%}
-       {% for cited_in in dataset.get('cited_in') %}
+      {% for cited_in in dataset.get('cited_in') %}
+        {% if cited_in != '' %}
           <lineage>
             <LI_Lineage>
               <statement>
@@ -513,7 +522,8 @@
               </statement>
             </LI_Lineage>
           </lineage>
-        {% endfor %}
+        {% endif %}
+      {% endfor %}
     {% endif %}
     </DQ_DataQuality>
   </dataQualityInfo>
@@ -521,10 +531,10 @@
   </metadataConstraints>
   <metadatareviewDate>
     <gco:Date>{{ dataset.get('metadata_review_date')}}</gco:Date>
-</metadatareviewDate>
-{% if dataset.get('url')%}
-  <recordSource>
-      <gco:CharacterString>{{ dataset.get('url') }}</gco:CharacterString>
-  </recordSource>
-{% endif %}
+  </metadatareviewDate>
+  {% if dataset.get('url')%}
+    <recordSource>
+        <gco:CharacterString>{{ dataset.get('url') }}</gco:CharacterString>
+    </recordSource>
+  {% endif %}
 </MD_Metadata>
