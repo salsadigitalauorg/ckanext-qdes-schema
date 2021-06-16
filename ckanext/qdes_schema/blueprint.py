@@ -8,6 +8,8 @@ import ckanext.qdes_schema.jobs as jobs
 import logging
 import six
 import json
+import xml.dom.minidom
+import os
 
 from ckan.common import _, c, request
 from ckanext.qdes_schema import helpers
@@ -366,7 +368,8 @@ def dataset_export(id, format):
             for field in schema.get('resource_fields', {}):
                 if field.get('field_name') in res_single_multi_vocab_fields:
                     res[field.get('field_name')] = _get_term_obj(res.get(field.get('field_name')), field.get('vocabulary_service_name'))
-                    new_resources.append(res)
+
+            new_resources.append(res)
 
         if new_resources:
             dataset['resources'] = new_resources
@@ -381,7 +384,14 @@ def dataset_export(id, format):
             abort(400, _('Invalid export format'))
 
         if data:
-            return send_file(six.BytesIO(data.encode('utf8')),
+            # Pretty print.
+            dom = xml.dom.minidom.parseString(data)
+            pretty_xml_as_string = dom.toprettyxml()
+
+            # Remove weird whitespace.
+            pretty_xml = os.linesep.join([s for s in pretty_xml_as_string.splitlines() if s.strip()])
+
+            return send_file(six.BytesIO(pretty_xml.encode('utf8')),
                              as_attachment=True,
                              attachment_filename=f'{dataset.get("title")}.xml')
     except (NotFound, NotAuthorized):
