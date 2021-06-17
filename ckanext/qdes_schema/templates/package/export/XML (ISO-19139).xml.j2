@@ -281,7 +281,7 @@
       <resourceConstraints>
         <MD_LegalConstraints>
           <useLimitation>
-            <gco:CharacterString>{{ dataset.get('license_id', {}).get('label') }}</gco:CharacterString>
+            <gco:CharacterString>{{ dataset.get('license_id', {}).get('label') if dataset.get('license_id') else '' }}</gco:CharacterString>
           </useLimitation>
           <useConstraints>
             <MD_RestrictionCode codeSpace="ISOTC211/19115" codeListValue="license" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode">license</MD_RestrictionCode>
@@ -342,18 +342,18 @@
           </version>
         </MD_Format>
         {% if resource.get('compression') %}
-        <MD_CompressionFormat>
-          <name>
-            <gco:CharacterString>{{ resource.get('compression', {}).get('label') }}</gco:CharacterString>
-          </name>
-        </MD_CompressionFormat>
+          <MD_CompressionFormat>
+            <name>
+              <gco:CharacterString>{{ resource.get('compression', {}).get('label') }}</gco:CharacterString>
+            </name>
+          </MD_CompressionFormat>
         {% endif %}
         {% if resource.get('packaging') %}
-        <MD_CompressionFormat>
-          <name>
-            <gco:CharacterString>{{ resource.get('packaging', {}).get('label') }}</gco:CharacterString>
-          </name>
-        </MD_CompressionFormat>
+          <MD_CompressionFormat>
+            <name>
+              <gco:CharacterString>{{ resource.get('packaging', {}).get('label') }}</gco:CharacterString>
+            </name>
+          </MD_CompressionFormat>
         {% endif %}      
       </distributionFormat>
       {% endfor %}
