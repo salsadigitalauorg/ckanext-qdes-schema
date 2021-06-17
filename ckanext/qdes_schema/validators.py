@@ -135,6 +135,12 @@ def qdes_validate_decimal_positive(value):
 
     return value
 
+def qdes_validate_positive_integer(value, context):
+    value = logic.validators.int_validator(value, context)
+
+    if value is not None and value < 1:
+        raise Invalid('Must be a positive integer')
+    return value
 
 def qdes_validate_geojson(value):
     """
