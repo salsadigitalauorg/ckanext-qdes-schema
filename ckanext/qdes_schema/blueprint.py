@@ -367,7 +367,11 @@ def dataset_export(id, format):
                 if field.get('field_name') in res_single_multi_vocab_fields:
                     res[field.get('field_name')] = _get_term_obj(res.get(field.get('field_name')), field.get('vocabulary_service_name'))
 
-            res['data_services'] = h.get_multi_textarea_values(res.get('data_services', []))
+            dataservices = []
+            for id in h.get_multi_textarea_values(res.get('data_services', [])):
+                dataservices.append(get_action('package_show')(context, {'id': id}))
+
+            res['data_services'] = dataservices
 
             new_resources.append(res)
 
