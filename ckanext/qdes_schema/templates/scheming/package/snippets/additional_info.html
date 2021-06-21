@@ -52,13 +52,9 @@
         {%- for field in schema.dataset_fields -%}
           {%- if field.field_name in spatial_coverage and field.display_snippet is not none and pkg_dict[field.field_name]|length > 0  -%}
             {% if spatial_coverage_has_value.show_label %}
-              <tr>
-                <th scope="row" colspan="2">{{ _('Spatial coverage') }}</th>
-              </tr>
               {% do spatial_coverage_has_value.update({'show_label': 0}) %}
+              {% snippet "snippets/dataset_spatial_table.html", pkg_dict=pkg_dict, schema=schema %}
             {% endif %}
-
-            {{row(field, pkg_dict, schema, True)}}
           {%- endif -%}
         {%- endfor -%}
 
