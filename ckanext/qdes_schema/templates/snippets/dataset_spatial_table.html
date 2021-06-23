@@ -17,25 +17,29 @@
 {% set bounding_box = pkg_dict['spatial_lower_left']|length > 0 and pkg_dict['spatial_upper_right']|length > 0 %}
 {% set centroid = pkg_dict['spatial_lower_left']|length == 0 and pkg_dict['spatial_upper_right']|length == 0 and pkg_dict['spatial_centroid']|length > 0 %}
 
-<tr>
-  <th scope="row" colspan="2">{{ _('Spatial coverage') }}</th>
-</tr>
-<tr>
-  <td>
-    <div style="padding-left: 10px">
-      {% if bounding_box %}
-        <strong>Bounding Box</strong><br/>Lower left<br/>Upper right
-      {% endif %}
+{% if bounding_box or centroid %}
+  <tr>
+    <th scope="row" colspan="2">{{ _('Spatial coverage') }}</th>
+  </tr>
+  <tr>
+    <td>
+      <div style="padding-left: 10px">
+        {% if bounding_box %}
+          <strong>Bounding Box</strong><br/>Lower left<br/>Upper right
+        {% endif %}
 
-      {% if centroid %}
-        <strong>Centroid</strong>
-      {% endif %}
-    </div>
-  </td>
-  <td>
-    {% snippet "snippets/dataset_map_qdes.html", extent=h.dump_json(pkg_dict['spatial']) %}
-  </td>
-</tr>
+        {% if centroid %}
+          <strong>Centroid</strong>
+        {% endif %}
+      </div>
+    </td>
+    <td>
+
+        {% snippet "snippets/dataset_map_qdes.html", extent=h.dump_json(pkg_dict['spatial']) %}
+
+    </td>
+  </tr>
+{% endif %}
 
 {% if bounding_box and pkg_dict['spatial_centroid']|length > 0 %}
   {{ spatial_row('spatial_centroid', pkg_dict, schema) }}
