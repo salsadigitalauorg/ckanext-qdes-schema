@@ -369,7 +369,8 @@ def dataset_export(id, format):
 
             dataservices = []
             for id in h.get_multi_textarea_values(res.get('data_services', [])):
-                dataservices.append(get_action('package_show')(context, {'id': id}))
+                if id:
+                    dataservices.append(get_action('package_show')(context, {'id': id}))
 
             res['data_services'] = dataservices
 
