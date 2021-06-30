@@ -4,7 +4,7 @@
 {% set is_official_public = 'official-public' in pkg.classification_and_access_restrictions %}
 {% set is_qspatial_harvested = 'qldspatial.information.qld.gov.au' in pkg.identifiers %}
 {% set series_relationship = h.get_series_relationship(pkg) %}
-{% set is_series = True if series_relationship else False %}
+{% set is_series = True if series_relationship.get('Has Part', []) or series_relationship.get('Is Part Of', []) else False %}
 {% set is_series_parent = h.is_collection(series_relationship) if series_relationship else False %}
 
 <article class="validate-publish" open
