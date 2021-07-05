@@ -1,43 +1,80 @@
-{% extends "package/snippets/additional_info.html" %}
-
-{%- set exclude_fields = [
-    'id',
-    'title',
-    'name',
-    'notes',
-    'tag_string',
-    'license_id',
-    'owner_org',
+{%- set include_fields = [
+    'classification',
+    'dataset_last_modified_date',
     ] -%}
 
-{%- set temporal_coverage = [
-    'temporal_start',
-    'temporal_end',
+{%- set spatial_coverage = [
+    'spatial_lower_left',
+    'spatial_upper_right',
+    'spatial_centroid',
+    'spatial_geometry',
     ] -%}
 
-{% block package_additional_info %}
-  {%- for field in schema.dataset_fields -%}
-    {%- if field.field_name not in exclude_fields
-        and field.display_snippet is not none -%}
+{%- set spatial_coverage_has_value = {'show_label': 0} -%}
+
+{%- for field in spatial_coverage -%}
+  {% if pkg_dict[field] %}
+    {% do spatial_coverage_has_value.update({'show_label': 1}) %}
+  {% endif %}
+{%- endfor -%}
+
+<!-- @TODO create macro for the row -->
+{% macro row(field, pkg_dict, schema, add_spaces) -%}
+  <tr>
+    <th scope="row" class="dataset-label">
+      {{ "&nbsp;"|safe*4 if add_spaces }}
+      {{ h.scheming_language_text(field.label) }}
+    </th>
+    <td class="dataset-details"{%
+      if field.display_property %} property="{{ field.display_property
+      }}"{% endif %}>{%- snippet 'scheming/snippets/display_field.html',
+      field=field, data=pkg_dict, schema=schema -%}</td>
+  </tr>
+{%- endmacro %}
+
+<section class="additional-info">
+  <h3>{{ _('Additional Info') }}</h3>
+  <table class="table table-striped table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th scope="col">{{ _('Field') }}</th>
+        <th scope="col">{{ _('Value') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% block package_additional_info %}
+        {%- for field in schema.dataset_fields -%}
+          {%- if field.field_name in include_fields and field.display_snippet is not none and pkg_dict[field.field_name]|length > 0 -%}
+            {{row(field, pkg_dict, schema)}}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- for field in schema.dataset_fields -%}
+          {%- if field.field_name in spatial_coverage and field.display_snippet is not none and pkg_dict[field.field_name]|length > 0  -%}
+            {% if spatial_coverage_has_value.show_label %}
+              {% do spatial_coverage_has_value.update({'show_label': 0}) %}
+              {% snippet "snippets/dataset_spatial_table.html", pkg_dict=pkg_dict, schema=schema %}
+            {% endif %}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- for field in schema.dataset_fields -%}
+          {%- if field.field_name == 'contact_point' and field.display_snippet is not none and pkg_dict[field.field_name]|length > 0  -%}
+            {{row(field, pkg_dict, schema)}}
+          {%- endif -%}
+        {%- endfor -%}
+
+      {% endblock %}
       <tr>
         <th scope="row" class="dataset-label">
-            {% if field.field_name in temporal_coverage %}
-                {{ "Temporal coverage start" if field.field_name == 'temporal_start' else "Temporal coverage end" }}
-            {%- else -%}
-                {{ h.scheming_language_text(field.label) }}
-            {%- endif -%}
+          Data Catalogue ID
         </th>
-        <td class="dataset-details"{%
-          if field.display_property %} property="{{ field.display_property
-          }}"{% endif %}>{%- snippet 'scheming/snippets/display_field.html',
-          field=field, data=pkg_dict, schema=schema -%}</td>
+        <td class="dataset-details">
+          {{ pkg_dict.get('id') }}
+        </td>
       </tr>
-    {%- endif -%}
-  {%- endfor -%}
-  {% if h.check_access('package_update',{'id':pkg_dict.id}) %}
-    <tr>
-      <th scope="row" class="dataset-label">{{ _("State") }}</th>
-      <td class="dataset-details">{{ _(pkg_dict.state) }}</td>
-    </tr>
-  {% endif %}
-{% endblock %}
+    </tbody>
+  </table>
+
+  <a href="{{ h.url_for('qdes_schema.dataset_metadata', id=pkg_dict['name']) }}">{{ _('View all metadata') }}</a>
+</section>

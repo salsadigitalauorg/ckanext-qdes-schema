@@ -1,0 +1,81 @@
+{% if h.ckan_version() > '2.9' %}
+  {% asset 'qdes_schema/temporal-coverage' %}
+  {% asset 'qdes_schema/temporal-coverage-style' %}
+{% else %}
+  {% resource 'qdes_schema/temporal-coverage.js' %}
+  {% resource 'qdes_schema/temporal-coverage.css' %}
+{% endif %}
+
+{% if name == 'temporal_start' %}
+  <section class="temporal-coverage-wrapper {{ wrapper_class or 'module module-narrow module-shallow' }}">
+    <h2 class="module-heading">
+      <i class="fa fa-filter"></i>
+      {{ _('Temporal coverage') }}
+    </h2>
+
+    <form method="get" class="temporal-coverage form-inline" action="{{ h.add_url_param() }}">
+
+
+      <div class="form-group">
+        <label for="from">From</label>
+        <div class="input-group">
+          <input id="from" name="temporal_coverage_from" value="{{ request.args.get('temporal_coverage_from', '') }}"
+                 type="text" class="form-control" placeholder="2020-01" autocomplete="off" data-default-month="01">
+          <span class="input-group-btn">
+                <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
+              </span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="to">To</label>
+        <div class="input-group">
+          <input id="to" name="temporal_coverage_to" value="{{ request.args.get('temporal_coverage_to', '') }}"
+                 type="text" class="form-control" placeholder="2020-02" disabled="disabled" autocomplete="off"
+                 data-default-month="12">
+          <span class="input-group-btn">
+                <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
+              </span>
+        </div>
+      </div>
+
+      <div class="form-group pull-right">
+        <button class="btn btn-primary temporal-coverage-filter" type="submit">Filter</button>
+      </div>
+    </form>
+
+    <div class="monthyear-picker">
+      <form class="form-inline">
+        <div class="form-group">
+          <select class="month-picker form-control">
+            <option value="00">None</option>
+            <option value="01">Jan</option>
+            <option value="02">Feb</option>
+            <option value="03">Mar</option>
+            <option value="04">Apr</option>
+            <option value="05">May</option>
+            <option value="06">Jun</option>
+            <option value="07">Jul</option>
+            <option value="08">Aug</option>
+            <option value="09">Sep</option>
+            <option value="10">Oct</option>
+            <option value="11">Nov</option>
+            <option value="12">Dec</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <select class="year-picker form-control">
+            {% set years = h.render_datetime(h.get_current_datetime(), '%Y') | int + 10 %}
+            {% for n in range(1900, years) %}
+            <option value="{{ n }}">{{ n }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <button class="btn btn-default monthyear-picker-action" type="button">Done</button>
+      </form>
+    </div>
+
+  </section>
+{% endif %}

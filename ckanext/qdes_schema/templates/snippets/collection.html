@@ -1,0 +1,38 @@
+{% set relationships = h.get_series_relationship(pkg) %}
+
+{% if h.is_collection(relationships) %}
+  <div class="collection">
+    <h2>Collection</h2>
+    <p>This dataset is a collection of other datasets.</p>
+    <a href="/dataset?collection_package_id={{ pkg.id }}" class="btn btn-primary">Search datasets within this collection</a>
+  </div>
+{% endif %}
+
+{% if h.is_part_of_collection(relationships) %}
+  <div class="collection">
+    <h2>Collection</h2>
+    <p>This dataset is part of the following collection:</p>
+
+    {% for parent in relationships.get('Is Part Of') %}
+      <p>
+        <span class="pill small">Collection</span>
+        {% if parent.pkg_id %}
+          {% set parent_pkg = h.get_package_dict(parent.pkg_id) %}
+          {% if parent_pkg %}
+              <a href="{{ h.url_for('dataset_read', id=parent_pkg.id) }}">
+                {{ parent.pkg_title }}
+              </a>
+            </p>
+            <p>
+              {{ parent_pkg.notes|truncate(200) }}
+          {% else %}
+            {{ h.get_collection_parent_title(parent.pkg_id) }}
+          {% endif %}
+        {% else %}
+          {# relationship must be an external URL #}
+          <a href="{{ parent.comment }}">{{ parent.comment }}</a>
+        {% endif %}
+      </p>
+    {% endfor %}
+  </div>
+{% endif %}

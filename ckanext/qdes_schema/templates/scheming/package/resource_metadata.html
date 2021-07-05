@@ -1,0 +1,61 @@
+{% extends 'package/resource_read.html' %}
+
+{%- block resource_format -%}{%- endblock -%}
+{%- block resource_license -%}{%- endblock -%}
+
+{%- set schema = h.scheming_get_dataset_schema(package['type']) -%}
+
+{%- block resource_additional_information_inner -%}
+  <div class="module-content">
+    {% snippet "/snippets/invalid_uris_error.html", entity_id=res.id, entity=pkg_dict, parent_entity=pkg_dict.type %}
+
+    <h2>{{ _('Additional Information') }}</h2>
+    <table class="table table-striped table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th scope="col">{{ _('Field') }}</th>
+          <th scope="col">{{ _('Value') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">{{ _('Data last updated') }}</th>
+          <td>{{ h.render_datetime(res.last_modified) or h.render_datetime(res.created) or _('unknown') }}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{ _('Metadata last updated') }}</th>
+          <td>{{ h.render_datetime(res.metadata_modified) or h.render_datetime(res.created) or _('unknown') }}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{ _('Created') }}</th>
+          <td>{{ h.render_datetime(res.created) or _('unknown') }}</td>
+        </tr>
+        {%- for field in schema.resource_fields -%}
+          {%- if field.display_snippet is not none and res[field.field_name] -%}
+            <tr>
+              <th scope="row">
+                {{- h.scheming_language_text(field.label) -}}
+              </th>
+              <td {% if field.display_property %} property="{{ field.display_property }}"{% endif %}>
+                {%- snippet 'scheming/snippets/display_field.html',
+                    field=field, data=res, entity_type='dataset',
+                    object_type=dataset_type -%}
+              </td>
+            </tr>
+          {%- endif -%}
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </div>
+{%- endblock -%}
+
+{% block resource_content %}
+  {% block package_archive_notice %}
+    {{super()}}
+  {% endblock %}
+  {% block resource_read_title %}
+    {{super()}}
+  {% endblock %}
+
+  {% block resource_read_url %}{% endblock %}
+{% endblock %}

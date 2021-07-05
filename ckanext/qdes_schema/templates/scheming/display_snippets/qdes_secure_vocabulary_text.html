@@ -1,0 +1,14 @@
+<!-- Only display value if user is logged in -->
+{% if g.user and data[field.field_name] and data[field.field_name]|length > 0 %}
+    {% set secure_vocabulary = h.get_secure_vocabulary_record(field.vocabulary_service_name,  data[field.field_name]) %}
+    {% if secure_vocabulary %}
+        {% for key, value in secure_vocabulary.items() %}
+            <div>{{ value }}</div>
+            {% if not loop.last %}
+                <hr>
+            {% endif %} 
+        {% endfor %}
+    {% else %}
+        {{ _('No person assigned') }}
+    {% endif %}  
+{% endif %}

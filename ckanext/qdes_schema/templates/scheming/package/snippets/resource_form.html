@@ -1,0 +1,88 @@
+{% extends 'package/snippets/resource_form.html' %}
+
+{% set is_published_to_external = data.id and h.resource_has_published_to_external_schema(data.id) %}
+
+{% block errors %}
+  {%- if errors -%}
+    {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
+    {%- snippet 'scheming/snippets/errors.html',
+      errors=errors, fields=schema.resource_fields,
+      entity_type='dataset', object_type=dataset_type -%}
+  {%- endif -%}
+{% endblock %}
+
+{% block basic_fields %}
+  {%- set invalid_uris = [] -%}
+
+  {% if g.action not in ['new'] %}
+    {%- set invalid_uris = h.get_invalid_uris(data.id, data) -%}
+    {% set pkg_dict = h.get_package_dict(data.package_id) %}
+    {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris, parent_entity=pkg_dict.type, is_edit=True %}
+  {% endif %}
+
+  {% asset 'qdes_schema/help-text' %}
+  {% asset 'qdes_schema/repeater' %}
+  {% asset 'qdes_schema/repeating-fields' %}
+  {% asset 'qdes_schema/autocomplete' %}
+  {% asset 'qdes_schema/style' %}
+
+  {%- if not dataset_type -%}
+    <p>
+    dataset_type not passed to template. your version of CKAN
+    might not be compatible with ckanext-scheming
+    </p>
+  {%- endif -%}
+
+
+  {% if is_published_to_external %}
+    <div class="alert alert-info" role="alert">
+      This distribution is publicly available and updates need to be manually published to all relevant data services via the Publish tab.
+      <br/>
+      <br/>
+      Please also ensure changes have gone through the required business review / approval process before updating.
+    </div>
+  {% endif %}
+
+
+  {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
+  {%- for field in schema.resource_fields -%}
+    {% if field.recommended %}
+      {% do field.update({'classes': ['recommended-field'] }) %}
+    {% endif %}
+
+    {%- if field.form_snippet is not none -%}
+      {%- snippet 'scheming/snippets/form_field.html',
+        field=field, data=data, errors=errors,
+	entity_type='dataset', object_type=dataset_type, invalid_uris=invalid_uris -%}
+    {%- endif -%}
+  {%- endfor -%}
+{% endblock %}
+
+{% block metadata_fields %}
+{% endblock %}
+
+{% block previous_button %}
+  <a class="btn btn-default" href="{{h.url_for(dataset_type ~ '.edit', id=pkg_name)}}">{{ _('Previous') }}</a>
+{% endblock %}
+
+{% block delete_button %}
+  {% if is_published_to_external %}
+    <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#delete-modal">
+      {{ _('Delete') }}
+    </button>
+
+    <div class="modal fade in" id="delete-modal" style="text-align: left">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">WARNING : You are attempting to delete a distribution that is published on an external system. Please unpublish from external systems before deleting.</div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- else -%}
+    {{ super() }}
+  {%- endif -%}
+
+{% endblock %}

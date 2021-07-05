@@ -1,0 +1,9 @@
+{% ckan_extends %}
+
+{% block license_content_inner %}
+    {% set data = pkg_dict %}
+    {% set schema = h.scheming_get_schema('dataset', 'dataset') %}
+    {% set field = h.scheming_field_by_name(schema.dataset_fields, 'license_id') %}
+
+    {% include '/scheming/display_snippets/controlled_vocabulary_single_select.html' %}
+{% endblock %}
