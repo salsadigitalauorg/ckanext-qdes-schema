@@ -1,0 +1,81 @@
+{% import 'macros/form.html' as form %}
+{% import 'macros/qdes_form.html' as qdes_form %}
+
+{% set default_classes = field.classes if 'classes' in field else [] %}
+
+<div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="select">
+
+    <div id="{{ 'field-' + field.field_name }}" data-repeater-list="{{ field.field_name }}">
+
+        {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
+
+        {% for value in values %}
+                
+            <div data-repeater-item class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
+                <div class="col-lg-11">              
+                    {%- set options=[] -%}
+                    {%- set form_restrict_choices_to=field.get('form_restrict_choices_to') -%}
+                    {%- if not h.scheming_field_required(field) or
+                        field.get('form_include_blank_choice', false) -%}
+                      {%- do options.append({'value': '', 'text': ''}) -%}
+                    {%- endif -%}
+                    {%- for c in h.scheming_field_choices(field) -%}
+                      {%- if not form_restrict_choices_to or c.value in form_restrict_choices_to -%}
+                        {%- do options.append({
+                          'value': c.value|string,
+                          'text': h.scheming_language_text(c.label),
+                          'title': c.title|string if c.title is not none else ''  }) -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                    {%- if field.get('sorted_choices') -%}
+                      {%- set options = options|sort(case_sensitive=false, attribute='text') -%}
+                    {%- endif -%}
+                    {%- if field.get('first_choice') -%}
+                      {%- set options = h.set_first_option(options, field.get('first_choice')) -%}
+                    {%- endif -%}
+                    {%- if value -%}
+                      {%- set option_selected = value|string -%}
+                    {%- else -%}
+                      {%- set option_selected = None -%}
+                    {%- endif -%}
+                    
+                    {% call qdes_form.select(
+                        label=h.scheming_language_text(field.label),
+                        options=options,
+                        selected=option_selected,
+                        error=errors[field.field_name],
+                        classes=['control-medium'] + default_classes,
+                        attrs=dict({"data-field-name": field.field_name, "data-placeholder": h.scheming_language_text(field.form_placeholder)}, **(field.get('form_attrs', {}))),
+                        is_required=h.scheming_field_required(field)
+                        )
+                    %}
+                        {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
+                    {% endcall %}
+                </div>
+                <div class="col-lg-1">
+                    <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+    <div class="row form-group" align="center">
+        <input data-repeater-create type="button" class="btn" value="+" />
+    </div>
+</div>
+
+{% set visibility = [] if g.debug else ['hidden'] %}
+
+
+{# BEGIN: The actual form field the multiple values will be captured & submitted in #}
+{% call form.textarea(
+    field.field_name,
+    id='field-' + field.field_name + '-hidden',
+    label=h.scheming_language_text(field.label),
+    value=data[field.field_name],
+    classes=default_classes + visibility,
+    )
+%}
+    {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
+{% endcall %}
+{# END: The actual form field the multiple values will be captured & submitted in #}

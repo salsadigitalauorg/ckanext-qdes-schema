@@ -1,3 +1,4 @@
+.DS_Store
 .ropeproject
 node_modules
 bower_components
@@ -40,3 +41,12 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+
+# Ignore xml files from harvest and any logs
+ckanext/qdes_schema/qspatial_harvest/xml_files/*.xml
+ckanext/qdes_schema/qspatial_harvest/json_files/
+ckanext/qdes_schema/qspatial_harvest/logs/
+ckanext/qdes_schema/qld_harvest/json_files/
+ckanext/qdes_schema/qld_harvest/logs/
+ckanext/qdes_schema/qld_harvest/json_files_data_qld
+

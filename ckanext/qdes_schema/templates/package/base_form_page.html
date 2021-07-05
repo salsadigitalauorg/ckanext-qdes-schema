@@ -1,0 +1,18 @@
+{% ckan_extends %}
+
+  {% block info_module %}
+    {% if g.controller == 'dataservice' %}
+        <section class="module module-narrow module-shallow">
+          <h2 class="module-heading"><i class="fa fa-info-circle"></i> {{ _('What are data services?') }}</h2>
+          <div class="module-content">
+            <p>
+              {% trans %}
+              A  data service is a collection of operations accessible through an interface (API) that provide access to one or more datasets or data processing functions.
+              {% endtrans %}
+            </p>
+          </div>
+        </section>
+    {% else %}
+        {{ super() }}
+    {% endif %}
+  {% endblock %}

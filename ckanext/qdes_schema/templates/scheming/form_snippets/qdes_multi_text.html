@@ -1,37 +1,57 @@
 {% import 'macros/form.html' as form %}
 
-<div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="input">
+{% if invalid_uris %}
+    {% set errors = h.qdes_merge_invalid_uris_error(invalid_uris, field.field_name, errors) %}
+{% endif %}
 
-    <div data-repeater-list="{{ field.field_name }}">
+<div id="{{ field.field_name }}-repeater" class="repeating-field qdes-multi-text" data-field-type="input">
+
+    <div id="{{ 'field-' + field.field_name }}" data-repeater-list="{{ field.field_name }}">
 
         {% set values = h.get_multi_textarea_values(data[field.field_name]) or [] %}
 
         {% for value in values %}
-            <div data-repeater-item class="row">
+            {% if value %}
+                <!-- If value is from dataset autocomplete it will be a json object -->
+                {% if '/api/2/util/dataset/autocomplete' in field.get('form_attrs', {}).get('data-module-source' ,'') %}
+                    {% set value = h.dump_json(value) %}
+                <!-- If value is from dataset autocomplete it will be a json object -->
+                {% elif '/ckan-admin/vocabulary-service/term-autocomplete/' in field.get('form_attrs', {}).get('data-module-source' ,'')%}
+                    {% set value = h.dump_json({"id": value, "text":  h.scheming_choices_label(h.scheming_field_choices(field), value)}) %}
+                {% endif %}
+            {% endif %}
+
+            <div data-repeater-item class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
                 <div class="col-xs-11">
                     {%
                         call form.input(
-                            'item-' + field.field_name,
-                            id='field-item-' + field.field_name,
                             label=h.scheming_language_text(field.label),
                             placeholder=h.scheming_language_text(field.form_placeholder),
-                            attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
+                            attrs=dict(
+                                {
+                                    "class": "form-control",
+                                    "data-field-name": field.field_name, 
+                                    "data-placeholder": h.scheming_language_text(field.form_placeholder),
+                                    "data-module-id": data.get('id', ''),
+                                    "data-module-type": g.controller,
+                                    "data-module-vocabulary-service-name": field.vocabulary_service_name
+                                }, **(field.get('form_attrs', {}))),
                             is_required=h.scheming_field_required(field),
                             value=value,
                             error=errors[field.field_name]
                         )
                     %}
+                    {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
                     {% endcall %}
                 </div>
                 <div class="col-xs-1">
-                    <label class="invisible">&nbsp;</label>
                     <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
                 </div>
             </div>
         {% endfor %}
 
     </div>
-    <div class="row" align="center">
+    <div class="row form-group" align="center">
         <input data-repeater-create type="button" class="btn" value="+" />
     </div>
 </div>
@@ -42,15 +62,12 @@
 {%
     call form.input(
         field.field_name,
-        id='field-' + field.field_name,
+        id='field-' + field.field_name + '-hidden',
         label=h.scheming_language_text(field.label),
         placeholder=h.scheming_language_text(field.form_placeholder),
         value=data[field.field_name],
-        error=errors[field.field_name],
         classes=default_classes + visibility,
-        attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
         is_required=h.scheming_field_required(field)
     )
 %}
-    {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
 {% endcall %}

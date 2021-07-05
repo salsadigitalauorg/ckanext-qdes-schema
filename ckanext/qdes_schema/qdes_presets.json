@@ -12,11 +12,199 @@
       }
     },
     {
+      "preset_name": "controlled_vocabulary_tree_single",
+      "values": {
+        "display_snippet": "qdes_multi_select.html",
+        "choices_helper": "scheming_vocabulary_service_hierarchical",
+        "validators": "scheming_required"
+      }
+    },
+    {
+      "preset_name": "controlled_vocabulary_tree_multiple",
+      "values": {
+        "form_snippet": "qdes_tree.html",
+        "display_snippet": "qdes_multi_select.html",
+        "choices_helper": "scheming_vocabulary_service_hierarchical",
+        "validators": "scheming_required"
+      }
+    },
+    {
+      "preset_name": "controlled_vocabulary_tree_multi_group",
+      "values": {
+        "form_snippet": "qdes_tree_multi_group.html",
+        "display_snippet": "qdes_multi_group.html",
+        "validators": "ignore_missing qdes_validate_multi_groups"
+      }
+    },
+    {
       "preset_name": "controlled_vocabulary_single_select",
       "values": {
-        "form_snippet": "select.html",
+        "form_snippet": "qdes_select.html",
         "display_snippet": "controlled_vocabulary_single_select.html",
+        "choices_helper": "scheming_vocabulary_service_choices",
         "validators": "scheming_required scheming_choices"
+      }
+    },
+    {
+      "preset_name": "controlled_vocabulary_multi_select",
+      "values": {
+        "form_snippet": "qdes_multi_select.html",
+        "display_snippet": "qdes_multi_select.html",
+        "choices_helper": "scheming_vocabulary_service_choices"
+      }
+    },
+    {
+      "preset_name": "controlled_vocabulary_multi_group",
+      "values": {
+        "form_snippet": "qdes_multi_group.html",
+        "display_snippet": "qdes_multi_group.html",
+        "validators": "ignore_missing qdes_validate_multi_groups"
+      }
+    },
+    {
+      "preset_name": "controlled_dataservice_multi_select",
+      "values": {
+        "form_snippet": "qdes_multi_select.html",
+        "display_snippet": "qdes_multi_select.html",
+        "choices_helper": "qdes_dataservice_choices"
+      }
+    },
+    {
+      "preset_name": "controlled_dataset_available_multi_select",
+      "values": {
+        "form_snippet": "qdes_multi_select.html",
+        "display_snippet": "qdes_multi_select.html",
+        "choices_helper": "qdes_dataset_available_choices"
+      }
+    },
+    {
+      "preset_name": "iso_8601_durations",
+      "values": {
+        "form_snippet": "qdes_duration.html",
+        "display_snippet": "qdes_duration.html",
+        "validators": "ignore_missing qdes_iso_8601_durations"
+      }
+    },
+    {
+      "preset_name": "qdes_metadata_review_date",
+      "values": {
+        "form_snippet": "qdes_metadata_review_date.html",
+        "display_snippet": "qdes_metadata_review_date.html",
+        "validators": "qdes_validate_metadata_review_date"
+      }
+    },
+    {
+      "preset_name": "dataset_related_multi_text",
+      "values": {
+        "display_group": "related and lineage",
+        "sub_heading": "related",
+        "display_snippet": "qdes_multi_text.html",
+        "form_snippet": "qdes_multi_text.html",
+        "validators": "ignore_empty qdes_validate_related_dataset",
+        "form_attrs": {
+          "data-module": "qdes_autocomplete",
+          "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
+          "data-module-create-search-choice": true,
+          "data-module-key": "id",
+          "data-module-label": "title"
+        }
+      }
+    },
+    {
+      "preset_name": "related_resources_multi_group",
+      "values": {
+        "field_name": "related_resources",
+        "label": "Related dataset",
+        "display_group": "related and lineage",
+        "sub_heading": "related",
+        "form_snippet": "qdes_multi_group.html",
+        "display_snippet": "qdes_multi_group.html",
+        "validators": "ignore_missing qdes_validate_related_resources",
+        "form_placeholder": "",
+        "field_group": [
+          {
+            "field_name": "relationship",
+            "label": "Relationship",
+            "form_snippet": "select.html",
+            "choices_helper": "qdes_relationship_types_choices",
+            "form_attrs": {
+              "class": "form-control"
+            },
+            "form_include_blank_choice": true
+          },
+          {
+            "field_name": "resource",
+            "label": "Related dataset",
+            "help_text": "Add a related resource when the nature of the relationship is specified",
+            "form_snippet": "text.html",
+            "form_placeholder": " ",
+            "form_attrs": {
+              "data-module": "qdes_autocomplete",
+              "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
+              "data-module-create-search-choice": true,
+              "data-module-key": "id",
+              "data-module-label": "title",
+              "class": "form-control"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "preset_name": "qdes_vocab_service_autocomplete",
+      "values": {
+        "form_snippet": "text.html",
+        "display_snippet": "controlled_vocabulary_single_select.html",
+        "choices_helper": "scheming_vocabulary_service_choices",
+        "validators": "scheming_required scheming_choices",
+        "form_attrs": {
+          "data-module": "qdes_autocomplete",
+          "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/{vocabularyServiceName}?incomplete=?",
+          "data-module-key": "value",
+          "data-module-label": "name"
+        }
+      }
+    },
+    {
+      "preset_name": "qdes_vocab_service_multi_autocomplete",
+      "values": {
+        "form_snippet": "qdes_multi_text.html",
+        "display_snippet": "controlled_vocabulary_multi_select.html", 
+        "choices_helper": "scheming_vocabulary_service_choices",
+        "form_attrs": {
+          "data-module": "qdes_autocomplete",
+          "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/{vocabularyServiceName}?incomplete=?",
+          "data-module-key": "value",
+          "data-module-label": "name"
+        }
+      }
+    },
+    {
+      "preset_name": "qdes_secure_vocab_service_multi_autocomplete",
+      "values": {
+        "form_snippet": "qdes_multi_text.html",
+        "display_snippet": "qdes_multi_text.html",
+        "form_attrs": {
+          "data-module": "qdes_autocomplete",
+          "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+          "data-module-key": "value",
+          "data-module-label": "name",
+          "data-module-minimum-input-length": 3
+        }
+      }
+    },
+    {
+      "preset_name": "qdes_secure_vocab_service_autocomplete",
+      "values": {
+        "form_snippet": "text.html",
+        "display_snippet": "qdes_secure_vocabulary_text.html",
+        "form_attrs": {
+          "data-module": "qdes_autocomplete",
+          "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+          "data-module-key": "value",
+          "data-module-label": "name",
+          "data-module-minimum-input-length": 3
+        }
       }
     }
   ]

@@ -9,7 +9,9 @@
       "label": "Title",
       "preset": "title",
       "form_placeholder": "eg. A descriptive title",
-      "display_group": "general"
+      "display_group": "general",
+      "required": true,
+      "validators": "scheming_required if_empty_same_as(name) unicode"
     },
     {
       "field_name": "name",
@@ -19,16 +21,316 @@
       "display_group": "general"
     },
     {
-      "field_name": "alt_title",
-      "label": "Alternative title",
-      "display_property": "qdcat:altTitle",
-      "form_placeholder": "eg. Vegetation management regional ecosystem map",
-      "display_group": "general"
+      "field_name": "identifiers",
+      "label": "Identifier",
+      "display_property": "dcterms:identifier",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "form_placeholder": "doi:10.25901/5e3ba30f141b7",
+      "display_group": "general",
+      "validators": "ignore_missing qdes_uri_validator",
+      "help_text": "Add any unique identifiers associated with the dataset. Input is a URI."
+    },
+    {
+      "field_name": "classification",
+      "label": "General classification of service type",
+      "display_property": "dcterms:type",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "dataservice_classification",
+      "validators": "scheming_required",
+      "recommended": true,
+      "form_attrs": {
+        "class": "form-control",
+        "data-module-title": "title"
+      },
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "notes",
+      "label": "Description or abstract",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "eg. Some useful notes about the data",
+      "display_property": "dcterms:description",
+      "display_group": "description",
+      "required": true
+    },
+    {
+      "field_name": "additional_info",
+      "label": "Additional information",
+      "form_snippet": "qdes_multi_markdown.html",
+      "display_property": "rdfs:comment",
+      "display_snippet": "qdes_multi_markdown.html",
+      "form_placeholder": "e.g. warnings",
+      "display_group": "description"
+    },
+    {
+      "field_name": "dataset_language",
+      "label": "Service language",
+      "display_property": "dcterms:language",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "dataset_language",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
+      },
+      "first_choice": "English",
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "topic",
+      "label": "Topic or theme",
+      "display_property": "dcat:theme",
+      "display_group": "description",
+      "preset": "controlled_vocabulary_tree_multiple",
+      "vocabulary_service_name": "topic",
+      "validators": "scheming_required",
+      "form_include_blank_choice": true,
+      "label_plural": "topic or themes",
+      "no_selected_term": "No topics or themes have been added. Please use the interface above to select a <strong>Topic or theme.</strong>"
+    },
+    {
+      "field_name": "tag_string",
+      "label": "Keyword",
+      "preset": "tag_string_autocomplete",
+      "form_placeholder": "eg. economy, mental health, government",
+      "display_group": "description"
+    },
+    {
+      "field_name": "datasets_available",
+      "label": "Datasets available",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "display_group": null
+    },
+    {
+      "field_name": "standards",
+      "label": "Standard(s) the service implements",
+      "display_group": "description",
+      "display_property": "dcterms:conformsTo",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "standards",
+      "form_attrs": {
+        "class": "form-control",
+        "data-module-title": "title"
+      },
+      "recommended": true,
+      "form_include_blank_choice": true
+    },
+    {
+      "field_name": "endpoint_details",
+      "label": "Details of the endpoint",
+      "display_property": "dcat:endpointDetails",
+      "display_snippet": "qdes_text_url.html",
+      "display_group": "access",
+      "recommended": true,
+      "validators": "ignore_missing url_validator qdes_uri_validator"
+    },
+    {
+      "field_name": "api_address",
+      "label": "Address of the API",
+      "display_property": "dcat:endpointURL",
+      "display_snippet": "qdes_text_url.html",
+      "display_group": "access",
+      "recommended": true,
+      "validators": "ignore_missing url_validator qdes_uri_validator"
+    },
+    {
+      "field_name": "service_uri",
+      "label": "URI for the service",
+      "display_property": "dcat:landingPage",
+      "display_snippet": "qdes_text_url.html",
+      "display_group": "access",
+      "recommended": true,
+      "validators": "ignore_missing url_validator qdes_uri_validator"
+    },
+    {
+      "field_name": "service_status",
+      "label": "Service status",
+      "display_property": "adms:status",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "service_status",
+      "display_group": "status",
+      "sub_heading_help_text": "Minimum time period resolvable in the dataset",
+      "form_attrs": {
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "service_creation_date",
+      "label": "Creation date",
+      "display_property": "dcterms:created",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime",
+      "display_group": "status",
+      "default_value": true
+    },
+    {
+      "field_name": "service_launch_date",
+      "label": "Launch date",
+      "display_property": "dcterms:issued",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_current_date_later_than_creation",
+      "display_group": "status"
+    },
+    {
+      "field_name": "service_last_modified_date",
+      "label": "Last modified date",
+      "display_property": "dcterms:modified",
+      "preset": "datetime_tz",
+      "validators": "scheming_isodatetime_tz convert_to_json_if_datetime qdes_dataset_last_modified_date_before_today",
+      "display_group": "status"
+    },
+    {
+      "field_name": "related_services",
+      "label": "Related service",
+      "preset": "dataset_related_multi_text"
+    },
+    {
+      "preset": "related_resources_multi_group"
+    },
+    {
+      "field_name": "contact_point",
+      "label": "Point of contact",
+      "display_property": "dcat:contactPoint",
+      "display_group": "Contacts and responsibilities",
+      "required": true,
+      "form_include_blank_choice": true,
+      "help_text": "A person or position to contact for more information about the dataset"
+    },
+    {
+      "field_name": "contact_publisher",
+      "label": "Publisher",
+      "display_property": "dcterms:publisher",
+      "display_group": "Contacts and responsibilities",
+      "required": true
+    },
+    {
+      "field_name": "contact_creator",
+      "label": "Creator",
+      "display_property": "dcterms:creator",
+      "display_group": "Contacts and responsibilities",
+      "required": false,
+      "help_text": "Person, position, or organization who created the dataset"
+    },
+    {
+      "field_name": "contact_other_party",
+      "label": "Other responsible party",
+      "display_property": "prov:qualifiedAttribution",
+      "preset": "controlled_vocabulary_multi_group",
+      "display_group": "Contacts and responsibilities",
+      "field_group": [
+        {
+          "field_name": "the-party",
+          "label": "The party",
+          "form_snippet": "text.html",
+          "display_property": "prov:agent",
+          "form_attrs": {
+            "class": "form-control"
+          }
+        },
+        {
+          "field_name": "nature-of-their-responsibility",
+          "label": "Nature of their responsibility",
+          "form_snippet": "select.html",
+          "display_property": "dcat:hadRole",
+          "vocabulary_service_name": "nature-of-their-responsibility",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "class": "form-control",
+            "data-module-title": "title"
+          },
+          "form_include_blank_choice": true
+        }
+      ]
+    },
+    {
+      "field_name": "classification_and_access_restrictions",
+      "label": "Classification and access restrictions",
+      "display_property": "dcterms:accessRights",
+      "display_group": "rights and licensing",
+      "preset": "controlled_vocabulary_multi_select",
+      "vocabulary_service_name": "classification_and_access_restrictions",
+      "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-title": "title"
+      },
+      "form_include_blank_choice": true,
+      "recommended": true,
+      "help_text": "Security classification using the Queensland Government Information and Security Classification Framework"
+    },
+    {
+      "field_name": "rights_statement",
+      "label": "Rights statement",
+      "form_snippet": "textarea.html",
+      "display_property": "dcterms:rights",
+      "display_group": "rights and licensing",
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
+    },
+    {
+      "field_name": "license",
+      "label": "License",
+      "display_property": "dcterms:license",
+      "preset": "controlled_vocabulary_single_select",
+      "vocabulary_service_name": "license",
+      "display_group": "rights and licensing",
+      "recommended": true,
+      "form_include_blank_choice": true,
+      "form_attrs": {
+        "data-module-title": "title"
+      }
+    },
+    {
+      "field_name": "specialized_license",
+      "label": "Specialised license",
+      "form_snippet": "textarea.html",
+      "display_property": "odrl:hasPolicy",
+      "display_snippet": "qdes_text_url.html",
+      "display_group": "rights and licensing"
+    },
+    {
+      "field_name": "metadata_review_date",
+      "label": "Metadata review date",
+      "preset": "qdes_metadata_review_date",
+      "display_group": "Meta data life cycle"
+    },
+    {
+      "field_name": "metadata_contact_point",
+      "label": "Metadata point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
+      "display_group": "Meta data life cycle",
+      "form_include_blank_choice": true,
+      "form_attrs": {
+        "data-module-title": "title"
+      },
+      "help_text": "Person or position responsible for the metadata record"
+    },
+    {
+      "field_name": "url",
+      "label": "Source of record",
+      "form_placeholder": "http://example.com/dataset.json",
+      "display_property": "foaf:homepage",
+      "display_snippet": "link.html",
+      "display_group": "Meta data life cycle",
+      "validators": "ignore_missing url_validator qdes_uri_validator",
+      "help_text": "If the metadata record was generated outside of the catalogue add the source where it originated from"
     },
     {
       "field_name": "owner_org",
       "label": "Organization",
-      "preset": "dataset_organization"
+      "preset": "dataset_organization",
+      "display_group": "Meta data life cycle"
+    },
+    {
+      "field_name": "state",
+      "label": "State",
+      "choices_helper": "get_state_list",
+      "preset": "select",
+      "form_snippet": "state_select.html",
+      "form_restrict_choices_to": ["active", "deleted"]
     }
   ]
 }

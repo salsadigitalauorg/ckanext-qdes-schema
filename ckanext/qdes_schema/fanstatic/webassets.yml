@@ -15,3 +15,66 @@ repeating-fields:
     - repeating-fields.js
 #  filters: rjsmin
 #  output: qdes_schema/repeating-fields.js
+
+iso-8601-duration:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - iso-8601-duration.js
+
+autocomplete:
+  contents:
+    - autocomplete.js
+
+dataservice:
+  contents:
+    - dataservice.js
+
+dataset_no_resource:
+  contents:
+    - dataset_no_resource.js
+
+publish:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - publish.js
+
+temporal-coverage:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - temporal-coverage.js
+
+temporal-coverage-style:
+  contents:
+    - temporal-coverage.css
+
+style:
+  contents:
+    - style.css
+
+qdes-fancytree:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - jquery.fancytree-all-deps.min.js
+    - qdes-tree-selector.js
+
+help-text:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - help-text.js
+
+input-date-helper:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - input-date-helper.js
