@@ -522,7 +522,10 @@ def map_license(uri, schema):
         constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {
             'https://linked.data.gov.au/def/licence-document/cc-by-4.0': 'cc-by-4',
             'https://linked.data.gov.au/def/licence-document/cc-by-nd-4.0': 'cc-by-nd-4',
-            'https://linked.data.gov.au/def/licence-document/cc-by-sa-4.0': 'cc-by-sa-4'
+            'https://linked.data.gov.au/def/licence-document/cc-by-sa-4.0': 'cc-by-sa-4',
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0': 'cc-by-4',
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0': 'cc-by-nd-4',
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0': 'cc-by-sa-4',
         },
         # @todo, in case needed, need to map this against external schema in future.
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
