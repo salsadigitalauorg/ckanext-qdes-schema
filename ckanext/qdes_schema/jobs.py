@@ -221,7 +221,8 @@ def _get_external_dataset(dataset_name, destination):
 def _delete_external_dataset(dataset_name, destination):
     detail = {}
     try:
-        package_dict = destination.action.package_delete(id=dataset_name)
+        deletion_reason='Dataset unpublished from {0}'.format(config.get('ckan.site_url'))
+        package_dict = destination.action.package_delete(id=dataset_name, deletion_reason=deletion_reason)
     except Exception as e:
         detail = str(e)
         package_dict = {}
