@@ -352,7 +352,6 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
         qld_pkg_dict[field] = des_package_dict.get(field)
 
     # Build resource.
-    breakpoint()
     des_resource = des_package_dict.get('resources')
     for field in resource_fields:
         # It is always index 0, because each job will create/update single distribution.
