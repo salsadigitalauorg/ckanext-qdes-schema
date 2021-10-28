@@ -395,6 +395,10 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
     qld_pkg_dict['security_classification'] = 'PUBLIC'
     qld_pkg_dict['data_driven_application'] = 'NO'
     qld_pkg_dict['version'] = '1'
+    qld_pkg_dict['de_identified_data'] = 'NO'
+    qld_pkg_dict['next_update_due'] = None
+    qld_pkg_dict['nature_of_change_to_data'] = 'edit-resource-with-no-new-data'
+
 
     return qld_pkg_dict
 
