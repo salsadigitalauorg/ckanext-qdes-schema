@@ -351,6 +351,7 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
         qld_pkg_dict[field] = des_package_dict.get(field)
 
     # Build resource.
+    breakpoint()
     des_resource = des_package_dict.get('resources')
     for field in resource_fields:
         # It is always index 0, because each job will create/update single distribution.
@@ -359,6 +360,8 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
             # Manually map resource format
             qld_resource_dict[field] = helpers.map_formats(des_resource[0].get(field),
                                                            constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
+    qld_resource_dict['nature_of_change'] = 'edit-resource-with-no-new-data'
+
     if is_update:
         new_resources = []
         if has_recent_log:
@@ -397,7 +400,6 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
     qld_pkg_dict['version'] = '1'
     qld_pkg_dict['de_identified_data'] = 'NO'
     qld_pkg_dict['next_update_due'] = None
-    qld_pkg_dict['nature_of_change_to_data'] = 'edit-resource-with-no-new-data'
 
 
     return qld_pkg_dict
