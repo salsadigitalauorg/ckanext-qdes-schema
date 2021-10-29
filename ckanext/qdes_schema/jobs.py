@@ -363,6 +363,7 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
                                                            constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
 
     if is_update:
+        qld_resource_dict['nature_of_change'] = 'edit-resource-with-no-new-data'
         new_resources = []
         if has_recent_log:
             # Example case, user update resource that already published.
