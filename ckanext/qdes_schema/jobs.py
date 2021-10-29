@@ -221,7 +221,7 @@ def _get_external_dataset(dataset_name, destination):
 def _delete_external_dataset(dataset_name, destination):
     detail = {}
     try:
-        deletion_reason='Dataset unpublished from {0}'.format(config.get('ckan.site_url'))
+        deletion_reason = 'Dataset unpublished from {0}'.format(config.get('ckan.site_url'))
         package_dict = destination.action.package_delete(id=dataset_name, deletion_reason=deletion_reason)
     except Exception as e:
         detail = str(e)
@@ -400,7 +400,6 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
     qld_pkg_dict['version'] = '1'
     qld_pkg_dict['de_identified_data'] = 'NO'
     qld_pkg_dict['next_update_due'] = None
-
 
     return qld_pkg_dict
 
