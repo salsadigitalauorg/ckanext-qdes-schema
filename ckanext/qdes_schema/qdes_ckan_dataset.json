@@ -36,7 +36,7 @@
       "display_group": "description",
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "classification",
-      "validators": "scheming_required",
+      "validators": "scheming_required qdes_validate_multi_scheming_choices",
       "required": true,
       "form_attrs": {
         "class": "form-control",
@@ -93,7 +93,7 @@
       "display_group": "description",
       "preset": "controlled_vocabulary_tree_multiple",
       "vocabulary_service_name": "topic",
-      "validators": "scheming_required",
+      "validators": "scheming_required qdes_validate_multi_scheming_choices",
       "required": true,
       "form_include_blank_choice": true,
       "label_plural": "topic or themes",
@@ -115,6 +115,7 @@
       "preset": "controlled_vocabulary_tree_multi_group",
       "label_plural": "parameters",
       "no_selected_term": "No parameters have been added. Please use the interface above to select an <strong>Observed property</strong> and corresponding <strong>Unit of measure.</strong>",
+      "validators": "ignore_missing qdes_validate_multi_pair_vocab_vocab",
       "field_group": [
         {
           "field_name": "observed-property",
@@ -145,7 +146,7 @@
       "label": "Temporal coverage start",
       "display_property": "dcat:startDate",
       "preset": "date",
-      "validators": "qdes_temporal_start_end_date",
+      "validators": "qdes_temporal_start_end_date scheming_isodatetime",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage",
       "sub_heading_help_text": "The start and end date of the dataset",
@@ -156,7 +157,7 @@
       "label": "Temporal coverage end",
       "display_property": "dcat:endDate",
       "preset": "date",
-      "validators": "qdes_temporal_start_end_date",
+      "validators": "qdes_temporal_start_end_date scheming_isodatetime",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage",
       "form_placeholder": "dd/mm/yyyy"
@@ -308,7 +309,7 @@
       "display_group": "data quality",
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
-      "validators": "ignore_empty qdes_validate_multi_groups",
+      "validators": "ignore_empty qdes_validate_multi_groups qdes_validate_multi_pair_vocab_free_text",
       "field_group": [
         {
           "field_name": "measurement",
@@ -339,7 +340,7 @@
       "display_group": "data quality",
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
-      "validators": "ignore_empty qdes_validate_multi_groups",
+      "validators": "ignore_empty qdes_validate_multi_groups qdes_validate_multi_pair_vocab_free_text",
       "field_group": [
         {
           "field_name": "dimension",
@@ -452,6 +453,7 @@
       "vocabulary_service_name": "point-of-contact",
       "display_group": "contacts and responsibilities",
       "required": true,
+      "validators": "scheming_required qdes_validate_point_of_contact",
       "help_text": "A person or position to contact for more information about the dataset",
       "form_placeholder": " "
     },
@@ -496,6 +498,7 @@
       "display_property": "prov:qualifiedAttribution",
       "preset": "controlled_vocabulary_multi_group",
       "display_group": "contacts and responsibilities",
+      "validators": "ignore_empty qdes_validate_multi_groups qdes_validate_multi_pair_vocab_free_text",
       "field_group": [
         {
           "field_name": "the-party",
@@ -600,6 +603,7 @@
       },
       "form_include_blank_choice": true,
       "required": true,
+      "validators": "scheming_required qdes_validate_multi_scheming_choices",
       "help_text": "Security classification using the Queensland Government Information and Security Classification Framework",
       "form_placeholder": "Select a classification and access restriction"
     },
@@ -768,6 +772,7 @@
       "label": "Data service",
       "display_property": "dcat:accessService",
       "preset": "controlled_dataservice_multi_select",
+      "validators": "ignore_missing qdes_validate_data_service_is_exist",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
       },
