@@ -213,6 +213,16 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                 if standards_label:
                     pkg_dict['standards_label'] = standards_label
 
+            # Name or Code
+            if 'spatial_name_code' in pkg_dict:
+                spatial_name_code = indexing_helpers.convert_term_uri_to_label(
+                    dataset_type,
+                    'spatial_name_code',
+                    pkg_dict.get('spatial_name_code', '')
+                )
+                if spatial_name_code:
+                    pkg_dict['spatial_name_code'] = spatial_name_code
+
         return pkg_dict
 
     def before_search(self, search_params):
@@ -385,6 +395,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         facets_dict['temporal_end'] = plugins.toolkit._('Temporal end')
         facets_dict['temporal_coverage_from'] = plugins.toolkit._('Temporal coverage from')
         facets_dict['temporal_coverage_to'] = plugins.toolkit._('Temporal coverage to')
+        facets_dict['spatial_name_code'] = plugins.toolkit._('Name or Code')
 
         # Reorder facets.
         if facets_dict:
@@ -400,7 +411,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                     'type',
                     'collection_package_id',
                     'temporal_coverage_from',
-                    'temporal_coverage_to'
+                    'temporal_coverage_to',
+                    'spatial_name_code'
                 ]
                 ordered_facets = OrderedDict((k, facets_dict[k]) for k in facets_order)
             else:
