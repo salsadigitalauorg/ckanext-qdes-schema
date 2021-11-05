@@ -313,7 +313,7 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
     result_pattern = re.split("^P(?=\d+[YMWD])(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$", flattened_data[key])
     if len(result_pattern) <= 1:
         log.error(f'Invalid result_pattern: {result_pattern}')
-        raise toolkit.Invalid('Incorrect ISO 8601 duration format'))
+        raise toolkit.Invalid('Incorrect ISO 8601 duration format')
 
 
 @scheming_validator
@@ -640,7 +640,7 @@ def qdes_validate_multi_pair_vocab_vocab(field, schema):
                 for item in field_group:
                     if 'choices_helper' in item:
                         scheming_choices_validator = scheming_choices(item, schema)
-                        if item.get('field_name', None) is not None and  len(val[item.get('field_name')]) > 0:
+                        if item.get('field_name', None) is not None and len(val[item.get('field_name')]) > 0:
                             scheming_choices_validator(val[item.get('field_name')])
 
             return value
