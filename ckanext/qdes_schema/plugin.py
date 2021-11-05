@@ -235,7 +235,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                 temporal_coverage_to = temporal_coverage_to + '-' + str(last_day)
 
                 search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
-                search_params['fq'] += '+temporal_end:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
+                search_params['fq'] += 'OR temporal_end:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
 
         return search_params
 
