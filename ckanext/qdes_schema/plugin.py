@@ -342,6 +342,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_collection_parent_title': relationship_helpers.get_collection_parent_title,
             'get_external_distribution_url': helpers.get_external_distribution_url,
             'has_display_group_required_fields': helpers.has_display_group_required_fields,
+            'convert_term_uri_to_label': indexing_helpers.convert_term_uri_to_label,
         }
 
     def get_multi_textarea_values(self, value):
