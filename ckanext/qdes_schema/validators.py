@@ -311,10 +311,9 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
 
     # Validate the pattern.
     result_pattern = re.split("^P(?=\d+[YMWD])(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$", flattened_data[key])
-    log.error("result_pattern")
-    log.error(result_pattern)
     if len(result_pattern) <= 1:
-        raise toolkit.Invalid('Incorrect ISO 8601 duration format')
+        log.error(f'Invalid result_pattern: {result_pattern}')
+        raise toolkit.Invalid('Incorrect ISO 8601 duration format'))
 
 
 @scheming_validator
