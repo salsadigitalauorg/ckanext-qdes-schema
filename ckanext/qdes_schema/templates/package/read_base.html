@@ -11,7 +11,7 @@
   {% endif %}
   {{ h.build_nav_icon(dataset_type ~ '.groups', _('Groups'), id=id_or_name, icon='users') }}
 
-  {% if h.check_access('package_update', {'id':pkg.id }) %}
+  {% if h.check_access('package_update', {'id':pkg.id }) and dataset_type == 'dataset' %}
     {{ h.build_nav_icon('qdes_schema.datasets_schema_validation', _('Publish'), id=id_or_name, icon='list') }}
   {% endif %}
 
