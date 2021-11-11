@@ -115,7 +115,7 @@
       "preset": "controlled_vocabulary_tree_multi_group",
       "label_plural": "parameters",
       "no_selected_term": "No parameters have been added. Please use the interface above to select an <strong>Observed property</strong> and corresponding <strong>Unit of measure.</strong>",
-      "validators": "ignore_missing qdes_validate_multi_pair_vocab_vocab",
+      "validators": "ignore_empty ignore_missing qdes_validate_multi_pair_vocab_vocab",
       "field_group": [
         {
           "field_name": "observed-property",
@@ -146,7 +146,7 @@
       "label": "Temporal coverage start",
       "display_property": "dcat:startDate",
       "preset": "date",
-      "validators": "qdes_temporal_start_end_date scheming_isodatetime",
+      "validators": "qdes_temporal_start_end_date isodate convert_to_json_if_date",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage",
       "sub_heading_help_text": "The start and end date of the dataset",
@@ -157,7 +157,7 @@
       "label": "Temporal coverage end",
       "display_property": "dcat:endDate",
       "preset": "date",
-      "validators": "qdes_temporal_start_end_date scheming_isodatetime",
+      "validators": "qdes_temporal_start_end_date isodate convert_to_json_if_date",
       "display_group": "temporal content",
       "sub_heading": "temporal coverage",
       "form_placeholder": "dd/mm/yyyy"
