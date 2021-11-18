@@ -5,7 +5,8 @@
             {% set columns = (12 / field.get('field_group')|length)|int %}
             {% for field_group in field.get('field_group') or [] %}
                 <div class="col-xs-{{columns}}">
-                    {% if '/ckan-admin/vocabulary-services/secure-autocomplete/' in field_group.get('form_attrs', {}).get('data-module-source' ,'') %}
+                    {% if '/ckan-admin/vocabulary-services/secure-autocomplete/' in field_group.get('form_attrs', {}).get('data-module-source' ,'') 
+                       and 'alt=1' not in field_group.get('form_attrs', {}).get('data-module-source' ,'') %}
                         {% snippet "/scheming/display_snippets/qdes_secure_vocabulary_text.html", field=field_group , data=group_data %}
                     {% else %}
                         {% set value_data = group_data.get(field_group.field_name, '') %}

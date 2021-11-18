@@ -1,0 +1,21 @@
+{% ckan_extends %}
+
+{% block secondary_content %}
+  {% snippet "group/snippets/info.html", group=group_dict, show_nums=true %}
+
+  {% set default_extent = h.get_qld_bounding_box_config() %}
+  {% snippet "snippets/spatial_query.html", default_extent=default_extent, extras={'id':group_dict.id} %}
+
+  <div class="filters">
+    <div>
+      {% for facet in facet_titles %}
+        {% if facet == 'temporal_start' or facet == 'temporal_end' %}
+          {{ h.snippet('snippets/facet_list_temporal.html', title=facet_titles[facet], name=facet, search_facets=search_facets, extras={'id':group_dict.id}) }}
+        {% elif not facet in ['collection_package_id', 'temporal_coverage_from', 'temporal_coverage_to'] %}
+          {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet, extras={'id':group_dict.id}) }}
+        {% endif %}
+      {% endfor %}
+    </div>
+    <a class="close no-text hide-filters"><i class="fa fa-times-circle"></i><span class="text">close</span></a>
+  </div>
+{% endblock %}

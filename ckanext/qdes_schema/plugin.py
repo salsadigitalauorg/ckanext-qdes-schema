@@ -416,6 +416,12 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
             return ordered_facets
 
+    def group_facets(self, facets_dict, group_type, package_type):
+        return self.dataset_facets(facets_dict, 'dataset')
+
+    def organization_facets(self, facets_dict, organization_type, package_type):
+        return self.dataset_facets(facets_dict, 'dataset')
+
     # IAuthFunctions
     def get_auth_functions(self):
         return {
