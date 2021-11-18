@@ -68,7 +68,7 @@
           {%- endif -%}
           {% set checked = "" %}
           {% if errors %}
-            {% set checked = h.field_has_errors(field, errors) %}      
+            {% set checked = "checked" if h.field_has_errors(field, errors) %}      
            {%endif %}
             <article class="display-group-{{field.display_group}}" >
               <input id="display-group-{{field.display_group}}" type="checkbox" name="tabs"
