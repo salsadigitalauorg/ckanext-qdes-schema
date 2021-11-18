@@ -10,6 +10,8 @@ import six
 import json
 import xml.dom.minidom
 import os
+import ckan.lib.navl.dictization_functions as dict_fns
+import ckan.logic as logic
 
 from ckan.common import _, c, request
 from ckanext.qdes_schema import helpers
@@ -17,6 +19,9 @@ from flask import Blueprint
 from pprint import pformat
 from ckanext.qdes_schema.logic.helpers import dataservice_helpers as dataservice_helpers
 from flask import send_file
+from ckan.views import dataset as dataset_view
+from ckan.lib.search import SearchIndexError
+from six import text_type
 
 abort = toolkit.abort
 get_action = toolkit.get_action
@@ -27,6 +32,10 @@ ValidationError = toolkit.ValidationError
 render = toolkit.render
 h = toolkit.h
 clean_dict = logic.clean_dict
+tuplize_dict = logic.tuplize_dict
+parse_params = logic.parse_params
+check_access = toolkit.check_access
+g = check_access = toolkit.g
 tuplize_dict = logic.tuplize_dict
 parse_params = logic.parse_params
 
@@ -279,11 +288,11 @@ def dataset_export(id, format):
         #         dataset['contact_publisher'] = term
         all_relationships = helpers.get_all_relationships(dataset['id'])
         relationships = []
-        
+
         for relationship in all_relationships:
             if relationship.get('type') in ['Is Part Of']:
                 relationships.append(relationship)
-                
+
         # TODO: Need to load all secure vocabs as dict objects
         # Load vocabualry service contact_point
         vocab_value = {}
@@ -304,7 +313,7 @@ def dataset_export(id, format):
 
         dataset['metadata_contact_point'] = vocab_value
 
-        # Get the identifiers 
+        # Get the identifiers
         dataset['additional_info'] = h.get_multi_textarea_values(dataset.get('additional_info', []))
         dataset['identifiers'] = h.get_multi_textarea_values(dataset.get('identifiers', []))
         dataset['topic'] = h.get_multi_textarea_values(dataset.get('topic', []))
@@ -379,7 +388,6 @@ def dataset_export(id, format):
         if new_resources:
             dataset['resources'] = new_resources
 
-
         extra_vars = {}
         extra_vars['dataset'] = dataset
         data = None
@@ -403,6 +411,84 @@ def dataset_export(id, format):
         abort(404, _('Dataset not found'))
 
 
+class CreateView(dataset_view.CreateView):
+    def post(self, package_type):
+        # If _ckan_phase is set to 'save_record' and pkg_name exists, set the dataset to active, save and redirect to dataset read page
+        if request.form.get(u'_ckan_phase') == 'save_record' and len(request.form.get(u'pkg_name', '')) > 0:
+            # Copied from https://github.com/ckan/ckan/blob/b123155c0fe1cd07736375ee5cf97abcd0a5fcf5/ckan/views/dataset.py#L542
+            # Please make sure to keep up to date on any new CKAN release
+
+            # The staged add dataset used the new functionality when the dataset is
+            # partially created so we need to know if we actually are updating or
+            # this is a real new.
+            context = self._prepare()
+            is_an_update = False
+            try:
+                data_dict = clean_dict(
+                    dict_fns.unflatten(tuplize_dict(parse_params(request.form)))
+                )
+            except dict_fns.DataError:
+                return base.abort(400, _(u'Integrity Error'))
+            try:
+                # prevent clearing of groups etc
+                context[u'allow_partial_update'] = True
+                # sort the tags
+                if u'tag_string' in data_dict:
+                    data_dict[u'tags'] = dataset_view._tag_string_to_list(
+                        data_dict[u'tag_string']
+                    )
+                if data_dict.get(u'pkg_name'):
+                    is_an_update = True
+                    # This is actually an update not a save
+                    data_dict[u'id'] = data_dict[u'pkg_name']
+                    del data_dict[u'pkg_name']
+                    # QDES modification begins
+                    data_dict[u'state'] = u'active'
+                    # QDES modification ends
+                    # this is actually an edit not a save
+                    pkg_dict = get_action(u'package_update')(
+                        context, data_dict
+                    )
+                    # QDES modification begins
+                    return dataset_view._form_save_redirect(
+                        pkg_dict[u'name'], u'new', package_type=package_type
+                    )
+                    # QDES modification ends
+            except NotAuthorized:
+                return base.abort(403, _(u'Unauthorized to read package'))
+            except NotFound as e:
+                return base.abort(404, _(u'Dataset not found'))
+            except SearchIndexError as e:
+                try:
+                    exc_str = text_type(repr(e.args))
+                except Exception:  # We don't like bare excepts
+                    exc_str = text_type(str(e))
+                return base.abort(
+                    500,
+                    _(u'Unable to add package to search index.') + exc_str
+                )
+            except ValidationError as e:
+                errors = e.error_dict
+                error_summary = e.error_summary
+                if is_an_update:
+                    # we need to get the state of the dataset to show the stage we
+                    # are on.
+                    pkg_dict = get_action(u'package_show')(context, data_dict)
+                    data_dict[u'state'] = pkg_dict[u'state']
+                    return dataset_view.EditView().get(
+                        package_type,
+                        data_dict[u'id'],
+                        data_dict,
+                        errors,
+                        error_summary
+                    )
+                data_dict[u'state'] = u'none'
+                return self.get(package_type, data_dict, errors, error_summary)
+        else:
+            # Continue to CKAN core CreateView.post code workflow
+            return super().post(package_type)
+
+
 qdes_schema.add_url_rule(u'/dataset/<id_or_name>/related-datasets', view_func=related_datasets)
 qdes_schema.add_url_rule(u'/dataset/<id>/metadata', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/metadata', endpoint='dataservice_metadata', view_func=dataset_metadata)
@@ -414,3 +500,5 @@ qdes_schema.add_url_rule(u'/dataset/<id>/unpublish-external', methods=[u'POST'],
                          view_func=unpublish_external_dataset_resource)
 qdes_schema.add_url_rule(u'/dataset/<id>/export/<format>',
                          view_func=dataset_export)
+qdes_schema.add_url_rule(u'/dataset/new', defaults={u'package_type': u'dataset'},
+                         view_func=CreateView.as_view(str(u'new')))
