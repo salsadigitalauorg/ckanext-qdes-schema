@@ -23,6 +23,7 @@
   {% asset 'qdes_schema/autocomplete' %}
   {% asset 'qdes_schema/iso-8601-duration' %}
   {% asset 'qdes_schema/input-date-helper' %}
+  {% asset 'qdes_schema/accordion' %}
   {% asset 'qdes_schema/style' %}
 
   {%- if not dataset_type -%}
@@ -65,10 +66,14 @@
             {%- set section_element_created = True -%}
             <section class="qg-accordion qg-dark-accordion" aria-label="Accordion Label">
           {%- endif -%}
+          {% set checked = "" %}
+          {% if errors %}
+            {% set checked = "checked" if h.field_has_errors(field, errors) %}      
+           {%endif %}
             <article class="display-group-{{field.display_group}}" >
               <input id="display-group-{{field.display_group}}" type="checkbox" name="tabs"
                      aria-controls="display-group-{{field.display_group}}-content" aria-expanded="false"
-                     role="checkbox" tabindex="-1" >
+                     role="checkbox" tabindex="-1" {{checked}}>
               <button class="acc-heading" type="button">
                 <label for="display-group-{{field.display_group}}" class="no-colon">
                   <span class="title">{{field.display_group|capitalize}}</span>
