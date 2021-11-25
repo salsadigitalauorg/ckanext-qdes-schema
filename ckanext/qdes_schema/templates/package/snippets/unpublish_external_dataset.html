@@ -19,20 +19,21 @@
           {% if not published_distributions.dataqld_dataset %}
             No distributions.
           {% else %}
-            {# <select id="unpublish-resource" name="unpublish_resource" class="form-control">
-              <table>
+          <table >
               {% for publish_log in published_distributions.dataqld_dataset %}
+              <tr>
                 {% set ns = namespace() %}
                 {% for resource in pkg.resources %}
                   {% if resource.id == publish_log.resource_id %}
                     {% set ns.resource = resource %}
                   {% endif %}
                 {% endfor %}
-                <tr>
-                <td value="{{ publish_log.resource_id }}">{{ h.get_distribution_naming(pkg, ns.resource) }}</td>
-                </tr>
+
+                <td>  <label class="no-colon"> <input class="resources" type="checkbox" name="resources" value="{{ publish_log.resource_id }}"/> </label></td>
+                <td><label class="no-colon"> {{ h.get_distribution_naming(pkg, ns.resource) }}</label> </td>
+              </tr>
               {% endfor %}
-            </table> #}
+          </table>
           {% endif %}
         </div>
       </div>
