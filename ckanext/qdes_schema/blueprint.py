@@ -1,4 +1,3 @@
-from flask.helpers import url_for
 import ckan.lib.base as base
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
