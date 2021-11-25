@@ -19,8 +19,8 @@
           {% if not published_distributions.dataqld_dataset %}
             No distributions.
           {% else %}
-            <select id="unpublish-resource" name="unpublish_resource" class="form-control">
-              <option value="none">Select distribution</option>
+            {# <select id="unpublish-resource" name="unpublish_resource" class="form-control">
+              <table>
               {% for publish_log in published_distributions.dataqld_dataset %}
                 {% set ns = namespace() %}
                 {% for resource in pkg.resources %}
@@ -28,9 +28,11 @@
                     {% set ns.resource = resource %}
                   {% endif %}
                 {% endfor %}
-                <option value="{{ publish_log.resource_id }}">{{ h.get_distribution_naming(pkg, ns.resource) }}</option>
+                <tr>
+                <td value="{{ publish_log.resource_id }}">{{ h.get_distribution_naming(pkg, ns.resource) }}</td>
+                </tr>
               {% endfor %}
-            </select>
+            </table> #}
           {% endif %}
         </div>
       </div>
