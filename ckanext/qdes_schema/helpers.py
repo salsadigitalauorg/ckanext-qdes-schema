@@ -852,3 +852,6 @@ def has_display_group_required_fields(fields, display_group):
             return True
 
     return False
+
+def field_has_errors(field, errors):
+    return field['field_name'] in errors
