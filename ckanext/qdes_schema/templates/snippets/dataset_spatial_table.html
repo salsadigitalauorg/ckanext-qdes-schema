@@ -14,10 +14,11 @@
   {%- endfor -%}
 {%- endmacro -%}
 
-{% set bounding_box = pkg_dict['spatial_lower_left']|length > 0 and pkg_dict['spatial_upper_right']|length > 0 %}
-{% set centroid = pkg_dict['spatial_lower_left']|length == 0 and pkg_dict['spatial_upper_right']|length == 0 and pkg_dict['spatial_centroid']|length > 0 %}
+{% set bounding_box = pkg_dict['spatial_geometry']|length == 0 and pkg_dict['spatial_lower_left']|length > 0 and pkg_dict['spatial_upper_right']|length > 0 %}
+{% set centroid = pkg_dict['spatial_geometry']|length == 0 and pkg_dict['spatial_lower_left']|length == 0 and pkg_dict['spatial_upper_right']|length == 0 and pkg_dict['spatial_centroid']|length > 0 %}
+{% set geometry = pkg_dict['spatial_geometry']|length > 0 %}
 
-{% if bounding_box or centroid %}
+{% if bounding_box or centroid or geometry %}
   <tr>
     <th scope="row" colspan="2">{{ _('Spatial coverage') }}</th>
   </tr>
@@ -31,20 +32,25 @@
         {% if centroid %}
           <strong>Centroid</strong>
         {% endif %}
+
+        {% if geometry %}
+          <strong>Geometry</strong>
+        {% endif %}
       </div>
     </td>
     <td>
 
-        {% snippet "snippets/dataset_map_qdes.html", extent=h.dump_json(pkg_dict['spatial']) %}
+      {% snippet "snippets/dataset_map_qdes.html", extent=pkg_dict['spatial_geometry'] if geometry else h.dump_json(pkg_dict['spatial']) %}
 
     </td>
   </tr>
 {% endif %}
 
-{% if bounding_box and pkg_dict['spatial_centroid']|length > 0 %}
-  {{ spatial_row('spatial_centroid', pkg_dict, schema) }}
+{% if geometry and pkg_dict['spatial_lower_left']|length > 0 and pkg_dict['spatial_upper_right']|length > 0 %}
+  {{ spatial_row('spatial_lower_left', pkg_dict, schema) }}
+  {{ spatial_row('spatial_upper_right', pkg_dict, schema) }}
 {% endif %}
 
-{% if pkg_dict['spatial_geometry']|length > 0 %}
-  {{ spatial_row('spatial_geometry', pkg_dict, schema) }}
+{% if (geometry or bounding_box) and pkg_dict['spatial_centroid']|length > 0 %}
+  {{ spatial_row('spatial_centroid', pkg_dict, schema) }}
 {% endif %}
