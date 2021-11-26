@@ -39,7 +39,7 @@
                  <td><label class="no-colon"> {{ h.get_distribution_naming(pkg, ns.resource) }}</label> </td>
                  <td><label class="no-colon"> {{ h.get_portal_naming(publish_log.destination) }} </label> </td>
                  <td> <label class="no-colon"> <input class="resources" type="checkbox" name="resources" value="{{ publish_log.resource_id }}"/> </label></td>
-               
+                 <input type="hidden" name="schema" value="{{ publish_log.destination }}"/>
               </tr>
               </tbody>
               {% endfor %}
