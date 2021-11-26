@@ -19,8 +19,16 @@
           {% if not published_distributions.dataqld_dataset %}
             No distributions.
           {% else %}
-          <table >
+          <table class="table">
+           <thead>
+            <tr>
+           <th> Distribution </th>
+           <th> Portal </th>
+           <th> Select </th>
+           </tr>
+           </thead>
               {% for publish_log in published_distributions.dataqld_dataset %}
+              <tbody>
               <tr>
                 {% set ns = namespace() %}
                 {% for resource in pkg.resources %}
@@ -28,10 +36,12 @@
                     {% set ns.resource = resource %}
                   {% endif %}
                 {% endfor %}
-
-                <td>  <label class="no-colon"> <input class="resources" type="checkbox" name="resources" value="{{ publish_log.resource_id }}"/> </label></td>
-                <td><label class="no-colon"> {{ h.get_distribution_naming(pkg, ns.resource) }}</label> </td>
+                 <td><label class="no-colon"> {{ h.get_distribution_naming(pkg, ns.resource) }}</label> </td>
+                 <td><label class="no-colon"> {{ h.get_portal_naming(publish_log.destination) }} </label> </td>
+                 <td> <label class="no-colon"> <input class="resources" type="checkbox" name="resources" value="{{ publish_log.resource_id }}"/> </label></td>
+               
               </tr>
+              </tbody>
               {% endfor %}
           </table>
           {% endif %}
@@ -39,24 +49,6 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-md-4">
-        <label for="schema-unpublish">Select schema to unpublish</label>
-      </div>
-      <div class="col-md-8">
-        <div class="form-group">
-          <select id="schema-unpublish" name="schema" class="form-control">
-            {% for option in options %}
-              {% if loop.first %}
-                <option value="{{ option.value }}">Select published portal</option>
-              {% else %}
-                <option value="{{ option.value }}">{{ option.text }}</option>
-              {% endif %}
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-    </div>
 
     <div class="row form-group">
       <div class="col-md-10">
