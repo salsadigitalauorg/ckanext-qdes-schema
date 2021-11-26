@@ -319,6 +319,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_all_relationships': helpers.get_all_relationships,
             'convert_relationships_to_related_resources': helpers.convert_relationships_to_related_resources,
             'get_qld_bounding_box_config': helpers.get_qld_bounding_box_config,
+            'get_au_bounding_box_config': helpers.get_au_bounding_box_config,
             'get_default_map_zoom': helpers.get_default_map_zoom,
             'get_package_dict': helpers.get_package_dict,
             'get_invalid_uris': helpers.get_invalid_uris,

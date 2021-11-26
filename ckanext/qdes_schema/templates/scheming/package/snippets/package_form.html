@@ -98,6 +98,25 @@
       {%- endif -%}
     {%- endif -%}
 
+    <!-- Render spatial input. -->
+    {%- if field.field_name == 'spatial_lower_left' -%}
+      {% asset 'ckanext-spatial/spatial_map_input_js' %}
+      {% asset 'ckanext-spatial/spatial_map_input_css' %}
+      {% set map_config = h.get_common_map_config() %}
+      {% do map_config.update({'padding': [2, 2]}) %}
+      <div id="spatial-map-input" data-module="spatial-map-input"
+           data-module-lower-left="#field-spatial_lower_left"
+           data-module-upper-right="#field-spatial_upper_right"
+           data-module-centroid="#field-spatial_centroid"
+           data-module-geometry="#field-spatial_geometry"
+           data-module-extent="{{ h.get_qld_bounding_box_config() }}"
+           data-module-max-bounds="{{ h.get_au_bounding_box_config() }}"
+           data-module-site_url="{{ h.dump_json(h.url('/', locale='default', qualified=true)) }}"
+           data-module-map_config="{{ h.dump_json(map_config) }}">
+        <div id="spatial-map-input-container"></div>
+      </div>
+    {%- endif -%}
+
     {%- if field.form_snippet is not none -%}
       {%- snippet 'scheming/snippets/form_field.html',
         field=field, data=data, errors=errors, licenses=c.licenses,

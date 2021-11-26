@@ -240,7 +240,30 @@ def qdes_within_au_bounding_box(value):
 def qdes_validate_geojson_spatial(key, flattened_data, errors, context):
     """
     Generate box based on the lower left and upper right Points.
+
+    If there is geometry value, use this geometry and
+    update the lower left and upper right fields.
     """
+    spatial_geometry_value = flattened_data[('spatial_geometry',)]
+    if len(spatial_geometry_value) > 0:
+        try:
+            geometry = geojson.loads(spatial_geometry_value)
+            geometry_coord = list(geojson.utils.coords(geometry))
+            box = []
+            for i in (0, 1):
+                res = sorted(geometry_coord, key=lambda x: x[i])
+                box.append((res[0][i], res[-1][i]))
+
+            if box:
+                point_lower_left_coord = geojson.Point((box[0][0], box[1][0]))
+                point_upper_right_coord = geojson.Point((box[0][1], box[1][1]))
+
+                # Assign above coords to respected field.
+                flattened_data[('spatial_lower_left',)] = geojson.dumps(point_lower_left_coord)
+                flattened_data[('spatial_upper_right',)] = geojson.dumps(point_upper_right_coord)
+        except Exception as e:
+            log.error(str(e))
+
     spatial_lower_left_value = flattened_data[('spatial_lower_left',)]
     spatial_upper_right_value = flattened_data[('spatial_upper_right',)]
     spatial_centroid_value = flattened_data[('spatial_centroid',)]
