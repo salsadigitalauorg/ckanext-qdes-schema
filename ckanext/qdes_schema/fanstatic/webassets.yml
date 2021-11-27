@@ -78,3 +78,10 @@ input-date-helper:
       - vendor/jquery
   contents:
     - input-date-helper.js
+
+accordion:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - accordion.js
