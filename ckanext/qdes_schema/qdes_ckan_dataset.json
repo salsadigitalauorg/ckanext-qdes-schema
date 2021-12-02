@@ -52,7 +52,8 @@
       "form_placeholder": "Some useful notes about the data",
       "display_property": "dcterms:description",
       "display_group": "description",
-      "required": true
+      "required": true,
+      "validators": "remove_whitespace scheming_required"
     },
     {
       "field_name": "purpose",
