@@ -150,6 +150,9 @@ def datasets_schema_validation(id):
 
     extra_vars = {}
     pkg = get_action('package_show')({}, {'id': id})
+    pkg_type = pkg.get('type') or 'dataset'
+    if pkg_type == 'dataservice':
+        return abort(404, _('The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.'))
     pkg_validated = pkg.copy()
     extra_vars['pkg_errors'] = []
     extra_vars['res_errors'] = []
