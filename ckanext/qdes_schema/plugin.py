@@ -402,7 +402,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         facets_dict['temporal_end'] = plugins.toolkit._('Temporal end')
         facets_dict['temporal_coverage_from'] = plugins.toolkit._('Temporal coverage from')
         facets_dict['temporal_coverage_to'] = plugins.toolkit._('Temporal coverage to')
-        facets_dict['spatial_name_code'] = plugins.toolkit._('Name or Code')
+        # SUPDESQ-32 'Name or Code' label changed to 'Geographic name'
+        facets_dict['spatial_name_code'] = plugins.toolkit._('Geographic name')
 
         # Reorder facets.
         if facets_dict:
@@ -412,6 +413,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                     'topic_labels',
                     'temporal_start',
                     'temporal_end',
+                    'spatial_name_code',
                     'publication_status_label',
                     'classification_and_access_restrictions_label',
                     'resource_format_labels',
@@ -419,7 +421,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                     'collection_package_id',
                     'temporal_coverage_from',
                     'temporal_coverage_to',
-                    'spatial_name_code'
                 ]
                 ordered_facets = OrderedDict((k, facets_dict[k]) for k in facets_order)
             else:
