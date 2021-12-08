@@ -770,7 +770,7 @@
     },
     {
       "field_name": "data_services",
-      "label": "Data service",
+      "label": "Data Service",
       "display_property": "dcat:accessService",
       "preset": "controlled_dataservice_multi_select",
       "validators": "ignore_missing qdes_validate_data_service_is_exist",

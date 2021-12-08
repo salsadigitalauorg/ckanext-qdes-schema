@@ -390,14 +390,14 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             facets_dict.pop('organization')
 
         facets_dict['collection_package_id'] = 'Collections'
-        facets_dict['type'] = plugins.toolkit._('Dataset or Data service')
+        facets_dict['type'] = plugins.toolkit._('Dataset or Data Service')
         facets_dict['general_classification'] = plugins.toolkit._('General classification')
         facets_dict['topic_labels'] = plugins.toolkit._('Topic or theme')
         facets_dict['publication_status_label'] = plugins.toolkit._('Status')
         facets_dict['service_status_label'] = plugins.toolkit._('Status')
         facets_dict['classification_and_access_restrictions_label'] = plugins.toolkit._('Access restrictions')
         facets_dict['resource_format_labels'] = plugins.toolkit._('Primary format')
-        facets_dict['standards_label'] = plugins.toolkit._('Data service standards')
+        facets_dict['standards_label'] = plugins.toolkit._('Data Service standards')
         facets_dict['temporal_start'] = plugins.toolkit._('Temporal start')
         facets_dict['temporal_end'] = plugins.toolkit._('Temporal end')
         facets_dict['temporal_coverage_from'] = plugins.toolkit._('Temporal coverage from')
