@@ -618,6 +618,10 @@ def qdes_validate_multi_scheming_choices(field, schema):
         values = toolkit.get_converter('json_or_string')(value)
         if values and isinstance(values, list):
             for val in values:
+                # Handle empty string.
+                if val is missing or not val:
+                    raise Invalid('unexpected choice "%s"' % val)
+
                 scheming_choices_validator(val)
 
             return value
