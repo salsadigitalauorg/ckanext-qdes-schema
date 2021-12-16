@@ -307,6 +307,9 @@ def convert_relationships_to_related_resources(relationships):
 def get_qld_bounding_box_config():
     return config.get('ckanext.qdes_schema.qld_bounding_box', None)
 
+def get_au_bounding_box_config():
+    return config.get('ckanext.qdes_schema.au_bounding_box', None)
+
 
 def get_default_map_zoom():
     return config.get('ckanext.qdes_schema.default_map_zoom', None) or 5
