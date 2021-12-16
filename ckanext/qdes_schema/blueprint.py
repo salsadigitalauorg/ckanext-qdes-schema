@@ -150,6 +150,9 @@ def datasets_schema_validation(id):
 
     extra_vars = {}
     pkg = get_action('package_show')({}, {'id': id})
+    pkg_type = pkg.get('type') or 'dataset'
+    if pkg_type == 'dataservice':
+        return abort(404, _('The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.'))
     pkg_validated = pkg.copy()
     extra_vars['pkg_errors'] = []
     extra_vars['res_errors'] = []
@@ -216,39 +219,50 @@ def unpublish_external_dataset_resource(id):
 
     data = clean_dict(dict_fns.unflatten(tuplize_dict(parse_params(
         request.form))))
-
     pkg = get_action('package_show')({}, {'id': id})
-
+    unpublish_resources = []
+    schemas = []
+    for res_schema in data.get('schema_resources', []):
+        res, schema = eval(res_schema)
+        unpublish_resources.append(res)
+        schemas.append(schema)
     # Create job.
-    resource_to_unpublish = {}
+    resource_to_unpublish = []
     for resource in pkg.get('resources', []):
-        if resource.get('id') == data.get('unpublish_resource'):
-            resource_to_unpublish = resource
+        if resource.get('id') in unpublish_resources:
+            resource_to_unpublish.append(resource)
 
     # Add to publish log.
     unpublish = 0
-    try:
-        publish_log = get_action('create_publish_log')({}, {
-            'dataset_id': pkg.get('id'),
-            'resource_id': resource_to_unpublish.get('id'),
-            'trigger': constants.PUBLISH_TRIGGER_MANUAL,
-            'destination': data.get('schema'),
-            'status': constants.PUBLISH_STATUS_PENDING,
-            'action': constants.PUBLISH_ACTION_DELETE
-        })
-
-        # Add to job worker queue.
-        if publish_log:
-            # Improvements for job worker visibility when troubleshooting via logs
-            job_title = f'Unpublish external dataset resource: dataset_id={publish_log.dataset_id}, resource_id={publish_log.resource_id}, destination={publish_log.destination}'
-            toolkit.enqueue_job(jobs.unpublish_external_distribution, [publish_log.id, c.user], title=job_title)
-            unpublish = publish_log.id
-
-    except Exception as e:
-        log.error(str(e))
+    for res, schema in zip(resource_to_unpublish, schemas):
+        unpublish = _unpublish_resource(res, pkg, schema)
+    
 
     return h.redirect_to('/dataset/{}/publish?unpublish={}'.format(id, unpublish))
 
+def _unpublish_resource(resource, pkg, schema):
+        unpublish = 0
+        try:
+            publish_log = get_action('create_publish_log')({}, {
+                'dataset_id': pkg.get('id'),
+                'resource_id': resource.get('id'),
+                'trigger': constants.PUBLISH_TRIGGER_MANUAL,
+                'destination': schema,
+                'status': constants.PUBLISH_STATUS_PENDING,
+                'action': constants.PUBLISH_ACTION_DELETE
+            })
+
+            # Add to job worker queue.
+
+            if publish_log:
+                # Improvements for job worker visibility when troubleshooting via logs
+                job_title = f'Unpublish external dataset resource: dataset_id={publish_log.dataset_id}, resource_id={publish_log.resource_id}, destination={publish_log.destination}'
+                toolkit.enqueue_job(jobs.unpublish_external_distribution, [publish_log.id, c.user], title=job_title)
+                unpublish = publish_log.id
+
+        except Exception as e:
+            log.error(str(e))
+        return unpublish
 
 def _get_term_obj(field_value, vocab_service_name):
     if isinstance(field_value, list):

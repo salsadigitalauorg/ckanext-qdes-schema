@@ -82,7 +82,7 @@
       "values": {
         "form_snippet": "qdes_duration.html",
         "display_snippet": "qdes_duration.html",
-        "validators": "ignore_missing qdes_iso_8601_durations"
+        "validators": "ignore_missing ignore_empty qdes_iso_8601_durations"
       }
     },
     {

@@ -282,6 +282,11 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_validate_related_resources': validators.qdes_validate_related_resources,
             'qdes_validate_metadata_review_date': validators.qdes_validate_metadata_review_date,
             'qdes_convert_related_resources': relationship_helpers.convert_related_resources,
+            'qdes_validate_point_of_contact': validators.qdes_validate_point_of_contact,
+            'qdes_validate_multi_pair_vocab_vocab': validators.qdes_validate_multi_pair_vocab_vocab,
+            'qdes_validate_multi_pair_vocab_free_text': validators.qdes_validate_multi_pair_vocab_free_text,
+            'qdes_validate_data_service_is_exist': validators.qdes_validate_data_service_is_exist,
+            'qdes_validate_multi_scheming_choices': validators.qdes_validate_multi_scheming_choices
         }
 
     # IConfigurer
@@ -319,6 +324,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_all_relationships': helpers.get_all_relationships,
             'convert_relationships_to_related_resources': helpers.convert_relationships_to_related_resources,
             'get_qld_bounding_box_config': helpers.get_qld_bounding_box_config,
+            'get_au_bounding_box_config': helpers.get_au_bounding_box_config,
             'get_default_map_zoom': helpers.get_default_map_zoom,
             'get_package_dict': helpers.get_package_dict,
             'get_invalid_uris': helpers.get_invalid_uris,
@@ -336,12 +342,14 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'resource_has_published_to_external_schema': helpers.resource_has_published_to_external_schema,
             'get_publish_activities': helpers.get_publish_activities,
             'get_distribution_naming': helpers.get_distribution_naming,
+            'get_portal_naming': helpers.get_portal_naming,
             'get_published_distributions': helpers.get_published_distributions,
             'get_state_list': helpers.get_state_list,
             'get_pkg_title': helpers.get_pkg_title,
             'get_collection_parent_title': relationship_helpers.get_collection_parent_title,
             'get_external_distribution_url': helpers.get_external_distribution_url,
             'has_display_group_required_fields': helpers.has_display_group_required_fields,
+            'field_has_errors': helpers.field_has_errors,
             'convert_term_uri_to_label': indexing_helpers.convert_term_uri_to_label,
         }
 
@@ -396,7 +404,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         facets_dict['temporal_end'] = plugins.toolkit._('Temporal end')
         facets_dict['temporal_coverage_from'] = plugins.toolkit._('Temporal coverage from')
         facets_dict['temporal_coverage_to'] = plugins.toolkit._('Temporal coverage to')
-        facets_dict['spatial_name_code'] = plugins.toolkit._('Name or Code')
+        # SUPDESQ-32 'Name or Code' label changed to 'Geographic name'
+        facets_dict['spatial_name_code'] = plugins.toolkit._('Geographic name')
 
         # Reorder facets.
         if facets_dict:
@@ -406,6 +415,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                     'topic_labels',
                     'temporal_start',
                     'temporal_end',
+                    'spatial_name_code',
                     'publication_status_label',
                     'classification_and_access_restrictions_label',
                     'resource_format_labels',
@@ -413,7 +423,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                     'collection_package_id',
                     'temporal_coverage_from',
                     'temporal_coverage_to',
-                    'spatial_name_code'
                 ]
                 ordered_facets = OrderedDict((k, facets_dict[k]) for k in facets_order)
             else:

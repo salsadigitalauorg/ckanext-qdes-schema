@@ -23,6 +23,7 @@
   {% asset 'qdes_schema/autocomplete' %}
   {% asset 'qdes_schema/iso-8601-duration' %}
   {% asset 'qdes_schema/input-date-helper' %}
+  {% asset 'qdes_schema/accordion' %}
   {% asset 'qdes_schema/style' %}
 
   {%- if not dataset_type -%}
@@ -65,10 +66,14 @@
             {%- set section_element_created = True -%}
             <section class="qg-accordion qg-dark-accordion" aria-label="Accordion Label">
           {%- endif -%}
+          {% set checked = "" %}
+          {% if errors %}
+            {% set checked = "checked" if h.field_has_errors(field, errors) %}      
+           {%endif %}
             <article class="display-group-{{field.display_group}}" >
               <input id="display-group-{{field.display_group}}" type="checkbox" name="tabs"
                      aria-controls="display-group-{{field.display_group}}-content" aria-expanded="false"
-                     role="checkbox" tabindex="-1" >
+                     role="checkbox" tabindex="-1" {{checked}}>
               <button class="acc-heading" type="button">
                 <label for="display-group-{{field.display_group}}" class="no-colon">
                   <span class="title">{{field.display_group|capitalize}}</span>
@@ -96,6 +101,25 @@
         {%- set ns.sub_heading_info_text = field.sub_heading_info_text -%}
         <div class="small">{{ h.render_markdown(field.sub_heading_info_text, allow_html=True) }}</div>
       {%- endif -%}
+    {%- endif -%}
+
+    <!-- Render spatial input. -->
+    {%- if field.field_name == 'spatial_lower_left' -%}
+      {% asset 'ckanext-spatial/spatial_map_input_js' %}
+      {% asset 'ckanext-spatial/spatial_map_input_css' %}
+      {% set map_config = h.get_common_map_config() %}
+      {% do map_config.update({'padding': [2, 2]}) %}
+      <div id="spatial-map-input" data-module="spatial-map-input"
+           data-module-lower-left="#field-spatial_lower_left"
+           data-module-upper-right="#field-spatial_upper_right"
+           data-module-centroid="#field-spatial_centroid"
+           data-module-geometry="#field-spatial_geometry"
+           data-module-extent="{{ h.get_qld_bounding_box_config() }}"
+           data-module-max-bounds="{{ h.get_au_bounding_box_config() }}"
+           data-module-site_url="{{ h.dump_json(h.url('/', locale='default', qualified=true)) }}"
+           data-module-map_config="{{ h.dump_json(map_config) }}">
+        <div id="spatial-map-input-container"></div>
+      </div>
     {%- endif -%}
 
     {%- if field.form_snippet is not none -%}
