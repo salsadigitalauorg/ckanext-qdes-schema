@@ -773,7 +773,7 @@
       "label": "Data service",
       "display_property": "dcat:accessService",
       "preset": "controlled_dataservice_multi_select",
-      "validators": "ignore_missing qdes_validate_data_service_is_exist",
+      "validators": "ignore_missing ignore_empty qdes_validate_data_service_is_exist",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
       },

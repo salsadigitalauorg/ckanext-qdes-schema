@@ -38,7 +38,6 @@ def publish_to_external_catalogue(publish_log_id, user):
 
     package_dict = {}
     external_pkg_dict = {}
-
     try:
         site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
         context = {u'user': site_user[u'name']}
