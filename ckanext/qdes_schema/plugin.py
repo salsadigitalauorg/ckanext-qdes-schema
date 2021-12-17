@@ -236,6 +236,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
             if temporal_coverage_from and not temporal_coverage_to:
                 search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO *]'
+                search_params['fq'] += ' OR (temporal_start:[* TO ' + temporal_coverage_from + '] AND temporal_end:[' + temporal_coverage_from + ' TO *])'
 
             if temporal_coverage_from and temporal_coverage_to:
                 # Need to make sure to use the last day of the selected month,
@@ -244,8 +245,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                 last_day = calendar.monthrange(int(to_date[0]), int(to_date[1]))[1]
                 temporal_coverage_to = temporal_coverage_to + '-' + str(last_day)
 
-                search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
-                search_params['fq'] += 'OR temporal_end:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
+                search_params['fq'] += ' +(temporal_start:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + '] OR temporal_end:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + '])'
+                search_params['fq'] += ' OR (temporal_start:[* TO ' + temporal_coverage_from + '] AND temporal_end:[' + temporal_coverage_to + ' TO *])'
 
         return search_params
 
