@@ -4,11 +4,12 @@
 {%- set form_restrict_choices_to=field_group.get('form_restrict_choices_to') -%}
 {%- if not h.scheming_field_required(field_group) or
   field_group.get('form_include_blank_choice', false) -%}
-  {%- do options.append({'value': '', 'text': ''}) -%}
+  {%- do options.append({'quantity_kind': false, 'value': '', 'text': ''}) -%}
 {%- endif -%}
 {%- for c in h.scheming_field_choices(field_group) -%}
   {%- if not form_restrict_choices_to or c.value in form_restrict_choices_to -%}
     {%- do options.append({
+        'quantity_kind': c.quantity_kind if c.quantity_kind else false,
         'value': c.value|string,
         'text': h.scheming_language_text(c.label),
         'title': c.title|string if c.title is not none else '' }) -%}
@@ -44,3 +45,6 @@
 %}
     {%- snippet 'scheming/form_snippets/help_text.html', field=field_group -%}
 {% endcall %}
+<script>
+  var {{ field_group.field_name|replace('-', '') }} = {{ options|tojson|safe }}
+</script>
