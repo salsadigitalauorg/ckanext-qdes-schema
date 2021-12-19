@@ -132,6 +132,61 @@
                         if (enableButton) {
                             $wrapperEl.find('.add-selected-node-tree').removeAttr('disabled');
                         }
+
+                        // Support for quantityKind.
+                        //
+                        // If selected node is parent, collect all children quantity_kind.
+                        // If selected node is not parent, collect current quantity_kind.
+                        // If quantity_kind array is null, show all available option.
+                        // If quantity_kind array is not null, show only option that has the same quantiy_kind,
+                        // check the js variable for the option, and then re-render the dropdown.
+                        if (isMultiGrp) {
+                            var selectEl = $wrapperEl.find('select')
+                            var selectOptionVar = window[selectEl.attr('data-field-name').replace(/-/g, '')]
+                            var quantityKinds = []
+                            var getQuantityKinds = function (item) {
+                                if (item.data.quantity_kind !== null && quantityKinds.indexOf(item.data.quantity_kind) === -1) {
+                                    quantityKinds.push(item.data.quantity_kind)
+                                }
+
+                                if (item.children !== null) {
+                                    item.children.forEach(function (childItem) {
+                                        getQuantityKinds(childItem)
+                                    });
+                                }
+                            }
+                            if (data.node.children !== null) {
+                                data.node.children.forEach(function (item) {
+                                    getQuantityKinds(item)
+                                });
+                            }
+
+                            // Is dimensionless?
+                            var isDimensionless = false
+                            quantityKinds.forEach(function (item) {
+                                if (item.toLowerCase().includes('dimensionless') || item.toLowerCase().includes('dimensionlessratio')) {
+                                    isDimensionless = true
+                                }
+                            })
+
+                            // Re-render the dropdown.
+                            selectEl.html('')
+                            if (quantityKinds.length > 0 && !isDimensionless) {
+                                // Collect all quantity kind options.
+                                selectEl.append('<option title="" value=""></option>')
+                                selectOptionVar.forEach(function (item) {
+                                    if (quantityKinds.indexOf(item.quantity_kind) > -1) {
+                                        selectEl.append('<option title="' + item.title + '" value="' + item.value + '">' + item.text + '</option>')
+                                    }
+                                })
+                            }
+                            else {
+                                // Render all if no quantity kinds or there is dimensionless.
+                                selectOptionVar.forEach(function (item) {
+                                    selectEl.append('<option title="' + item.title + '" value="' + item.value + '">' + item.text + '</option>')
+                                })
+                            }
+                        }
                     },
                     enhanceTitle: function (e, data) {
                         if (data.node.children !== null) {
@@ -213,7 +268,6 @@
                 var valObj = [];
                 var selectedValue = {};
 
-
                 // Get existing value if any.
                 if (val.length > 0) {
                     valObj = JSON.parse(val);
@@ -247,6 +301,13 @@
 
                 // Remove value on the other field
                 if (isMultiGrp) {
+                    // Reset.
+                    var selectOptionVar = window[$otherFieldEl.attr('data-field-name').replace(/-/g, '')]
+                    $otherFieldEl.html('');
+                    selectOptionVar.forEach(function (item) {
+                        $otherFieldEl.append('<option title="' + item.title + '" value="' + item.value + '">' + item.text + '</option>')
+                    });
+
                     $otherFieldEl.val('');
                     $otherFieldEl.change();
                 }
