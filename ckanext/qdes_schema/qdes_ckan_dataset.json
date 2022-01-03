@@ -622,7 +622,7 @@
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "license",
+      "vocabulary_service_name": "dataset_license",
       "display_group": "rights and licensing",
       "recommended": true,
       "form_include_blank_choice": true,
@@ -807,7 +807,7 @@
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "license",
+      "vocabulary_service_name": "distribution_license",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-title": "title"

@@ -70,7 +70,7 @@
       "display_property": "dcterms:language",
       "display_group": "description",
       "preset": "controlled_vocabulary_multi_select",
-      "vocabulary_service_name": "dataset_language",
+      "vocabulary_service_name": "dataservice_language",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-title": "title"
@@ -84,7 +84,7 @@
       "display_property": "dcat:theme",
       "display_group": "description",
       "preset": "controlled_vocabulary_tree_multiple",
-      "vocabulary_service_name": "topic",
+      "vocabulary_service_name": "dataservice_topic",
       "validators": "scheming_required",
       "form_include_blank_choice": true,
       "label_plural": "topic or themes",
@@ -235,7 +235,7 @@
           "label": "Nature of their responsibility",
           "form_snippet": "select.html",
           "display_property": "dcat:hadRole",
-          "vocabulary_service_name": "nature-of-their-responsibility",
+          "vocabulary_service_name": "dataservice-nature-of-their-responsibility",
           "choices_helper": "scheming_vocabulary_service_choices",
           "form_attrs": {
             "class": "form-control",
@@ -251,7 +251,7 @@
       "display_property": "dcterms:accessRights",
       "display_group": "rights and licensing",
       "preset": "controlled_vocabulary_multi_select",
-      "vocabulary_service_name": "classification_and_access_restrictions",
+      "vocabulary_service_name": "dataservice_classification_and_access_restrictions",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-title": "title"
@@ -273,7 +273,7 @@
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "license",
+      "vocabulary_service_name": "dataservice_license",
       "display_group": "rights and licensing",
       "recommended": true,
       "form_include_blank_choice": true,
