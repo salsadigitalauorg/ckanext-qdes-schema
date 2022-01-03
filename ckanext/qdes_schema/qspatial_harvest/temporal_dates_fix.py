@@ -58,6 +58,6 @@ if __name__ == '__main__':
         from ckan.config.middleware import make_app
         make_app(load_config(args.config))
     except ImportError:
-       raise "Import error"
+       raise "Import config error"
     print("Collect datasets")
     main()
