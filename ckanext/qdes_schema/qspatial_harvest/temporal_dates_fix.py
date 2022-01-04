@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import argparse
 import json
 import os
+import datetime
 
 
 import ckan.plugins.toolkit as tk
@@ -25,20 +26,36 @@ def get_ckan_packages():
     """
     Get all packages from CKAN.
     """
-    dataservice = tk.get_action('package_show')(get_context, {'id': 'qspatial'})
-    packages = dataservice_helpers.datasets_available_as_list(dataservice)
-    for package in packages:
-        print(package)
-    breakpoint()
-    return packages
+    context = get_context()
+    dataservice = tk.get_action('package_show')(context, {'id': 'qspatial'})
+    return dataservice_helpers.datasets_available_as_list(dataservice)
 
 
 def convert_dates_for_package(package):
     """
     Convert dates to ISO format.
     """
-    if package.get('temporal_start'):
-        date = package['temporal_start']
+    context = get_context()
+    pkg_data = {}
+    try:
+        pkg = tk.get_action('package_show')(context, {'id': package})
+        pkg_data['id'] = pkg['id']
+        if pkg.get('temporal_start', None):
+            date = pkg['temporal_start']
+            if len(date) < 10:
+                date = date + '-01-01'
+            dt = datetime.datetime.strptime(date, '%Y-%m-%d')
+            pkg_data['temporal_start'] = dt.strftime('%Y-%m-%d')
+        if pkg.get('temporal_end', None):
+            date = pkg['temporal_end']
+            if len(date) < 10:
+                date = date + '-01-01'
+            dt = datetime.datetime.strptime(date, '%Y-%m-%d')
+            pkg_data['temporal_end'] = dt.strftime('%Y-%m-%d')
+        tk.get_action('package_patch')(context, pkg_data)
+    except tk.ObjectNotFound as e:
+        raise e
+    
         
 
 def main():
