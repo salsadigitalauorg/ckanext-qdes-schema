@@ -55,6 +55,13 @@ class QDESDCATProfile(RDFProfile):
 
 
     def graph_from_dataset(self, dataset_dict, dataset_ref):
+        if dataset_dict.get('type') == 'dataset':
+            self._dataset_graph(dataset_dict, dataset_ref)
+        elif dataset_dict.get('type') == 'dataservice':
+            self._dataservice_graph(dataset_dict, dataset_ref)
+
+
+    def _dataset_graph(self, dataset_dict, dataset_ref):
         g = self.g
 
         # Let's update the namespace here.
@@ -70,7 +77,6 @@ class QDESDCATProfile(RDFProfile):
             g.bind(prefix, namespace, override=override)
 
 
-        #  Lists
         items = [
             ('identifiers', DCTERMS.identifier, ['id'], Literal),
             ('classification', DCTERMS.type, None, URIRef),
@@ -259,31 +265,7 @@ class QDESDCATProfile(RDFProfile):
 
 
         # Related dataset
-        all_relationships = h.get_all_relationships(dataset_dict.get('id'))
-        if all_relationships:
-            values = toolkit.get_converter('json_or_string')(all_relationships)
-            if values and isinstance(values, list):
-                for value in values:
-                    relationship_node = BNode()
-                    g.add((relationship_node, RDF.type, DCAT.Relationship))
-
-                    relation = h.url_for('dataset.read', id=value.get('pkg_id'), _external=True) if value.get('pkg_id') else None
-                    relationship_type = value.get('type')
-                    role = constants.RELATIONSHIP_TYPE_URIS.get(relationship_type, None)
-
-                    if relationship_type == 'unspecified relationship':
-                        # Comment as dcterms:relation
-                        relation = value.get('comment')
-
-                    # dcterms:relation
-                    g.add((relationship_node, DCTERMS.relation, URIRef(relation)))
-
-                    # dcat:hadRole
-                    if role:
-                        g.add((relationship_node, DCAT.hadRole, URIRef(role)))
-
-                    # dcat:qualifiedRelation
-                    g.add((dataset_ref, DCAT.qualifiedRelation, relationship_node))
+        self._get_related_dataset_node(dataset_dict, dataset_ref)
 
 
         lineage_description = self._get_dataset_value(dataset_dict, 'lineage_description')
@@ -344,22 +326,8 @@ class QDESDCATProfile(RDFProfile):
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_creator', DCTERMS.creator, None, Literal)])
 
 
-        contact_other_party = self._get_dataset_value(dataset_dict, 'contact_other_party')
-        if contact_other_party:
-            values = toolkit.get_converter('json_or_string')(contact_other_party)
-            if values and isinstance(values, list):
-                for value in values:
-                    attribution_node = BNode()
-                    g.add((attribution_node, RDF.type, PROV.Attribution))
-
-                    # Field contact_other_party.the-party => prov:agent
-                    self._add_list_triple(attribution_node, PROV.agent, value.get('the-party'), Literal)
-
-                    # Field contact_other_party.nature-of-their-responsibility => dcat:hadRole
-                    self._add_list_triple(attribution_node, DCAT.hadRole, value.get('nature-of-their-responsibility'), URIRef)
-
-                    # prov:qualifiedAttribution a prov:Attribution
-                    g.add((dataset_ref, PROV.qualifiedAttribution, attribution_node))
+        # Field contact_other_party => prov:qualifiedAttribution
+        self._get_contact_other_party_node(dataset_dict, dataset_ref)
 
 
         # Field acknowledgements => qdcat:acknowledgments
@@ -484,3 +452,192 @@ class QDESDCATProfile(RDFProfile):
 
             # Field rights_statement => dcterms:rights
             self._add_list_triples_from_dict(resource_dict, distribution, [('rights_statement', DCTERMS.rights, None, Literal)])
+
+
+    def _dataservice_graph(self, dataset_dict, dataset_ref):
+        g = self.g
+
+        # Let's update the namespace here.
+        overridden_namespace = [
+            DCTERMS,  # DCT prefix need to be DCTERMS as per spec
+            GEO  # DCT prefix need to be DCTERMS as per spec
+        ]
+        for prefix, namespace in namespaces.items():
+            override = False
+            if namespace in overridden_namespace:
+                override = True
+
+            g.bind(prefix, namespace, override=override)
+
+
+        items = [
+            ('identifiers', DCTERMS.identifier, ['id'], Literal),
+            ('classification', DCTERMS.type, None, URIRef),
+        ]
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
+
+
+        # Field additional_info => rdfs:comment.
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('additional_info', RDFS.comment, None, Literal)])
+
+
+        # Field dataset_language => dcterms:language
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('dataset_language', DCTERMS.language, None, URIRef)])
+
+
+        # Field topic => dcat:theme
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('topic', DCAT.theme, None, URIRef)])
+
+
+        # Field tags => dcat:keyword
+        tags = dataset_dict.get('tags')
+        if tags:
+            for tag in tags:
+                g.add((dataset_ref, DCAT.keyword, Literal(tag.get('display_name'))))
+
+
+        # Field datasets_available => dcat:servesDataset
+        datasets_available = dataset_dict.get('datasets_available')
+        if datasets_available:
+            values = toolkit.get_converter('json_or_string')(datasets_available)
+            if values and isinstance(values, list):
+                for dataset_id in values:
+                    g.add((dataset_ref, DCAT.servesDataset, URIRef(h.url_for('dataset.read', id=dataset_id, _external=True))))
+
+
+        # Field standards => dcterms:conformsTo
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('standards', DCTERMS.conformsTo, None, URIRef)])
+
+
+        # Field endpoint_details => dcat:endpointDescription
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('endpoint_details', DCAT.endpointDescription, None, URIRef)])
+
+
+        # Field api_address => dcat:endpointURL
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('api_address', DCAT.endpointURL, None, URIRef)])
+
+
+        # Field service_uri => dcat:landingPage
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('service_uri', DCAT.landingPage, None, URIRef)])
+
+
+        # Field service_status => adms:status
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('service_status', ADMS.status, None, URIRef)])
+
+
+        # Field service_creation_date => dcterms:created
+        service_creation_date = self._get_dataset_value(dataset_dict, 'service_creation_date')
+        if service_creation_date:
+            g.add((dataset_ref, DCTERMS.created, Literal(service_creation_date, datatype=XSD.dateTime)))
+
+
+        # Field service_launch_date => dcterms:issued
+        service_launch_date = self._get_dataset_value(dataset_dict, 'service_launch_date')
+        if service_launch_date:
+            g.add((dataset_ref, DCTERMS.issued, Literal(service_launch_date, datatype=XSD.dateTime)))
+
+
+        # Field service_last_modified_date => dcterms:modified
+        service_last_modified_date = self._get_dataset_value(dataset_dict, 'service_last_modified_date')
+        if service_last_modified_date:
+            g.add((dataset_ref, DCTERMS.issued, Literal(service_last_modified_date, datatype=XSD.dateTime)))
+
+        # Related dataset
+        self._get_related_dataset_node(dataset_dict, dataset_ref)
+
+
+        # Field contact_point => dcat:contactPoint
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_point', DCAT.contactPoint, None, Literal)])
+
+
+        # Field contact_publisher => dcterms:publisher
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_publisher', DCTERMS.publisher, None, Literal)])
+
+
+        # Field contact_creator => dcterms:creator
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_creator', DCTERMS.creator, None, Literal)])
+
+
+        # Field contact_other_party => prov:qualifiedAttribution
+        self._get_contact_other_party_node(dataset_dict, dataset_ref)
+
+
+        # Field classification_and_access_restrictions => dcterms:accessRights
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('classification_and_access_restrictions', DCTERMS.accessRights, None, URIRef)])
+
+
+        # Field rights_statement => dcterms:rights
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('rights_statement', DCTERMS.rights, None, Literal)])
+
+
+        # Field license => dcterms:license
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('license', DCTERMS.license, None, URIRef)])
+
+
+        # Field specialized_license => odrl:hasPolicy
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('specialized_license', ODRL.hasPolicy, None, URIRef)])
+
+
+        # Field metadata_modified => qdcat:reviewed
+        metadata_review_date = self._get_dataset_value(dataset_dict, 'metadata_review_date')
+        if metadata_review_date:
+            g.add((dataset_ref, QDCAT.reviewed, Literal(metadata_review_date, datatype=XSD.dateTime)))
+
+
+        # Field url => dcterms:source
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('url', DCTERMS.source, None, URIRef)])
+
+
+    def _get_related_dataset_node(self, dataset_dict, dataset_ref):
+        g = self.g
+
+        all_relationships = h.get_all_relationships(dataset_dict.get('id'))
+        if all_relationships:
+            values = toolkit.get_converter('json_or_string')(all_relationships)
+            if values and isinstance(values, list):
+                for value in values:
+                    relation = h.url_for('dataset.read', id=value.get('pkg_id'), _external=True) if value.get(
+                        'pkg_id') else None
+                    relationship_type = value.get('type')
+                    role = constants.RELATIONSHIP_TYPE_URIS.get(relationship_type, None)
+
+                    if relationship_type == 'unspecified relationship':
+                        # Comment as dcterms:relation
+                        relation = value.get('comment')
+
+                    # dcat:qualifiedRelation
+                    if relation or role:
+                        relationship_node = BNode()
+                        g.add((relationship_node, RDF.type, DCAT.Relationship))
+
+                        # dcterms:relation
+                        if relation:
+                            g.add((relationship_node, DCTERMS.relation, URIRef(relation)))
+
+                        # dcat:hadRole
+                        if role:
+                            g.add((relationship_node, DCAT.hadRole, URIRef(role)))
+
+                        g.add((dataset_ref, DCAT.qualifiedRelation, relationship_node))
+
+
+    def _get_contact_other_party_node(self, dataset_dict, dataset_ref):
+        g = self.g
+
+        contact_other_party = self._get_dataset_value(dataset_dict, 'contact_other_party')
+        if contact_other_party:
+            values = toolkit.get_converter('json_or_string')(contact_other_party)
+            if values and isinstance(values, list):
+                for value in values:
+                    attribution_node = BNode()
+                    g.add((attribution_node, RDF.type, PROV.Attribution))
+
+                    # Field contact_other_party.the-party => prov:agent
+                    self._add_list_triple(attribution_node, PROV.agent, value.get('the-party'), Literal)
+
+                    # Field contact_other_party.nature-of-their-responsibility => dcat:hadRole
+                    self._add_list_triple(attribution_node, DCAT.hadRole, value.get('nature-of-their-responsibility'),
+                                          URIRef)
+
+                    # prov:qualifiedAttribution a prov:Attribution
+                    g.add((dataset_ref, PROV.qualifiedAttribution, attribution_node))
