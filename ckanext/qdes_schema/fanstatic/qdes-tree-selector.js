@@ -138,7 +138,7 @@
                         // If selected node is parent, collect all children quantity_kind.
                         // If selected node is not parent, collect current quantity_kind.
                         // If quantity_kind array is null, show all available option.
-                        // If quantity_kind array is not null, show only option that has the same quantiy_kind,
+                        // If quantity_kind array is not null, show only option that has the same quantity_kind,
                         // check the js variable for the option, and then re-render the dropdown.
                         if (isMultiGrp) {
                             var selectEl = $wrapperEl.find('select')
@@ -155,11 +155,9 @@
                                     });
                                 }
                             }
-                            if (data.node.children !== null) {
-                                data.node.children.forEach(function (item) {
-                                    getQuantityKinds(item)
-                                });
-                            }
+                            
+                            // Get all quantity kinds recursively.
+                            getQuantityKinds(data.node)
 
                             // Is dimensionless?
                             var isDimensionless = false
