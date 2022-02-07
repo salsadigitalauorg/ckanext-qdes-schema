@@ -27,9 +27,9 @@
            <th> Select </th>
            </tr>
            </thead>
+            <tbody>
               {% for publish_log in published_distributions.dataqld_dataset %}
-              <tbody>
-             
+                   
               <tr>
                 {% set ns = namespace() %}
                 {% for resource in pkg.resources %}
@@ -37,9 +37,10 @@
                     {% set ns.resource = resource %}
                   {% endif %}
                 {% endfor %}
+                {% set schema_resources = {"resource_id": publish_log.resource_id, "destination": publish_log.destination} %}
                  <td><label class="no-colon"> {{ h.get_distribution_naming(pkg, ns.resource) }}</label> </td>
                  <td><label class="no-colon"> {{ h.get_portal_naming(publish_log.destination) }} </label> </td>
-                 <td> <label class="no-colon"> <input class="resources" type="checkbox" name="schema_resources" value="{{ (publish_log.resource_id, publish_log.destination) }}"/> </label></td>
+                 <td> <label class="no-colon"> <input class="resources" type="checkbox" name="schema_resources" value="{{schema_resources}}"/> </label></td>
               </tr>
               </tbody>
               {% endfor %}
