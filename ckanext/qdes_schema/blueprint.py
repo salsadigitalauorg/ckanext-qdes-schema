@@ -232,11 +232,10 @@ def unpublish_external_dataset_resource(id):
     pkg = get_action('package_show')({}, {'id': id})
     unpublish_resources = []
     schemas = []
-    breakpoint()
     schema_resources = _jsonfy(data.get('schema_resources'))
     for res_schema in schema_resources:
         unpublish_resources.append(res_schema.get('resource_id'))
-        schemas.append(res_schema.get('destitnation'))
+        schemas.append(res_schema.get('destination'))
     # Create job.
     resource_to_unpublish = []
     for resource in pkg.get('resources', []):
