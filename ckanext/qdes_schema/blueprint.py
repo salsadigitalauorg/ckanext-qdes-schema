@@ -207,6 +207,16 @@ def datasets_schema_validation(id):
 
 def unpublish_external_dataset_resource(id):
     # Check the user has permission to clone the dataset
+
+    def _jsonfy(data):
+        json_data = []
+        if type(data) is str:
+            return [json.loads(data.replace('\'', '"'))]
+        else:
+            for d in data:
+                json_data.append(json.loads(d))
+            return json_data
+
     context = {
         'model': model,
         'user': c.user,
@@ -222,11 +232,11 @@ def unpublish_external_dataset_resource(id):
     pkg = get_action('package_show')({}, {'id': id})
     unpublish_resources = []
     schemas = []
-    schema_resources = data.get('schema_resources')
+    breakpoint()
+    schema_resources = _jsonfy(data.get('schema_resources'))
     for res_schema in schema_resources:
-        res_dict = json.loads(res_schema.replace('\'','"'))
-        unpublish_resources.append(res_dict.get('resource_id'))
-        schemas.append(res_dict.get('destitnation'))
+        unpublish_resources.append(res_schema.get('resource_id'))
+        schemas.append(res_schema.get('destitnation'))
     # Create job.
     resource_to_unpublish = []
     for resource in pkg.get('resources', []):

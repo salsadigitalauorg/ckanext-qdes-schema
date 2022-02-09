@@ -860,3 +860,6 @@ def has_display_group_required_fields(fields, display_group):
 
 def field_has_errors(field, errors):
     return field['field_name'] in errors
+
+def dictify(res_id, destination):
+    return json.dumps({'resource_id':res_id, 'destination':destination})

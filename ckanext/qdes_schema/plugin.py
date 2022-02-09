@@ -352,6 +352,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'has_display_group_required_fields': helpers.has_display_group_required_fields,
             'field_has_errors': helpers.field_has_errors,
             'convert_term_uri_to_label': indexing_helpers.convert_term_uri_to_label,
+            'dictify': helpers.dictify,
         }
 
     def get_multi_textarea_values(self, value):
