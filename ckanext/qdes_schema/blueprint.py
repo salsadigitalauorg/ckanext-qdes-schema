@@ -222,10 +222,11 @@ def unpublish_external_dataset_resource(id):
     pkg = get_action('package_show')({}, {'id': id})
     unpublish_resources = []
     schemas = []
-    for res_schema in data.get('schema_resources', []):
-        res, schema = eval(res_schema)
-        unpublish_resources.append(res)
-        schemas.append(schema)
+    schema_resources = data.get('schema_resources')
+    for res_schema in schema_resources:
+        res_dict = json.loads(res_schema.replace('\'','"'))
+        unpublish_resources.append(res_dict.get('resource_id'))
+        schemas.append(res_dict.get('destitnation'))
     # Create job.
     resource_to_unpublish = []
     for resource in pkg.get('resources', []):
