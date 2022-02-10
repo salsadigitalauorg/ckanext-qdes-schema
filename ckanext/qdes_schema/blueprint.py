@@ -197,7 +197,7 @@ def datasets_schema_validation(id):
 
     # Process unpublish status.
     unpublish_log_ids = request.params.get('unpublish', None)
-    if len(unpublish_log_ids) == 0:
+    if unpublish_log_ids is None:
         extra_vars['unpublish'] = None
     elif unpublish_log_ids:
         unpublished = False
