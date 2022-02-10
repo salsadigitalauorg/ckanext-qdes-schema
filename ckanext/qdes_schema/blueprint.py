@@ -196,11 +196,16 @@ def datasets_schema_validation(id):
     extra_vars['publish_activities'] = helpers.get_publish_activities(pkg)
 
     # Process unpublish status.
-    unpublish_log_id = request.params.get('unpublish', None)
-    if unpublish_log_id == "0":
-        extra_vars['unpublish'] = 0
-    elif unpublish_log_id:
-        extra_vars['unpublish'] = 1 if helpers.is_unpublish_pending(unpublish_log_id) else ''
+    unpublish_log_ids = request.params.get('unpublish', None)
+    if len(unpublish_log_ids) == 0:
+        extra_vars['unpublish'] = None
+    elif unpublish_log_ids:
+        unpublished = False
+        for unpublish_log_id in unpublish_log_ids:
+            unpublished = helpers.is_unpublish_pending(unpublish_log_id)
+            if not unpublished:
+                break
+        extra_vars['unpublish'] = 1 if unpublished else 0
 
     return render('package/publish_metadata.html', extra_vars=extra_vars)
 
@@ -243,12 +248,14 @@ def unpublish_external_dataset_resource(id):
             resource_to_unpublish.append(resource)
 
     # Add to publish log.
-    unpublish = 0
+    unpublished = []
     for res, schema in zip(resource_to_unpublish, schemas):
         unpublish = _unpublish_resource(res, pkg, schema)
-    
+        if unpublish != 0:
+            unpublished.append(unpublish)
+        
 
-    return h.redirect_to('/dataset/{}/publish?unpublish={}'.format(id, unpublish))
+    return h.redirect_to('/dataset/{}/publish?unpublish={}'.format(id, unpublished))
 
 def _unpublish_resource(resource, pkg, schema):
         unpublish = 0
