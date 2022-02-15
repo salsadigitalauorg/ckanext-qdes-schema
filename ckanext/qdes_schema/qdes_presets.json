@@ -12,6 +12,31 @@
       }
     },
     {
+      "preset_name": "controlled_vocabulary_tree_single",
+      "values": {
+        "display_snippet": "qdes_multi_select.html",
+        "choices_helper": "scheming_vocabulary_service_hierarchical",
+        "validators": "scheming_required"
+      }
+    },
+    {
+      "preset_name": "controlled_vocabulary_tree_multiple",
+      "values": {
+        "form_snippet": "qdes_tree.html",
+        "display_snippet": "qdes_multi_select.html",
+        "choices_helper": "scheming_vocabulary_service_hierarchical",
+        "validators": "scheming_required"
+      }
+    },
+    {
+      "preset_name": "controlled_vocabulary_tree_multi_group",
+      "values": {
+        "form_snippet": "qdes_tree_multi_group.html",
+        "display_snippet": "qdes_multi_group.html",
+        "validators": "ignore_missing qdes_validate_multi_groups"
+      }
+    },
+    {
       "preset_name": "controlled_vocabulary_single_select",
       "values": {
         "form_snippet": "qdes_select.html",
@@ -57,7 +82,7 @@
       "values": {
         "form_snippet": "qdes_duration.html",
         "display_snippet": "qdes_duration.html",
-        "validators": "ignore_missing qdes_iso_8601_durations"
+        "validators": "ignore_missing ignore_empty qdes_iso_8601_durations"
       }
     },
     {
@@ -89,26 +114,14 @@
       "preset_name": "related_resources_multi_group",
       "values": {
         "field_name": "related_resources",
-        "label": "Related resource",
+        "label": "Related dataset",
         "display_group": "related and lineage",
         "sub_heading": "related",
         "form_snippet": "qdes_multi_group.html",
         "display_snippet": "qdes_multi_group.html",
         "validators": "ignore_missing qdes_validate_related_resources",
+        "form_placeholder": "",
         "field_group": [
-          {
-            "field_name": "resource",
-            "label": "Resource",
-            "form_snippet": "text.html",
-            "form_attrs": {
-              "data-module": "qdes_autocomplete",
-              "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
-              "data-module-create-search-choice": true,
-              "data-module-key": "id",
-              "data-module-label": "title",
-              "class": "form-control"
-            }
-          },
           {
             "field_name": "relationship",
             "label": "Relationship",
@@ -118,6 +131,21 @@
               "class": "form-control"
             },
             "form_include_blank_choice": true
+          },
+          {
+            "field_name": "resource",
+            "label": "Related dataset",
+            "help_text": "Add a related resource when the nature of the relationship is specified",
+            "form_snippet": "text.html",
+            "form_placeholder": " ",
+            "form_attrs": {
+              "data-module": "qdes_autocomplete",
+              "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
+              "data-module-create-search-choice": true,
+              "data-module-key": "id",
+              "data-module-label": "title",
+              "class": "form-control"
+            }
           }
         ]
       }
@@ -148,6 +176,20 @@
           "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/{vocabularyServiceName}?incomplete=?",
           "data-module-key": "value",
           "data-module-label": "name"
+        }
+      }
+    },
+    {
+      "preset_name": "qdes_secure_vocab_service_multi_autocomplete",
+      "values": {
+        "form_snippet": "qdes_multi_text.html",
+        "display_snippet": "qdes_multi_text.html",
+        "form_attrs": {
+          "data-module": "qdes_autocomplete",
+          "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+          "data-module-key": "value",
+          "data-module-label": "name",
+          "data-module-minimum-input-length": 3
         }
       }
     },

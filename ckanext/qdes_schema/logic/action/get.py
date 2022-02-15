@@ -12,6 +12,7 @@ from pprint import pformat
 
 log = logging.getLogger(__name__)
 _check_access = toolkit.check_access
+h = toolkit.h
 
 
 def dataservice(context, name):
@@ -102,7 +103,7 @@ def build_versions(tree):
     versions = []
     for version in tree:
         try:
-            package_dict = get_action('package_show')({}, {'id': version.get('object')})
+            package_dict = get_action('package_show')({'ignore_auth': True}, {'id': version.get('object')})
             versions.append(package_dict)
         except Exception as e:
             log.error(str(e))
@@ -126,7 +127,7 @@ def all_successor_versions(context, id):
             return []
 
         # Load successor, this can be multiple items, let's use the index 0.
-        successor_version = list(item for item in relationships if item.get('type') == 'isReplacedBy')
+        successor_version = list(item for item in relationships if item.get('type') == 'Is Replaced By')
         if successor_version:
             return load_successor_versions([successor_version[0]] + data, successor_version[0].get('object'))
         else:
@@ -153,7 +154,7 @@ def all_predecessor_versions(context, id):
             return []
 
         # Load predecessor, this can be multiple items, let's use the index 0.
-        predecessor_version = list(item for item in relationships if item.get('type') == 'replaces')
+        predecessor_version = list(item for item in relationships if item.get('type') == 'Replaces')
         if predecessor_version:
             return load_predecessor_versions(data + [predecessor_version[0]], predecessor_version[0].get('object'))
         else:
@@ -253,7 +254,7 @@ def all_relationships(context, id):
     """
     query_select_type = query_select_type.format(id, query_type_case)
 
-    query_select = """SELECT {0}, pr.comment, pr.state, pkg.id, pkg.title, pe."value" AS dataset_creation_date
+    query_select = """SELECT {0}, pr.comment, pr.state, pkg.id, pkg.title, pe."value" AS dataset_creation_date, pkg.state
         FROM package_relationship pr
 
         LEFT JOIN package pkg 
@@ -280,13 +281,15 @@ def all_relationships(context, id):
         cursor.execute(query_select)
         rows = cursor.fetchall()
         for row in rows:
+            pkg_title = h.get_pkg_title(row[3])
             result.append({
                 'type': row[0] or None,
                 'comment': row[1] or None,
                 'state': row[2] or None,
                 'pkg_id': row[3] or None,
-                'pkg_title': row[4] or None,
+                'pkg_title': pkg_title,
                 'dataset_creation_date': row[5] or None,
+                'pkg_state': row[6] or None,
             })
     except (Exception, psycopg2.Error) as e:
         log.error(str(e))

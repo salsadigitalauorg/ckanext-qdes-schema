@@ -1,5 +1,7 @@
 {% ckan_extends %}
 
+{% set is_published_to_external = data.id and h.dataset_has_published_to_external_schema(data.id) %}
+
 {% block stages %}
   {% if dataset_type != 'dataservice' and form_style == 'new' %}
     {{ h.snippet('package/snippets/stages.html', stages=stage) }}
@@ -14,19 +16,15 @@
     {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris, is_edit=True %}
   {% endif %}
 
-  {% if h.ckan_version() > '2.9' %}
-    {% asset 'qdes_schema/repeater' %}
-    {% asset 'qdes_schema/repeating-fields' %}
-    {% asset 'qdes_schema/autocomplete' %}
-    {% asset 'qdes_schema/iso-8601-duration' %}
-    {% asset 'qdes_schema/style' %}
-  {% else %}
-    {% resource 'qdes_schema/jquery.repeater.js' %}
-    {% resource 'qdes_schema/repeating-fields.js' %}
-    {% resource 'qdes_schema/autocomplete.js' %}
-    {% resource 'qdes_schema/iso-8601-duration.js' %}
-    {% resource 'qdes_schema/style.css' %}
-  {% endif %}
+  {% asset 'qdes_schema/help-text' %}
+  {% asset 'qdes_schema/qdes-fancytree' %}
+  {% asset 'qdes_schema/repeater' %}
+  {% asset 'qdes_schema/repeating-fields' %}
+  {% asset 'qdes_schema/autocomplete' %}
+  {% asset 'qdes_schema/iso-8601-duration' %}
+  {% asset 'qdes_schema/input-date-helper' %}
+  {% asset 'qdes_schema/accordion' %}
+  {% asset 'qdes_schema/style' %}
 
   {%- if not dataset_type -%}
     <p>
@@ -36,10 +34,20 @@
   {%- endif -%}
   {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
 
+
+  {% if is_published_to_external %}
+    <div class="alert alert-info" role="alert">
+      This dataset and its distributions are publicly available and updates need to be manually published to all relevant data services via the Publish tab.
+      <br/><br/>
+      Please also ensure changes have gone through the required business review / approval process before updating.
+    </div>
+  {% endif %}
+
   {#
       "namespace" is only available in Jinja2 v 2.10+
       therefore this approach won't work in CKAN < 2.9
   #}
+  {%- set section_element_created = False -%}
   {%- set ns = namespace(display_group=None) -%}
   {%- for field in schema.dataset_fields -%}
     {% if field.recommended %}
@@ -47,15 +55,71 @@
     {% endif %}
 
     {%- if field.display_group is not none and field.display_group != ns.display_group -%}
-        {%- set ns.display_group = field.display_group -%}
-        {%- if ns.display_group not in ['general'] -%}
-            <h2>{{ field.display_group|capitalize }}</h2>
+      {%- if dataset_type == 'dataset' -%}
+        <!-- We need a way to close the HTML element once the display_group changes  -->
+        {%- if ns.display_group is not none and ns.display_group not in ['general'] -%}
+              </div>
+            </article>
         {%- endif -%}
+        {%- if field.display_group not in ['general'] -%}
+          {%- if section_element_created == False -%}
+            {%- set section_element_created = True -%}
+            <section class="qg-accordion qg-dark-accordion" aria-label="Accordion Label">
+          {%- endif -%}
+          {% set checked = "" %}
+          {% if errors %}
+            {% set checked = "checked" if h.field_has_errors(field, errors) %}      
+           {%endif %}
+            <article class="display-group-{{field.display_group}}" >
+              <input id="display-group-{{field.display_group}}" type="checkbox" name="tabs"
+                     aria-controls="display-group-{{field.display_group}}-content" aria-expanded="false"
+                     role="checkbox" tabindex="-1" {{checked}}>
+              <button class="acc-heading" type="button">
+                <label for="display-group-{{field.display_group}}" class="no-colon">
+                  <span class="title">{{field.display_group|capitalize}}</span>
+                  {%- if h.has_display_group_required_fields(schema.dataset_fields, field.display_group) -%}
+                    <i class="has-mandatory-fields fa fa-asterisk"></i>
+                  {%- endif -%}
+                  <span class="arrow"><i></i></span>
+                </label>
+              </button>
+              <div class="collapsing-section" id="display-group-{{field.display_group}}-content">
+        {%- endif -%}
+      {%- else -%}
+        {%- if field.display_group not in ['general'] -%}
+          <h2>{{ field.display_group|capitalize }}</h2>
+        {%- endif -%}
+      {%- endif -%}
+      {%- set ns.display_group = field.display_group -%}
     {%- endif -%}
 
     {%- if field.sub_heading is not none and field.sub_heading != ns.sub_heading -%}
         {%- set ns.sub_heading = field.sub_heading -%}
         <h3>{{ field.sub_heading|capitalize }}</h3>
+
+      {%- if field.sub_heading_info_text is not none and field.sub_heading_info_text != ns.sub_heading_info_text -%}
+        {%- set ns.sub_heading_info_text = field.sub_heading_info_text -%}
+        <div class="small">{{ h.render_markdown(field.sub_heading_info_text, allow_html=True) }}</div>
+      {%- endif -%}
+    {%- endif -%}
+
+    <!-- Render spatial input. -->
+    {%- if field.field_name == 'spatial_lower_left' -%}
+      {% asset 'ckanext-spatial/spatial_map_input_js' %}
+      {% asset 'ckanext-spatial/spatial_map_input_css' %}
+      {% set map_config = h.get_common_map_config() %}
+      {% do map_config.update({'padding': [2, 2]}) %}
+      <div id="spatial-map-input" data-module="spatial-map-input"
+           data-module-lower-left="#field-spatial_lower_left"
+           data-module-upper-right="#field-spatial_upper_right"
+           data-module-centroid="#field-spatial_centroid"
+           data-module-geometry="#field-spatial_geometry"
+           data-module-extent="{{ h.get_qld_bounding_box_config() }}"
+           data-module-max-bounds="{{ h.get_au_bounding_box_config() }}"
+           data-module-site_url="{{ h.dump_json(h.url('/', locale='default', qualified=true)) }}"
+           data-module-map_config="{{ h.dump_json(map_config) }}">
+        <div id="spatial-map-input-container"></div>
+      </div>
     {%- endif -%}
 
     {%- if field.form_snippet is not none -%}
@@ -63,6 +127,14 @@
         field=field, data=data, errors=errors, licenses=c.licenses,
         entity_type='dataset', object_type=dataset_type, invalid_uris=invalid_uris -%}
     {%- endif -%}
+    <!-- We need a way to close the HTML element for last field group so the action buttons etc are not included -->
+    {%- if dataset_type == 'dataset' and loop.last -%}
+          </div>
+        </article>
+      </section>
+    {%- endif -%}
+
+
   {%- endfor -%}
   {%- if 'resource_fields' not in schema -%}
     <!-- force controller to skip resource-editing step for this type -->
@@ -82,7 +154,13 @@
       {{ super() }}
     {% endblock %}
     {% block delete_button %}
-      {{ super() }}
+      {% if is_published_to_external %}
+        <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#delete-modal">
+          {{ _('Delete') }}
+        </button>
+      {% else %}
+        {{ super() }}
+      {% endif %}
     {% endblock %}
     {% block save_button %}
       {% if dataset_type == 'dataset' %}
@@ -109,4 +187,17 @@
       {%- endif -%}
     {% endblock %}
   </div>
+
+  {% if is_published_to_external %}
+    <div class="modal fade in" id="delete-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">WARNING : You are attempting to delete a dataset with distributions published on external systems. Please unpublish from external systems before deleting.</div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
 {% endblock %}

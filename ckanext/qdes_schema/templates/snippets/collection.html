@@ -13,14 +13,25 @@
     <h2>Collection</h2>
     <p>This dataset is part of the following collection:</p>
 
-    {% for parent in relationships.get('isPartOf') %}
-      {% set parent_pkg = h.get_package_dict(parent.pkg_id) %}
+    {% for parent in relationships.get('Is Part Of') %}
       <p>
         <span class="pill small">Collection</span>
-        <a href="{{ h.url_for('dataset_read', id=parent_pkg.id) }}">{{ parent_pkg.title if parent_pkg.title else parent_pkg.name }}</a>
-      </p>
-      <p>
-        {{ parent_pkg.notes|truncate(200) }}
+        {% if parent.pkg_id %}
+          {% set parent_pkg = h.get_package_dict(parent.pkg_id) %}
+          {% if parent_pkg %}
+              <a href="{{ h.url_for('dataset_read', id=parent_pkg.id) }}">
+                {{ parent.pkg_title }}
+              </a>
+            </p>
+            <p>
+              {{ parent_pkg.notes|truncate(200) }}
+          {% else %}
+            {{ h.get_collection_parent_title(parent.pkg_id) }}
+          {% endif %}
+        {% else %}
+          {# relationship must be an external URL #}
+          <a href="{{ parent.comment }}">{{ parent.comment }}</a>
+        {% endif %}
       </p>
     {% endfor %}
   </div>

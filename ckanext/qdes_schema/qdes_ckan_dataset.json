@@ -8,7 +8,7 @@
       "field_name": "title",
       "label": "Title",
       "preset": "title",
-      "form_placeholder": "eg. A descriptive title",
+      "form_placeholder": "A descriptive title of the dataset",
       "display_group": "general",
       "required": true,
       "validators": "scheming_required if_empty_same_as(name) unicode"
@@ -17,7 +17,6 @@
       "field_name": "name",
       "label": "URL",
       "preset": "dataset_slug",
-      "form_placeholder": "eg. my-dataset",
       "display_group": "general"
     },
     {
@@ -26,29 +25,18 @@
       "display_property": "dcterms:identifier",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "form_placeholder": "doi:10.25901/5e3ba30f141b7",
       "display_group": "general",
-      "validators": "ignore_missing qdes_uri_validator"
-    },
-    {
-      "field_name": "notes",
-      "label": "Description or abstract",
-      "form_snippet": "markdown.html",
-      "display_snippet": "markdown.html",
-      "form_placeholder": "eg. Some useful notes about the data",
-      "display_property": "dcterms:description",
-      "display_group": "description",
-      "required": true
+      "validators": "ignore_missing qdes_uri_validator",
+      "help_text": "Add any unique identifiers associated with the dataset. Input is a URI."
     },
     {
       "field_name": "classification",
       "label": "General classification of dataset type",
       "display_property": "dcterms:type",
-      "form_placeholder": "eg. 'image', 'map', 'section', 'gridded data', etc.",
       "display_group": "description",
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "classification",
-      "validators": "scheming_required",
+      "validators": "scheming_required qdes_validate_multi_scheming_choices",
       "required": true,
       "form_attrs": {
         "class": "form-control",
@@ -57,12 +45,23 @@
       "form_include_blank_choice": true
     },
     {
+      "field_name": "notes",
+      "label": "Description or abstract",
+      "form_snippet": "markdown.html",
+      "display_snippet": "markdown.html",
+      "form_placeholder": "Some useful notes about the data",
+      "display_property": "dcterms:description",
+      "display_group": "description",
+      "required": true,
+      "validators": "remove_whitespace scheming_required"
+    },
+    {
       "field_name": "purpose",
       "label": "Purpose",
       "form_snippet": "markdown.html",
       "display_snippet": "markdown.html",
       "display_property": "qdcat:purpose",
-      "form_placeholder": "This map provides supporting information for assessments under the Vegetation Management Act.",
+      "form_placeholder": "e.g. This map provides supporting information for assessments under the Vegetation Management Act",
       "display_group": "description"
     },
     {
@@ -71,32 +70,8 @@
       "form_snippet": "qdes_multi_markdown.html",
       "display_property": "rdfs:comment",
       "display_snippet": "qdes_multi_markdown.html",
-      "form_placeholder": "e.g. warnings",
+      "form_placeholder": "e.g. warnings etc",
       "display_group": "description"
-    },
-    {
-      "field_name": "metadata_review_date",
-      "label": "Metadata review date",
-      "preset": "qdes_metadata_review_date",
-      "display_group": "description"
-    },
-    {
-      "field_name": "metadata_contact_point",
-      "label": "Metadata point of contact",
-      "display_property": "dcat:contactPoint",
-      "preset": "qdes_secure_vocab_service_autocomplete",
-      "vocabulary_service_name": "point-of-contact",
-      "display_group": "description",
-      "form_include_blank_choice": true
-    },
-    {
-      "field_name": "url",
-      "label": "Source of record",
-      "form_placeholder": "http://example.com/dataset.json",
-      "display_property": "foaf:homepage",
-      "display_snippet": "link.html",
-      "display_group": "description",
-      "validators": "ignore_missing url_validator qdes_uri_validator"
     },
     {
       "field_name": "dataset_language",
@@ -117,21 +92,20 @@
       "label": "Topic or theme",
       "display_property": "dcat:theme",
       "display_group": "description",
-      "preset": "controlled_vocabulary_multi_select",
+      "preset": "controlled_vocabulary_tree_multiple",
       "vocabulary_service_name": "topic",
-      "validators": "scheming_required",
-      "form_attrs": {
-        "data-module": "qdes_autocomplete",
-        "data-module-title": "title"
-      },
+      "validators": "scheming_required qdes_validate_multi_scheming_choices",
       "required": true,
-      "form_include_blank_choice": true
+      "form_include_blank_choice": true,
+      "label_plural": "topic or themes",
+      "no_selected_term": "No topics or themes have been added. Please use the interface above to select a <strong>Topic or theme.</strong>",
+      "form_placeholder": "Select a topic or theme"
     },
     {
       "field_name": "tag_string",
       "label": "Keyword",
       "preset": "tag_string_autocomplete",
-      "form_placeholder": "eg. economy, mental health, government",
+      "form_placeholder": "e.g. Burdekin, imagery, government",
       "display_group": "description"
     },
     {
@@ -139,19 +113,18 @@
       "label": "Parameter",
       "display_property": "dcat:property",
       "display_group": "description",
-      "preset": "controlled_vocabulary_multi_group",
+      "preset": "controlled_vocabulary_tree_multi_group",
+      "label_plural": "parameters",
+      "no_selected_term": "No parameters have been added. Please use the interface above to select an <strong>Observed property</strong> and corresponding <strong>Unit of measure.</strong>",
+      "validators": "ignore_empty ignore_missing qdes_validate_multi_pair_vocab_vocab",
       "field_group": [
         {
           "field_name": "observed-property",
           "label": "Observed property",
-          "form_snippet": "select.html",
           "display_property": "qudt:hasQuantityKind",
+          "preset": "controlled_vocabulary_tree_single",
           "vocabulary_service_name": "observed-property",
-          "choices_helper": "scheming_vocabulary_service_choices",
-          "form_attrs": {
-            "data-module": "qdes_autocomplete",
-            "data-module-title": "title"
-          },
+          "choices_helper": "scheming_vocabulary_service_hierarchical",
           "form_include_blank_choice": true
         },
         {
@@ -174,28 +147,32 @@
       "label": "Temporal coverage start",
       "display_property": "dcat:startDate",
       "preset": "date",
-      "validators": "qdes_temporal_start_end_date",
+      "validators": "qdes_temporal_start_end_date isodate convert_to_json_if_date",
       "display_group": "temporal content",
-      "sub_heading": "temporal coverage"
+      "sub_heading": "temporal coverage",
+      "sub_heading_help_text": "The start and end date of the dataset",
+      "form_placeholder": "dd/mm/yyyy"
     },
     {
       "field_name": "temporal_end",
       "label": "Temporal coverage end",
       "display_property": "dcat:endDate",
       "preset": "date",
-      "validators": "qdes_temporal_start_end_date",
+      "validators": "qdes_temporal_start_end_date isodate convert_to_json_if_date",
       "display_group": "temporal content",
-      "sub_heading": "temporal coverage"
+      "sub_heading": "temporal coverage",
+      "form_placeholder": "dd/mm/yyyy"
     },
     {
       "field_name": "temporal_precision_spacing",
       "label": "Time precision or spacing",
       "preset": "iso_8601_durations",
-      "display_group": "temporal content"
+      "display_group": "temporal content",
+      "display_group_help_text": "Minimum time period resolvable in the dataset"
     },
     {
       "field_name": "temporal_resolution_range",
-      "label": "Temporal resolution range",
+      "label": "Temporal resolution",
       "display_group": "temporal content",
       "display_property": "tempqdcat:temporalRange",
       "preset": "controlled_vocabulary_single_select",
@@ -215,7 +192,9 @@
       },
       "display_property": "dcterms:spatial",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "sub_heading_info_text": "Some spatial coverage fields are recorded in GeoJSON format. Read more on <a href='https://itpqld.sharepoint.com/sites/DES/ST/SciComp/SitePages/QESDCat-Home.aspx'> how to create GeoJSON.</a>",
+      "help_text": "The geographical area covered by the dataset"
     },
     {
       "field_name": "spatial_lower_left",
@@ -224,7 +203,9 @@
       "validators": "ignore_missing qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "qdcat:lowerLeft",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "help_text": "Bounding box of spatial region covered by the dataset in GeoJSON",
+      "form_placeholder": "e.g. \n{     \"type\": \"Point\",     \"coordinates\": [100.0, 0.0]     }"
     },
     {
       "field_name": "spatial_upper_right",
@@ -233,7 +214,9 @@
       "validators": "ignore_missing qdes_spatial_points_pair qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "qdcat:upperRight",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "help_text": "Bounding box of spatial region covered by the dataset in GeoJSON",
+      "form_placeholder": "e.g. \n{     \"type\": \"Point\",     \"coordinates\": [101.0, 1.0]     }"
     },
     {
       "field_name": "spatial_centroid",
@@ -242,7 +225,9 @@
       "validators": "ignore_missing qdes_validate_geojson_point qdes_within_au_bounding_box",
       "display_property": "dcat:centroid",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "help_text": "Centroid of spatial region covered by the dataset in GeoJSON",
+      "form_placeholder": "e.g. \n{     \"type\": \"Point\",     \"coordinates\": [100.0, 0.0]     }"
     },
     {
       "field_name": "spatial_geometry",
@@ -251,21 +236,25 @@
       "validators": "ignore_missing qdes_validate_geojson_polygon",
       "display_property": "qdcat:asGeoJSON",
       "display_group": "spatial content",
-      "sub_heading": "spatial coverage"
+      "sub_heading": "spatial coverage",
+      "help_text": "Spatial region covered by the dataset as a polygon in GeoJSON",
+      "form_placeholder": "e.g.\n{\n     \"type\": \"Polygon\", \n     \"coordinates\": [\n          [ \n               [100.0, 0.0], \n               [101.0, 0.0], \n               [101.0, 1.0], \n               [100.0, 1.0], \n               [100.0, 0.0] \n           ] \n       ] \n }"
     },
     {
       "field_name": "spatial_content_resolution",
       "label": "Spatial resolution in meters",
-      "validators": "ignore_missing qdes_validate_decimal",
+      "validators": "ignore_missing qdes_validate_decimal_positive",
       "display_property": "dcat:spatialResolutionInMeters",
-      "display_group": "spatial content"
+      "display_group": "spatial content",
+      "help_text": "The minimum spatial separation resolvable in a dataset, measured in meters.",
+      "form_placeholder": "e.g. 50"
     },
     {
       "field_name": "spatial",
       "label": "Spatial",
       "preset": "json_object",
       "form_snippet": "qdes_hidden_json.html",
-      "validators": "ignore_missing qdes_validate_geojson_spatial",
+      "validators": "qdes_validate_geojson_spatial",
       "display_group": "spatial content"
     },
     {
@@ -312,7 +301,8 @@
       "validators": "ignore_missing qdes_uri_validator",
       "display_property": "dcterms:conformsTo",
       "display_group": "data quality",
-      "recommended": true
+      "recommended": true,
+      "form_placeholder": "e.g. Australian Land Use and Management Classification - Version 8"
     },
     {
       "field_name": "quality_measure",
@@ -320,7 +310,7 @@
       "display_group": "data quality",
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
-      "validators": "ignore_empty qdes_validate_multi_groups",
+      "validators": "ignore_empty qdes_validate_multi_groups qdes_validate_multi_pair_vocab_free_text",
       "field_group": [
         {
           "field_name": "measurement",
@@ -351,7 +341,7 @@
       "display_group": "data quality",
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
-      "validators": "ignore_empty qdes_validate_multi_groups",
+      "validators": "ignore_empty qdes_validate_multi_groups qdes_validate_multi_pair_vocab_free_text",
       "field_group": [
         {
           "field_name": "dimension",
@@ -381,12 +371,8 @@
     {
       "field_name": "series_or_collection",
       "label": "Series or collection",
-      "preset": "dataset_related_multi_text"
-    },
-    {
-      "field_name": "related_datasets",
-      "label": "Related dataset",
-      "preset": "dataset_related_multi_text"
+      "preset": "dataset_related_multi_text",
+      "form_placeholder": "Select a series or collection this dataset is part of"
     },
     {
       "preset": "related_resources_multi_group"
@@ -407,7 +393,8 @@
       "validators": "ignore_missing url_validator qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "prov:hadPlan",
-      "sub_heading": "lineage"
+      "sub_heading": "lineage",
+      "help_text": "Input is a URI"
     },
     {
       "field_name": "lineage_inputs",
@@ -417,7 +404,8 @@
       "validators": "ignore_missing qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "prov:used",
-      "sub_heading": "lineage"
+      "sub_heading": "lineage",
+      "help_text": "Input is a URI"
     },
     {
       "field_name": "lineage_sensor",
@@ -427,17 +415,25 @@
       "validators": "ignore_missing qdes_uri_validator",
       "display_group": "related and lineage",
       "display_property": "sosa:madeBySensor",
-      "sub_heading": "lineage"
+      "sub_heading": "lineage",
+      "help_text": "Input is a URI"
     },
     {
       "field_name": "lineage_responsible_party",
       "label": "Responsible party",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_creator",
+      "preset": "qdes_secure_vocab_service_multi_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
       "display_group": "related and lineage",
       "display_property": "prov:wasAssociatedWith",
       "sub_heading": "lineage",
+      "form_placeholder": " ",
       "form_attrs": {
+        "data-module": "qdes_autocomplete",
+        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
+        "data-module-key": "value",
+        "data-module-label": "name",
+        "data-module-minimum-input-length": 3,
+        "data-module-create-search-choice": true,
         "data-module-title": "title"
       }
     },
@@ -448,7 +444,7 @@
       "form_snippet": "qdes_multi_text.html",
       "validators": "ignore_missing qdes_uri_validator",
       "display_group": "related and lineage",
-      "sub_heading": "lineage"
+      "help_text": "A report or paper that cites this dataset. Input is a URI."
     },
     {
       "field_name": "contact_point",
@@ -456,8 +452,11 @@
       "display_property": "dcat:contactPoint",
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
-      "display_group": "contacts",
-      "required": true
+      "display_group": "contacts and responsibilities",
+      "required": true,
+      "validators": "scheming_required qdes_validate_point_of_contact",
+      "help_text": "A person or position to contact for more information about the dataset",
+      "form_placeholder": " "
     },
     {
       "field_name": "contact_publisher",
@@ -465,12 +464,13 @@
       "display_property": "dcterms:publisher",
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "contact_publisher",
-      "display_group": "contacts",
+      "display_group": "contacts and responsibilities",
       "required": true,
       "form_include_blank_choice": true,
       "form_attrs": {
         "data-module-title": "title"
-      }
+      },
+      "help_text": "Organization responsible for the dataset"
     },
     {
       "field_name": "contact_creator",
@@ -478,25 +478,28 @@
       "display_snippet": "text.html",
       "display_property": "dcterms:creator",
       "preset": "qdes_secure_vocab_service_autocomplete",
-      "vocabulary_service_name": "creator",
-      "display_group": "contacts",
+      "vocabulary_service_name": "point-of-contact",
+      "display_group": "contacts and responsibilities",
       "required": false,
+      "form_placeholder": " ",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
-        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
         "data-module-key": "value",
         "data-module-label": "name",
-        "data-module-minimum-input-length": 3,      
+        "data-module-minimum-input-length": 3,
         "data-module-create-search-choice": true,
         "data-module-title": "title"
-      }
+      },
+      "help_text": "Person, position, or organization who created the dataset"
     },
     {
       "field_name": "contact_other_party",
       "label": "Other responsible party",
       "display_property": "prov:qualifiedAttribution",
       "preset": "controlled_vocabulary_multi_group",
-      "display_group": "contacts",
+      "display_group": "contacts and responsibilities",
+      "validators": "ignore_empty qdes_validate_multi_groups qdes_validate_multi_pair_vocab_free_text",
       "field_group": [
         {
           "field_name": "the-party",
@@ -504,13 +507,14 @@
           "form_snippet": "text.html",
           "display_snippet": "qdes_secure_vocabulary_text.html",
           "display_property": "prov:agent",
-          "vocabulary_service_name": "the-party",
+          "vocabulary_service_name": "point-of-contact",
+          "form_placeholder": " ",
           "form_attrs": {
             "data-module": "qdes_autocomplete",
-            "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+            "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
             "data-module-key": "value",
             "data-module-label": "name",
-            "data-module-minimum-input-length": 3,      
+            "data-module-minimum-input-length": 3,
             "data-module-create-search-choice": true,
             "data-module-title": "title"
           }
@@ -534,7 +538,7 @@
       "field_name": "acknowledgements",
       "label": "Acknowledgements",
       "display_property": "qdcat:acknowledgements",
-      "display_group": "contacts",
+      "display_group": "contacts and responsibilities",
       "form_snippet": "textarea.html"
     },
     {
@@ -544,6 +548,7 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "publication_status",
       "display_group": "status",
+      "display_group_help_text": "Fields under status relate to the dataset",
       "required": true,
       "form_attrs": {
         "data-module-title": "title"
@@ -590,7 +595,7 @@
       "field_name": "classification_and_access_restrictions",
       "label": "Classification and access restrictions",
       "display_property": "dcterms:accessRights",
-      "display_group": "rights & licensing",
+      "display_group": "rights and licensing",
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "classification_and_access_restrictions",
       "form_attrs": {
@@ -598,24 +603,28 @@
         "data-module-title": "title"
       },
       "form_include_blank_choice": true,
-      "required": true
+      "required": true,
+      "validators": "scheming_required qdes_validate_multi_scheming_choices",
+      "help_text": "Security classification using the Queensland Government Information and Security Classification Framework",
+      "form_placeholder": "Select a classification and access restriction"
     },
     {
       "field_name": "rights_statement",
       "label": "Rights statement",
       "form_snippet": "textarea.html",
       "display_property": "dcterms:rights",
-      "display_group": "rights & licensing",
-      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
+      "display_group": "rights and licensing",
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>",
+      "form_placeholder": "© State of Queensland (Department of Environment and Science) 2021"
     },
     {
       "field_name": "license_id",
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "license",
-      "display_group": "rights & licensing",
-      "required": true,
+      "vocabulary_service_name": "dataset_license",
+      "display_group": "rights and licensing",
+      "recommended": true,
       "form_include_blank_choice": true,
       "form_attrs": {
         "data-module-title": "title"
@@ -627,32 +636,65 @@
       "form_snippet": "textarea.html",
       "display_property": "odrl:hasPolicy",
       "display_snippet": "qdes_text_url.html",
-      "display_group": "rights & licensing"
+      "display_group": "rights and licensing"
     },
     {
       "field_name": "landing_page",
       "label": "Web-page (landing page) for this dataset",
       "display_property": "dcat:landingPage",
       "display_group": "data access",
-      "validators": "ignore_missing url_validator qdes_uri_validator"
+      "validators": "ignore_missing url_validator qdes_uri_validator",
+      "help_text": "This landing page may have links to download the data"
+    },
+    {
+      "field_name": "metadata_review_date",
+      "label": "Metadata review date",
+      "preset": "qdes_metadata_review_date",
+      "display_group": "meta data life cycle"
+    },
+    {
+      "field_name": "metadata_contact_point",
+      "label": "Metadata point of contact",
+      "display_property": "dcat:contactPoint",
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
+      "display_group": "meta data life cycle",
+      "form_include_blank_choice": true,
+      "help_text": "Person or position responsible for the metadata record",
+      "form_placeholder": " "
+    },
+    {
+      "field_name": "url",
+      "label": "Source of record",
+      "form_placeholder": "http://example.com/dataset.json",
+      "display_property": "foaf:homepage",
+      "display_snippet": "link.html",
+      "display_group": "meta data life cycle",
+      "validators": "ignore_missing url_validator qdes_uri_validator",
+      "help_text": "If the metadata record was generated outside of the catalogue add the source where it originated from"
     },
     {
       "field_name": "owner_org",
       "label": "Organization",
-      "preset": "dataset_organization"
+      "preset": "dataset_organization",
+      "display_group": "meta data life cycle",
+      "form_placeholder": "Department of Environment and Science"
     },
     {
-      "field_name": "version",
-      "label": "Version",
-      "validators": "ignore_missing unicode package_version_validator",
-      "form_placeholder": "1.0"
+      "field_name": "state",
+      "label": "State",
+      "choices_helper": "get_state_list",
+      "preset": "select",
+      "form_snippet": "state_select.html",
+      "display_group": "meta data life cycle",
+      "form_restrict_choices_to": ["active", "deleted"]
     }
   ],
   "resource_fields": [
     {
       "field_name": "name",
       "label": "Title",
-      "form_placeholder": "eg. January 2011 Gold Prices",
+      "form_placeholder": "A descriptive title of the resource",
       "display_property": "dcterms:title"
     },
     {
@@ -661,22 +703,21 @@
       "display_property": "dcterms:conformsTo",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "ignore_missing qdes_uri_validator"
+      "validators": "ignore_missing qdes_uri_validator",
+      "help_text": "Indicates the schema, data-structure or vocabularies used by the resource"
     },
     {
       "field_name": "format",
       "label": "Primary format",
       "display_property": "dcterms:format",
-      "preset": "qdes_vocab_service_autocomplete",
+      "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "format",
       "required": true,
       "form_attrs": {
         "data-module": "qdes_autocomplete",
-        "data-module-source": "/ckan-admin/vocabulary-service/term-autocomplete/format?incomplete=?",
-        "data-module-key": "value",
-        "data-module-label": "name",
         "data-module-title": "title"
-      }
+      },
+      "form_include_blank_choice": true
     },
     {
       "field_name": "compression",
@@ -705,7 +746,7 @@
       "label": "Size",
       "display_property": "dcat:byteSize",
       "display_snippet": "qdes_byte_size.html",
-      "validators": "ignore_missing int_validator",
+      "validators": "ignore_missing qdes_validate_positive_integer",
       "form_placeholder": "Enter exact or approximate file size in bytes (integer)",
       "recommended": true
     },
@@ -715,7 +756,8 @@
       "display_property": "dcat:downloadURL",
       "display_snippet": "qdes_text_url.html",
       "validators": "ignore_missing url_validator qdes_uri_validator",
-      "recommended": true
+      "recommended": true,
+      "help_text": "URL to download a file directly"
     },
     {
       "field_name": "service_api_endpoint",
@@ -723,44 +765,49 @@
       "display_property": "dcterms:conformsTo",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
-      "validators": "ignore_missing qdes_uri_validator"
+      "validators": "ignore_missing qdes_uri_validator",
+      "help_text": "URL of a service from where data can be queried or downloaded"
     },
     {
       "field_name": "data_services",
-      "label": "Data service",
+      "label": "Data Service",
       "display_property": "dcat:accessService",
       "preset": "controlled_dataservice_multi_select",
+      "validators": "ignore_missing ignore_empty qdes_validate_data_service_is_exist",
       "form_attrs": {
         "data-module": "qdes_autocomplete"
-      }
+      },
+      "form_placeholder": ""
     },
     {
       "field_name": "description",
       "label": "Description",
       "form_snippet": "markdown.html",
       "display_snippet": "markdown.html",
-      "form_placeholder": "Some useful notes about the data",
+      "form_placeholder": "Some useful notes about the resource",
       "display_property": "dcterms:description"
     },
     {
       "field_name": "additional_info",
       "label": "Additional information",
       "form_snippet": "qdes_multi_markdown.html",
-      "display_snippet": "qdes_multi_markdown.html"
+      "display_snippet": "qdes_multi_markdown.html",
+      "form_placeholder": "e.g. warnings etc"
     },
     {
       "field_name": "rights_statement",
       "label": "Rights statement",
       "form_snippet": "textarea.html",
       "display_property": "dcterms:rights",
-      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>"
+      "default_value": "© State of Queensland (Department of Environment and Science) <current_year>",
+      "form_placeholder": "© State of Queensland (Department of Environment and Science) 2021"
     },
     {
       "field_name": "license",
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "license",
+      "vocabulary_service_name": "distribution_license",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-title": "title"

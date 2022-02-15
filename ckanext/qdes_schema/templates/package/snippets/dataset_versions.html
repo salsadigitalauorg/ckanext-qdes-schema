@@ -6,12 +6,13 @@
         <tr>
             <td>
                 <a href="{{ h.url_for('dataset.read', id=version.id) }}">
+                    {% set title = h.get_pkg_title(version.id, version) %}
                     {% if version.id == pkg.id %}
-                        <strong>{{ version.title }}</strong>
+                        <strong>{{ title }}</strong>
                     {% elif versions[0].id == version.id %}
-                        <strong>{{ version.title }} (Latest version)</strong>
+                        <strong>{{ title }} (Latest version)</strong>
                     {% else %}
-                        {{ version.title }}
+                        {{ title }}
                     {% endif %}
                 </a>
             </td>

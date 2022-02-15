@@ -4,6 +4,60 @@
 
 {% block admin_form %}
     {{ super() }}
+
+
+    <fieldset>
+        {% set options = h.qdes_dataservice_choices() %}
+        <legend>Associate external systems to data services:</legend>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>External system</th>
+              <th>Data Service</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>QSpatial</td>
+              <td>
+                <select name="ckanext.qdes_schema.publishing_portals.qspatial" class="form-control">
+                  <option value="">Select a Data service</option>
+
+                  {% for option in options %}
+                    <option value="{{ option.value }}" {{ 'selected="selected"' if data['ckanext.qdes_schema.publishing_portals.qspatial'] == option.value else '' }}>{{ option.label }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Data.QLD</td>
+              <td>
+                <select name="ckanext.qdes_schema.publishing_portals.opendata" class="form-control">
+                  <option value="">Select a Data service</option>
+
+                  {% for option in options %}
+                    <option value="{{ option.value }}" {{ 'selected="selected"' if data['ckanext.qdes_schema.publishing_portals.opendata'] == option.value else '' }}>{{ option.label }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>SIR</td>
+              <td>
+                <select name="ckanext.qdes_schema.publishing_portals.sir" class="form-control">
+                  <option value="">Select a Data service</option>
+
+                  {% for option in options %}
+                    <option value="{{ option.value }}" {{ 'selected="selected"' if data['ckanext.qdes_schema.publishing_portals.sir'] == option.value else '' }}>{{ option.label }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    </fieldset>
+
     {{ form.textarea(
         'ckanext.qdes_schema.au_bounding_box',
         id='field-ckanext.qdes_schema.au_bounding_box',
@@ -31,6 +85,11 @@
 
 {% block admin_form_help %}
     {{ super() }}
+    <p>
+        <strong>Publishing Portals:</strong>
+        <br/>Enters the CKAN UUID of data services available in the catalogue for publishing to<br/>
+    </p>
+
     <p>
         <strong>Australia Bounding Box/Default map coordinates:</strong><br/>Example:<br/>
         <pre>

@@ -4,7 +4,7 @@
     {% set errors = h.qdes_merge_invalid_uris_error(invalid_uris, field.field_name, errors) %}
 {% endif %}
 
-<div id="{{ field.field_name }}-repeater" class="repeating-field" data-field-type="input">
+<div id="{{ field.field_name }}-repeater" class="repeating-field qdes-multi-text" data-field-type="input">
 
     <div id="{{ 'field-' + field.field_name }}" data-repeater-list="{{ field.field_name }}">
 
@@ -21,7 +21,7 @@
                 {% endif %}
             {% endif %}
 
-            <div data-repeater-item class="row{{ ' recommended-field' if field.recommended else '' }}">
+            <div data-repeater-item class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
                 <div class="col-xs-11">
                     {%
                         call form.input(
@@ -31,7 +31,7 @@
                                 {
                                     "class": "form-control",
                                     "data-field-name": field.field_name, 
-                                    "data-placeholder":"Select a {0}".format(field.label),
+                                    "data-placeholder": h.scheming_language_text(field.form_placeholder),
                                     "data-module-id": data.get('id', ''),
                                     "data-module-type": g.controller,
                                     "data-module-vocabulary-service-name": field.vocabulary_service_name
@@ -41,17 +41,17 @@
                             error=errors[field.field_name]
                         )
                     %}
+                    {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
                     {% endcall %}
                 </div>
                 <div class="col-xs-1">
-                    <label class="invisible">&nbsp;</label>
                     <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
                 </div>
             </div>
         {% endfor %}
 
     </div>
-    <div class="row" align="center">
+    <div class="row form-group" align="center">
         <input data-repeater-create type="button" class="btn" value="+" />
     </div>
 </div>
@@ -66,9 +66,8 @@
         label=h.scheming_language_text(field.label),
         placeholder=h.scheming_language_text(field.form_placeholder),
         value=data[field.field_name],
-        classes=default_classes + visibility + ['anjay'],
+        classes=default_classes + visibility,
         is_required=h.scheming_field_required(field)
     )
 %}
-    {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
 {% endcall %}
