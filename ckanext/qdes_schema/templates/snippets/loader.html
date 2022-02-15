@@ -1,0 +1,11 @@
+{% set is_dataset_edit = True if g.controller == 'dataset' and g.action == 'edit' else False %}
+{% set is_dataservice_edit = True if g.controller == 'dataservice' and g.action == 'edit' else False %}
+{% set is_resource_edit = True if g.controller == 'resource' and g.action == 'edit' else False %}
+{% if is_dataset_edit or is_dataservice_edit or is_resource_edit %}
+  {% asset 'qdes_schema/spinner' %}
+  <div class="loader" role="status">
+    <div class="loader__spinner">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+{% endif %}
