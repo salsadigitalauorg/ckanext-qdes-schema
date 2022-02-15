@@ -18,7 +18,8 @@
       "label": "URL",
       "preset": "dataset_slug",
       "form_placeholder": "eg. my-dataset",
-      "display_group": "general"
+      "display_group": "general",
+      "required": true
     },
     {
       "field_name": "identifiers",
@@ -263,7 +264,7 @@
       "label": "Spatial",
       "preset": "json_object",
       "form_snippet": "qdes_hidden_json.html",
-      "validators": "ignore_missing qdes_validate_geojson_spatial",
+      "validators": "qdes_validate_geojson_spatial",
       "display_group": "spatial content",
       "sub_heading": "spatial coverage"
     },
@@ -383,11 +384,6 @@
       "preset": "dataset_related_multi_text"
     },
     {
-      "field_name": "related_datasets",
-      "label": "Related dataset",
-      "preset": "dataset_related_multi_text"
-    },
-    {
       "preset": "related_resources_multi_group",
       "validators": "ignore_missing"
     },
@@ -432,14 +428,10 @@
     {
       "field_name": "lineage_responsible_party",
       "label": "Responsible party",
-      "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "contact_creator",
       "display_group": "related and lineage",
       "display_property": "prov:wasAssociatedWith",
       "sub_heading": "lineage",
-      "form_attrs": {
-        "data-module-title": "title"
-      }
+      "validators": "ignore_missing"
     },
     {
       "field_name": "cited_in",
@@ -476,7 +468,7 @@
       "display_snippet": "text.html",
       "display_property": "dcterms:creator",
       "preset": "qdes_secure_vocab_service_autocomplete",
-      "vocabulary_service_name": "creator",
+      "vocabulary_service_name": "point-of-contact",
       "display_group": "contacts",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
@@ -501,7 +493,7 @@
           "form_snippet": "text.html",
           "display_snippet": "qdes_secure_vocabulary_text.html",
           "display_property": "prov:agent",
-          "vocabulary_service_name": "the-party",
+          "vocabulary_service_name": "point-of-contact",
           "form_attrs": {
             "data-module": "qdes_autocomplete",
             "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
@@ -610,7 +602,7 @@
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "license",
+      "vocabulary_service_name": "dataset_license",
       "display_group": "rights & licensing",
       "required": true,
       "form_include_blank_choice": true,
@@ -640,10 +632,11 @@
       "required": true
     },
     {
-      "field_name": "version",
-      "label": "Version",
-      "validators": "ignore_missing unicode package_version_validator",
-      "form_placeholder": "1.0"
+      "field_name": "state",
+      "label": "State",
+      "choices_helper": "get_state_list",
+      "preset": "select",
+      "form_snippet": "state_select.html"
     }
   ],
   "resource_fields": [
@@ -651,7 +644,8 @@
       "field_name": "name",
       "label": "Title",
       "form_placeholder": "eg. January 2011 Gold Prices",
-      "display_property": "dcterms:title"
+      "display_property": "dcterms:title",
+      "required": true
     },
     {
       "field_name": "schema_standards",
@@ -673,7 +667,8 @@
         "data-module-key": "value",
         "data-module-label": "name",
         "data-module-title": "title"
-      }
+      },
+      "required": true
     },
     {
       "field_name": "compression",
@@ -702,17 +697,16 @@
       "label": "Size",
       "display_property": "dcat:byteSize",
       "display_snippet": "qdes_byte_size.html",
-      "validators": "ignore_missing int_validator",
+      "validators": "int_validator",
       "form_placeholder": "Enter exact or approximate file size in bytes (integer)",
-      "recommended": true
+      "required": true
     },
     {
       "field_name": "url",
       "label": "Download address",
       "display_property": "dcat:downloadURL",
       "display_snippet": "qdes_text_url.html",
-      "validators": "ignore_missing url_validator qdes_uri_validator",
-      "recommended": true
+      "required": true
     },
     {
       "field_name": "service_api_endpoint",
@@ -737,7 +731,8 @@
       "form_snippet": "markdown.html",
       "display_snippet": "markdown.html",
       "form_placeholder": "Some useful notes about the data",
-      "display_property": "dcterms:description"
+      "display_property": "dcterms:description",
+      "required": true
     },
     {
       "field_name": "additional_info",
@@ -757,7 +752,7 @@
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "license",
+      "vocabulary_service_name": "distribution_license",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-title": "title"

@@ -1,5 +1,7 @@
 {% extends 'package/snippets/resource_form.html' %}
 
+{% set is_published_to_external = data.id and h.resource_has_published_to_external_schema(data.id) %}
+
 {% block errors %}
   {%- if errors -%}
     {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
@@ -18,17 +20,11 @@
     {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris, parent_entity=pkg_dict.type, is_edit=True %}
   {% endif %}
 
-  {% if h.ckan_version() > '2.9' %}
-    {% asset 'qdes_schema/repeater' %}
-    {% asset 'qdes_schema/repeating-fields' %}
-    {% asset 'qdes_schema/autocomplete' %}
-    {% asset 'qdes_schema/style' %}
-  {% else %}
-    {% resource 'qdes_schema/jquery.repeater.js' %}
-    {% resource 'qdes_schema/repeating-fields.js' %}
-    {% resource 'qdes_schema/autocomplete.js' %}
-    {% resource 'qdes_schema/style.css' %}
-  {% endif %}
+  {% asset 'qdes_schema/help-text' %}
+  {% asset 'qdes_schema/repeater' %}
+  {% asset 'qdes_schema/repeating-fields' %}
+  {% asset 'qdes_schema/autocomplete' %}
+  {% asset 'qdes_schema/style' %}
 
   {%- if not dataset_type -%}
     <p>
@@ -36,6 +32,18 @@
     might not be compatible with ckanext-scheming
     </p>
   {%- endif -%}
+
+
+  {% if is_published_to_external %}
+    <div class="alert alert-info" role="alert">
+      This distribution is publicly available and updates need to be manually published to all relevant data services via the Publish tab.
+      <br/>
+      <br/>
+      Please also ensure changes have gone through the required business review / approval process before updating.
+    </div>
+  {% endif %}
+
+
   {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
   {%- for field in schema.resource_fields -%}
     {% if field.recommended %}
@@ -55,4 +63,26 @@
 
 {% block previous_button %}
   <a class="btn btn-default" href="{{h.url_for(dataset_type ~ '.edit', id=pkg_name)}}">{{ _('Previous') }}</a>
+{% endblock %}
+
+{% block delete_button %}
+  {% if is_published_to_external %}
+    <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#delete-modal">
+      {{ _('Delete') }}
+    </button>
+
+    <div class="modal fade in" id="delete-modal" style="text-align: left">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">WARNING : You are attempting to delete a distribution that is published on an external system. Please unpublish from external systems before deleting.</div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- else -%}
+    {{ super() }}
+  {%- endif -%}
+
 {% endblock %}

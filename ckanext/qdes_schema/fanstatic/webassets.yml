@@ -56,3 +56,39 @@ temporal-coverage-style:
 style:
   contents:
     - style.css
+
+qdes-fancytree:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - jquery.fancytree-all-deps.min.js
+    - qdes-tree-selector.js
+
+help-text:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - help-text.js
+
+input-date-helper:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - input-date-helper.js
+
+accordion:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - accordion.js
+
+spinner:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - spinner.js

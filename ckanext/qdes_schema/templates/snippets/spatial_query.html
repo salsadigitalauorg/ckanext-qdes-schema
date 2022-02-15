@@ -15,7 +15,7 @@ e.g.
   <h2 class="module-heading">
     <i class="icon-medium icon-globe"></i>
     {{ _('Location') }}
-    <a id="dataset-map-clear" href="{{ h.remove_url_param(['ext_bbox','ext_prev_extent', 'ext_location']) }}" class="action">{{ _('Clear map') }}</a>
+    <a id="dataset-map-clear" href="{{ h.remove_url_param(['ext_bbox','ext_prev_extent', 'ext_location'], extras=extras) }}" class="action">{{ _('Clear map') }}</a>
   </h2>
   <ul class="unstyled nav nav-simple nav-facet nav-dataset-map" id="dataset-map-nav">
     <li class="nav-item">
