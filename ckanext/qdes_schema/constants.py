@@ -17,7 +17,7 @@ PUBLISH_LOG_UNPUBLISHED = 'Unpublished'
 PUBLISH_LOG_UNPUBLISH_ERROR = 'Unpublish error'
 PUBLISH_LOG_PUBLISH_ERROR = 'Publish error'
 PUBLISH_LOG_VALIDATION_ERROR = 'Validation error'
-PUBLISH_LOG_NEED_REPUBLISH = 'Need republishing'
+PUBLISH_LOG_NEED_REPUBLISH = 'Needs republishing'
 
 def get_key_name(schema):
     if schema == PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
