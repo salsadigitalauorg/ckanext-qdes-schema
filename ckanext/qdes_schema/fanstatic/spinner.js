@@ -1,13 +1,10 @@
-jQuery(document).ready(function () {
-
-    $(document).on('load', function () {
-        setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
+function removeLoader() {
+    var $loaderEl = jQuery('.loader');
+    $loaderEl.fadeOut(500, function () {
+        // fadeOut complete. Remove the loading div
+        $loaderEl.remove(); //makes page more lightweight
     });
-    
-    function removeLoader() {
-        $("#loader").fadeOut('slow', function () {
-            // fadeOut complete. Remove the loading div
-            $("#loader").remove(); //makes page more lightweight 
-        });
-    }
+}
+jQuery(window).on('load', function () {
+    removeLoader();
 });
