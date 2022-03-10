@@ -144,12 +144,12 @@
                             var selectEl = $wrapperEl.find('select')
                             var selectOptionVar = window[selectEl.attr('data-field-name').replace(/-/g, '')]
                             var quantityKinds = []
-                            var getQuantityKinds = function (item) {
+                            var getQuantityKinds = function (item, recursive = false) {
                                 if (item.data.quantity_kind !== null && quantityKinds.indexOf(item.data.quantity_kind) === -1) {
                                     quantityKinds.push(item.data.quantity_kind)
                                 }
 
-                                if (item.children !== null) {
+                                if (recursive && item.children !== null) {
                                     item.children.forEach(function (childItem) {
                                         getQuantityKinds(childItem)
                                     });
@@ -159,17 +159,9 @@
                             // Get all quantity kinds recursively.
                             getQuantityKinds(data.node)
 
-                            // Is dimensionless?
-                            var isDimensionless = false
-                            quantityKinds.forEach(function (item) {
-                                if (item.toLowerCase().includes('dimensionless') || item.toLowerCase().includes('dimensionlessratio')) {
-                                    isDimensionless = true
-                                }
-                            })
-
                             // Re-render the dropdown.
                             selectEl.html('')
-                            if (quantityKinds.length > 0 && !isDimensionless) {
+                            if (quantityKinds.length > 0) {
                                 // Collect all quantity kind options.
                                 selectEl.append('<option title="" value=""></option>')
                                 selectOptionVar.forEach(function (item) {
@@ -179,7 +171,7 @@
                                 })
                             }
                             else {
-                                // Render all if no quantity kinds or there is dimensionless.
+                                // Render all if no quantity kinds.
                                 selectOptionVar.forEach(function (item) {
                                     selectEl.append('<option title="' + item.title + '" value="' + item.value + '">' + item.text + '</option>')
                                 })
