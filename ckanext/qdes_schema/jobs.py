@@ -221,7 +221,8 @@ def _get_external_dataset(dataset_name, destination):
 def _delete_external_dataset(dataset_name, destination):
     detail = {}
     try:
-        package_dict = destination.action.package_delete(id=dataset_name)
+        deletion_reason = 'Dataset unpublished from {0}'.format(config.get('ckan.site_url'))
+        package_dict = destination.action.package_delete(id=dataset_name, deletion_reason=deletion_reason)
     except Exception as e:
         detail = str(e)
         package_dict = {}
@@ -343,6 +344,8 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
     qld_resource_dict = {}
     if is_update and has_recent_log:
         for resource in qld_resources_dict:
+            # Need to set all resources nature_of_change because they all get sent in package_update
+            resource['nature_of_change'] = 'edit-resource-with-no-new-data'
             if resource.get('id') == updated_external_resource_id:
                 qld_resource_dict = resource
 
@@ -359,6 +362,7 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
             # Manually map resource format
             qld_resource_dict[field] = helpers.map_formats(des_resource[0].get(field),
                                                            constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA)
+
     if is_update:
         new_resources = []
         if has_recent_log:
@@ -395,6 +399,8 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
     qld_pkg_dict['security_classification'] = 'PUBLIC'
     qld_pkg_dict['data_driven_application'] = 'NO'
     qld_pkg_dict['version'] = '1'
+    qld_pkg_dict['de_identified_data'] = 'NO'
+    qld_pkg_dict['next_update_due'] = None
 
     return qld_pkg_dict
 

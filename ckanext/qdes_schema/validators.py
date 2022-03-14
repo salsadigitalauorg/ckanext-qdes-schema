@@ -1,6 +1,7 @@
 import ckan.lib.navl.dictization_functions as df
 import ckan.plugins.toolkit as toolkit
 import ckan.logic as logic
+import ckanext.qdes.logic.helpers.report_helpers as qdes_report_helpers
 import geojson
 import json
 import logging
@@ -8,7 +9,7 @@ import re
 
 from datetime import datetime as dt
 from ckan.common import config
-from ckanext.scheming.validation import scheming_validator
+from ckanext.scheming.validation import scheming_validator, scheming_choices
 from pprint import pformat
 
 log = logging.getLogger(__name__)
@@ -135,12 +136,14 @@ def qdes_validate_decimal_positive(value):
 
     return value
 
+
 def qdes_validate_positive_integer(value, context):
     value = logic.validators.int_validator(value, context)
 
     if value is not None and value < 1:
         raise Invalid('Must be a positive integer')
     return value
+
 
 def qdes_validate_geojson(value):
     """
@@ -278,6 +281,7 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
     """
     has_error = False
 
+    # Validate the positive number of each value.
     try:
         result_period = re.split(
             "(-)?P(?:([-.,\d]+)Y)?(?:([-.,\d]+)M)?(?:([-.,\d]+)W)?(?:([-.,\d]+)D)?",
@@ -304,6 +308,12 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
 
     if has_error:
         raise toolkit.Invalid('The value in each field needs to be positive number.')
+
+    # Validate the pattern.
+    result_pattern = re.split("^P(?=\d+[YMWD])(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$", flattened_data[key])
+    if len(result_pattern) <= 1:
+        log.error(f'Invalid result_pattern: {result_pattern}')
+        raise toolkit.Invalid('Incorrect ISO 8601 duration format')
 
 
 @scheming_validator
@@ -457,13 +467,11 @@ def qdes_validate_related_resources(field, schema):
                             field_group_error['group'] = []
                         field_group_error['group'].append(toolkit._(duplicate_replaces_relationships))
 
-
                     if field_group_error:
                         field_group_errors.append(field_group_error)
                         field_group_error = {}
                     else:
                         field_group_errors.append({})
-
 
                 # Only the first array is displayed at top of the screen,
                 # so let's combine them.
@@ -500,7 +508,7 @@ def qdes_validate_related_dataset(value, context):
                 data = {'url': dataset_id}
                 errors = {'url': []}
                 toolkit.get_validator('url_validator')('url', data, errors, context)
-                if(len(errors['url']) > 0):
+                if (len(errors['url']) > 0):
                     raise toolkit.Invalid(errors['url'][0])
 
                 if not toolkit.get_validator('qdes_uri_validator')(dataset_id):
@@ -586,3 +594,84 @@ def qdes_validate_circular_replaces_relationships(current_dataset_id, relationsh
                     dataset_chain.append(relationship.object_package_id)
 
     return True
+
+
+def qdes_validate_point_of_contact(value, context):
+    """
+    Validates whether position id is in secure vocab or not.
+    """
+    point_of_contact = qdes_report_helpers.get_point_of_contact(context, value)
+    if not point_of_contact:
+        raise toolkit.Invalid('Position ID is not found in secure vocabulary.')
+
+    return value
+
+
+@scheming_validator
+def qdes_validate_multi_scheming_choices(field, schema):
+    """
+    Validates value against its choice_helper result.
+    """
+    scheming_choices_validator = scheming_choices(field, schema)
+
+    def validator(value, context):
+        values = toolkit.get_converter('json_or_string')(value)
+        if values and isinstance(values, list):
+            for val in values:
+                # Handle empty string.
+                if val is missing or not val:
+                    raise Invalid('unexpected choice "%s"' % val)
+
+                scheming_choices_validator(val)
+
+            return value
+
+        raise toolkit.Invalid('Invalid JSON.')
+
+    return validator
+
+
+@scheming_validator
+def qdes_validate_multi_pair_vocab_vocab(field, schema):
+    """
+    Validates the field group against its choice_helper result.
+    """
+    def validator(value, context):
+        values = toolkit.get_converter('json_or_string')(value)
+        if values and isinstance(values, list):
+            for val in values:
+                field_group = field.get('field_group', [])
+                for item in field_group:
+                    if 'choices_helper' in item:
+                        scheming_choices_validator = scheming_choices(item, schema)
+                        if item.get('field_name', None) is not None and len(val[item.get('field_name')]) > 0:
+                            scheming_choices_validator(val[item.get('field_name')])
+
+            return value
+
+        raise toolkit.Invalid('Invalid JSON.')
+
+    return validator
+
+
+@scheming_validator
+def qdes_validate_multi_pair_vocab_free_text(field, schema):
+    return qdes_validate_multi_pair_vocab_vocab(field, schema)
+
+
+def qdes_validate_data_service_is_exist(value, context):
+    """
+    Validates if the given package IDs are exist.
+    """
+    values = toolkit.get_converter('json_or_string')(value)
+    if values and isinstance(values, list):
+        for val in values:
+            model = context['model']
+            cls = model.Package
+            data = model.Package().Session.query(cls).filter(cls.type == 'dataservice').filter(cls.id == val).all()
+            if not data:
+                raise toolkit.Invalid('Data service is not found.')
+
+        return value
+
+    raise toolkit.Invalid('Invalid JSON.')
