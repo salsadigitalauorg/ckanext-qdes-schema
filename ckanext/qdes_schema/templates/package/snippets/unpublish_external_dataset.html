@@ -27,9 +27,8 @@
            <th> Select </th>
            </tr>
            </thead>
+            <tbody>
               {% for publish_log in published_distributions.dataqld_dataset %}
-              <tbody>
-             
               <tr>
                 {% set ns = namespace() %}
                 {% for resource in pkg.resources %}
@@ -37,9 +36,10 @@
                     {% set ns.resource = resource %}
                   {% endif %}
                 {% endfor %}
+                {% set schema_resources = h.dump_json({"resource_id":publish_log.resource_id, "destination": publish_log.destination}) %}
                  <td><label class="no-colon"> {{ h.get_distribution_naming(pkg, ns.resource) }}</label> </td>
                  <td><label class="no-colon"> {{ h.get_portal_naming(publish_log.destination) }} </label> </td>
-                 <td> <label class="no-colon"> <input class="resources" type="checkbox" name="schema_resources" value="{{ (publish_log.resource_id, publish_log.destination) }}"/> </label></td>
+                 <td> <label class="no-colon"> <input class="resources" id="{{publish_log.id}}" type="checkbox" name="schema_resources" value="{{schema_resources}}"/> </label></td>
               </tr>
               </tbody>
               {% endfor %}
@@ -54,11 +54,11 @@
       <div class="col-md-10">
         {% if unpublish == 1 %}
           <div class="alert alert-info" role="alert">
-            The distribution has been queued for unpublishing.
+            The distribution(s) has been queued for unpublishing.
           </div>
         {% elif unpublish == 0 %}
           <div class="alert alert-error" role="alert">
-            The distribution could not be queued for unpublishing.
+            The distribution(s) could not be queued for unpublishing.
           </div>
         {% endif %}
       </div>

@@ -1,12 +1,10 @@
-jQuery(document).ready(function () {
-    $('body').append('<div id="loadingDiv" class="spinner-border" role="status"> <span class="sr-only">Loading...</span></div>');
-    $(window).on('load', function () {
-        setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
+function removeLoader() {
+    var $loaderEl = jQuery('.loader');
+    $loaderEl.fadeOut(500, function () {
+        // fadeOut complete. Remove the loading div
+        $loaderEl.remove(); //makes page more lightweight
     });
-    function removeLoader() {
-        $("#loadingDiv").fadeOut(500, function () {
-            // fadeOut complete. Remove the loading div
-            $("#loadingDiv").remove(); //makes page more lightweight 
-        });
-    }
+}
+jQuery(window).on('load', function () {
+    removeLoader();
 });

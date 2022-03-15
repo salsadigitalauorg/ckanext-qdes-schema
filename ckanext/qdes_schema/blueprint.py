@@ -196,17 +196,32 @@ def datasets_schema_validation(id):
     extra_vars['publish_activities'] = helpers.get_publish_activities(pkg)
 
     # Process unpublish status.
-    unpublish_log_id = request.params.get('unpublish', None)
-    if unpublish_log_id == "0":
-        extra_vars['unpublish'] = 0
-    elif unpublish_log_id:
-        extra_vars['unpublish'] = 1 if helpers.is_unpublish_pending(unpublish_log_id) else ''
+    unpublish_log_ids = request.params.get('unpublish', None)
+    if unpublish_log_ids is None:
+        extra_vars['unpublish'] = None
+    elif unpublish_log_ids:
+        unpublished = False
+        for unpublish_log_id in unpublish_log_ids:
+            unpublished = helpers.is_unpublish_pending(unpublish_log_id)
+            if not unpublished:
+                break
+        extra_vars['unpublish'] = 1 if unpublished else 0
 
     return render('package/publish_metadata.html', extra_vars=extra_vars)
 
 
 def unpublish_external_dataset_resource(id):
     # Check the user has permission to clone the dataset
+
+    def _jsonfy(data):
+        json_data = []
+        if type(data) is str:
+            return [json.loads(data.replace('\'', '"'))]
+        else:
+            for d in data:
+                json_data.append(json.loads(d))
+            return json_data
+
     context = {
         'model': model,
         'user': c.user,
@@ -222,10 +237,10 @@ def unpublish_external_dataset_resource(id):
     pkg = get_action('package_show')({}, {'id': id})
     unpublish_resources = []
     schemas = []
-    for res_schema in data.get('schema_resources', []):
-        res, schema = eval(res_schema)
-        unpublish_resources.append(res)
-        schemas.append(schema)
+    schema_resources = _jsonfy(data.get('schema_resources'))
+    for res_schema in schema_resources:
+        unpublish_resources.append(res_schema.get('resource_id'))
+        schemas.append(res_schema.get('destination'))
     # Create job.
     resource_to_unpublish = []
     for resource in pkg.get('resources', []):
@@ -233,12 +248,14 @@ def unpublish_external_dataset_resource(id):
             resource_to_unpublish.append(resource)
 
     # Add to publish log.
-    unpublish = 0
+    unpublished = []
     for res, schema in zip(resource_to_unpublish, schemas):
         unpublish = _unpublish_resource(res, pkg, schema)
-    
+        if unpublish != 0:
+            unpublished.append(unpublish)
+        
 
-    return h.redirect_to('/dataset/{}/publish?unpublish={}'.format(id, unpublish))
+    return h.redirect_to('/dataset/{}/publish?unpublish={}'.format(id, unpublished))
 
 def _unpublish_resource(resource, pkg, schema):
         unpublish = 0

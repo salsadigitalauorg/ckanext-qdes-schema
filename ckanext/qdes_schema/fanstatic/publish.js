@@ -246,23 +246,25 @@
     });
 
     $(document).ready(function () {
-        var $unPublishEl = $('.unpublish-wrapper');
-        var $resourceEl = $unPublishEl.find('#unpublish-resource');
-        var $destinationEl = $unPublishEl.find('#schema-unpublish');
+        var $unPublishEl = $('#unpublish-wrapper-content');
+        var $resourceEl = $unPublishEl.find('schema-resources');
+        var $res_inputs = $('#unpublish-wrapper-content').find('input[type=checkbox]');
+        
         var $unPublishBtnEl = $unPublishEl.find('.unpublish');
         var toggleBtnOnOff = function () {
-            if ($resourceEl.val() !== 'none' && $destinationEl.val() !== 'none') {
-                $unPublishBtnEl.attr('disabled', false);
-            } else {
+            var $res_checks = $('#unpublish-wrapper-content').find('input[type=checkbox]:checked');
+            if ($res_checks.length == 0) {
                 $unPublishBtnEl.attr('disabled', true);
+            } else {
+                $unPublishBtnEl.attr('disabled', false);
             }
         }
 
-        $resourceEl.on('change', function () {
+        $res_inputs.on('change', function () {
             toggleBtnOnOff();
         });
 
-        $destinationEl.on('change', function () {
+        $res_inputs.on('change', function () {
             toggleBtnOnOff();
         });
 

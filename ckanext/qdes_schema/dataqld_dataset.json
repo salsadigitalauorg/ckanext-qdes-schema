@@ -468,7 +468,7 @@
       "display_snippet": "text.html",
       "display_property": "dcterms:creator",
       "preset": "qdes_secure_vocab_service_autocomplete",
-      "vocabulary_service_name": "creator",
+      "vocabulary_service_name": "point-of-contact",
       "display_group": "contacts",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
@@ -493,7 +493,7 @@
           "form_snippet": "text.html",
           "display_snippet": "qdes_secure_vocabulary_text.html",
           "display_property": "prov:agent",
-          "vocabulary_service_name": "the-party",
+          "vocabulary_service_name": "point-of-contact",
           "form_attrs": {
             "data-module": "qdes_autocomplete",
             "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
@@ -602,7 +602,7 @@
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "license",
+      "vocabulary_service_name": "dataset_license",
       "display_group": "rights & licensing",
       "required": true,
       "form_include_blank_choice": true,
@@ -752,7 +752,7 @@
       "label": "License",
       "display_property": "dcterms:license",
       "preset": "controlled_vocabulary_single_select",
-      "vocabulary_service_name": "license",
+      "vocabulary_service_name": "distribution_license",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
         "data-module-title": "title"
