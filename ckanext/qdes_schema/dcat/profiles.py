@@ -1,4 +1,5 @@
 import ckan.plugins.toolkit as toolkit
+import ckan.model as model
 import logging
 
 from rdflib import URIRef, BNode, Literal
@@ -9,6 +10,7 @@ from ckanext.relationships import constants
 
 
 h = toolkit.h
+get_action = toolkit.get_action
 log = logging.getLogger(__name__)
 
 
@@ -315,6 +317,7 @@ class QDESDCATProfile(RDFProfile):
 
 
         # Field contact_point => dcat:contactPoint
+        dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict['contact_point'])
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_point', DCAT.contactPoint, None, Literal)])
 
 
@@ -323,6 +326,7 @@ class QDESDCATProfile(RDFProfile):
 
 
         # Field contact_creator => dcterms:creator
+        dataset_dict['contact_creator'] = _get_point_of_contact_name(dataset_dict['contact_creator'])
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_creator', DCTERMS.creator, None, Literal)])
 
 
@@ -398,6 +402,7 @@ class QDESDCATProfile(RDFProfile):
 
 
         # Field metadata_contact_point => dcat:contactPoint
+        dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict['contact_point'])
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('metadata_contact_point', DCAT.contactPoint, None, Literal)])
 
 
@@ -456,7 +461,7 @@ class QDESDCATProfile(RDFProfile):
 
     def _dataservice_graph(self, dataset_dict, dataset_ref):
         g = self.g
-
+        
         # Let's update the namespace here.
         overridden_namespace = [
             DCTERMS,  # DCT prefix need to be DCTERMS as per spec
@@ -547,6 +552,7 @@ class QDESDCATProfile(RDFProfile):
 
 
         # Field contact_point => dcat:contactPoint
+        dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict['contact_point'])
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_point', DCAT.contactPoint, None, Literal)])
 
 
@@ -641,3 +647,29 @@ class QDESDCATProfile(RDFProfile):
 
                     # prov:qualifiedAttribution a prov:Attribution
                     g.add((dataset_ref, PROV.qualifiedAttribution, attribution_node))
+
+def _get_point_of_contact_name(contact_point):
+    # TODO: Need to load all secure vocabs as dict objects
+    # Load vocabualry service contact_point
+    context = {
+        u'model': model,
+        u'user': toolkit.g.user,
+        u'auth_user_obj': toolkit.g.userobj
+    }
+    if context.get('__auth_audit', None):
+        context['__auth_audit'].pop()
+
+    vocab_value = {}
+    if contact_point:
+        secure_vocabulary_record = get_action('get_secure_vocabulary_record')(
+            context, {'vocabulary_name': 'point-of-contact', 'query': contact_point})
+        if secure_vocabulary_record:
+            vocab_value = secure_vocabulary_record
+            contact_point = "{} - {}".format(vocab_value.get('Name'),vocab_value.get('Functional Position'))
+            return contact_point
+
+    return contact_point
+    
+    
+
+        
