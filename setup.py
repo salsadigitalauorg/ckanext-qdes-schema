@@ -85,6 +85,10 @@ setup(
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
+
+        [ckan.rdf.profiles]
+        qdes_dcat=ckanext.qdes_schema.dcat.profiles:QDESDCATProfile
+
     ''',
 
     # If you are changing from the default layout of your extension, you may
