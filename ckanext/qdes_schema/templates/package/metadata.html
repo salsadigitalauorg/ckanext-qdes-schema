@@ -21,11 +21,7 @@
       </a>
       <ul class="dropdown-menu">
         <li>
-          <a href="{{ h.url_for('qdes_schema.dataset_export', id=pkg_dict['id'], format='XML (ISO-19139)') }}"
-             target="_blank"><span>XML (ISO-19139)</span></a>
-        </li>
-        <li>
-          <a href="{{ h.url_for('dataset.read', id=pkg_dict['id']) }}.ttl"
+          <a href="{{ h.url_for('dataset.read', id=pkg_dict['name']) }}.ttl"
              target="_blank"><span>RDF / TTL</span></a>
         </li>
       </ul>
