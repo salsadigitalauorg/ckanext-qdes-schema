@@ -537,6 +537,7 @@ class QDESDCATProfile(RDFProfile):
 
 
         # Field service_launch_date => dcterms:issued
+        g.remove((dataset_ref, DCTERMS.issued, None))
         service_launch_date = self._get_dataset_value(dataset_dict, 'service_launch_date')
         if service_launch_date:
             g.add((dataset_ref, DCTERMS.issued, Literal(service_launch_date, datatype=XSD.dateTime)))
@@ -545,7 +546,7 @@ class QDESDCATProfile(RDFProfile):
         # Field service_last_modified_date => dcterms:modified
         service_last_modified_date = self._get_dataset_value(dataset_dict, 'service_last_modified_date')
         if service_last_modified_date:
-            g.add((dataset_ref, DCTERMS.issued, Literal(service_last_modified_date, datatype=XSD.dateTime)))
+            g.add((dataset_ref, DCTERMS.modified, Literal(service_last_modified_date, datatype=XSD.dateTime)))
 
         # Related dataset
         self._get_related_dataset_node(dataset_dict, dataset_ref)
