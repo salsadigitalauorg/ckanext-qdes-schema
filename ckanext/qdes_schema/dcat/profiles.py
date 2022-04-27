@@ -613,7 +613,7 @@ class QDESDCATProfile(RDFProfile):
 
                     if relationship_type == 'unspecified relationship':
                         # Comment as dcterms:relation
-                        relation = value.get('comment') or 'Comment'
+                        relation = value.get('comment')
 
                     # dcat:qualifiedRelation
                     if relation or role:
