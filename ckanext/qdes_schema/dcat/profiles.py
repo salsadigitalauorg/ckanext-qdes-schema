@@ -55,21 +55,19 @@ class QDESDCATProfile(RDFProfile):
     An RDF profile for the QDES DCAT recommendation for data portals
     '''
 
-
     def graph_from_dataset(self, dataset_dict, dataset_ref):
         if dataset_dict.get('type') == 'dataset':
             self._dataset_graph(dataset_dict, dataset_ref)
         elif dataset_dict.get('type') == 'dataservice':
             self._dataservice_graph(dataset_dict, dataset_ref)
 
-
     def _dataset_graph(self, dataset_dict, dataset_ref):
         g = self.g
 
         # Let's update the namespace here.
         overridden_namespace = [
-            DCTERMS, # DCT prefix need to be DCTERMS as per spec
-            GEO # DCT prefix need to be DCTERMS as per spec
+            DCTERMS,  # DCT prefix need to be DCTERMS as per spec
+            GEO  # DCT prefix need to be DCTERMS as per spec
         ]
         for prefix, namespace in namespaces.items():
             override = False
@@ -78,32 +76,26 @@ class QDESDCATProfile(RDFProfile):
 
             g.bind(prefix, namespace, override=override)
 
-
         items = [
             ('identifiers', DCTERMS.identifier, ['id'], Literal),
             ('classification', DCTERMS.type, None, URIRef),
         ]
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
 
-
         # Field purpose => qdcat:purpose
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('purpose', QDCAT.purpose, None, Literal)])
-
 
         # Field additional_info => rdfs:comment.
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('additional_info', RDFS.comment, None, Literal)])
 
-
         # Field dataset_language => dcterms:language
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('dataset_language', DCTERMS.language, None, URIRef)])
-
 
         # Field topic => dcat:theme
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('topic', DCAT.theme, None, URIRef)])
 
         # Field license => dcterms:license
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('license_id', DCTERMS.license, None, URIRef)])
-
 
         # Field group parameter => qudt:hasQuantity a qudt:Quantity
         # observed-property => qudt:hasQuantityKind
@@ -121,18 +113,14 @@ class QDESDCATProfile(RDFProfile):
 
                     g.add((dataset_ref, QUDT.hasQuantity, node))
 
-
         # Field temporal_precision_spacing => dcat:temporalResolution
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('temporal_precision_spacing', DCAT.temporalResolution, None, Literal)])
-
 
         # Field temporal_resolution_range => qdcat:temporalRange
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('temporal_resolution_range', QDCAT.temporalRange, None, URIRef)])
 
-
         # Field spatial_name_code => dcterms:spatial
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('spatial_name_code', DCTERMS.spatialName, None, URIRef)])
-
 
         spatial = self._get_dataset_value(dataset_dict, 'spatial')
         spatial_centroid = self._get_dataset_value(dataset_dict, 'spatial_centroid')
@@ -192,10 +180,8 @@ class QDESDCATProfile(RDFProfile):
 
                 g.add((dataset_ref, DCTERMS.spatial, bbox_node))
 
-
         # Field spatial_content_resolution => dcat:spatialResolutionInMeters
-        self._add_list_triples_from_dict(dataset_dict, dataset_ref,[('spatial_content_resolution', DCAT.spatialResolutionInMeters, None, Literal)])
-
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('spatial_content_resolution', DCAT.spatialResolutionInMeters, None, Literal)])
 
         spatial_representation = self._get_dataset_value(dataset_dict, 'spatial_representation')
         spatial_resolution = self._get_dataset_value(dataset_dict, 'spatial_resolution')
@@ -219,10 +205,8 @@ class QDESDCATProfile(RDFProfile):
             # qdcat:hasSpatialRepresentation
             g.add((dataset_ref, QDCAT.hasSpatialRepresentation, location_node))
 
-
         # Field conforms_to => dcterms:conformsTo
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('conforms_to', DCTERMS.conformsTo, None, Literal)])
-
 
         quality_measure = self._get_dataset_value(dataset_dict, 'quality_measure')
         if quality_measure:
@@ -240,7 +224,6 @@ class QDESDCATProfile(RDFProfile):
 
                     # dqv:hasQualityMeasurement a QualityMeasurement
                     g.add((dataset_ref, DQV.hasQualityMeasurement, quality_measurement_node))
-
 
         quality_description = self._get_dataset_value(dataset_dict, 'quality_description')
         if quality_description:
@@ -268,10 +251,8 @@ class QDESDCATProfile(RDFProfile):
                     # Is Part Of.
                     g.add((dataset_ref, DCTERMS.isPartOf, URIRef(h.url_for('dataset.read', id=dataset.get('pkg_id'), _external=True))))
 
-
         # Related dataset
         self._get_related_dataset_node(dataset_dict, dataset_ref)
-
 
         lineage_description = self._get_dataset_value(dataset_dict, 'lineage_description')
         lineage_plan = self._get_dataset_value(dataset_dict, 'lineage_plan')
@@ -314,42 +295,33 @@ class QDESDCATProfile(RDFProfile):
             # prov:wasGeneratedBy as prov:Activity
             g.add((dataset_ref, PROV.wasGeneratedBy, activity_node))
 
-
         # Field cited_in => dcterms:isReferencedBy
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('cited_in', DCTERMS.isReferencedBy, None, URIRef)])
-
 
         # Field contact_point => dcat:contactPoint
         dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict['contact_point'])
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_point', DCAT.contactPoint, None, Literal)])
 
-
         # Field contact_publisher => dcterms:publisher
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_publisher', DCTERMS.publisher, None, URIRef)])
-
 
         # Field contact_creator => dcterms:creator
         dataset_dict['contact_creator'] = _get_point_of_contact_name(dataset_dict['contact_creator'])
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_creator', DCTERMS.creator, None, Literal)])
 
-
         # Field contact_other_party => prov:qualifiedAttribution
         self._get_contact_other_party_node(dataset_dict, dataset_ref)
-
 
         # Field acknowledgements => qdcat:acknowledgments
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('acknowledgements', QDCATS.acknowledgments, None, Literal)])
 
-
         # Field publication_status => adms:status
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('publication_status', ADMS.status, None, URIRef)])
-
 
         # Field dataset_creation_date => dcterms:created
         dataset_creation_date = self._get_dataset_value(dataset_dict, 'dataset_creation_date')
         if dataset_creation_date:
             g.add((dataset_ref, DCTERMS.created, Literal(dataset_creation_date, datatype=XSD.dateTime)))
-
 
         # Field dataset_release_date => dcterms:issued
         g.remove((dataset_ref, DCTERMS.issued, None))
@@ -357,61 +329,49 @@ class QDESDCATProfile(RDFProfile):
         if dataset_release_date:
             g.add((dataset_ref, DCTERMS.issued, Literal(dataset_release_date, datatype=XSD.dateTime)))
 
-
         # Field dataset_last_modified_date => dcterms:modified
         g.remove((dataset_ref, DCTERMS.modified, None))
         dataset_last_modified_date = self._get_dataset_value(dataset_dict, 'dataset_last_modified_date')
         if dataset_last_modified_date:
             g.add((dataset_ref, DCTERMS.modified, Literal(dataset_last_modified_date, datatype=XSD.dateTime)))
 
-
         # Field update_schedule => dcterms:accrualPeriodicity
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('update_schedule', DCTERMS.accrualPeriodicity, None, URIRef)])
-
 
         # Field classification_and_access_restrictions => dcterms:accessRights
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('classification_and_access_restrictions', DCTERMS.accessRights, None, URIRef)])
 
-
         # Field rights_statement => dcterms:rights
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('rights_statement', DCTERMS.rights, None, Literal)])
-
 
         # Field specialized_license => odrl:hasPolicy
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('specialized_license', ODRL.hasPolicy, None, Literal)])
 
-
         # Field landing_page => dcat:landingPage
         g.remove((dataset_ref, DCAT.landingPage, None))
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('landing_page', DCAT.landingPage, None, URIRef)])
-
 
         # Field metadata_created => DCTERMS.issued
         metadata_created = self._get_dataset_value(dataset_dict, 'metadata_created')
         if metadata_created:
             g.add((dataset_ref, DCTERMS.issued, Literal(metadata_created, datatype=XSD.dateTime)))
 
-
         # Field metadata_modified => DCTERMS.modified
         metadata_modified = self._get_dataset_value(dataset_dict, 'metadata_modified')
         if metadata_modified:
             g.add((dataset_ref, DCTERMS.modified, Literal(metadata_modified, datatype=XSD.dateTime)))
-
 
         # Field metadata_modified => qdcat:reviewed
         metadata_review_date = self._get_dataset_value(dataset_dict, 'metadata_review_date')
         if metadata_review_date:
             g.add((dataset_ref, QDCAT.reviewed, Literal(metadata_review_date, datatype=XSD.dateTime)))
 
-
         # Field metadata_contact_point => dcat:contactPoint
         dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict['contact_point'])
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('metadata_contact_point', DCAT.contactPoint, None, Literal)])
 
-
         # Field url => dcterms:source
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('url', DCTERMS.source, None, URIRef)])
-
 
         # Distributions/resources
         for resource_dict in dataset_dict.get('resources', []):
@@ -420,26 +380,20 @@ class QDESDCATProfile(RDFProfile):
             # Field schema_standards => dcterms:conformsTo
             self._add_list_triples_from_dict(resource_dict, distribution, [('schema_standards', DCTERMS.conformsTo, None, URIRef)])
 
-
             # Field compression => dcat:compressFormat
             self._add_list_triples_from_dict(resource_dict, distribution, [('compression', DCAT.compressFormat, None, URIRef)])
-
 
             # Field packaging => dcat:packageFormat
             self._add_list_triples_from_dict(resource_dict, distribution, [('packaging', DCAT.packageFormat, None, URIRef)])
 
-
             # Field size => dcat:byteSize
             self._add_list_triples_from_dict(resource_dict, distribution, [('size', DCAT.packageFormat, None, Literal)])
-
 
             # Field url => dcat:downloadURL
             self._add_list_triples_from_dict(resource_dict, distribution, [('url', DCAT.downloadURL, None, Literal)])
 
-
             # Field service_api_endpoint => dcat:accessURL
             self._add_list_triples_from_dict(resource_dict, distribution, [('service_api_endpoint', DCAT.accessURL, None, Literal)])
-
 
             # Field data_services => dcat:accessService
             data_services = self._get_dataset_value(resource_dict, 'data_services')
@@ -449,22 +403,18 @@ class QDESDCATProfile(RDFProfile):
                     for dataset in values:
                         g.add((distribution, DCAT.accessService, URIRef(h.url_for('dataset.read', id=dataset, _external=True))))
 
-
             # Field description => dcterms:description
             self._add_list_triples_from_dict(resource_dict, distribution, [('description', DCTERMS.description, None, Literal)])
-
 
             # Field additional_info => rdfs:comment
             self._add_list_triples_from_dict(resource_dict, distribution, [('additional_info', RDFS.comment, None, Literal)])
 
-
             # Field rights_statement => dcterms:rights
             self._add_list_triples_from_dict(resource_dict, distribution, [('rights_statement', DCTERMS.rights, None, Literal)])
 
-
     def _dataservice_graph(self, dataset_dict, dataset_ref):
         g = self.g
-        
+
         # Let's update the namespace here.
         overridden_namespace = [
             DCTERMS,  # DCT prefix need to be DCTERMS as per spec
@@ -477,32 +427,26 @@ class QDESDCATProfile(RDFProfile):
 
             g.bind(prefix, namespace, override=override)
 
-
         items = [
             ('identifiers', DCTERMS.identifier, ['id'], Literal),
             ('classification', DCTERMS.type, None, URIRef),
         ]
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
 
-
         # Field additional_info => rdfs:comment.
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('additional_info', RDFS.comment, None, Literal)])
-
 
         # Field dataset_language => dcterms:language
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('dataset_language', DCTERMS.language, None, URIRef)])
 
-
         # Field topic => dcat:theme
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('topic', DCAT.theme, None, URIRef)])
-
 
         # Field tags => dcat:keyword
         tags = dataset_dict.get('tags')
         if tags:
             for tag in tags:
                 g.add((dataset_ref, DCAT.keyword, Literal(tag.get('display_name'))))
-
 
         # Field datasets_available => dcat:servesDataset
         datasets_available = dataset_dict.get('datasets_available')
@@ -512,39 +456,31 @@ class QDESDCATProfile(RDFProfile):
                 for dataset_id in values:
                     g.add((dataset_ref, DCAT.servesDataset, URIRef(h.url_for('dataset.read', id=dataset_id, _external=True))))
 
-
         # Field standards => dcterms:conformsTo
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('standards', DCTERMS.conformsTo, None, URIRef)])
-
 
         # Field endpoint_details => dcat:endpointDescription
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('endpoint_details', DCAT.endpointDescription, None, URIRef)])
 
-
         # Field api_address => dcat:endpointURL
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('api_address', DCAT.endpointURL, None, URIRef)])
-
 
         # Field service_uri => dcat:landingPage
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('service_uri', DCAT.landingPage, None, URIRef)])
 
-
         # Field service_status => adms:status
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('service_status', ADMS.status, None, URIRef)])
-
 
         # Field service_creation_date => dcterms:created
         service_creation_date = self._get_dataset_value(dataset_dict, 'service_creation_date')
         if service_creation_date:
             g.add((dataset_ref, DCTERMS.created, Literal(service_creation_date, datatype=XSD.dateTime)))
 
-
         # Field service_launch_date => dcterms:issued
         g.remove((dataset_ref, DCTERMS.issued, None))
         service_launch_date = self._get_dataset_value(dataset_dict, 'service_launch_date')
         if service_launch_date:
             g.add((dataset_ref, DCTERMS.issued, Literal(service_launch_date, datatype=XSD.dateTime)))
-
 
         # Field service_last_modified_date => dcterms:modified
         service_last_modified_date = self._get_dataset_value(dataset_dict, 'service_last_modified_date')
@@ -554,49 +490,38 @@ class QDESDCATProfile(RDFProfile):
         # Related dataset
         self._get_related_dataset_node(dataset_dict, dataset_ref)
 
-
         # Field contact_point => dcat:contactPoint
         dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict['contact_point'])
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_point', DCAT.contactPoint, None, Literal)])
 
-
         # Field contact_publisher => dcterms:publisher
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_publisher', DCTERMS.publisher, None, Literal)])
-
 
         # Field contact_creator => dcterms:creator
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_creator', DCTERMS.creator, None, Literal)])
 
-
         # Field contact_other_party => prov:qualifiedAttribution
         self._get_contact_other_party_node(dataset_dict, dataset_ref)
-
 
         # Field classification_and_access_restrictions => dcterms:accessRights
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('classification_and_access_restrictions', DCTERMS.accessRights, None, URIRef)])
 
-
         # Field rights_statement => dcterms:rights
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('rights_statement', DCTERMS.rights, None, Literal)])
-
 
         # Field license => dcterms:license
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('license', DCTERMS.license, None, URIRef)])
 
-
         # Field specialized_license => odrl:hasPolicy
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('specialized_license', ODRL.hasPolicy, None, URIRef)])
-
 
         # Field metadata_modified => qdcat:reviewed
         metadata_review_date = self._get_dataset_value(dataset_dict, 'metadata_review_date')
         if metadata_review_date:
             g.add((dataset_ref, QDCAT.reviewed, Literal(metadata_review_date, datatype=XSD.dateTime)))
 
-
         # Field url => dcterms:source
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('url', DCTERMS.source, None, URIRef)])
-
 
     def _get_related_dataset_node(self, dataset_dict, dataset_ref):
         g = self.g
@@ -628,7 +553,6 @@ class QDESDCATProfile(RDFProfile):
 
                         g.add((dataset_ref, DCAT.qualifiedRelation, relationship_node))
 
-
     def _get_contact_other_party_node(self, dataset_dict, dataset_ref):
         g = self.g
 
@@ -650,6 +574,7 @@ class QDESDCATProfile(RDFProfile):
                     # prov:qualifiedAttribution a prov:Attribution
                     g.add((dataset_ref, PROV.qualifiedAttribution, attribution_node))
 
+
 def _get_point_of_contact_name(contact_point):
     # TODO: Need to load all secure vocabs as dict objects
     # Load vocabualry service contact_point
@@ -667,11 +592,7 @@ def _get_point_of_contact_name(contact_point):
             context, {'vocabulary_name': 'point-of-contact', 'query': contact_point})
         if secure_vocabulary_record:
             vocab_value = secure_vocabulary_record
-            contact_point = "{} - {}".format(vocab_value.get('Name'),vocab_value.get('Functional Position'))
+            contact_point = "{} - {}".format(vocab_value.get('Name'), vocab_value.get('Functional Position'))
             return contact_point
 
     return contact_point
-    
-    
-
-        
