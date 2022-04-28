@@ -251,7 +251,6 @@ class QDESDCATProfile(RDFProfile):
                     g.add((quality_annotation_node, RDF.type, DQV.QualityAnnotation))
 
                     # Field quality_description.dimension => dqv:inDimension
-                    breakpoint()
                     self._add_list_triple(quality_annotation_node, DQV.inDimension, value.get('dimension'), URIRef)
 
                     # Field quality_description.value => oa:bodyValue
@@ -606,14 +605,10 @@ class QDESDCATProfile(RDFProfile):
             values = toolkit.get_converter('json_or_string')(all_relationships)
             if values and isinstance(values, list):
                 for value in values:
-                    relation = h.url_for('dataset.read', id=value.get('pkg_id'), _external=True) if value.get(
+                    relation = value.get('comment') or h.url_for('dataset.read', id=value.get('pkg_id'), _external=True) if value.get(
                         'pkg_id') else None
                     relationship_type = value.get('type')
                     role = constants.RELATIONSHIP_TYPE_URIS.get(relationship_type, None)
-
-                    if relationship_type == 'unspecified relationship':
-                        # Comment as dcterms:relation
-                        relation = value.get('comment')
 
                     # dcat:qualifiedRelation
                     if relation or role:
