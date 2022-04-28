@@ -101,6 +101,9 @@ class QDESDCATProfile(RDFProfile):
         # Field topic => dcat:theme
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('topic', DCAT.theme, None, URIRef)])
 
+        # Field license => dcterms:license
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('license_id', DCTERMS.license, None, URIRef)])
+
 
         # Field group parameter => qudt:hasQuantity a qudt:Quantity
         # observed-property => qudt:hasQuantityKind
@@ -248,7 +251,7 @@ class QDESDCATProfile(RDFProfile):
                     g.add((quality_annotation_node, RDF.type, DQV.QualityAnnotation))
 
                     # Field quality_description.dimension => dqv:inDimension
-                    self._add_list_triple(quality_annotation_node, DQV.inDimension, value.get('measurement'), URIRef)
+                    self._add_list_triple(quality_annotation_node, DQV.inDimension, value.get('dimension'), URIRef)
 
                     # Field quality_description.value => oa:bodyValue
                     self._add_list_triple(quality_annotation_node, OA.bodyValue, value.get('value'), Literal)
@@ -597,20 +600,15 @@ class QDESDCATProfile(RDFProfile):
 
     def _get_related_dataset_node(self, dataset_dict, dataset_ref):
         g = self.g
-
         all_relationships = h.get_all_relationships(dataset_dict.get('id'))
         if all_relationships:
             values = toolkit.get_converter('json_or_string')(all_relationships)
             if values and isinstance(values, list):
                 for value in values:
-                    relation = h.url_for('dataset.read', id=value.get('pkg_id'), _external=True) if value.get(
+                    relation = value.get('comment') or h.url_for('dataset.read', id=value.get('pkg_id'), _external=True) if value.get(
                         'pkg_id') else None
                     relationship_type = value.get('type')
                     role = constants.RELATIONSHIP_TYPE_URIS.get(relationship_type, None)
-
-                    if relationship_type == 'unspecified relationship':
-                        # Comment as dcterms:relation
-                        relation = value.get('comment')
 
                     # dcat:qualifiedRelation
                     if relation or role:
