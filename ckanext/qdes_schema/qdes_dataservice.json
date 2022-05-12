@@ -38,7 +38,7 @@
       "display_group": "description",
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "dataservice_classification",
-      "validators": "scheming_required",
+      "validators": "scheming_required qdes_validate_multi_scheming_choices",
       "recommended": true,
       "form_attrs": {
         "class": "form-control",
