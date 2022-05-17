@@ -398,8 +398,42 @@
       "preset": "dataset_related_multi_text"
     },
     {
-      "preset": "related_resources_multi_group",
-      "validators": "ignore_missing"
+      "field_name": "related_resources",
+      "label": "Related dataset",
+      "display_group": "related and lineage",
+      "sub_heading": "related",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_missing qdes_validate_related_resources",
+      "form_placeholder": "",
+      "field_group": [
+        {
+          "field_name": "relationship",
+          "label": "Relationship",
+          "form_snippet": "select.html",
+          "vocabulary_service_name": "nature-of-relationship",
+          "choices_helper": "scheming_vocabulary_service_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        },
+        {
+          "field_name": "resource",
+          "label": "Related dataset",
+          "help_text": "Add a related resource when the nature of the relationship is specified",
+          "form_snippet": "text.html",
+          "form_placeholder": " ",
+          "form_attrs": {
+            "data-module": "qdes_autocomplete",
+            "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
+            "data-module-create-search-choice": true,
+            "data-module-key": "id",
+            "data-module-label": "title",
+            "class": "form-control"
+          }
+        }
+      ]
     },
     {
       "field_name": "lineage_description",

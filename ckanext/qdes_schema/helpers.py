@@ -63,49 +63,6 @@ def qdes_dataservice_choices(field=None):
     return choices
 
 
-def qdes_relationship_types_choices(field):
-    """
-    Return choices for dataset relationship types.
-    """
-    def search_term_definition(terms, search_string):
-        for term in terms:
-            if search_string.lower() in term['label'].lower():
-                return term['title']
-
-        return ''
-
-    choices = []
-
-    try:
-        # Remove the duplicate `unspecified relationship` type
-        # as it has the same value for forward and reverse
-        unique_relationship_types = []
-
-        types = PackageRelationship.get_forward_types()
-
-        nature_of_relationship = []
-        for term in get_action('get_vocabulary_service_terms')({}, 'nature-of-relationship'):
-            nature_of_relationship.append({'uri': term.uri, 'label': term.label, 'title': term.definition})
-
-        for relationship_type in h.get_relationship_types():
-            if relationship_type not in types:
-                continue
-
-            if relationship_type not in unique_relationship_types:
-                unique_relationship_types.append(relationship_type)
-
-        for data in unique_relationship_types:
-            choices.append({
-                'value': data,
-                'label': data,
-                'title': search_term_definition(nature_of_relationship, data)
-            })
-    except Exception as e:
-        log.error(str(e))
-
-    return choices
-
-
 def update_related_resources(context, pkg_dict, reconcile_relationships=False):
     if reconcile_relationships:
         # Combine existing related_resources and new related_resources together
