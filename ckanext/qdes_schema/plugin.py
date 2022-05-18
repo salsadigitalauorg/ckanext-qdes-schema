@@ -319,6 +319,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_current_datetime': helpers.get_current_datetime,
             'qdes_dataservice_choices': helpers.qdes_dataservice_choices,
             'get_related_versions': helpers.get_related_versions,
+            'qdes_relationship_types_choices': helpers.qdes_relationship_types_choices,
             'get_superseded_versions': relationship_helpers.get_superseded_versions,
             'has_newer_version': relationship_helpers.has_newer_version,
             'get_all_relationships': helpers.get_all_relationships,

@@ -201,8 +201,8 @@
           "field_name": "relationship",
           "label": "Relationship",
           "form_snippet": "select.html",
-          "vocabulary_service_name": "nature-of-relationship",
-          "choices_helper": "scheming_vocabulary_service_choices",
+          "vocabulary_service_name": "dataservice-nature-of-relationship",
+          "choices_helper": "qdes_relationship_types_choices",
           "form_attrs": {
             "class": "form-control"
           },
@@ -210,7 +210,7 @@
         },
         {
           "field_name": "resource",
-          "label": "Related dataset",
+          "label": "Related Data Service",
           "help_text": "Add a related resource when the nature of the relationship is specified",
           "form_snippet": "text.html",
           "form_placeholder": " ",

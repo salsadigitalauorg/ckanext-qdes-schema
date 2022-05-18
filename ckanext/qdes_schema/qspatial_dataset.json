@@ -411,8 +411,8 @@
           "field_name": "relationship",
           "label": "Relationship",
           "form_snippet": "select.html",
-          "vocabulary_service_name": "nature-of-relationship",
-          "choices_helper": "scheming_vocabulary_service_choices",
+          "vocabulary_service_name": "dataset-nature-of-relationship",
+          "choices_helper": "qdes_relationship_types_choices",
           "form_attrs": {
             "class": "form-control"
           },
