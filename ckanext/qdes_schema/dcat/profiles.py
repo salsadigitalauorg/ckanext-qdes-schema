@@ -367,7 +367,7 @@ class QDESDCATProfile(RDFProfile):
             g.add((dataset_ref, QDCAT.reviewed, Literal(metadata_review_date, datatype=XSD.dateTime)))
 
         # Field metadata_contact_point => dcat:contactPoint
-        dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict['contact_point'])
+        dataset_dict['metadata_contact_point'] = _get_point_of_contact_name(dataset_dict['metadata_contact_point'])
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('metadata_contact_point', DCAT.contactPoint, None, Literal)])
 
         # Field url => dcterms:source
@@ -491,7 +491,6 @@ class QDESDCATProfile(RDFProfile):
         self._get_related_dataset_node(dataset_dict, dataset_ref)
 
         # Field contact_point => dcat:contactPoint
-        dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict['contact_point'])
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_point', DCAT.contactPoint, None, Literal)])
 
         # Field contact_publisher => dcterms:publisher
