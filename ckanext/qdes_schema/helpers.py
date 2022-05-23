@@ -84,7 +84,7 @@ def qdes_relationship_types_choices(field):
         types = PackageRelationship.get_forward_types()
 
         nature_of_relationship = []
-        vocabulary_service_name = field.get('vocabulary_service_name', 'dataset-nature-of-relationship')
+        vocabulary_service_name = field.get('vocabulary_service_name')
         for term in get_action('get_vocabulary_service_terms')({}, vocabulary_service_name):
             nature_of_relationship.append({'uri': term.uri, 'label': term.label, 'title': term.definition})
 
