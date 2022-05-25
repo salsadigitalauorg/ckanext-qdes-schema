@@ -307,6 +307,9 @@ def convert_relationships_to_related_resources(relationships):
 def get_qld_bounding_box_config():
     return config.get('ckanext.qdes_schema.qld_bounding_box', None)
 
+def get_au_bounding_box_config():
+    return config.get('ckanext.qdes_schema.au_bounding_box', None)
+
 
 def get_default_map_zoom():
     return config.get('ckanext.qdes_schema.default_map_zoom', None) or 5
@@ -587,6 +590,14 @@ def get_distribution_naming(pkg, resource):
 
     return resource.get('name')
 
+def get_portal_naming(destination):
+    if destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
+        return 'Opendata'
+    elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA:
+        return  'QSpatial'
+    elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
+        return  'SIR'
+
 
 def get_last_success_publish_log(resource):
     last_success_log = PublishLog.get_recent_resource_log(
@@ -751,13 +762,7 @@ def get_publish_activities(pkg):
                 processed_unpublished_date = resource_publish_log.date_processed
 
             # Get portal.
-            portal = ''
-            if resource_publish_log.destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
-                portal = 'Opendata'
-            elif resource_publish_log.destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA:
-                portal = 'QSpatial'
-            elif resource_publish_log.destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
-                portal = 'SIR'
+            portal = get_portal_naming(resource_publish_log.destination)
 
             # Process the published date.
             if processed_date:

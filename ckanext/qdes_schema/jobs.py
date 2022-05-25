@@ -38,7 +38,6 @@ def publish_to_external_catalogue(publish_log_id, user):
 
     package_dict = {}
     external_pkg_dict = {}
-
     try:
         site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
         context = {u'user': site_user[u'name']}
@@ -384,6 +383,11 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
     else:
         # Add the resource to package.
         qld_pkg_dict['resources'] = [qld_resource_dict]
+
+    # Set resource package_id for resources
+    for resource in qld_pkg_dict.get('resources'):
+        if not resource.get('package_id'):
+            resource['package_id'] = qld_pkg_dict.get('id')
 
     # Manual Mapping for dataset field.
     update_freq = helpers.map_update_schedule(des_package_dict['update_schedule'],

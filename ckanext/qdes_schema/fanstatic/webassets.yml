@@ -85,3 +85,10 @@ accordion:
       - vendor/jquery
   contents:
     - accordion.js
+
+spinner:
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - spinner.js

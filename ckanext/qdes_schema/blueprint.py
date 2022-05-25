@@ -196,17 +196,32 @@ def datasets_schema_validation(id):
     extra_vars['publish_activities'] = helpers.get_publish_activities(pkg)
 
     # Process unpublish status.
-    unpublish_log_id = request.params.get('unpublish', None)
-    if unpublish_log_id == "0":
-        extra_vars['unpublish'] = 0
-    elif unpublish_log_id:
-        extra_vars['unpublish'] = 1 if helpers.is_unpublish_pending(unpublish_log_id) else ''
+    unpublish_log_ids = request.params.get('unpublish', None)
+    if unpublish_log_ids is None:
+        extra_vars['unpublish'] = None
+    elif unpublish_log_ids:
+        unpublished = False
+        for unpublish_log_id in unpublish_log_ids:
+            unpublished = helpers.is_unpublish_pending(unpublish_log_id)
+            if not unpublished:
+                break
+        extra_vars['unpublish'] = 1 if unpublished else 0
 
     return render('package/publish_metadata.html', extra_vars=extra_vars)
 
 
 def unpublish_external_dataset_resource(id):
     # Check the user has permission to clone the dataset
+
+    def _jsonfy(data):
+        json_data = []
+        if type(data) is str:
+            return [json.loads(data.replace('\'', '"'))]
+        else:
+            for d in data:
+                json_data.append(json.loads(d))
+            return json_data
+
     context = {
         'model': model,
         'user': c.user,
@@ -219,39 +234,52 @@ def unpublish_external_dataset_resource(id):
 
     data = clean_dict(dict_fns.unflatten(tuplize_dict(parse_params(
         request.form))))
-
     pkg = get_action('package_show')({}, {'id': id})
-
+    unpublish_resources = []
+    schemas = []
+    schema_resources = _jsonfy(data.get('schema_resources'))
+    for res_schema in schema_resources:
+        unpublish_resources.append(res_schema.get('resource_id'))
+        schemas.append(res_schema.get('destination'))
     # Create job.
-    resource_to_unpublish = {}
+    resource_to_unpublish = []
     for resource in pkg.get('resources', []):
-        if resource.get('id') == data.get('unpublish_resource'):
-            resource_to_unpublish = resource
+        if resource.get('id') in unpublish_resources:
+            resource_to_unpublish.append(resource)
 
     # Add to publish log.
-    unpublish = 0
-    try:
-        publish_log = get_action('create_publish_log')({}, {
-            'dataset_id': pkg.get('id'),
-            'resource_id': resource_to_unpublish.get('id'),
-            'trigger': constants.PUBLISH_TRIGGER_MANUAL,
-            'destination': data.get('schema'),
-            'status': constants.PUBLISH_STATUS_PENDING,
-            'action': constants.PUBLISH_ACTION_DELETE
-        })
+    unpublished = []
+    for res, schema in zip(resource_to_unpublish, schemas):
+        unpublish = _unpublish_resource(res, pkg, schema)
+        if unpublish != 0:
+            unpublished.append(unpublish)
+        
 
-        # Add to job worker queue.
-        if publish_log:
-            # Improvements for job worker visibility when troubleshooting via logs
-            job_title = f'Unpublish external dataset resource: dataset_id={publish_log.dataset_id}, resource_id={publish_log.resource_id}, destination={publish_log.destination}'
-            toolkit.enqueue_job(jobs.unpublish_external_distribution, [publish_log.id, c.user], title=job_title)
-            unpublish = publish_log.id
+    return h.redirect_to('/dataset/{}/publish?unpublish={}'.format(id, unpublished))
 
-    except Exception as e:
-        log.error(str(e))
+def _unpublish_resource(resource, pkg, schema):
+        unpublish = 0
+        try:
+            publish_log = get_action('create_publish_log')({}, {
+                'dataset_id': pkg.get('id'),
+                'resource_id': resource.get('id'),
+                'trigger': constants.PUBLISH_TRIGGER_MANUAL,
+                'destination': schema,
+                'status': constants.PUBLISH_STATUS_PENDING,
+                'action': constants.PUBLISH_ACTION_DELETE
+            })
 
-    return h.redirect_to('/dataset/{}/publish?unpublish={}'.format(id, unpublish))
+            # Add to job worker queue.
 
+            if publish_log:
+                # Improvements for job worker visibility when troubleshooting via logs
+                job_title = f'Unpublish external dataset resource: dataset_id={publish_log.dataset_id}, resource_id={publish_log.resource_id}, destination={publish_log.destination}'
+                toolkit.enqueue_job(jobs.unpublish_external_distribution, [publish_log.id, c.user], title=job_title)
+                unpublish = publish_log.id
+
+        except Exception as e:
+            log.error(str(e))
+        return unpublish
 
 def _get_term_obj(field_value, vocab_service_name):
     if isinstance(field_value, list):

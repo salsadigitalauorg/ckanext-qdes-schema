@@ -236,6 +236,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
             if temporal_coverage_from and not temporal_coverage_to:
                 search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO *]'
+                search_params['fq'] += ' OR (temporal_start:[* TO ' + temporal_coverage_from + '] AND temporal_end:[' + temporal_coverage_from + ' TO *])'
 
             if temporal_coverage_from and temporal_coverage_to:
                 # Need to make sure to use the last day of the selected month,
@@ -244,8 +245,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                 last_day = calendar.monthrange(int(to_date[0]), int(to_date[1]))[1]
                 temporal_coverage_to = temporal_coverage_to + '-' + str(last_day)
 
-                search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
-                search_params['fq'] += 'OR temporal_end:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + ']'
+                search_params['fq'] += ' +(temporal_start:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + '] OR temporal_end:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + '])'
+                search_params['fq'] += ' OR (temporal_start:[* TO ' + temporal_coverage_from + '] AND temporal_end:[' + temporal_coverage_to + ' TO *])'
 
         return search_params
 
@@ -324,6 +325,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_all_relationships': helpers.get_all_relationships,
             'convert_relationships_to_related_resources': helpers.convert_relationships_to_related_resources,
             'get_qld_bounding_box_config': helpers.get_qld_bounding_box_config,
+            'get_au_bounding_box_config': helpers.get_au_bounding_box_config,
             'get_default_map_zoom': helpers.get_default_map_zoom,
             'get_package_dict': helpers.get_package_dict,
             'get_invalid_uris': helpers.get_invalid_uris,
@@ -341,6 +343,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'resource_has_published_to_external_schema': helpers.resource_has_published_to_external_schema,
             'get_publish_activities': helpers.get_publish_activities,
             'get_distribution_naming': helpers.get_distribution_naming,
+            'get_portal_naming': helpers.get_portal_naming,
             'get_published_distributions': helpers.get_published_distributions,
             'get_state_list': helpers.get_state_list,
             'get_pkg_title': helpers.get_pkg_title,
@@ -390,14 +393,14 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             facets_dict.pop('organization')
 
         facets_dict['collection_package_id'] = 'Collections'
-        facets_dict['type'] = plugins.toolkit._('Dataset or Data service')
+        facets_dict['type'] = plugins.toolkit._('Dataset or Data Service')
         facets_dict['general_classification'] = plugins.toolkit._('General classification')
         facets_dict['topic_labels'] = plugins.toolkit._('Topic or theme')
         facets_dict['publication_status_label'] = plugins.toolkit._('Status')
         facets_dict['service_status_label'] = plugins.toolkit._('Status')
         facets_dict['classification_and_access_restrictions_label'] = plugins.toolkit._('Access restrictions')
         facets_dict['resource_format_labels'] = plugins.toolkit._('Primary format')
-        facets_dict['standards_label'] = plugins.toolkit._('Data service standards')
+        facets_dict['standards_label'] = plugins.toolkit._('Data Service standards')
         facets_dict['temporal_start'] = plugins.toolkit._('Temporal start')
         facets_dict['temporal_end'] = plugins.toolkit._('Temporal end')
         facets_dict['temporal_coverage_from'] = plugins.toolkit._('Temporal coverage from')
