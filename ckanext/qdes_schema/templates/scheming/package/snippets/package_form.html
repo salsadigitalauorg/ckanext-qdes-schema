@@ -166,7 +166,7 @@
       {% if dataset_type == 'dataset' %}
         {% if form_style == 'new' %}
           <button class="btn btn-primary" type="submit" name="save_record">{{ _('Finish: Save record') }}</button>
-          <button class="btn btn-default" type="submit" name="save">{{ _('Next: Add Data') }}</button>
+          <button class="btn btn-default" type="submit" name="save">{{ _('Next: Add Data Resource') }}</button>
 
           {% if h.ckan_version() > '2.9' %}
             {% asset 'qdes_schema/dataset_no_resource' %}

@@ -117,6 +117,7 @@
       "label_plural": "parameters",
       "no_selected_term": "No parameters have been added. Please use the interface above to select an <strong>Observed property</strong> and corresponding <strong>Unit of measure.</strong>",
       "validators": "ignore_empty ignore_missing qdes_validate_multi_pair_vocab_vocab",
+      "help_text": "List the properties included in the dataset and their measurement units",
       "field_group": [
         {
           "field_name": "observed-property",
@@ -177,6 +178,7 @@
       "display_property": "tempqdcat:temporalRange",
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "temporal_resolution_ranges",
+      "help_text": "The minimum period in the dataset using a range keyword",
       "form_attrs": {
         "data-module-title": "title"
       }
@@ -302,7 +304,8 @@
       "display_property": "dcterms:conformsTo",
       "display_group": "data quality",
       "recommended": true,
-      "form_placeholder": "e.g. Australian Land Use and Management Classification - Version 8"
+      "form_placeholder": "e.g. Australian Land Use and Management Classification - Version 8",
+      "help_text": "List any standards, data structures or vocabularies used by the dataset"
     },
     {
       "field_name": "quality_measure",
@@ -311,6 +314,7 @@
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
       "validators": "ignore_empty qdes_validate_multi_groups qdes_validate_multi_pair_vocab_free_text",
+      "help_text": "List measurements of quality performed through a repeatable procedure, e.g. confidence measure",
       "field_group": [
         {
           "field_name": "measurement",
@@ -342,6 +346,7 @@
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
       "validators": "ignore_empty qdes_validate_multi_groups qdes_validate_multi_pair_vocab_free_text",
+      "help_text": "Describe dataset quality in text",
       "field_group": [
         {
           "field_name": "dimension",
@@ -372,10 +377,46 @@
       "field_name": "series_or_collection",
       "label": "Series or collection",
       "preset": "dataset_related_multi_text",
-      "form_placeholder": "Select a series or collection this dataset is part of"
+      "form_placeholder": "Select a series or collection this dataset is part of",
+      "help_text": "Select a series or collection this dataset is part of"
     },
     {
-      "preset": "related_resources_multi_group"
+      "field_name": "related_resources",
+      "label": "Related dataset",
+      "display_group": "related and lineage",
+      "sub_heading": "related",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_missing qdes_validate_related_resources",
+      "form_placeholder": "",
+      "field_group": [
+        {
+          "field_name": "relationship",
+          "label": "Relationship",
+          "form_snippet": "select.html",
+          "vocabulary_service_name": "dataset-nature-of-relationship",
+          "choices_helper": "qdes_relationship_types_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        },
+        {
+          "field_name": "resource",
+          "label": "Related dataset",
+          "help_text": "Add a related dataset and include the nature of the relationship",
+          "form_snippet": "text.html",
+          "form_placeholder": " ",
+          "form_attrs": {
+            "data-module": "qdes_autocomplete",
+            "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
+            "data-module-create-search-choice": true,
+            "data-module-key": "id",
+            "data-module-label": "title",
+            "class": "form-control"
+          }
+        }
+      ]
     },
     {
       "field_name": "lineage_description",
@@ -384,7 +425,8 @@
       "display_snippet": "markdown.html",
       "display_group": "related and lineage",
       "display_property": "dcterms:description",
-      "sub_heading": "lineage"
+      "sub_heading": "lineage",
+      "help_text": "A text description of the datasets lineage"
     },
     {
       "field_name": "lineage_plan",
@@ -394,7 +436,7 @@
       "display_group": "related and lineage",
       "display_property": "prov:hadPlan",
       "sub_heading": "lineage",
-      "help_text": "Input is a URI"
+      "help_text": "Link to the item that describes the set of actions or steps that generated the dataset. Input is a URI."
     },
     {
       "field_name": "lineage_inputs",
@@ -405,7 +447,7 @@
       "display_group": "related and lineage",
       "display_property": "prov:used",
       "sub_heading": "lineage",
-      "help_text": "Input is a URI"
+      "help_text": "Link to the items that are used in the process. Input is a URI."
     },
     {
       "field_name": "lineage_sensor",
@@ -416,7 +458,7 @@
       "display_group": "related and lineage",
       "display_property": "sosa:madeBySensor",
       "sub_heading": "lineage",
-      "help_text": "Input is a URI"
+      "help_text": "The device, agent (including humans), or software (simulation) that generated the dataset. Input is a URI."
     },
     {
       "field_name": "lineage_responsible_party",
@@ -455,7 +497,7 @@
       "display_group": "contacts and responsibilities",
       "required": true,
       "validators": "scheming_required qdes_validate_point_of_contact",
-      "help_text": "A person or position to contact for more information about the dataset",
+      "help_text": "A person or position to contact for more information about the dataset within your organisation, not necessarily the dataset creator",
       "form_placeholder": " "
     },
     {
@@ -550,6 +592,7 @@
       "display_group": "status",
       "display_group_help_text": "Fields under status relate to the dataset",
       "required": true,
+      "help_text": "The status of the dataset in the context its lifecycle",
       "form_attrs": {
         "data-module-title": "title"
       },
@@ -704,7 +747,7 @@
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
       "validators": "ignore_missing qdes_uri_validator",
-      "help_text": "Indicates the schema, data-structure or vocabularies used by the resource"
+      "help_text": "List any standards, data structures or vocabularies used by the dataset"
     },
     {
       "field_name": "format",
@@ -748,6 +791,7 @@
       "display_snippet": "qdes_byte_size.html",
       "validators": "ignore_missing qdes_validate_positive_integer",
       "form_placeholder": "Enter exact or approximate file size in bytes (integer)",
+      "help_text": "Size of the resource in Bytes",
       "recommended": true
     },
     {
