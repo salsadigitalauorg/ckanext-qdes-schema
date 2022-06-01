@@ -300,9 +300,8 @@
       "display_group": "calculated quality measure",
       "label": "S&T data quality standard",
       "form_snippet": "qdes_calculated_quality_measure.html",
-      "display_snippet": "qdes_calculated_quality_measure_display.html",
-      "score": 0,
-      "field_group":[ 
+      "display_snippet": "qdes_calculated_quality_measure.html",
+      "field_group":[
         {
           "field_name": "accessibility",
           "score": 0,
@@ -406,15 +405,10 @@
               "label": "Elements can be compared",
               "field_name": "elements_can_be_compared",
               "form_snippet": "qdes_checkbox_choice.html"
-            },
-            {
-              "label": "Standard definitions and practices",
-              "field_name": "elements_can_be_compared",
-              "form_snippet": "qdes_checkbox_choice.html"
             }
           ]
         },{
-          "field_name": "institional_environment",
+          "field_name": "institutional_environment",
           "label": "Institutional Environment",
           "display_group": "Institutional Environment",
           "field_group": [

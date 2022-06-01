@@ -1,3 +1,42 @@
-<section class="qg-accordion qg-dark-accordion" aria-label="Accordion Label">
-    
-</section>
+{%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
+{%- set section_element_created = False -%}
+{%- set ns = namespace(display_group=None) -%}
+    {%- if field.display_group is not none and field.display_group != ns.display_group -%}
+        {%- if ns.display_group is not none -%}
+              </div>
+            </article>
+        {%- endif -%}
+            {%- if section_element_created == False -%}
+            {%- set section_element_created = True -%}
+                {%- for subfield in field.field_group -%}
+                    <section class="qg-accordion qg-dark-accordion" aria-label="Accordion Label">
+                    {{ field }}
+                    <article class="display-group-{{subfield.display_group}}" >
+                                <input id="display-group-{{subfield.display_group}}" type="checkbox" name="tabs"
+                                        aria-controls="display-group-{{subfield.display_group}}-content" aria-expanded="false"
+                                        role="checkbox" tabindex="-1" {{checked}}>
+                                <button class="acc-heading" type="button">
+                                    <label for="display-group-{{subfield.display_group}}" class="no-colon">
+                                    <span class="title">{{subfield.display_group|capitalize}}</span>
+                                    {%- if h.has_display_group_required_fields(schema.dataset_fields, subfield.display_group) -%}
+                                        <i class="has-mandatory-fields fa fa-asterisk"></i>
+                                    {%- endif -%}
+                                    <span class="arrow"><i></i></span>
+                                    </label>
+                                </button>
+                                <div class="collapsing-section" id="display-group-{{subfield.display_group}}-content">
+                                    {%- if subfield.form_snippet is not none -%}
+                                        <ul class="list-group">
+                                            {%- for f in subfield.field_group -%}
+                                                {{f.label, data[f.field_name] }}
+                                            {%- endfor -%}
+                                        </ul>
+                                    {%- endif -%}
+                                </div>
+                        </article>
+                    </section>
+                {%- endfor -%}
+            {%- set ns.display_group = field.display_group -%}
+            
+            {%- endif -%}
+    {%- endif -%}

@@ -26,11 +26,11 @@
                                 </button>
                                 <div class="collapsing-section" id="display-group-{{subfield.display_group}}-content">
                                     {%- if subfield.form_snippet is not none -%}
-                                        <ul>
+                                        <ul class="list-group">
                                             {%- for f in subfield.field_group -%}
                                             {%- snippet "/scheming/form_snippets/qdes_checkbox_choice.html",
                                                 field=f, label=f.label, data=data -%}
-                                                 {%- snippet 'scheming/form_snippets/help_text.html', field=f -%}
+                                                 {%- snippet 'scheming/form_snippets/help_text.html', field=f, data=data -%}
                                             {%- endfor -%}
                                         </ul>
                                     {%- endif -%}
