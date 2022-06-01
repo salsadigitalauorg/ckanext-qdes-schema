@@ -29,7 +29,7 @@
       "form_placeholder": "doi:10.25901/5e3ba30f141b7",
       "display_group": "general",
       "validators": "ignore_missing qdes_uri_validator",
-      "help_text": "Add any unique identifiers associated with the dataset. Input is a URI."
+      "help_text": "Add any unique identifiers associated with the dataservice. Input is a URI."
     },
     {
       "field_name": "classification",
