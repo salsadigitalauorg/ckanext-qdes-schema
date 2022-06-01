@@ -152,8 +152,7 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "service_status",
       "display_group": "status",
-      "help_text": "Fields under status relate to the data service",
-      "sub_heading_help_text": "Minimum time period resolvable in the dataset",
+      "sub_heading_help_text": "Fields under status relate to the data service",
       "form_attrs": {
         "data-module-title": "title"
       }
