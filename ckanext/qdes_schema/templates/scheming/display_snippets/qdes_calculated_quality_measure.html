@@ -10,7 +10,6 @@
             {%- set section_element_created = True -%}
                 {%- for subfield in field.field_group -%}
                     <section class="qg-accordion qg-dark-accordion" aria-label="Accordion Label">
-                    {{ field }}
                     <article class="display-group-{{subfield.display_group}}" >
                                 <input id="display-group-{{subfield.display_group}}" type="checkbox" name="tabs"
                                         aria-controls="display-group-{{subfield.display_group}}-content" aria-expanded="false"
