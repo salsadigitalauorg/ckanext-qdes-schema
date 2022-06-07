@@ -31,7 +31,7 @@
                 <div class="clear-btn"></div>
             {% endcall %}
           {%- elif field_group.form_snippet -%}
-            {% snippet 'scheming/form_snippets/field_groups/{0}'.format(field_group.form_snippet), field=field, field_group=field_group, group_data=group_data, errors=errors, data=data or {} %}
+            {% snippet 'scheming/form_snippets/field_groups/{0}'.format(field_group.form_snippet), field=field, field_group=field_group, group_data=group_data, errors=errors, data=data or {}, object_type=object_type %}
           {%- endif -%}
         </div>
     {% endfor %}
