@@ -33,7 +33,7 @@
                                     "data-field-name": field.field_name, 
                                     "data-placeholder": h.scheming_language_text(field.form_placeholder),
                                     "data-module-id": data.get('id', ''),
-                                    "data-module-type": g.controller,
+                                    "data-module-type": object_type,
                                     "data-module-vocabulary-service-name": field.vocabulary_service_name
                                 }, **(field.get('form_attrs', {}))),
                             is_required=h.scheming_field_required(field),

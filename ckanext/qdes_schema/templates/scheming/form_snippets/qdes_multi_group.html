@@ -51,7 +51,7 @@
                                 {% if 'field_groups' in errors[field.field_name]|last %}
                                     {{ errors[field.field_name].field_groups }}
                                 {% endif %}
-                                {%- snippet 'scheming/form_snippets/field_groups/{0}'.format(field_group.form_snippet), field=field, field_group=field_group, group_data=group_data, errors=field_group_error, data=data or {} -%}
+                                {%- snippet 'scheming/form_snippets/field_groups/{0}'.format(field_group.form_snippet), field=field, field_group=field_group, group_data=group_data, errors=field_group_error, data=data or {}, object_type=object_type -%}
                             {% endif %}
                         </div>
                     {% endfor %}
