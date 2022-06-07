@@ -1,6 +1,7 @@
 {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
 {%- set section_element_created = False -%}
 {%- set ns = namespace(display_group=None) -%}
+{%- set calculated_quality_measure = data['calculated_quality_measure']%}
     {%- if field.display_group is not none and field.display_group != ns.display_group -%}
         {%- if ns.display_group is not none -%}
               </div>
@@ -29,7 +30,7 @@
                                         <ul class="list-group">
                                             {%- for f in subfield.field_group -%}
                                             {%- snippet "/scheming/form_snippets/qdes_checkbox_choice.html",
-                                                field=f, label=f.label, data=data -%}
+                                                field=f, label=f.label, data=h.get_json_element(calculated_quality_measure, subfield, f) -%}
                                                  {%- snippet 'scheming/form_snippets/help_text.html', field=f, data=data -%}
                                             {%- endfor -%}
                                         </ul>
