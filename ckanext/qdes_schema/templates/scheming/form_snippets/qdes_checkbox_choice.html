@@ -1,7 +1,7 @@
 {% import 'macros/form.html' as form %}
 
-{%- set yes = 'checked' if data == '1' %}
-{%- set no = 'checked' if data == '0' %}
+{%- set yes_checked = 'checked' if data == 1 %}
+{%- set no_checked = 'checked' if data != 1 %}
 
 <li class="list-group-item card">
 <label class="checkbox" for="{{ field.field_name }}">
