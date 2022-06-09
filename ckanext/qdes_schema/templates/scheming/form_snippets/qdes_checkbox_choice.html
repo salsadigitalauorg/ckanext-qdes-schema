@@ -3,23 +3,26 @@
 {%- set yes = 'checked' if data == '1' %}
 {%- set no = 'checked' if data == '0' %}
 
-<li class="list-group-item">
+<li class="list-group-item card">
 <label class="checkbox" for="{{ field.field_name }}">
 {{ field.label }}
     {% call form.checkbox(field.field_name, 
         label= 'YES',
-        id='field-'+field.label,
-        value=True,
-        checked= yes) 
+        id='field-'+field.field_name,
+        value='YES',
+        checked= yes,
+        classes=['control-medium', 'pull-right']
+        ) 
         %}
     {% endcall %}
     {% call form.checkbox(field.field_name, 
         label= 'NO',
-        id='field-'+field.label,
-        value=True,
-        checked=no) 
+        id='field-'+field.field_name,
+        value='NO',
+        checked=no,
+        classes=['control-medium', 'pull-right']
+        ) 
         %}
      {% endcall %}
-
 </label>
 </li>

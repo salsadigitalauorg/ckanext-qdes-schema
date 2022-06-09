@@ -301,6 +301,7 @@
       "label": "S&T data quality standard",
       "form_snippet": "qdes_calculated_quality_measure.html",
       "display_snippet": "qdes_calculated_quality_measure.html",
+      "validators": "qdes_validate_multi_group qdes_validate_calculated_quality_measure",
       "field_group":[
         {
           "field_name": "accessibility",
