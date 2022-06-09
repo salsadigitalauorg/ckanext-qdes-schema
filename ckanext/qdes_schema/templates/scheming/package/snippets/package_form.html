@@ -25,6 +25,7 @@
   {% asset 'qdes_schema/input-date-helper' %}
   {% asset 'qdes_schema/accordion' %}
   {% asset 'qdes_schema/style' %}
+  {% asset 'qdes_schema/calculated_quality_measure' %}
 
   {%- if not dataset_type -%}
     <p>
@@ -60,6 +61,7 @@
         {%- if ns.display_group is not none and ns.display_group not in ['general'] -%}
               </div>
             </article>
+          </section>
         {%- endif -%}
         {%- if field.display_group not in ['general'] -%}
           {%- if section_element_created == False -%}
