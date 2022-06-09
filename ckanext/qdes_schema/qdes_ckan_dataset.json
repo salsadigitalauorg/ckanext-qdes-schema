@@ -296,19 +296,18 @@
       }
     },
     {
-      "field_name": "calculated_quality_measure",
-      "display_group": "calculated quality measure",
-      "label": "S&T data quality standard",
+      "field_name": "data_quality_standard",
+      "display_group": "data quality",
+      "sub_display_group": "S&T Data Quality Standard",
       "form_snippet": "qdes_calculated_quality_measure.html",
       "display_snippet": "qdes_calculated_quality_measure.html",
       "validators": "qdes_validate_multi_group qdes_validate_calculated_quality_measure",
       "field_group":[
         {
           "field_name": "accessibility",
-          "score": 0,
           "label": "Accessibility",
           "display_group": "Accessibility",
-          "help_text": "A dimension of quality relating to the ease with which data or information can be retrieved,used and understood.",
+          "display_group_help_text": "A dimension of quality relating to the ease with which data or information can be retrieved,used and understood.",
           "field_group": [
             {
               "label": "Links to data and context",
@@ -346,7 +345,7 @@
           "field_name": "accuracy",
           "label": "Accuracy",
           "display_group": "Accuracy",
-          "help_text": "A dimension of quality relating to the degree to which the data or information correctly describes that which it was designed to measure.",
+          "display_group_help_text": "A dimension of quality relating to the degree to which the data or information correctly describes that which it was designed to measure.",
           "field_group": [
             {
               "label": "Data assurance",
