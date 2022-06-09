@@ -1,25 +1,13 @@
 {% import 'macros/form.html' as form %}
 
-{%- set yes = 'checked' if data == '1' %}
-{%- set no = 'checked' if data == '0' %}
+{%- set yes_checked = 'checked' if data == 1 %}
+{%- set no_checked = 'checked' if data != 1 %}
 
-<li class="list-group-item">
-<label class="checkbox" for="{{ field.field_name }}">
-{{ field.label }}
-    {% call form.checkbox(field.field_name, 
-        label= 'YES',
-        id='field-'+field.label,
-        value=True,
-        checked= yes) 
-        %}
-    {% endcall %}
-    {% call form.checkbox(field.field_name, 
-        label= 'NO',
-        id='field-'+field.label,
-        value=True,
-        checked=no) 
-        %}
-     {% endcall %}
-
-</label>
+<li class="list-group-item calculated-quality-measure">
+    <label class="checkbox" for="{{ field.field_name }}">
+        {{ field.label }}
+        {%- snippet 'scheming/form_snippets/help_text.html', field=field, data=data -%}
+        <input class="pull-right" type="radio" name="{{field.field_name}}" value="YES" {{ yes_checked }} ><span class="pull-right">Yes</span></input>
+        <input class="pull-right" type="radio" name="{{field.field_name}}" value="NO" {{ no_checked }} ><span class="pull-right">No</span></input>
+    </label>
 </li>
