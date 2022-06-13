@@ -867,7 +867,11 @@ def field_has_errors(field, errors):
 def get_json_element(data, subfield, field=None):
     if not data:
         return ''
-    json_data = ast.literal_eval(data)
+    json_data = json.loads(data)
     if field:
-        return json_data.get(subfield.get('field_name')).get(field.get('field_name'))   
+        try:
+            field_name = field.get('field_name')
+        except AttributeError:
+            field_name = field
+        return json_data.get(subfield.get('field_name')).get(field_name)
     return json_data.get(subfield)
