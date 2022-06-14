@@ -232,7 +232,7 @@
       "display_group": "Contacts and responsibilities",
       "required": true,
       "form_include_blank_choice": true,
-      "help_text": "A person or position to contact for more information about the dataset within your organisation, not necessarily the data service creator"
+      "help_text": "A person or position to contact for more information about the data service, not necessarily the data service creator"
     },
     {
       "field_name": "contact_publisher",
