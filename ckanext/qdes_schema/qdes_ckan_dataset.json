@@ -303,7 +303,7 @@
       "sub_label": "Calculated quality measure ",
       "form_snippet": "qdes_calculated_quality_measure.html",
       "display_snippet": "qdes_calculated_quality_measure.html",
-      "validators": "qdes_validate_data_quality_standard",
+      "validators": "scheming_valid_json_object",
       "field_group":[
         {
           "field_name": "accessibility",

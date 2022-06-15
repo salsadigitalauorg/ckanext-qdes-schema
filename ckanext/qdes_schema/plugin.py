@@ -288,7 +288,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_validate_multi_pair_vocab_free_text': validators.qdes_validate_multi_pair_vocab_free_text,
             'qdes_validate_data_service_is_exist': validators.qdes_validate_data_service_is_exist,
             'qdes_validate_multi_scheming_choices': validators.qdes_validate_multi_scheming_choices,
-            'qdes_validate_data_quality_standard': validators.qdes_validate_data_quality_standard,
         }
 
     # IConfigurer

@@ -698,15 +698,3 @@ def qdes_validate_data_service_is_exist(value, context):
         return value
 
     raise toolkit.Invalid('Invalid JSON.')
-
-def qdes_validate_data_quality_standard(key, flattened_data, errors, context):
-    '''
-    Validate calculated quality measure
-    '''
-    data_quality_standard = flattened_data.get(('data_quality_standard',), None)
-    try:
-        json_dict = json.loads(data_quality_standard)
-    except Exception as e:
-        errors[key].append(str(e))
-        return False
-    flattened_data[('data_quality_standard',)] = json.dumps(json_dict)
