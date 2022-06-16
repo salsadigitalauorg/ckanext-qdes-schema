@@ -231,12 +231,12 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         if 'fq' in search_params:
             # Clean up fq params from temporal start end.
-            search_params['fq'] = search_params['fq'].replace('temporal_coverage_from:"' + temporal_coverage_from + '"', '')
-            search_params['fq'] = search_params['fq'].replace('temporal_coverage_to:"' + temporal_coverage_to + '"', '')
+            search_params['fq'] = search_params['fq'].replace(f'temporal_coverage_from:"{temporal_coverage_from}"', '')
+            search_params['fq'] = search_params['fq'].replace(f'temporal_coverage_to:"{temporal_coverage_to}"', '')
 
             if temporal_coverage_from and not temporal_coverage_to:
-                search_params['fq'] += ' +temporal_start:[' + temporal_coverage_from + ' TO *]'
-                search_params['fq'] += ' OR (temporal_start:[* TO ' + temporal_coverage_from + '] AND temporal_end:[' + temporal_coverage_from + ' TO *])'
+                search_params['fq'] += f' (+temporal_start:[{temporal_coverage_from} TO *]'
+                search_params['fq'] += f' OR (temporal_start:[* TO {temporal_coverage_from}] AND temporal_end:[{temporal_coverage_from} TO *]))'
 
             if temporal_coverage_from and temporal_coverage_to:
                 # Need to make sure to use the last day of the selected month,
@@ -245,8 +245,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
                 last_day = calendar.monthrange(int(to_date[0]), int(to_date[1]))[1]
                 temporal_coverage_to = temporal_coverage_to + '-' + str(last_day)
 
-                search_params['fq'] += ' +(temporal_start:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + '] OR temporal_end:[' + temporal_coverage_from + ' TO ' + temporal_coverage_to + '])'
-                search_params['fq'] += ' OR (temporal_start:[* TO ' + temporal_coverage_from + '] AND temporal_end:[' + temporal_coverage_to + ' TO *])'
+                search_params['fq'] += f' (+(temporal_start:[{temporal_coverage_from} TO {temporal_coverage_to}] OR temporal_end:[{temporal_coverage_from} TO {temporal_coverage_to}])'
+                search_params['fq'] += f' OR (temporal_start:[* TO {temporal_coverage_from}] AND temporal_end:[{temporal_coverage_to} TO *]))'
 
         return search_params
 
