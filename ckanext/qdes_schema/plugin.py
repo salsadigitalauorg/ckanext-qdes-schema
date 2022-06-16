@@ -287,7 +287,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'qdes_validate_multi_pair_vocab_vocab': validators.qdes_validate_multi_pair_vocab_vocab,
             'qdes_validate_multi_pair_vocab_free_text': validators.qdes_validate_multi_pair_vocab_free_text,
             'qdes_validate_data_service_is_exist': validators.qdes_validate_data_service_is_exist,
-            'qdes_validate_multi_scheming_choices': validators.qdes_validate_multi_scheming_choices
+            'qdes_validate_multi_scheming_choices': validators.qdes_validate_multi_scheming_choices,
         }
 
     # IConfigurer
@@ -352,6 +352,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'has_display_group_required_fields': helpers.has_display_group_required_fields,
             'field_has_errors': helpers.field_has_errors,
             'convert_term_uri_to_label': indexing_helpers.convert_term_uri_to_label,
+            'get_json_element': helpers.get_json_element,  
         }
 
     def get_multi_textarea_values(self, value):
