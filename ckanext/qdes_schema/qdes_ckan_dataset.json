@@ -304,6 +304,7 @@
       "form_snippet": "qdes_calculated_quality_measure.html",
       "display_snippet": "qdes_calculated_quality_measure.html",
       "validators": "scheming_valid_json_object",
+      "display_group_help_text": "See the Help pages for more information on the data quality standard and its usage",
       "field_group":[
         {
           "field_name": "accessibility",
