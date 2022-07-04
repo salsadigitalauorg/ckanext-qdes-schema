@@ -231,7 +231,9 @@
       "display_property": "dcat:contactPoint",
       "display_group": "Contacts and responsibilities",
       "required": true,
-      "form_include_blank_choice": true,
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
+      "validators": "scheming_required qdes_validate_point_of_contact",
       "help_text": "A person or position to contact for more information about the data service, not necessarily the data service creator"
     },
     {
@@ -335,13 +337,10 @@
       "field_name": "metadata_contact_point",
       "label": "Metadata point of contact",
       "display_property": "dcat:contactPoint",
+      "display_group": "Meta data life cycle",
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
-      "display_group": "Meta data life cycle",
-      "form_include_blank_choice": true,
-      "form_attrs": {
-        "data-module-title": "title"
-      },
+      "validators": "scheming_required qdes_validate_point_of_contact",
       "help_text": "Person or position responsible for the metadata record"
     },
     {
