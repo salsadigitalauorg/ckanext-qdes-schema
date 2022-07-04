@@ -80,7 +80,7 @@ def publish_to_external_catalogue(publish_log_id, user):
 
         # Update dataset identifier.
         if external_pkg_dict and not external_pkg_dict.get('state') == 'deleted':
-            identifiers = json.loads(package_dict['identifiers']) if package_dict['identifiers'] else []
+            identifiers = json.loads(package_dict['identifiers']) if package_dict.get('identifiers') else []
             identifiers.append(destination.address + '/dataset/' + external_pkg_dict.get('id'))
             identifiers = list(set(identifiers))
 
