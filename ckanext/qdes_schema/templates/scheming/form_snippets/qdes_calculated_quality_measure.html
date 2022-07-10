@@ -1,0 +1,56 @@
+{%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
+{%- set data_quality_standard = data.get('data_quality_standard', {}) %}
+
+<section class="qg-accordion qg-dark-accordion" aria-label="Accordion Label" style="padding-bottom:10px;">
+    <article class="display-group-{{field.sub_display_group}}" >
+        <input id="display-group-{{field.sub_display_group}}" type="checkbox" name="tabs"
+            aria-controls="display-group-{{field.sub_display_group}}-content" aria-expanded="false"
+            role="checkbox" tabindex="-1" {{checked}}>
+        <button class="acc-heading" type="button">
+        <label for="display-group-{{field.sub_display_group}}" class="no-colon">
+            <span class="title">{{field.sub_display_group}}</span>
+            {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
+            <span class="arrow"><i></i></span>
+        </label>
+        </button>
+        <div class="collapsing-section" id="display-group-{{field.sub_display_group}}-content">                     
+            <ul class="list-group">
+                <input type="hidden" id="data_quality_standard" name="data_quality_standard" value="{{data_quality_standard}}">
+                <li class="list-group-item calculated-quality-measure">
+                    <label class="checkbox" >
+                        Calculated Quality Measure:
+                        <span id="calculated_quality_measure_score"></span>
+                    </label>
+                </li>
+            </ul>
+            {%- for subfield in field.field_group -%}
+                <section class="qg-accordion qg-dark-accordion" aria-label="Accordion Label">
+                    <article class="display-group-{{subfield.display_group}} calculated-quality-measure" >
+                        <input id="display-group-{{subfield.display_group}}" type="checkbox" name="tabs"
+                                aria-controls="display-group-{{subfield.display_group}}-content" aria-expanded="false"
+                                role="checkbox" tabindex="-1" {{checked}}>
+                        <button class="acc-heading" type="button">
+                        <label for="display-group-{{subfield.display_group}}" class="no-colon">
+                            <span class="title">{{subfield.display_group|capitalize}}
+                                <span class="score" data-score="0">(0)</span>
+                            </span>
+                            {%- snippet 'scheming/form_snippets/help_text.html', field=subfield -%}
+                            <span class="arrow"><i></i></span>
+                        </label>
+                        </button>
+                        <div class="collapsing-section calculated-quality-measure" id="display-group-{{subfield.field_name}}-content" data-field_name="{{subfield.field_name}}">
+                            {%- if subfield.form_snippet is not none -%}
+                                <ul class="list-group">
+                                    {%- for f in subfield.field_group -%}
+                                        {%- snippet "/scheming/form_snippets/qdes_checkbox_choice.html",
+                                            field=f, label=f.label, data=h.get_json_element(data_quality_standard, subfield, f) -%}
+                                    {%- endfor -%}
+                                </ul>
+                            {%- endif -%}
+                        </div>
+                    </article>
+                </section>
+            {%- endfor -%}
+        </div>
+    </article>
+</section>
