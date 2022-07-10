@@ -328,7 +328,10 @@
 
                     // Get the json obj.
                     valObj = JSON.parse(val);
-
+                    // Hack to fix the issue of the missing text on the table [SUPDESQ-99].
+                    if (valObj.length == 2){
+                        var otherFieldText = $tableEl.find('tbody>tr>td').eq(1).text();
+                    }
                     // Reset the table body.
                     $tableEl.find('tbody').empty();
 
@@ -337,6 +340,10 @@
                         if (isMultiGrp) {
                             var otherFieldVal = item[$otherFieldEl.attr('data-field-name')]
                             var otherFieldLabel = $otherFieldEl.find('option[value="' + otherFieldVal + '"]').text()
+                            //FIXME: [SUPDESQ-99]
+                            if (otherFieldLabel.length == 0) {
+                                otherFieldLabel = otherFieldText;
+                            }
                             var cols = [
                                 tree.getNodeByKey(item[fieldName]).title,
                                 otherFieldLabel

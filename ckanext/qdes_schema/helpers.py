@@ -2,6 +2,7 @@ import ckan.logic as logic
 import ckan.plugins.toolkit as toolkit
 import ckanext.qdes_schema.constants as constants
 import ckanext.qdes_schema.jobs as jobs
+import ast
 import json
 import re
 import datetime
@@ -861,3 +862,16 @@ def has_display_group_required_fields(fields, display_group):
 
 def field_has_errors(field, errors):
     return field['field_name'] in errors
+
+
+def get_json_element(data, subfield, field=None):
+    if not data:
+        return ''
+    json_data = json.loads(data)
+    if field:
+        try:
+            field_name = field.get('field_name')
+        except AttributeError:
+            field_name = field
+        return json_data.get(subfield.get('field_name')).get(field_name)
+    return json_data.get(subfield)

@@ -1,28 +1,21 @@
-import ckan.logic as logic
 import ckan.plugins.toolkit as toolkit
 import ckanext.qdes_schema.constants as constants
 import ckanext.qdes_schema.helpers as helpers
 import ckanext.scheming.helpers as scheming_helpers
-import ckanext.vocabulary_services.helpers as vocabulary_service_helpers
 import ckanext.vocabulary_services.logic.action.get as vocab_get_action
 import json
 import logging
 import os
-import sys
 import traceback
 
-from ckan import model
-from ckan.common import c, config
-from ckan.lib.dictization.model_save import package_extras_save
-from ckan.plugins.toolkit import h
-from ckanapi import RemoteCKAN, ValidationError
+from ckanapi import RemoteCKAN
 from ckanext.qdes_schema.logic.helpers import resource_helpers
 from ckanext.qdes_schema.model import PublishLog
 from datetime import datetime
 from pprint import pformat
 
-Session = model.Session
-get_action = logic.get_action
+get_action = toolkit.get_action
+config = toolkit.config
 log = logging.getLogger(__name__)
 
 
@@ -80,28 +73,19 @@ def publish_to_external_catalogue(publish_log_id, user):
 
         # Update dataset identifier.
         if external_pkg_dict and not external_pkg_dict.get('state') == 'deleted':
-            identifiers = json.loads(package_dict['identifiers']) if package_dict['identifiers'] else []
+            identifiers = json.loads(package_dict['identifiers']) if package_dict.get('identifiers') else []
             identifiers.append(destination.address + '/dataset/' + external_pkg_dict.get('id'))
             identifiers = list(set(identifiers))
-
-            package = model.Package.get(package_dict.get('id'))
-            package.extras['identifiers'] = json.dumps(identifiers)
-
-            for resource in package.resources:
-                if resource.id == publish_log.resource_id:
-                    dataservice_id = config.get(constants.get_dataservice_id(publish_log.destination), '')
-                    resource.extras['data_services'] = '["' + dataservice_id + '"]'
-                    resource.save()
-
-            package.save()
-            model.Session.commit()
+            package_dict['identifiers'] = json.dumps(identifiers)
 
             # Update resource dataservice.
-            resource = _get_selected_resource_to_publish(package_dict, publish_log)
             dataservice_id = config.get(constants.get_dataservice_id(publish_log.destination), None)
-
             if dataservice_id:
-                resource_helpers.add_dataservice(dataservice_id, resource[0], package_dict)
+                resource = _get_selected_resource_to_publish(package_dict, publish_log)
+                resource_helpers.add_dataservice(context, dataservice_id, resource[0], package_dict)
+            else:
+                # Update dataset identifiers.
+                get_action('package_update')(context, package_dict)
 
     except Exception as e:
         log.error(''.join(traceback.format_tb(e.__traceback__)))
@@ -145,10 +129,17 @@ def unpublish_external_distribution(publish_log_id, user):
             resources = external_pkg_dict.get('resources', [])
             if len(resources) == 1:
                 # Remove the dataset too.
-                detail, external_pkg_dict = _delete_external_dataset(external_pkg_dict.get('id'), destination)
+                external_dataset_id = external_pkg_dict.get('id')
+                detail, external_pkg_dict = _delete_external_dataset(external_dataset_id, destination)
 
                 if not detail:
                     status = constants.PUBLISH_STATUS_SUCCESS
+                    # Remove dataset identifier.
+                    identifiers = json.loads(package_dict['identifiers']) if package_dict.get('identifiers') else []
+                    identifiers.remove(destination.address + '/dataset/' + external_dataset_id)
+                    identifiers = list(set(identifiers))
+                    package_dict['identifiers'] = json.dumps(identifiers)
+                    
             elif resources:
                 # Remove the resource.
                 new_resources = []
@@ -180,11 +171,14 @@ def unpublish_external_distribution(publish_log_id, user):
                 )
 
             # Update resource dataservice.
-            resource = _get_selected_resource_to_publish(package_dict, publish_log)
             dataservice_id = config.get(constants.get_dataservice_id(publish_log.destination), None)
-
             if dataservice_id:
-                resource_helpers.add_dataservice(dataservice_id, resource[0], package_dict, True)
+                resource = _get_selected_resource_to_publish(package_dict, publish_log)
+                resource_helpers.add_dataservice(context, dataservice_id, resource[0], package_dict, True)
+            else:
+                # Remove dataset identifier.
+                get_action('package_update')(context, package_dict)
+
     except Exception as e:
         log.error(''.join(traceback.format_tb(e.__traceback__)))
         log.error(str(e))
