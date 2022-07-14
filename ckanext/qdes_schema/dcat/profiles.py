@@ -117,7 +117,7 @@ class QDESDCATProfile(RDFProfile):
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('temporal_precision_spacing', DCAT.temporalResolution, None, Literal)])
 
         # Field temporal_resolution_range => qdcat:temporalRange
-        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('temporal_resolution_range', QDCAT.temporalRange, None, URIRef)])
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('temporal_resolution_range', QDCAT.temporalRange, Literal('temporal_resolution_range', XSD.duration))])
 
         # Field spatial_name_code => dcterms:spatial
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('spatial_name_code', DCTERMS.spatialName, None, URIRef)])
@@ -390,10 +390,10 @@ class QDESDCATProfile(RDFProfile):
             self._add_list_triples_from_dict(resource_dict, distribution, [('size', DCAT.packageFormat, None, Literal)])
 
             # Field url => dcat:downloadURL
-            self._add_list_triples_from_dict(resource_dict, distribution, [('url', DCAT.downloadURL, None, Literal)])
+            self._add_list_triples_from_dict(resource_dict, distribution, [('url', DCAT.downloadURL, None, URIRef)])
 
             # Field service_api_endpoint => dcat:accessURL
-            self._add_list_triples_from_dict(resource_dict, distribution, [('service_api_endpoint', DCAT.accessURL, None, Literal)])
+            self._add_list_triples_from_dict(resource_dict, distribution, [('service_api_endpoint', DCAT.accessURL, None, URIRef)])
 
             # Field data_services => dcat:accessService
             data_services = self._get_dataset_value(resource_dict, 'data_services')
@@ -414,6 +414,10 @@ class QDESDCATProfile(RDFProfile):
 
     def _dataservice_graph(self, dataset_dict, dataset_ref):
         g = self.g
+
+        # Field data_services => dcat:Dataservice
+        g.remove((dataset_ref, RDF.type, DCAT.Dataset))
+        g.add((dataset_ref, RDF.type, QDCAT.DataService))
 
         # Let's update the namespace here.
         overridden_namespace = [
@@ -548,7 +552,8 @@ class QDESDCATProfile(RDFProfile):
 
                         # dcat:hadRole
                         if role:
-                            g.add((relationship_node, DCAT.hadRole, URIRef(role)))
+                            # SUPDESQ-97 fix for role
+                            g.add((relationship_node, DCAT.hadRole, URIRef(role.split('=',1)[-1])))
 
                         g.add((dataset_ref, DCAT.qualifiedRelation, relationship_node))
 
