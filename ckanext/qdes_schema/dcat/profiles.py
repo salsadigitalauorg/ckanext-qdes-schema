@@ -533,11 +533,8 @@ class QDESDCATProfile(RDFProfile):
             values = toolkit.get_converter('json_or_string')(all_relationships)
             if values and isinstance(values, list):
                 for value in values:
-                    relation = None
-                    if value.get('comment'):
-                        relation = value.get('comment')
-                    elif value.get('pkg_id'):
-                        relation = h.url_for('dataset.read', id=value.get('pkg_id'), _external=True)
+                    relation = value.get('comment') or h.url_for('dataset.read', id=value.get('pkg_id'), _external=True) if value.get(
+                        'pkg_id') else None
                     relationship_type = value.get('type')
                     role = constants.RELATIONSHIP_TYPE_URIS.get(relationship_type, None)
 
