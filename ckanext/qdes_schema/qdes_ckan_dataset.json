@@ -328,7 +328,7 @@
               "label": "Open license",
               "field_name": "open_license",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This dataset or data source is available online with an open licence."
+              "help_text": "This dataset or data source is available online with an open license."
             },
             {
               "label": "Open standards",
@@ -360,19 +360,19 @@
               "label": "Data complete",
               "field_name": "data_complete",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "There are no known gaps in the data. (For example: non-responses, missing records, data notcollected.). Or gaps are identified in caveats attached to the dataset or data source."
+              "help_text": "There are no known gaps in the data. (For example: non-responses, missing records, data not collected.). Or gaps are identified in caveats attached to the dataset or data source."
             },
             {
               "label": "Data met needs of primary user",
               "field_name": "data_met_needs_of_primary_user",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "The data collection met the objectives of the primary user. The data correctly representswhat it was designed to measure, monitor or report."
+              "help_text": "The data collection met the objectives of the primary user. The data correctly represents what it was designed to measure, monitor or report."
             },
             {
               "label": "No changes or flaws not explained",
               "field_name": "no_changes_or_flaws_not_explained",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "There have been no adjustments, changes or other factors that could impact the validity ofthe data. (For example: weighting, rounding, de-identification of data; changes or flaws indata collection or verification methods.). Or adjustments are identified in caveats attached tothe dataset or data source"
+              "help_text": "There have been no adjustments, changes or other factors that could impact the validity of the data. (For example: weighting, rounding, de-identification of data; changes or flaws in data collection or verification methods.). Or adjustments are identified in caveats attached to the dataset or data source"
             },
             {
               "label": "Revised when errors detected",
@@ -386,19 +386,19 @@
           "field_name": "coherence",
           "label": "Coherence",
           "display_group": "Coherence",
-          "display_group_help_text": "A dimension of quality relating to the degree to which data or information can be comparedwith itself and other information over time.",
+          "display_group_help_text": "A dimension of quality relating to the degree to which data or information can be compared with itself and other information over time.",
           "field_group": [
             {
               "label": "Consistent methodology",
               "field_name": "consistent_methodology",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This dataset is a single collection. It is not impacted by changes in methodology or externalevents over time. Or this data is part of a time series. There have not been any significantchanges in the way data items are defined, classified or counted since the start of the series."
+              "help_text": "This dataset is a single collection. It is not impacted by changes in methodology or external events over time. Or this data is part of a time series. There have not been any significant changes in the way data items are defined, classified or counted since the start of the series."
             },
             {
               "label": "Consistent over time",
               "field_name": "consistent_over_time",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This data is part of a time series. It is consistent with previous releases. There have been nochanges in methodology or external impacts since the last data release."
+              "help_text": "This data is part of a time series. It is consistent with previous releases. There have been no changes in methodology or external impacts since the last data release."
             },
             {
               "label": "Consistent with related datasets",
@@ -416,14 +416,14 @@
               "label": "Elements can be compared",
               "field_name": "elements_can_be_compared",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Standard definitions, common concepts, classifications and data recording practices havebeen used."
+              "help_text": "Standard definitions, common concepts, classifications and data recording practices have been used."
             }
           ]
         },{
           "field_name": "institutional_environment",
           "label": "Institutional Environment",
           "display_group": "Institutional Environment",
-          "display_group_help_text": "A dimension of quality relating to the institutional and organisational factors which mayhave a significant influence on the effectiveness and credibility of the agency producing thedata or information.",
+          "display_group_help_text": "A dimension of quality relating to the institutional and organisational factors which may have a significant influence on the effectiveness and credibility of the agency producing the data or information.",
           "field_group": [
             {
               "label": "Authorized data collection",
