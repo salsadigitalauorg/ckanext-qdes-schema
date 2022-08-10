@@ -316,31 +316,31 @@
               "label": "Links to data and context",
               "field_name": "accessibility_links_to_data_and_context",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This dataset or data source is linked to other data, to provide context."
+              "help_text": "Is this dataset or data source linked to other data which provides context?"
             },
             {
               "label": "Non-proprietary format",
               "field_name": "non_proprietary_format",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This dataset or data source is available in a non-proprietary format."
+              "help_text": "Is this dataset or data source available in a non-proprietary format?"
             },
             {
               "label": "Open license",
               "field_name": "open_license",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This dataset or data source is available online with an open license."
+              "help_text": "Is this dataset or data source available online with an open license?"
             },
             {
               "label": "Open standards",
               "field_name": "open_standards",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This dataset or data source is described using open standards and persistent identifiers."
+              "help_text": "Is this dataset or data source described using open standards and persistent identifiers?"
             },
             {
               "label": "Structured data",
               "field_name": "structured_data",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This dataset or data source is available in a machine-processable, structured format."
+              "help_text": "Is this dataset or data source available in a machine-processable, structured format?"
             }
           ]
         },
@@ -354,31 +354,31 @@
               "label": "Data assurance",
               "field_name": "data_assurance",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This data has been subject to quality assurance processes. ie Checking for errors at each stage of data collection and processing, or verifying data entry and making corrections if necessary."
+              "help_text": "Has the data been subject to quality assurance processes? (E.g., Checking for errors at each stage of data collection and processing, verifying data entry and making corrections where necessary)"
             },
             {
               "label": "Data complete",
               "field_name": "data_complete",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "There are no known gaps in the data. (For example: non-responses, missing records, data not collected.). Or gaps are identified in caveats attached to the dataset or data source."
+              "help_text": "Are there any known gaps in the data? (E.g., Non-responses, missing records, data not collected)"
             },
             {
               "label": "Data met needs of primary user",
               "field_name": "data_met_needs_of_primary_user",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "The data collection met the objectives of the primary user. The data correctly represents what it was designed to measure, monitor or report."
+              "help_text": "Does the data collection meet the objectives of the primary user? (I.e., the data correctly represents what it was designed to measure, monitor or report)"
             },
             {
               "label": "No changes or flaws not explained",
               "field_name": "no_changes_or_flaws_not_explained",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "There have been no adjustments, changes or other factors that could impact the validity of the data. (For example: weighting, rounding, de-identification of data; changes or flaws in data collection or verification methods.). Or adjustments are identified in caveats attached to the dataset or data source"
+              "help_text": "Has the data undergone any adjustments or changes or are there other factors that could impact the validity of the data? (E.g., Weighting, rounding, de-identification of data, changes or known flaws in data collection or verification methods)"
             },
             {
               "label": "Revised when errors detected",
               "field_name": "revised_when_errors_detected",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Revision policy: If errors are identified, data is revised and the revision is publicised."
+              "help_text": "Is there a revision policy in use such that identified errors are revised and the revision is publicised?"
             }
           ]
         },
@@ -392,105 +392,105 @@
               "label": "Consistent methodology",
               "field_name": "consistent_methodology",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This dataset is a single collection. It is not impacted by changes in methodology or external events over time. Or this data is part of a time series. There have not been any significant changes in the way data items are defined, classified or counted since the start of the series."
+              "help_text": "Is the data consistent with previous releases? There have been no changes to methodology or external impacts since the last data release."
             },
             {
               "label": "Consistent over time",
               "field_name": "consistent_over_time",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This data is part of a time series. It is consistent with previous releases. There have been no changes in methodology or external impacts since the last data release."
+              "help_text": "Have there been any significant changes in the way the data is defined, classified, or counted over time?"
             },
             {
               "label": "Consistent with related datasets",
               "field_name": "consistent_with_related_datasets",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "This data is generally consistent with similar or related data sources."
-            },
-            {
-              "label": "Consistent data collection frequency",
-              "field_name": "consistent_data_collection_frequency",
-              "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Elements within the data can be meaningfully compared."
+              "help_text": "Is this data generally consistent with similar or related data sources?"
             },
             {
               "label": "Elements can be compared",
               "field_name": "elements_can_be_compared",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Standard definitions, common concepts, classifications and data recording practices have been used."
-            }
+              "help_text": "Can the elements within the data be meaningfully compared?"
+            },
+            {
+              "label": "Standard definitions and practices",
+              "field_name": "consistent_data_collection_frequency",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Are standard definitions, common concepts, classifications, and data recording practices used?"
+            }        
           ]
         },{
           "field_name": "institutional_environment",
           "label": "Institutional Environment",
           "display_group": "Institutional Environment",
-          "display_group_help_text": "A dimension of quality relating to the institutional and organisational factors which may have a significant influence on the effectiveness and credibility of the agency producing the data or information.",
+          "display_group_help_text": "A dimension of quality relating to the institutional and organisational factors that have a significant influence on the effectiveness and credibility of the agency producing the data or information.",
           "field_group": [
             {
               "label": "Authorized data collection",
               "field_name": "authorized_data_collection",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Data collection is mandated or required by a law, regulation or agreement"
+              "help_text": "Is the data collection mandated or required by law, a regulation, or an agreement?"
             },
             {
               "label": "Custodian",
               "field_name": "custodian",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Agency publishing this data is the recognised data custodian."
+              "help_text": "Is the publishing agency the recognised data custodian?"
             },
             {
               "label": "Data quality framework",
               "field_name": "data_quality_framework",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Data is collected and managed according to a data quality framework."
-            },
-            {
-              "label": "No commercial interest or conflict",
-              "field_name": "no_commercial_interest_or_conflict",
-              "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Data governance roles and responsibilities are clearly assigned for this dataset or data source."
+              "help_text": "Is the data collected and managed according to a data quality framework?"
             },
             {
               "label": "Governance roles",
               "field_name": "governance_roles",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Custodian has no commercial interest or conflict of interest in the data – or, has declared any"
+              "help_text": "Are data governance roles and responsibilities clearly assigned for this dataset or data source?"
+            },
+            {
+              "label": "No commercial interest or conflict",
+              "field_name": "no_commercial_interest_or_conflict",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Does the custodian have any commercial interests or conflict of interest in the data?"
             }
           ]
         },{
           "field_name": "interpretability",
           "label": "Interpretability",
           "display_group": "Interpretability",
-          "display_group_help_text": "A dimension of quality relating to the degree to which data or information can be understood, explained and used.",
+          "display_group_help_text": "A dimension of quality relating to the degree to which data or information can be understood explained, or used.",
           "field_group": [
             {
               "label": "Accuracy evaluation",
               "field_name": "accuracy_evaluation",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Information is available to help users evaluate the accuracy of the data and any level of error."
+              "help_text": "Is information provided to help users evaluate the accuracy of the data and associated level of error?"
             },
             {
               "label": "Concept explanations",
               "field_name": "concept_explanations",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Information is available to explain concepts, help users correctly interpret the data and understand how it can be used."
+              "help_text": "Is information provided which explains concepts, and helps users correctly interpret the data and understand how it can be used?"
             },
             {
               "label": "Data dictionary provided",
               "field_name": "data_dictionary_provided",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "A data dictionary is available to explain the meaning of data elements, their origin, format and relationships."
+              "help_text": "Is a data dictionary provided to explain the meaning of data elements, their origin, format, and relationships?"
             },
             {
               "label": "Data sources and methods",
               "field_name": "data_sources_and_methods",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Information is available about the primary data sources and methods of data collection. (For example: instruments, forms, instructions.)"
+              "help_text": "Is information provided about the primary data sources and methods of data collection? (E.g., Instruments details, forms, instructions)"
             },
             {
               "label": "Technical explanations",
               "field_name": "technical_explanations",
               "form_snippet": "qdes_checkbox_choice.html",
-              "help_text": "Information is available to explain ambiguous or technical terms used in the data."
+              "help_text": "Is information provided to explain ambiguous or technical terms used in the data?"
             }
           ]
         }
