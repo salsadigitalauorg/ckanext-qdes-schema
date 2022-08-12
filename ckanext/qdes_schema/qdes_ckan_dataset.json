@@ -572,7 +572,7 @@
       "display_group": "data quality",
       "recommended": true,
       "form_placeholder": "e.g. Australian Land Use and Management Classification - Version 8",
-      "help_text": "ist any standards, data structures or vocabularies used by the dataset, input is a URI"
+      "help_text": "List any standards, data structures or vocabularies used by the dataset, input is a URI"
     },
     {
       "field_name": "series_or_collection",
