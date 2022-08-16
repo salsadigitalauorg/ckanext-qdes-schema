@@ -119,7 +119,7 @@ class QDESDCATProfile(RDFProfile):
             g.add((dataset_ref, QDCAT.temporalResolution, Literal(temporal_precision_spacing, datatype=XSD.duration)))
 
         # Field temporal_resolution_range => qdcat:temporalRange
-        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('temporal_resolution_range', QDCAT.temporalRange, Literal('temporal_resolution_range', XSD.duration))])
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('temporal_resolution_range', QDCAT.temporalRange, None, URIRef)])
 
         # Field spatial_name_code => dcterms:spatial
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('spatial_name_code', DCTERMS.spatialName, None, URIRef)])
