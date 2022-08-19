@@ -98,6 +98,22 @@ class QDESDCATProfile(RDFProfile):
         # Field license => dcterms:license
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('license_id', DCTERMS.license, None, URIRef)])
 
+        # Field dataset_creation_date => dcterms:created
+        dataset_creation_date = self._get_dataset_value(dataset_dict, 'dataset_creation_date')
+        if dataset_creation_date:
+            g.add((dataset_ref, DCTERMS.created, Literal(dataset_creation_date, datatype=XSD.dateTime)))
+        # Field dataset_release_date => dcterms:issued
+        g.remove((dataset_ref, DCTERMS.issued, None))
+        dataset_release_date = self._get_dataset_value(dataset_dict, 'dataset_release_date')
+        if dataset_release_date:
+            g.add((dataset_ref, DCTERMS.issued, Literal(dataset_release_date, datatype=XSD.dateTime)))
+
+        # Field dataset_last_modified_date => dcterms:modified
+        g.remove((dataset_ref, DCTERMS.modified, None))
+        dataset_last_modified_date = self._get_dataset_value(dataset_dict, 'dataset_last_modified_date')
+        if dataset_last_modified_date:
+            g.add((dataset_ref, DCTERMS.modified, Literal(dataset_last_modified_date, datatype=XSD.dateTime)))
+
         # Field group parameter => qudt:hasQuantity a qudt:Quantity
         # observed-property => qudt:hasQuantityKind
         # unit-of-measure => qudt:unit
@@ -456,25 +472,9 @@ class QDESDCATProfile(RDFProfile):
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('service_status', ADMS.status, None, URIRef)])
 
         # Field service_creation_date => dcterms:created
-        service_creation_date = self._get_dataset_value(dataset_dict, 'creation_date')
+        service_creation_date = self._get_dataset_value(dataset_dict, 'service_creation_date')
         if service_creation_date:
             g.add((dataset_ref, DCTERMS.created, Literal(service_creation_date, datatype=XSD.dateTime)))
-
-        # Field dataset_creation_date => dcterms:created
-        dataset_creation_date = self._get_dataset_value(dataset_dict, 'dataset_creation_date')
-        if dataset_creation_date:
-            g.add((dataset_ref, DCTERMS.created, Literal(dataset_creation_date, datatype=XSD.dateTime)))
-        # Field dataset_release_date => dcterms:issued
-        g.remove((dataset_ref, DCTERMS.issued, None))
-        dataset_release_date = self._get_dataset_value(dataset_dict, 'dataset_release_date')
-        if dataset_release_date:
-            g.add((dataset_ref, DCTERMS.issued, Literal(dataset_release_date, datatype=XSD.dateTime)))
-
-        # Field dataset_last_modified_date => dcterms:modified
-        g.remove((dataset_ref, DCTERMS.modified, None))
-        dataset_last_modified_date = self._get_dataset_value(dataset_dict, 'dataset_last_modified_date')
-        if dataset_last_modified_date:
-            g.add((dataset_ref, DCTERMS.modified, Literal(dataset_last_modified_date, datatype=XSD.dateTime)))
 
         # Field service_launch_date => dcterms:issued
         g.remove((dataset_ref, DCTERMS.issued, None))
@@ -574,24 +574,25 @@ class QDESDCATProfile(RDFProfile):
         catalog_record = BNode()
 
         # Field metadata_created => DCTERMS.issued
-        metadata_created = self._get_dataset_value(dataset_dict, 'metadata_created')
-        if metadata_created:
-            g.add((catalog_record, DCTERMS.issued, Literal(metadata_created, datatype=XSD.dateTime)))
+        if dataset_dict.get('type') == 'dataset':
+            metadata_created = self._get_dataset_value(dataset_dict, 'metadata_created')
+            if metadata_created:
+                g.add((catalog_record, DCTERMS.issued, Literal(metadata_created, datatype=XSD.dateTime)))
 
-        # Field metadata_modified => DCTERMS.modified
-        metadata_modified = self._get_dataset_value(dataset_dict, 'metadata_modified')
-        if metadata_modified:
-            g.add((catalog_record, DCTERMS.modified, Literal(metadata_modified, datatype=XSD.dateTime)))
+            # Field metadata_modified => DCTERMS.modified
+            metadata_modified = self._get_dataset_value(dataset_dict, 'metadata_modified')
+            if metadata_modified:
+                g.add((catalog_record, DCTERMS.modified, Literal(metadata_modified, datatype=XSD.dateTime)))
+            
+             # Field metadata_update_date => qdcat:modified
+            metadata_update_date = self._get_dataset_value(dataset_dict, 'metadata_update_date')
+            if metadata_review_date:
+                g.add((catalog_record, DCTERMS.modified, Literal(metadata_update_date, datatype=XSD.dateTime)))
 
         # Field metadata_modified => qdcat:reviewed
         metadata_review_date = self._get_dataset_value(dataset_dict, 'metadata_review_date')
         if metadata_review_date:
             g.add((catalog_record, QDCAT.reviewed, Literal(metadata_review_date, datatype=XSD.dateTime)))
-
-        # Field metadata_update_date => qdcat:modified
-        metadata_update_date = self._get_dataset_value(dataset_dict, 'metadata_update_date')
-        if metadata_review_date:
-            g.add((catalog_record, DCTERMS.modified, Literal(metadata_update_date, datatype=XSD.dateTime)))
         
         # Field url => dcterms:source
         self._add_list_triples_from_dict(dataset_dict, catalog_record, [('url', DCTERMS.source, None, URIRef)])
