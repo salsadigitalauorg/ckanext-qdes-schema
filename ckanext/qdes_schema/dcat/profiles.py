@@ -4,7 +4,7 @@ import logging
 
 from rdflib import URIRef, BNode, Literal
 from rdflib.namespace import Namespace, RDF, XSD, SKOS, RDFS
-from ckanext.dcat.profiles import RDFProfile, URIRefOrLiteral, CleanedURIRef
+from ckanext.dcat.profiles import RDFProfile, URIRefOrLiteral, CleanedURIRef, SCHEMA
 from ckanext.dcat.utils import resource_uri
 from ckanext.relationships import constants
 
@@ -61,6 +61,7 @@ class QDESDCATProfile(RDFProfile):
         elif dataset_dict.get('type') == 'dataservice':
             self._dataservice_graph(dataset_dict, dataset_ref)
 
+
     def _dataset_graph(self, dataset_dict, dataset_ref):
         g = self.g
 
@@ -97,6 +98,22 @@ class QDESDCATProfile(RDFProfile):
         # Field license => dcterms:license
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('license_id', DCTERMS.license, None, URIRef)])
 
+        # Field dataset_creation_date => dcterms:created
+        dataset_creation_date = self._get_dataset_value(dataset_dict, 'dataset_creation_date')
+        if dataset_creation_date:
+            g.add((dataset_ref, DCTERMS.created, Literal(dataset_creation_date, datatype=XSD.dateTime)))
+        # Field dataset_release_date => dcterms:issued
+        g.remove((dataset_ref, DCTERMS.issued, None))
+        dataset_release_date = self._get_dataset_value(dataset_dict, 'dataset_release_date')
+        if dataset_release_date:
+            g.add((dataset_ref, DCTERMS.issued, Literal(dataset_release_date, datatype=XSD.dateTime)))
+
+        # Field dataset_last_modified_date => dcterms:modified
+        g.remove((dataset_ref, DCTERMS.modified, None))
+        dataset_last_modified_date = self._get_dataset_value(dataset_dict, 'dataset_last_modified_date')
+        if dataset_last_modified_date:
+            g.add((dataset_ref, DCTERMS.modified, Literal(dataset_last_modified_date, datatype=XSD.dateTime)))
+
         # Field group parameter => qudt:hasQuantity a qudt:Quantity
         # observed-property => qudt:hasQuantityKind
         # unit-of-measure => qudt:unit
@@ -113,6 +130,17 @@ class QDESDCATProfile(RDFProfile):
 
                     g.add((dataset_ref, QUDT.hasQuantity, node))
 
+        
+        # Remove temporal
+        for s, p, o in g:
+            if p == SCHEMA.startDate:
+                g.remove((s, p, None))
+            if p == SCHEMA.endDate:
+                g.remove((s, p, None))
+            if o == DCTERMS.PeriodOfTime:
+                g.remove((s, p, o)) 
+        g.remove((dataset_ref, DCTERMS.temporal, None))
+        self._temporal_graph(dataset_dict, dataset_ref)
         # Field temporal_precision_spacing => qdcat:temporalResolution => ^^type xsd:duration
         temporal_precision_spacing = self._get_dataset_value(dataset_dict, 'temporal_precision_spacing')
         if temporal_precision_spacing:
@@ -201,7 +229,7 @@ class QDESDCATProfile(RDFProfile):
 
             # Field spatial_resolution => qdcat:spatialResolution
             if spatial_resolution:
-                g.add((location_node, QDCAT.spatialResolution, URIRef(spatial_resolution)))
+                g.add((location_node, QDCAT.spatialResolution, Literal(spatial_resolution, datatype=XSD.decimal)))
 
             # Field spatial_datum_crs => geox:inCRS
             if spatial_datum_crs:
@@ -544,32 +572,22 @@ class QDESDCATProfile(RDFProfile):
         g = self.g
         # Set CatalogRecord
         catalog_record = BNode()
-        # Field dataset_creation_date => dcterms:created
-        dataset_creation_date = self._get_dataset_value(dataset_dict, 'dataset_creation_date')
-        if dataset_creation_date:
-            g.add((catalog_record, DCTERMS.created, Literal(dataset_creation_date, datatype=XSD.dateTime)))
-
-        # Field dataset_release_date => dcterms:issued
-        g.remove((dataset_ref, DCTERMS.issued, None))
-        dataset_release_date = self._get_dataset_value(dataset_dict, 'dataset_release_date')
-        if dataset_release_date:
-            g.add((catalog_record, DCTERMS.issued, Literal(dataset_release_date, datatype=XSD.dateTime)))
-
-        # Field dataset_last_modified_date => dcterms:modified
-        g.remove((dataset_ref, DCTERMS.modified, None))
-        dataset_last_modified_date = self._get_dataset_value(dataset_dict, 'dataset_last_modified_date')
-        if dataset_last_modified_date:
-            g.add((catalog_record, DCTERMS.modified, Literal(dataset_last_modified_date, datatype=XSD.dateTime)))
 
         # Field metadata_created => DCTERMS.issued
-        metadata_created = self._get_dataset_value(dataset_dict, 'metadata_created')
-        if metadata_created:
-            g.add((catalog_record, DCTERMS.issued, Literal(metadata_created, datatype=XSD.dateTime)))
+        if dataset_dict.get('type') == 'dataset':
+            metadata_created = self._get_dataset_value(dataset_dict, 'metadata_created')
+            if metadata_created:
+                g.add((catalog_record, DCTERMS.issued, Literal(metadata_created, datatype=XSD.dateTime)))
 
-        # Field metadata_modified => DCTERMS.modified
-        metadata_modified = self._get_dataset_value(dataset_dict, 'metadata_modified')
-        if metadata_modified:
-            g.add((catalog_record, DCTERMS.modified, Literal(metadata_modified, datatype=XSD.dateTime)))
+            # Field metadata_modified => DCTERMS.modified
+            metadata_modified = self._get_dataset_value(dataset_dict, 'metadata_modified')
+            if metadata_modified:
+                g.add((catalog_record, DCTERMS.modified, Literal(metadata_modified, datatype=XSD.dateTime)))
+            
+             # Field metadata_update_date => qdcat:modified
+            metadata_update_date = self._get_dataset_value(dataset_dict, 'metadata_update_date')
+            if metadata_review_date:
+                g.add((catalog_record, DCTERMS.modified, Literal(metadata_update_date, datatype=XSD.dateTime)))
 
         # Field metadata_modified => qdcat:reviewed
         metadata_review_date = self._get_dataset_value(dataset_dict, 'metadata_review_date')
@@ -583,8 +601,21 @@ class QDESDCATProfile(RDFProfile):
         dataset_dict['metadata_contact_point'] = _get_point_of_contact_name(dataset_dict['metadata_contact_point'])
         self._add_list_triples_from_dict(dataset_dict, catalog_record, [('metadata_contact_point', DCAT.contactPoint, None, Literal)])
 
+        self._add_list_triples_from_dict(dataset_dict, catalog_record, [('owner_org', DCTERMS.publisher, None, Literal)])
+
         g.add((dataset_ref, DCAT.CatalogRecord, catalog_record ))
 
+    def _temporal_graph(self, dataset_dict, dataset_ref):
+        g = self.g
+        start = self._get_dataset_value(dataset_dict, 'temporal_start')
+        end = self._get_dataset_value(dataset_dict, 'temporal_end')
+        temporal_extent = BNode()
+        g.add((temporal_extent, RDF.type, DCAT.PeriodOfTime))
+        if start:
+            self._add_date_triple(temporal_extent, DCAT.startDate, start)
+        if end:
+            self._add_date_triple(temporal_extent, DCAT.endDate, end)
+        g.add((dataset_ref, DCAT.temporal, temporal_extent))
 
 def _get_point_of_contact_name(contact_point):
     # TODO: Need to load all secure vocabs as dict objects
@@ -607,3 +638,4 @@ def _get_point_of_contact_name(contact_point):
             return contact_point
 
     return contact_point
+
