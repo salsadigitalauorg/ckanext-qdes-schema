@@ -444,6 +444,12 @@ class QDESDCATProfile(RDFProfile):
         # Field topic => dcat:theme
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('topic', DCAT.theme, None, URIRef)])
 
+        # Field notes => dcterms:description
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('notes', DCTERMS.description, None, Literal)])
+
+        # Field language => dcterms:language
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('language', DCTERMS.language, None, URIRef)])
+
         # Field tags => dcat:keyword
         tags = dataset_dict.get('tags')
         if tags:
