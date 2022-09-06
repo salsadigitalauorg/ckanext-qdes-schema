@@ -81,6 +81,7 @@ class QDESDCATProfile(RDFProfile):
             ('identifiers', DCTERMS.identifier, ['id'], Literal),
             ('classification', DCTERMS.type, None, URIRef),
         ]
+        # Identification
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
 
         # Field purpose => qdcat:purpose
@@ -336,6 +337,7 @@ class QDESDCATProfile(RDFProfile):
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_point', DCAT.contactPoint, None, Literal)])
 
         # Field contact_publisher => dcterms:publisher
+        g.remove((dataset_ref, DCTERMS.publisher, None))
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_publisher', DCTERMS.publisher, None, URIRef)])
 
         # Field contact_creator => dcterms:creator
@@ -441,6 +443,12 @@ class QDESDCATProfile(RDFProfile):
 
         # Field topic => dcat:theme
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('topic', DCAT.theme, None, URIRef)])
+
+        # Field notes => dcterms:description
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('notes', DCTERMS.description, None, Literal)])
+
+        # Field language => dcterms:language
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('language', DCTERMS.language, None, URIRef)])
 
         # Field tags => dcat:keyword
         tags = dataset_dict.get('tags')
@@ -586,7 +594,7 @@ class QDESDCATProfile(RDFProfile):
             
              # Field metadata_update_date => qdcat:modified
             metadata_update_date = self._get_dataset_value(dataset_dict, 'metadata_update_date')
-            if metadata_review_date:
+            if metadata_update_date:
                 g.add((catalog_record, DCTERMS.modified, Literal(metadata_update_date, datatype=XSD.dateTime)))
 
         # Field metadata_modified => qdcat:reviewed
@@ -601,7 +609,9 @@ class QDESDCATProfile(RDFProfile):
         dataset_dict['metadata_contact_point'] = _get_point_of_contact_name(dataset_dict['metadata_contact_point'])
         self._add_list_triples_from_dict(dataset_dict, catalog_record, [('metadata_contact_point', DCAT.contactPoint, None, Literal)])
 
-        self._add_list_triples_from_dict(dataset_dict, catalog_record, [('owner_org', DCTERMS.publisher, None, Literal)])
+        organization = self._get_dataset_value(dataset_dict, 'organization')
+        organization_name = organization.get('name')
+        g.add((catalog_record, DCTERMS.publisher, Literal(organization_name)))
 
         g.add((dataset_ref, DCAT.CatalogRecord, catalog_record ))
 
@@ -619,7 +629,7 @@ class QDESDCATProfile(RDFProfile):
 
 def _get_point_of_contact_name(contact_point):
     # TODO: Need to load all secure vocabs as dict objects
-    # Load vocabualry service contact_point
+    # Load vocabulary service contact_point
     context = {
         u'model': model,
         u'user': toolkit.g.user,
