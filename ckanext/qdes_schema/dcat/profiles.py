@@ -230,7 +230,7 @@ class QDESDCATProfile(RDFProfile):
 
             # Field spatial_resolution => qdcat:spatialResolution
             if spatial_resolution:
-                g.add((location_node, QDCAT.spatialResolution, Literal(spatial_resolution, datatype=XSD.decimal)))
+                g.add((location_node, DCAT.spatialResolution, URIRef(spatial_resolution)))
 
             # Field spatial_datum_crs => geox:inCRS
             if spatial_datum_crs:
@@ -504,6 +504,7 @@ class QDESDCATProfile(RDFProfile):
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_point', DCAT.contactPoint, None, Literal)])
 
         # Field contact_publisher => dcterms:publisher
+        g.remove((dataset_ref, DCTERMS.publisher, None))
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_publisher', DCTERMS.publisher, None, Literal)])
 
         # Field contact_creator => dcterms:creator
