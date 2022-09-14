@@ -230,7 +230,7 @@ class QDESDCATProfile(RDFProfile):
 
             # Field spatial_resolution => qdcat:spatialResolution
             if spatial_resolution:
-                g.add((location_node, QDCAT.spatialResolution, Literal(spatial_resolution, datatype=XSD.decimal)))
+                g.add((location_node, DCAT.spatialResolution, URIRef(spatial_resolution)))
 
             # Field spatial_datum_crs => geox:inCRS
             if spatial_datum_crs:
@@ -491,6 +491,7 @@ class QDESDCATProfile(RDFProfile):
             g.add((dataset_ref, DCTERMS.issued, Literal(service_launch_date, datatype=XSD.dateTime)))
 
         # Field service_last_modified_date => dcterms:modified
+        g.remove((dataset_ref, DCTERMS.modified, None))
         service_last_modified_date = self._get_dataset_value(dataset_dict, 'service_last_modified_date')
         if service_last_modified_date:
             g.add((dataset_ref, DCTERMS.modified, Literal(service_last_modified_date, datatype=XSD.dateTime)))
@@ -499,9 +500,11 @@ class QDESDCATProfile(RDFProfile):
         self._get_related_dataset_node(dataset_dict, dataset_ref)
 
         # Field contact_point => dcat:contactPoint
+        dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict['contact_point'])
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_point', DCAT.contactPoint, None, Literal)])
 
         # Field contact_publisher => dcterms:publisher
+        g.remove((dataset_ref, DCTERMS.publisher, None))
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_publisher', DCTERMS.publisher, None, Literal)])
 
         # Field contact_creator => dcterms:creator
