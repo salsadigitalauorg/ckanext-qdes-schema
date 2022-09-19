@@ -7,7 +7,7 @@ from rdflib.namespace import Namespace, RDF, XSD, SKOS, RDFS
 from ckanext.dcat.profiles import RDFProfile, URIRefOrLiteral, CleanedURIRef, SCHEMA
 from ckanext.dcat.utils import resource_uri
 from ckanext.relationships import constants
-
+from urllib.parse import urlparse, unquote, parse_qs
 
 h = toolkit.h
 get_action = toolkit.get_action
@@ -553,8 +553,13 @@ class QDESDCATProfile(RDFProfile):
 
                         # dcat:hadRole
                         if role:
+                            # Get URI query param and decode
+                            parsed_url = urlparse(role)
+                            parsed_query_params = parse_qs(parsed_url.query)
+                            uri = parsed_query_params.get('uri', [])
+                            role = unquote(uri[0] if len(uri) > 0 else '')
                             # SUPDESQ-97 fix for role
-                            g.add((relationship_node, DCAT.hadRole, URIRef(role.split('=',1)[-1])))
+                            g.add((relationship_node, DCAT.hadRole, URIRef(role)))
 
                         g.add((dataset_ref, DCAT.qualifiedRelation, relationship_node))
 
