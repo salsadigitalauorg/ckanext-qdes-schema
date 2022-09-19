@@ -2,6 +2,7 @@ import ckan.plugins.toolkit as toolkit
 import ckan.model as model
 import logging
 
+from urllib.parse import unquote
 from rdflib import URIRef, BNode, Literal
 from rdflib.namespace import Namespace, RDF, XSD, SKOS, RDFS
 from ckanext.dcat.profiles import RDFProfile, URIRefOrLiteral, CleanedURIRef, SCHEMA
@@ -554,7 +555,7 @@ class QDESDCATProfile(RDFProfile):
                         # dcat:hadRole
                         if role:
                             # SUPDESQ-97 fix for role
-                            g.add((relationship_node, DCAT.hadRole, URIRef(role.split('=',1)[-1])))
+                            g.add((relationship_node, DCAT.hadRole, URIRef(unquote(role.split('=',1)[-1]))))
 
                         g.add((dataset_ref, DCAT.qualifiedRelation, relationship_node))
 
