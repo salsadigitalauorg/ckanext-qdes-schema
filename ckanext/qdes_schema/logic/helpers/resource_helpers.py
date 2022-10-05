@@ -1,11 +1,7 @@
-import ckan.logic as logic
 import json
 import logging
 
-from ckan import model
-from ckan.logic import NotFound
-from ckan.plugins.toolkit import c, g, config, get_action, h
-from pprint import pformat
+from ckan.plugins.toolkit import get_action, ObjectNotFound
 
 log = logging.getLogger(__name__)
 
@@ -13,7 +9,7 @@ log = logging.getLogger(__name__)
 def get_resource_package(context, pkg_id):
     try:
         return get_action('package_show')(context, {'id': pkg_id})
-    except NotFound as e:
+    except ObjectNotFound as e:
         log.error(str(e))
     return {}
 
@@ -70,7 +66,7 @@ def before_delete(context, resource, resources):
             })
 
 
-def add_dataservice(dataservice_id, resource, pkg_dict, remove=False):
+def add_dataservice(context, dataservice_id, resource, pkg_dict, remove=False):
     try:
         data_services = []
         if resource.get('data_services', None):
@@ -86,9 +82,6 @@ def add_dataservice(dataservice_id, resource, pkg_dict, remove=False):
         for n, p in enumerate(pkg_dict['resources']):
             if p['id'] == res_id:
                 pkg_dict['resources'][n] = resource
-
-                site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
-                context = {u'user': site_user[u'name'], u'return_id_only': True}
                 get_action('package_update')(context, pkg_dict)
     except json.JSONDecodeError as e:
         log.error(str(e))

@@ -117,6 +117,7 @@
       "label_plural": "parameters",
       "no_selected_term": "No parameters have been added. Please use the interface above to select an <strong>Observed property</strong> and corresponding <strong>Unit of measure.</strong>",
       "validators": "ignore_empty ignore_missing qdes_validate_multi_pair_vocab_vocab",
+      "help_text": "List the properties included in the dataset and their measurement units",
       "field_group": [
         {
           "field_name": "observed-property",
@@ -177,6 +178,7 @@
       "display_property": "tempqdcat:temporalRange",
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "temporal_resolution_ranges",
+      "help_text": "The minimum period in the dataset using a range keyword",
       "form_attrs": {
         "data-module-title": "title"
       }
@@ -294,15 +296,205 @@
       }
     },
     {
-      "field_name": "conforms_to",
-      "label": "Schema or standard",
-      "display_snippet": "qdes_multi_text_url.html",
-      "form_snippet": "qdes_multi_text.html",
-      "validators": "ignore_missing qdes_uri_validator",
-      "display_property": "dcterms:conformsTo",
+      "field_name": "data_quality_standard",
       "display_group": "data quality",
-      "recommended": true,
-      "form_placeholder": "e.g. Australian Land Use and Management Classification - Version 8"
+      "sub_display_group": "S&T Data Quality Standard",
+      "label": "S&T Data Quality Standard",
+      "sub_label": "Calculated quality measure ",
+      "form_snippet": "qdes_calculated_quality_measure.html",
+      "display_snippet": "qdes_calculated_quality_measure.html",
+      "validators": "scheming_valid_json_object",
+      "display_group_help_text": "See the Help pages for more information on the data quality standard and its usage",
+      "field_group":[
+        {
+          "field_name": "accessibility",
+          "label": "Accessibility",
+          "display_group": "Accessibility",
+          "display_group_help_text": "A dimension of quality relating to the ease with which data or information can be retrieved,used and understood.",
+          "field_group": [
+            {
+              "label": "Links to data and context",
+              "field_name": "accessibility_links_to_data_and_context",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is this dataset or data source linked to other data which provides context?"
+            },
+            {
+              "label": "Non-proprietary format",
+              "field_name": "non_proprietary_format",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is this dataset or data source available in a non-proprietary format?"
+            },
+            {
+              "label": "Open license",
+              "field_name": "open_license",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is this dataset or data source available online with an open license?"
+            },
+            {
+              "label": "Open standards",
+              "field_name": "open_standards",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is this dataset or data source described using open standards and persistent identifiers?"
+            },
+            {
+              "label": "Structured data",
+              "field_name": "structured_data",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is this dataset or data source available in a machine-processable, structured format?"
+            }
+          ]
+        },
+        {
+          "field_name": "accuracy",
+          "label": "Accuracy",
+          "display_group": "Accuracy",
+          "display_group_help_text": "A dimension of quality relating to the degree to which the data or information correctly describes that which it was designed to measure.",
+          "field_group": [
+            {
+              "label": "Data assurance",
+              "field_name": "data_assurance",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Has the data been subject to quality assurance processes? (E.g., Checking for errors at each stage of data collection and processing, verifying data entry and making corrections where necessary)"
+            },
+            {
+              "label": "Data complete",
+              "field_name": "data_complete",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Are there any known gaps in the data? (E.g., Non-responses, missing records, data not collected)"
+            },
+            {
+              "label": "Data met needs of primary user",
+              "field_name": "data_met_needs_of_primary_user",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Does the data collection meet the objectives of the primary user? (I.e., the data correctly represents what it was designed to measure, monitor or report)"
+            },
+            {
+              "label": "No changes or flaws not explained",
+              "field_name": "no_changes_or_flaws_not_explained",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Has the data undergone any adjustments or changes or are there other factors that could impact the validity of the data? (E.g., Weighting, rounding, de-identification of data, changes or known flaws in data collection or verification methods)"
+            },
+            {
+              "label": "Revised when errors detected",
+              "field_name": "revised_when_errors_detected",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is there a revision policy in use such that identified errors are revised and the revision is publicised?"
+            }
+          ]
+        },
+        {
+          "field_name": "coherence",
+          "label": "Coherence",
+          "display_group": "Coherence",
+          "display_group_help_text": "A dimension of quality relating to the degree to which data or information can be compared with itself and other information over time.",
+          "field_group": [
+            {
+              "label": "Consistent methodology",
+              "field_name": "consistent_methodology",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is the data consistent with previous releases? There have been no changes to methodology or external impacts since the last data release."
+            },
+            {
+              "label": "Consistent over time",
+              "field_name": "consistent_over_time",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Have there been any significant changes in the way the data is defined, classified, or counted over time?"
+            },
+            {
+              "label": "Consistent with related datasets",
+              "field_name": "consistent_with_related_datasets",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is this data generally consistent with similar or related data sources?"
+            },
+            {
+              "label": "Elements can be compared",
+              "field_name": "elements_can_be_compared",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Can the elements within the data be meaningfully compared?"
+            },
+            {
+              "label": "Standard definitions and practices",
+              "field_name": "consistent_data_collection_frequency",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Are standard definitions, common concepts, classifications, and data recording practices used?"
+            }        
+          ]
+        },{
+          "field_name": "institutional_environment",
+          "label": "Institutional Environment",
+          "display_group": "Institutional Environment",
+          "display_group_help_text": "A dimension of quality relating to the institutional and organisational factors that have a significant influence on the effectiveness and credibility of the agency producing the data or information.",
+          "field_group": [
+            {
+              "label": "Authorized data collection",
+              "field_name": "authorized_data_collection",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is the data collection mandated or required by law, a regulation, or an agreement?"
+            },
+            {
+              "label": "Custodian",
+              "field_name": "custodian",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is the publishing agency the recognised data custodian?"
+            },
+            {
+              "label": "Data quality framework",
+              "field_name": "data_quality_framework",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is the data collected and managed according to a data quality framework?"
+            },
+            {
+              "label": "Governance roles",
+              "field_name": "governance_roles",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Are data governance roles and responsibilities clearly assigned for this dataset or data source?"
+            },
+            {
+              "label": "No commercial interest or conflict",
+              "field_name": "no_commercial_interest_or_conflict",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Does the custodian have any commercial interests or conflict of interest in the data?"
+            }
+          ]
+        },{
+          "field_name": "interpretability",
+          "label": "Interpretability",
+          "display_group": "Interpretability",
+          "display_group_help_text": "A dimension of quality relating to the degree to which data or information can be understood explained, or used.",
+          "field_group": [
+            {
+              "label": "Accuracy evaluation",
+              "field_name": "accuracy_evaluation",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is information provided to help users evaluate the accuracy of the data and associated level of error?"
+            },
+            {
+              "label": "Concept explanations",
+              "field_name": "concept_explanations",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is information provided which explains concepts, and helps users correctly interpret the data and understand how it can be used?"
+            },
+            {
+              "label": "Data dictionary provided",
+              "field_name": "data_dictionary_provided",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is a data dictionary provided to explain the meaning of data elements, their origin, format, and relationships?"
+            },
+            {
+              "label": "Data sources and methods",
+              "field_name": "data_sources_and_methods",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is information provided about the primary data sources and methods of data collection? (E.g., Instruments details, forms, instructions)"
+            },
+            {
+              "label": "Technical explanations",
+              "field_name": "technical_explanations",
+              "form_snippet": "qdes_checkbox_choice.html",
+              "help_text": "Is information provided to explain ambiguous or technical terms used in the data?"
+            }
+          ]
+        }
+      ]
     },
     {
       "field_name": "quality_measure",
@@ -311,6 +503,7 @@
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
       "validators": "ignore_empty qdes_validate_multi_groups qdes_validate_multi_pair_vocab_free_text",
+      "help_text": "List measurements of quality performed through a repeatable procedure, e.g. confidence measure",
       "field_group": [
         {
           "field_name": "measurement",
@@ -342,6 +535,7 @@
       "form_snippet": "qdes_multi_group.html",
       "display_snippet": "qdes_multi_group.html",
       "validators": "ignore_empty qdes_validate_multi_groups qdes_validate_multi_pair_vocab_free_text",
+      "help_text": "Describe dataset quality in text",
       "field_group": [
         {
           "field_name": "dimension",
@@ -369,13 +563,61 @@
       ]
     },
     {
+      "field_name": "conforms_to",
+      "label": "Schema or standard",
+      "display_snippet": "qdes_multi_text_url.html",
+      "form_snippet": "qdes_multi_text.html",
+      "validators": "ignore_missing qdes_uri_validator",
+      "display_property": "dcterms:conformsTo",
+      "display_group": "data quality",
+      "recommended": true,
+      "form_placeholder": "e.g. Australian Land Use and Management Classification - Version 8",
+      "help_text": "List any standards, data structures or vocabularies used by the dataset, input is a URI"
+    },
+    {
       "field_name": "series_or_collection",
       "label": "Series or collection",
       "preset": "dataset_related_multi_text",
-      "form_placeholder": "Select a series or collection this dataset is part of"
+      "form_placeholder": "Select a series or collection this dataset is part of",
+      "help_text": "Select a series or collection this dataset is part of"
     },
     {
-      "preset": "related_resources_multi_group"
+      "field_name": "related_resources",
+      "label": "Related dataset",
+      "display_group": "related and lineage",
+      "sub_heading": "related",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_missing qdes_validate_related_resources",
+      "form_placeholder": "",
+      "field_group": [
+        {
+          "field_name": "relationship",
+          "label": "Relationship",
+          "form_snippet": "select.html",
+          "vocabulary_service_name": "dataset-nature-of-relationship",
+          "choices_helper": "qdes_relationship_types_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        },
+        {
+          "field_name": "resource",
+          "label": "Related dataset",
+          "help_text": "Add a related dataset and include the nature of the relationship",
+          "form_snippet": "text.html",
+          "form_placeholder": " ",
+          "form_attrs": {
+            "data-module": "qdes_autocomplete",
+            "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
+            "data-module-create-search-choice": true,
+            "data-module-key": "id",
+            "data-module-label": "title",
+            "class": "form-control"
+          }
+        }
+      ]
     },
     {
       "field_name": "lineage_description",
@@ -384,7 +626,8 @@
       "display_snippet": "markdown.html",
       "display_group": "related and lineage",
       "display_property": "dcterms:description",
-      "sub_heading": "lineage"
+      "sub_heading": "lineage",
+      "help_text": "A text description of the datasets lineage"
     },
     {
       "field_name": "lineage_plan",
@@ -394,7 +637,7 @@
       "display_group": "related and lineage",
       "display_property": "prov:hadPlan",
       "sub_heading": "lineage",
-      "help_text": "Input is a URI"
+      "help_text": "Link to the item that describes the set of actions or steps that generated the dataset. Input is a URI."
     },
     {
       "field_name": "lineage_inputs",
@@ -405,7 +648,7 @@
       "display_group": "related and lineage",
       "display_property": "prov:used",
       "sub_heading": "lineage",
-      "help_text": "Input is a URI"
+      "help_text": "Link to the items that are used in the process. Input is a URI."
     },
     {
       "field_name": "lineage_sensor",
@@ -416,7 +659,7 @@
       "display_group": "related and lineage",
       "display_property": "sosa:madeBySensor",
       "sub_heading": "lineage",
-      "help_text": "Input is a URI"
+      "help_text": "The device, agent (including humans), or software (simulation) that generated the dataset. Input is a URI."
     },
     {
       "field_name": "lineage_responsible_party",
@@ -455,7 +698,7 @@
       "display_group": "contacts and responsibilities",
       "required": true,
       "validators": "scheming_required qdes_validate_point_of_contact",
-      "help_text": "A person or position to contact for more information about the dataset",
+      "help_text": "A person or position to contact for more information about the dataset within your organisation, not necessarily the dataset creator",
       "form_placeholder": " "
     },
     {
@@ -550,6 +793,7 @@
       "display_group": "status",
       "display_group_help_text": "Fields under status relate to the dataset",
       "required": true,
+      "help_text": "The status of the dataset in the context its lifecycle",
       "form_attrs": {
         "data-module-title": "title"
       },
@@ -704,7 +948,7 @@
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
       "validators": "ignore_missing qdes_uri_validator",
-      "help_text": "Indicates the schema, data-structure or vocabularies used by the resource"
+      "help_text": "List any standards, data structures or vocabularies used by the dataset"
     },
     {
       "field_name": "format",
@@ -748,6 +992,7 @@
       "display_snippet": "qdes_byte_size.html",
       "validators": "ignore_missing qdes_validate_positive_integer",
       "form_placeholder": "Enter exact or approximate file size in bytes (integer)",
+      "help_text": "Size of the resource in Bytes",
       "recommended": true
     },
     {
@@ -762,7 +1007,7 @@
     {
       "field_name": "service_api_endpoint",
       "label": "Service API end-point",
-      "display_property": "dcterms:conformsTo",
+      "display_property": "dcat:accessURL",
       "display_snippet": "qdes_multi_text_url.html",
       "form_snippet": "qdes_multi_text.html",
       "validators": "ignore_missing qdes_uri_validator",

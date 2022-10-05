@@ -29,7 +29,7 @@
       "form_placeholder": "doi:10.25901/5e3ba30f141b7",
       "display_group": "general",
       "validators": "ignore_missing qdes_uri_validator",
-      "help_text": "Add any unique identifiers associated with the dataset. Input is a URI."
+      "help_text": "Add any unique identifiers associated with the dataservice. Input is a URI."
     },
     {
       "field_name": "classification",
@@ -38,7 +38,7 @@
       "display_group": "description",
       "preset": "controlled_vocabulary_multi_select",
       "vocabulary_service_name": "dataservice_classification",
-      "validators": "scheming_required",
+      "validators": "scheming_required qdes_validate_multi_scheming_choices",
       "recommended": true,
       "form_attrs": {
         "class": "form-control",
@@ -152,7 +152,7 @@
       "preset": "controlled_vocabulary_single_select",
       "vocabulary_service_name": "service_status",
       "display_group": "status",
-      "sub_heading_help_text": "Minimum time period resolvable in the dataset",
+      "sub_heading_help_text": "Fields under status relate to the data service",
       "form_attrs": {
         "data-module-title": "title"
       }
@@ -188,7 +188,42 @@
       "preset": "dataset_related_multi_text"
     },
     {
-      "preset": "related_resources_multi_group"
+      "field_name": "related_resources",
+      "label": "Related dataset",
+      "display_group": "related and lineage",
+      "sub_heading": "related",
+      "form_snippet": "qdes_multi_group.html",
+      "display_snippet": "qdes_multi_group.html",
+      "validators": "ignore_missing qdes_validate_related_resources",
+      "form_placeholder": "",
+      "field_group": [
+        {
+          "field_name": "relationship",
+          "label": "Relationship",
+          "form_snippet": "select.html",
+          "vocabulary_service_name": "dataservice-nature-of-relationship",
+          "choices_helper": "qdes_relationship_types_choices",
+          "form_attrs": {
+            "class": "form-control"
+          },
+          "form_include_blank_choice": true
+        },
+        {
+          "field_name": "resource",
+          "label": "Related Data Service",
+          "help_text": "Add a related Data Service and include the nature of the relationship",
+          "form_snippet": "text.html",
+          "form_placeholder": " ",
+          "form_attrs": {
+            "data-module": "qdes_autocomplete",
+            "data-module-source": "/api/2/util/dataset/autocomplete?incomplete=?",
+            "data-module-create-search-choice": true,
+            "data-module-key": "id",
+            "data-module-label": "title",
+            "class": "form-control"
+          }
+        }
+      ]
     },
     {
       "field_name": "contact_point",
@@ -196,14 +231,17 @@
       "display_property": "dcat:contactPoint",
       "display_group": "Contacts and responsibilities",
       "required": true,
-      "form_include_blank_choice": true,
-      "help_text": "A person or position to contact for more information about the dataset"
+      "preset": "qdes_secure_vocab_service_autocomplete",
+      "vocabulary_service_name": "point-of-contact",
+      "validators": "scheming_required qdes_validate_point_of_contact",
+      "help_text": "A person or position to contact for more information about the data service, not necessarily the data service creator"
     },
     {
       "field_name": "contact_publisher",
       "label": "Publisher",
       "display_property": "dcterms:publisher",
       "display_group": "Contacts and responsibilities",
+      "help_text": "Organisation responsible for the data service",
       "required": true
     },
     {
@@ -212,7 +250,7 @@
       "display_property": "dcterms:creator",
       "display_group": "Contacts and responsibilities",
       "required": false,
-      "help_text": "Person, position, or organization who created the dataset"
+      "help_text": "Person, position, or organisation who created the data service"
     },
     {
       "field_name": "contact_other_party",
@@ -299,13 +337,10 @@
       "field_name": "metadata_contact_point",
       "label": "Metadata point of contact",
       "display_property": "dcat:contactPoint",
+      "display_group": "Meta data life cycle",
       "preset": "qdes_secure_vocab_service_autocomplete",
       "vocabulary_service_name": "point-of-contact",
-      "display_group": "Meta data life cycle",
-      "form_include_blank_choice": true,
-      "form_attrs": {
-        "data-module-title": "title"
-      },
+      "validators": "scheming_required qdes_validate_point_of_contact",
       "help_text": "Person or position responsible for the metadata record"
     },
     {

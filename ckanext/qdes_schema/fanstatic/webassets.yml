@@ -92,3 +92,7 @@ spinner:
       - vendor/jquery
   contents:
     - spinner.js
+
+calculated_quality_measure:
+  contents:
+    - calculated_quality_measure.js
