@@ -302,7 +302,6 @@ def _get_term_obj(field_value, vocab_service_name):
 
     return field_value
 
-
 def dataset_export(id, format):
     try:
         context = {
