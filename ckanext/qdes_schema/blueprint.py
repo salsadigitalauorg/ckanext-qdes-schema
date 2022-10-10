@@ -84,9 +84,9 @@ def dataset_metadata(id, activity_id=None):
     extra_vars = {}
     try:
         if activity_id:
-            activity = get_action(u'activity_show')(
-                {}, {u'id': activity_id, u'include_data': True})
-            extra_vars['pkg_dict'] = activity['data']['package']
+            pkg_dict = get_action(u'activity_data_show')(
+                {}, {u'id': activity_id, u'object_type': 'package'})
+            extra_vars['pkg_dict'] = pkg_dict
         else:
             extra_vars['pkg_dict'] = get_action('package_show')({}, {'id': id})
 
