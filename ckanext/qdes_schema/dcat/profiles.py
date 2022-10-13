@@ -333,7 +333,7 @@ class QDESDCATProfile(RDFProfile):
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('cited_in', DCTERMS.isReferencedBy, None, URIRef)])
 
         # Field contact_point => dcat:contactPoint
-        dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict['contact_point'])
+        dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict.get('contact_point'))
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_point', DCAT.contactPoint, None, Literal)])
 
         # Field contact_publisher => dcterms:publisher
@@ -341,7 +341,7 @@ class QDESDCATProfile(RDFProfile):
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_publisher', DCTERMS.publisher, None, URIRef)])
 
         # Field contact_creator => dcterms:creator
-        dataset_dict['contact_creator'] = _get_point_of_contact_name(dataset_dict['contact_creator'])
+        dataset_dict['contact_creator'] = _get_point_of_contact_name(dataset_dict.get('contact_creator'))
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_creator', DCTERMS.creator, None, Literal)])
 
         # Field contact_other_party => prov:qualifiedAttribution
@@ -500,7 +500,7 @@ class QDESDCATProfile(RDFProfile):
         self._get_related_dataset_node(dataset_dict, dataset_ref)
 
         # Field contact_point => dcat:contactPoint
-        dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict['contact_point'])
+        dataset_dict['contact_point'] = _get_point_of_contact_name(dataset_dict.get('contact_point'))
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, [('contact_point', DCAT.contactPoint, None, Literal)])
 
         # Field contact_publisher => dcterms:publisher
@@ -614,7 +614,7 @@ class QDESDCATProfile(RDFProfile):
         self._add_list_triples_from_dict(dataset_dict, catalog_record, [('url', DCTERMS.source, None, URIRef)])
 
         # Field metadata_contact_point => dcat:contactPoint
-        dataset_dict['metadata_contact_point'] = _get_point_of_contact_name(dataset_dict['metadata_contact_point'])
+        dataset_dict['metadata_contact_point'] = _get_point_of_contact_name(dataset_dict.get('metadata_contact_point'))
         self._add_list_triples_from_dict(dataset_dict, catalog_record, [('metadata_contact_point', DCAT.contactPoint, None, Literal)])
 
         organization = self._get_dataset_value(dataset_dict, 'organization')
