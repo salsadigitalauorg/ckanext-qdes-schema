@@ -80,10 +80,15 @@ def related_datasets(id_or_name):
         abort(404, _('Related dataset not found'))
 
 
-def dataset_metadata(id):
+def dataset_metadata(id, activity_id=None):
+    extra_vars = {}
     try:
-        extra_vars = {}
-        extra_vars['pkg_dict'] = get_action('package_show')({}, {'id': id})
+        if activity_id:
+            pkg_dict = get_action(u'activity_data_show')(
+                {}, {u'id': activity_id, u'object_type': 'package'})
+            extra_vars['pkg_dict'] = pkg_dict
+        else:
+            extra_vars['pkg_dict'] = get_action('package_show')({}, {'id': id})
 
         # Load existing relationship.
         relationships = h.get_subject_package_relationship_objects(extra_vars['pkg_dict'].get('id'))
@@ -522,7 +527,9 @@ class CreateView(dataset_view.CreateView):
 
 qdes_schema.add_url_rule(u'/dataset/<id_or_name>/related-datasets', view_func=related_datasets)
 qdes_schema.add_url_rule(u'/dataset/<id>/metadata', view_func=dataset_metadata)
+qdes_schema.add_url_rule(u'/dataset/<id>/metadata/activity_id=<activity_id>', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/metadata', endpoint='dataservice_metadata', view_func=dataset_metadata)
+qdes_schema.add_url_rule(u'/dataservice/<id>/metadata/activity_id=<activity_id>', view_func=dataset_metadata)
 qdes_schema.add_url_rule(u'/dataset/<id>/resource/<resource_id>/metadata', view_func=resource_metadata)
 qdes_schema.add_url_rule(u'/dataservice/<id>/datasets-available', view_func=datasets_available)
 qdes_schema.add_url_rule(u'/dataset/<id>/publish', methods=[u'GET', u'POST'],
