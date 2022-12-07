@@ -859,7 +859,7 @@
       "display_property": "dcterms:rights",
       "display_group": "rights and licensing",
       "default_value": "© State of Queensland (Department of Environment and Science) <current_year>",
-      "form_placeholder": "© State of Queensland (Department of Environment and Science) 2021"
+      "form_placeholder": "© State of Queensland (Department of Environment and Science) <current_year>"
     },
     {
       "field_name": "license_id",
