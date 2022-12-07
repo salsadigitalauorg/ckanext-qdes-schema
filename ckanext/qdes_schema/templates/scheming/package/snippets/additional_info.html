@@ -75,6 +75,6 @@
       </tr>
     </tbody>
   </table>
-
-  <a href="{{ h.url_for('qdes_schema.dataset_metadata', id=pkg_dict['name']) }}">{{ _('View all metadata') }}</a>
+  {% set activity_id = h.get_request_param('activity_id') %}
+  <a href="{{ h.url_for('qdes_schema.dataset_metadata', id=pkg_dict['name'], activity_id = activity_id)}}">{{ _('View all metadata') }}</a>
 </section>
