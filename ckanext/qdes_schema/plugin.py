@@ -17,7 +17,7 @@ from ckanext.qdes_schema.logic.action import (
 from ckanext.relationships import helpers as ckanext_relationships_helpers
 from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_helpers, resource_helpers as res_helpers
 from collections import OrderedDict
-from pprint import pformat
+from ckanext.invalid_uris.interfaces import IInvalidURIs
 
 h = toolkit.h
 get_action = toolkit.get_action
@@ -35,6 +35,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
+    plugins.implements(IInvalidURIs)
 
     # IConfigurable
     def configure(self, config):
@@ -328,7 +329,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'get_au_bounding_box_config': helpers.get_au_bounding_box_config,
             'get_default_map_zoom': helpers.get_default_map_zoom,
             'get_package_dict': helpers.get_package_dict,
-            'get_invalid_uris': helpers.get_invalid_uris,
             'wrap_url_within_text_as_link': helpers.wrap_url_within_text_as_link,
             'get_series_relationship': helpers.get_series_relationship,
             'is_collection': helpers.is_collection,
@@ -456,3 +456,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'package_delete': auth.package_delete,
             'dataservice_index': auth.dataservice_index,
         }
+
+    # IInvalidURIs
+    def contact_point_data(self, context, contact_point):
+        contact_point_data = get_action('get_secure_vocabulary_record')(context, {'vocabulary_name': 'point-of-contact', 'query': contact_point})
+        return contact_point_data
