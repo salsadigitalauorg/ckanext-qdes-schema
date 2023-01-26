@@ -1,7 +1,7 @@
 {% set schema = h.scheming_dataset_schemas() %}
 
 {% if entity_id and entity and not invalid_uris %}
-  {%- set invalid_uris = h.get_invalid_uris(entity_id, entity) -%}
+  {%- set invalid_uris = h.get_invalid_uris(entity_id) -%}
 {% endif %}
 
 {% if invalid_uris %}
