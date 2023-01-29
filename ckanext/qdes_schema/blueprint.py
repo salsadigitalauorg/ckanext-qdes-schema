@@ -166,6 +166,7 @@ def datasets_schema_validation(id):
     extra_vars['options'] = [
         {'text': 'Select publishing portal', 'value': 'none'},
         {'text': 'Opendata Portal', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA},
+        {'text': 'QLD-CDP Portal', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA},
         # {'text': 'QSpatial', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA},
         # {'text': 'SIR', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA}
     ]
@@ -181,6 +182,7 @@ def datasets_schema_validation(id):
 
         if not data.get('schema') == 'none':
             if data.get('action') == 'validate':
+                breakpoint()
                 extra_vars = helpers.schema_validate(extra_vars, pkg_validated, data)
             elif data.get('action') == 'publish':
                 publish_log = helpers.schema_publish(pkg, data)

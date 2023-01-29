@@ -238,6 +238,7 @@ def _create_external_dataset(publish_log, destination, package_dict):
     pkg_dict['resources'] = _get_selected_resource_to_publish(package_dict, publish_log)
 
     # Clean up the package_dict as per destination schema requirement.
+    breakpoint()
     pkg_dict = _build_and_clean_up_dataqld(pkg_dict)
 
     # Send to external schema.
@@ -393,6 +394,109 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
 
     qld_pkg_dict['owner_org'] = os.getenv(
         constants.get_owner_org(constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA))
+    qld_pkg_dict['author_email'] = 'opendata@des.qld.gov.au'
+    qld_pkg_dict['security_classification'] = 'PUBLIC'
+    qld_pkg_dict['data_driven_application'] = 'NO'
+    qld_pkg_dict['version'] = '1'
+    qld_pkg_dict['de_identified_data'] = 'NO'
+    qld_pkg_dict['next_update_due'] = None
+
+    return qld_pkg_dict
+
+### THIS IS TO BE DONE
+##TODO: Use correct mappings
+def _build_and_clean_up_qld_cdp(des_package_dict, external_package_dict=None, recent_publish_log=None):
+    # Variable is_update will be true when
+    # there is a similar package name on external schema.
+    is_update = True if external_package_dict else False
+
+    # Variable has_recent_log will be True in case the dataset already published to external.
+    # Case like, user add new resource but the other resource/dataset already published,
+    # below variable will be False.
+    has_recent_log = True if recent_publish_log else False
+
+    updated_external_resource_id = None
+    if is_update and has_recent_log:
+        recent_publish_log_detail = json.loads(recent_publish_log.details)
+        updated_external_resource_id = recent_publish_log_detail.get('external_resource_id', None) or None
+
+        if not updated_external_resource_id:
+            has_recent_log = False
+
+        # Check if the updated_external_resource_id is exist in external_package_dict.
+        external_resources = external_package_dict.get('resources', [])
+        has_recent_log = _check_resource_id_exist(updated_external_resource_id, external_resources)
+
+    # Load the schema.
+    schema = scheming_helpers.scheming_get_dataset_schema(constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
+
+    # Get the mandatory fields.
+    dataset_fields = [field.get('field_name') for field in schema.get('dataset_fields') if field.get('required', False)]
+    resource_fields = [field.get('field_name') for field in schema.get('resource_fields') if
+                       field.get('required', False)]
+
+    # Set default value, use external package data on update.
+    qld_pkg_dict = external_package_dict if is_update else {}
+    qld_resources_dict = qld_pkg_dict.get('resources', []) if qld_pkg_dict else []
+    qld_resource_dict = {}
+    if is_update and has_recent_log:
+        for resource in qld_resources_dict:
+            # Need to set all resources nature_of_change because they all get sent in package_update
+            resource['nature_of_change'] = 'edit-resource-with-no-new-data'
+            if resource.get('id') == updated_external_resource_id:
+                qld_resource_dict = resource
+
+    # Build the package metadata.
+    for field in dataset_fields:
+        qld_pkg_dict[field] = des_package_dict.get(field)
+
+    # Build resource.
+    des_resource = des_package_dict.get('resources')
+    for field in resource_fields:
+        # It is always index 0, because each job will create/update single distribution.
+        qld_resource_dict[field] = des_resource[0].get(field)
+        if field == 'format':
+            # Manually map resource format
+            qld_resource_dict[field] = helpers.map_formats(des_resource[0].get(field),
+                                                           constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
+
+    if is_update:
+        new_resources = []
+        if has_recent_log:
+            # Example case, user update resource that already published.
+            for resource in qld_resources_dict:
+                if resource.get('id') == updated_external_resource_id:
+                    new_resources.append(qld_resource_dict)
+                else:
+                    new_resources.append(resource)
+        else:
+            # Example case, when user add new resource
+            # and the dataset already published,
+            # that case we need to carry the other resource
+            # that coming from external_package_dict.
+            new_resources = qld_resources_dict
+            new_resources.append(qld_resource_dict)
+
+        qld_pkg_dict['resources'] = new_resources
+    else:
+        # Add the resource to package.
+        qld_pkg_dict['resources'] = [qld_resource_dict]
+
+    # Set resource package_id for resources
+    for resource in qld_pkg_dict.get('resources'):
+        if not resource.get('package_id'):
+            resource['package_id'] = qld_pkg_dict.get('id')
+
+    # Manual Mapping for dataset field.
+    update_freq = helpers.map_update_schedule(des_package_dict['update_schedule'],
+                                              constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
+    qld_pkg_dict['update_frequency'] = update_freq if update_freq else 'not-updated'
+
+    qld_pkg_dict['license_id'] = helpers.map_license(des_package_dict['license_id'],
+                                                     constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
+
+    qld_pkg_dict['owner_org'] = os.getenv(
+        constants.get_owner_org(constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA))
     qld_pkg_dict['author_email'] = 'opendata@des.qld.gov.au'
     qld_pkg_dict['security_classification'] = 'PUBLIC'
     qld_pkg_dict['data_driven_application'] = 'NO'

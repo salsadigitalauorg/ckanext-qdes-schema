@@ -599,6 +599,8 @@ def get_portal_naming(destination):
         return  'QSpatial'
     elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return  'SIR'
+    elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
+        return  'QLD-CDP'
 
 
 def get_last_success_publish_log(resource):
