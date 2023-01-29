@@ -238,7 +238,6 @@ def _create_external_dataset(publish_log, destination, package_dict):
     pkg_dict['resources'] = _get_selected_resource_to_publish(package_dict, publish_log)
 
     # Clean up the package_dict as per destination schema requirement.
-    breakpoint()
     pkg_dict = _build_and_clean_up_dataqld(pkg_dict)
 
     # Send to external schema.
