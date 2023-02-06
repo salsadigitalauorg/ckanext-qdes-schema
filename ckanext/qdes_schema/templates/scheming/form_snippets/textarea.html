@@ -5,12 +5,13 @@
 {% else %}
     {% set default_value = data[field.field_name] if data[field.field_name]|length > 0 else field.default_value|replace('<current_year>', h.render_datetime(h.get_current_datetime(), '%Y')) %}
 {% endif %}
+{% set placeholder_value = field.form_placeholder|replace('<current_year>', h.render_datetime(h.get_current_datetime(), '%Y')) %}
 
 {% call form.textarea(
     field.field_name,
     id='field-' + field.field_name,
     label=h.scheming_language_text(field.label),
-    placeholder=h.scheming_language_text(field.form_placeholder),
+    placeholder=h.scheming_language_text(placeholder_value),
     value=default_value,
     error=errors[field.field_name],
     attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
