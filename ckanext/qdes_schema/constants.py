@@ -28,7 +28,7 @@ def get_key_name(schema):
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return 'SIR_API_KEY'
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
-        return 'QLD_CDP_API_KEY'
+        return 'DATA_QLD_CDP_API_KEY'
 
     return ''
 
@@ -41,7 +41,7 @@ def get_owner_org(schema):
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return 'SIR_OWNER_ORG'
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
-        return 'QLD_CDP_OWNER_ORG'
+        return 'DATA_QLD_CDP_OWNER_ORG'
 
     return ''
 
@@ -54,7 +54,7 @@ def get_external_schema_url(schema):
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return 'SIR_URL'
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
-        return 'QLD_CDP_URL'
+        return 'DATA_QLD_CDP_URL'
 
     return ''
 

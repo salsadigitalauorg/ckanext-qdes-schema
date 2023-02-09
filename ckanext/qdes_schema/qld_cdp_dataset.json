@@ -12,14 +12,12 @@
       {
         "field_name": "name",
         "label": "URL",
-        "form_placeholder": "eg. my-dataset",
         "required": true
       },
       {
         "field_name": "notes",
         "label": "Description",
-        "required": true,
-        "help_text": "A short (2 sentence) description of the dataset"
+        "required": true
       },
       {
         "field_name": "owner_org",
@@ -27,1258 +25,127 @@
         "required": true
       },
       {
-        "field_name": "data_custodian",
+        "field_name": "contact_publisher",
         "label": "Data Custodian",
-        "required": true,
-        "form_include_blank_choice": true,
-        "help_text": "The agency that controls and has the right to deal with the data",
-        "choices": [
-          {
-            "label": "Department of the Premier and Cabinet",
-            "value": "department-of-the-premier-and-cabinet"
-          },
-          {
-            "label": "Public Service Commission",
-            "value": "public-service-commission"
-          },
-          {
-            "label": "Department of State Development, Infrastructure, Local Government and Planning",
-            "value": "department-of-state-development-infrastructure-local-government-and-planning"
-          },
-          {
-            "label": "Queensland Reconstruction Authority",
-            "value": "qld-reconstruction-authority"
-          },
-          {
-            "label": "Queensland Treasury",
-            "value": "qld-treasury"
-          },
-          {
-            "label": "Department of Education",
-            "value": "department-of-education"
-          },
-          {
-            "label": "Department of Agriculture and Fisheries",
-            "value": "department-of-agriculture-and-fisheries"
-          },
-          {
-            "label": "Queensland Health",
-            "value": "qld-health"
-          },
-          {
-            "label": "Queensland Ambulance Service",
-            "value": "qld-ambulance-service"
-          },
-          {
-            "label": "Department of Transport and Main Roads",
-            "value": "department-of-transport-and-main-roads"
-          },
-          {
-            "label": "Department of Energy and Public Works",
-            "value": "department-of-energy-and-public-works"
-          },
-          {
-            "label": "Department of Justice and Attorney-General",
-            "value": "department-of-justice-and-attorney-general"
-          },
-          {
-            "label": "Public Trust Office",
-            "value": "public-trust-office"
-          },
-          {
-            "label": "Queensland Police Service",
-            "value": "qld-police-service"
-          },
-          {
-            "label": "Queensland Corrective Services",
-            "value": "qld-corrective-services"
-          },
-          {
-            "label": "Queensland Fire and Emergency Services",
-            "value": "qld-fire-and-emergency-services"
-          },
-          {
-            "label": "Department of Tourism, Innovation and Sport",
-            "value": "department-of-tourism-innovation-and-sport"
-          },
-          {
-            "label": "Department of Communities, Housing and Digital Economy",
-            "value": "department-of-communities-housing-and-digital-economy"
-          },
-          {
-            "label": "Department of Regional Development, Manufacturing and Water",
-            "value": "department-of-regional-development-manufacturing-and-water"
-          },
-          {
-            "label": "Department of Employment, Small Business and Training",
-            "value": "department-of-employment-small-business-and-training"
-          },
-          {
-            "label": "Department of Seniors, Disability Services and Aboriginal and Torres Strait Islander Partnerships",
-            "value": "department-of-seniors-disability-services-and-aboriginal-and-torres-strait-islander-partnerships"
-          },
-          {
-            "label": "Department of Resources",
-            "value": "department-of-resources"
-          },
-          {
-            "label": "Resources Safety and Health Queensland",
-            "value": "resources-safety-and-health-qld"
-          },
-          {
-            "label": "Department of Environment and Science",
-            "value": "department-of-environment-and-science"
-          },
-          {
-            "label": "Department of Children, Youth Justice and Multicultural Affairs",
-            "value": "department-of-children-youth-justice-and-multicultural-affairs"
-          },
-          {
-            "label": "Public Safety Business Agency",
-            "value": "public-safety-business-agency"
-          }
-        ]
+        "required": true
       },
       {
-        "field_name": "point_of_contact",
+        "field_name": "contact_point",
         "label": "Point of Contact",
-        "required": true,
-        "help_text": "The person who should be contacted for information about the dataset"
+        "required": true
       },
       {
         "field_name": "point_of_contact_email",
-        "label": "Point of Contact Email",
-        "required": true,
-        "help_text": "The email address of the person who should be contacted for information about the dataset"
+        "label": "Point of Contact Email"
       },
       {
         "field_name": "tag_string",
-        "label": "Keywords",
-        "required": true,
-        "help_text": "Keyword/s describing the dataset"
+        "label": "Keywords"
       },
       {
         "field_name": "location",
         "label": "Location",
-        "recommended": true,
-        "help_text": "The geographic area the dataset applies to (Hold CTRL to select multiple locations)",
-        "choices": [
-          {
-            "label": "Queensland",
-            "value": "queensland"
-          },
-          {
-            "label": "Brisbane",
-            "value": "brisbane"
-          },
-          {
-            "label": "Brisbane-East",
-            "value": "brisbane-east"
-          },
-          {
-            "label": "Brisbane Inner City",
-            "value": "brisbane-inner-city"
-          },
-          {
-            "label": "Brisbane-North",
-            "value": "brisbane-north"
-          },
-          {
-            "label": "Brisbane-South",
-            "value": "brisbane-south"
-          },
-          {
-            "label": "Brisbane-West",
-            "value": "brisbane-west"
-          },
-          {
-            "label": "Cairns",
-            "value": "cairns"
-          },
-          {
-            "label": "Central Queensland",
-            "value": "central-queensland"
-          },
-          {
-            "label": "Darling Downs-Maranoa",
-            "value": "darling-downs-maranoa"
-          },
-          {
-            "label": "Gold Coast",
-            "value": "gold-coast"
-          },
-          {
-            "label": "Ipswich",
-            "value": "ipswich"
-          },
-          {
-            "label": "Logan-Beaudesert",
-            "value": "logan-beaudesert"
-          },
-          {
-            "label": "Mackay-Isaac-Whitsunday",
-            "value": "mackay-isaac-whitsunday"
-          },
-          {
-            "label": "Moreton Bay-North",
-            "value": "moreton-bay-north"
-          },
-          {
-            "label": "Moreton Bay-South",
-            "value": "moreton-bay-south"
-          },
-          {
-            "label": "Queensland-Outback",
-            "value": "queensland-outback"
-          },
-          {
-            "label": "Sunshine Coast",
-            "value": "sunshine-coast"
-          },
-          {
-            "label": "Toowoomba",
-            "value": "toowoomba"
-          },
-          {
-            "label": "Wide Bay",
-            "value": "wide-bay"
-          }
-        ]
+        "recommended": true
       },
       {
         "field_name": "temporal_coverage_from",
         "label": "Temporal Coverage From",
-        "recommended": true,
-        "help_text": "The start date of the period the dataset is applicable for"
+        "recommended": true
       },
       {
         "field_name": "temporal_coverage_to",
         "label": "Temporal Coverage To",
-        "recommended": true,
-        "help_text": "The end date of the period the dataset is applicable for"
+        "recommended": true
       },
       {
         "field_name": "access_rights",
         "label": "Access Rights",
-        "form_placeholder": "eg. A description of the access rights",
-        "recommended": true,
-        "help_text": "A statement that provides information on any access restrictions based on privacy, security or other policies that apply to this dataset"
+        "recommended": true
       },
       {
         "field_name": "update_frequency",
-        "label": "Update Frequency",
-        "help_text": "The frequency with which updated versions of the dataset are made available",
-        "choices": [
-          {
-            "label": "Annually",
-            "value": "annually"
-          },
-          {
-            "label": "Six Monthly",
-            "value": "six-monthly"
-          },
-          {
-            "label": "Quarterly",
-            "value": "quarterly"
-          },
-          {
-            "label": "Monthly",
-            "value": "monthly"
-          },
-          {
-            "label": "Weekly",
-            "value": "weekly"
-          },
-          {
-            "label": "Daily",
-            "value": "daily"
-          },
-          {
-            "label": "Continuous",
-            "value": "continuous"
-          },
-          {
-            "label": "Irregular",
-            "value": "irregular"
-          },
-          {
-            "label": "Real time",
-            "value": "real-time"
-          },
-          {
-            "label": "Near Real Time",
-            "value": "near-real-time"
-          },
-          {
-            "label": "Ad hoc",
-            "value": "ad-hoc"
-          },
-          {
-            "label": "Other",
-            "value": "other"
-          },
-          {
-            "label": "No further updates",
-            "value": "no-further-updates"
-          },
-          {
-            "label": "2 yearly",
-            "value": "2-yearly"
-          },
-          {
-            "label": "3 yearly",
-            "value": "3-yearly"
-          },
-          {
-            "label": "5 yearly",
-            "value": "5-yearly"
-          }
-        ]
+        "label": "Update Frequency"
       },
       {
         "field_name": "license_id",
-        "label": "License",
-        "help_text": "Conditions under which the dataset is made available",
-        "choices": [
-          {
-            "label": "Attribution",
-            "value": "http://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0"
-          },
-          {
-            "label": "No Derivatives",
-            "value": "http://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0"
-          },
-          {
-            "label": "Share Alike",
-            "value": "http://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0"
-          },
-          {
-            "label": "Restricted",
-            "value": "Restricted"
-          },
-          {
-            "label": "Not Specified",
-            "value": "Not Specified"
-          }
-        ]
-      },
-      {
-        "field_name": "publisher",
-        "label": "Publisher",
-        "help_text": "The name of the agency responsible for making the asset available"
+        "label": "License"
       },
       {
         "field_name": "security_classification",
-        "label": "Security Classification",
-        "help_text": "Security class of the dataset (https://www.qgcio.qld.gov.au/documents/information-security-classification-framework-qgiscf)",
-        "choices": [
-          {
-            "label": "Official",
-            "value": "official"
-          },
-          {
-            "label": "Official-Public",
-            "value": "official-public"
-          },
-          {
-            "label": "Protected",
-            "value": "protected"
-          },
-          {
-            "label": "Sensitive",
-            "value": "sensitive"
-          }
-        ]
+        "label": "Security Classification"
       },
       {
         "field_name": "data_attributes",
-        "label": "Data Attributes",
-        "form_placeholder": "eg. A description of the data attributes",
-        "help_text": "List of the fields contained in the dataset or a link to a file or landing page where this information is available"
+        "label": "Data Attributes"
       },
       {
         "field_name": "spatial_resolution",
-        "label": "Spatial Resolution",
-        "help_text": "The spatial granularity the dataset is broken down by",
-        "choices": [
-          {
-            "label": "Mesh Blocks",
-            "value": "mesh-blocks"
-          },
-          {
-            "label": "SA1",
-            "value": "sa1"
-          },
-          {
-            "label": "SA2",
-            "value": "sa2"
-          },
-          {
-            "label": "SA3",
-            "value": "sa3"
-          },
-          {
-            "label": "SA4",
-            "value": "sa4"
-          },
-          {
-            "label": "Postcodes",
-            "value": "postcodes"
-          },
-          {
-            "label": "LGAs",
-            "value": "lgas"
-          },
-          {
-            "label": "Regions",
-            "value": "regions"
-          },
-          {
-            "label": "States",
-            "value": "states"
-          }
-        ]
+        "label": "Spatial Resolution"
       },
       {
         "field_name": "temporal_resolution",
-        "label": "Temporal Resolution",
-        "help_text": "The temporal resolution of the dataset records",
-        "choices": [
-          {
-            "label": "Annually",
-            "value": "annually"
-          },
-          {
-            "label": "Six Monthly",
-            "value": "six-monthly"
-          },
-          {
-            "label": "Quarterly",
-            "value": "quarterly"
-          },
-          {
-            "label": "Monthly",
-            "value": "monthly"
-          },
-          {
-            "label": "Weekly",
-            "value": "weekly"
-          },
-          {
-            "label": "Daily",
-            "value": "daily"
-          },
-          {
-            "label": "Continuous",
-            "value": "continuous"
-          },
-          {
-            "label": "Irregular",
-            "value": "irregular"
-          }
-        ]
+        "label": "Temporal Resolution"
       },
       {
         "field_name": "version",
-        "label": "Version",
-        "form_placeholder": "1.0",
-        "help_text": "A version number or other version designation of the dataset"
+        "label": "Version"
       },
       {
         "field_name": "purpose",
-        "label": "Purpose",
-        "form_placeholder": "eg. A description of the purpose",
-        "help_text": "A descriptive summary of the intentions behind the creation of this dataset"
+        "label": "Purpose"
       },
       {
         "field_name": "legal_authority",
-        "label": "Legal Authority",
-        "form_placeholder": "eg. A description of the legal authority",
-        "help_text": "The legal mandate under which the dataset was collected, created, received, used or disclosed"
+        "label": "Legal Authority"
       },
       {
         "field_name": "provenance",
-        "label": "Provenance",
-        "form_placeholder": "eg. A description of the provenance",
-        "help_text": "A statement about the lineage of this dataset"
+        "label": "Provenance"
       },
       {
         "field_name": "data_quality",
-        "label": "Data Quality",
-        "form_placeholder": "eg. A description of the data quality",
-        "help_text": "A statement about the quality of the dataset or any factors which may influence the data quality"
+        "label": "Data Quality"
       },
       {
         "field_name": "themes",
-        "label": "Themes",
-        "form_placeholder": "eg. A description of the themes",
-        "help_text": "Themes or topics that this dataset relates to"
+        "label": "Themes"
       }
     ],
     "resource_fields": [
       {
         "field_name": "name",
         "label": "Name",
-        "form_placeholder": "eg. January 2022 Gold Prices",
-        "required": true,
-        "help_text": "Name of the resource"
+        "required": true
       },
       {
         "field_name": "url",
         "label": "AccessURL",
-        "preset": "resource_url_upload",
-        "recommended": true,
-        "help_text": "The URL that gives access to the resource"
+        "recommended": true
       },
       {
         "field_name": "description",
         "label": "Description",
-        "form_snippet": "markdown.html",
-        "form_placeholder": "Some useful notes about the data",
         "recommended": true
       },
       {
         "field_name": "format",
-        "label": "Format",
-        "help_text": "The file format of the resource",
-        "preset": "select",
-        "choices": [
-          {
-            "label": "7z",
-            "value": "7z"
-          },
-          {
-            "label": "AAC",
-            "value": "AAC"
-          },
-          {
-            "label": "APK",
-            "value": "APK"
-          },
-          {
-            "label": "ARC",
-            "value": "ARC"
-          },
-          {
-            "label": "ARC GZ",
-            "value": "ARC GZ"
-          },
-          {
-            "label": "ARJ",
-            "value": "ARJ"
-          },
-          {
-            "label": "Amazon Kindle eBook",
-            "value": "Amazon Kindle eBook"
-          },
-          {
-            "label": "AppX",
-            "value": "AppX"
-          },
-          {
-            "label": "ArcGIS Map Preview",
-            "value": "ArcGIS Map Preview"
-          },
-          {
-            "label": "ArcGIS Map Service",
-            "value": "ArcGIS Map Service"
-          },
-          {
-            "label": "Atom Feed",
-            "value": "Atom Feed"
-          },
-          {
-            "label": "BITS XML",
-            "value": "BITS XML"
-          },
-          {
-            "label": "BWF",
-            "value": "BWF"
-          },
-          {
-            "label": "Binary Data",
-            "value": "Binary Data"
-          },
-          {
-            "label": "Bitmap Image File",
-            "value": "Bitmap Image File"
-          },
-          {
-            "label": "CSS",
-            "value": "CSS"
-          },
-          {
-            "label": "CSV",
-            "value": "CSV"
-          },
-          {
-            "label": "Compressed LAS file",
-            "value": "Compressed LAS file"
-          },
-          {
-            "label": "DBF",
-            "value": "DBF"
-          },
-          {
-            "label": "DCR File",
-            "value": "DCR File"
-          },
-          {
-            "label": "DMG",
-            "value": "DMG"
-          },
-          {
-            "label": "E00",
-            "value": "E00"
-          },
-          {
-            "label": "EAR",
-            "value": "EAR"
-          },
-          {
-            "label": "ECW",
-            "value": "ECW"
-          },
-          {
-            "label": "EPUB",
-            "value": "EPUB"
-          },
-          {
-            "label": "EXE",
-            "value": "EXE"
-          },
-          {
-            "label": "Encapsulated Postscript",
-            "value": "Encapsulated Postscript"
-          },
-          {
-            "label": "Esri ASCII grid",
-            "value": "Esri ASCII grid"
-          },
-          {
-            "label": "Esri File Geodatabase",
-            "value": "Esri File Geodatabase"
-          },
-          {
-            "label": "Esri REST",
-            "value": "Esri REST"
-          },
-          {
-            "label": "Esri Shape",
-            "value": "Esri Shape"
-          },
-          {
-            "label": "Esri binary grid",
-            "value": "Esri binary grid"
-          },
-          {
-            "label": "Excel XLS",
-            "value": "Excel XLS"
-          },
-          {
-            "label": "Excel XLSX",
-            "value": "Excel XLSX"
-          },
-          {
-            "label": "Formex 2",
-            "value": "Formex 2"
-          },
-          {
-            "label": "Formex 3",
-            "value": "Formex 3"
-          },
-          {
-            "label": "Formex 4",
-            "value": "Formex 4"
-          },
-          {
-            "label": "GIF",
-            "value": "GIF"
-          },
-          {
-            "label": "GML",
-            "value": "GML"
-          },
-          {
-            "label": "GNU zip",
-            "value": "GNU zip"
-          },
-          {
-            "label": "GeoJSON",
-            "value": "GeoJSON"
-          },
-          {
-            "label": "HDF",
-            "value": "HDF"
-          },
-          {
-            "label": "HDT",
-            "value": "HDT"
-          },
-          {
-            "label": "HTML",
-            "value": "HTML"
-          },
-          {
-            "label": "HTML simplified",
-            "value": "HTML simplified"
-          },
-          {
-            "label": "HTTP Message",
-            "value": "HTTP Message"
-          },
-          {
-            "label": "ICalendar",
-            "value": "ICalendar"
-          },
-          {
-            "label": "IMMC XML message",
-            "value": "IMMC XML message"
-          },
-          {
-            "label": "INDD",
-            "value": "INDD"
-          },
-          {
-            "label": "ISO image",
-            "value": "ISO image"
-          },
-          {
-            "label": "JAR",
-            "value": "JAR"
-          },
-          {
-            "label": "JATS XML",
-            "value": "JATS XML"
-          },
-          {
-            "label": "JPEG",
-            "value": "JPEG"
-          },
-          {
-            "label": "JPEG 2000",
-            "value": "JPEG 2000"
-          },
-          {
-            "label": "JSON",
-            "value": "JSON"
-          },
-          {
-            "label": "JSON-LD",
-            "value": "JSON-LD"
-          },
-          {
-            "label": "JavaScript",
-            "value": "JavaScript"
-          },
-          {
-            "label": "KML",
-            "value": "KML"
-          },
-          {
-            "label": "KMZ",
-            "value": "KMZ"
-          },
-          {
-            "label": "LASer file",
-            "value": "LASer file"
-          },
-          {
-            "label": "LEG",
-            "value": "LEG"
-          },
-          {
-            "label": "LHA",
-            "value": "LHA"
-          },
-          {
-            "label": "MBOX",
-            "value": "MBOX"
-          },
-          {
-            "label": "MDB",
-            "value": "MDB"
-          },
-          {
-            "label": "METS XML",
-            "value": "METS XML"
-          },
-          {
-            "label": "METS package",
-            "value": "METS package"
-          },
-          {
-            "label": "MHTML",
-            "value": "MHTML"
-          },
-          {
-            "label": "MOP",
-            "value": "MOP"
-          },
-          {
-            "label": "MPEG-2",
-            "value": "MPEG-2"
-          },
-          {
-            "label": "MPEG-4",
-            "value": "MPEG-4"
-          },
-          {
-            "label": "MPEG-4 AVC",
-            "value": "MPEG-4 AVC"
-          },
-          {
-            "label": "MSI",
-            "value": "MSI"
-          },
-          {
-            "label": "MXD",
-            "value": "MXD"
-          },
-          {
-            "label": "MapInfo TAB file",
-            "value": "MapInfo TAB file"
-          },
-          {
-            "label": "MapInfo TAB raster file",
-            "value": "MapInfo TAB raster file"
-          },
-          {
-            "label": "Mobipocket eBook",
-            "value": "Mobipocket eBook"
-          },
-          {
-            "label": "MrSID",
-            "value": "MrSID"
-          },
-          {
-            "label": "N3",
-            "value": "N3"
-          },
-          {
-            "label": "NetCDF",
-            "value": "NetCDF"
-          },
-          {
-            "label": "ODF",
-            "value": "ODF"
-          },
-          {
-            "label": "ODP",
-            "value": "ODP"
-          },
-          {
-            "label": "ODS",
-            "value": "ODS"
-          },
-          {
-            "label": "ODT",
-            "value": "ODT"
-          },
-          {
-            "label": "OVF",
-            "value": "OVF"
-          },
-          {
-            "label": "OWL",
-            "value": "OWL"
-          },
-          {
-            "label": "Octet Stream",
-            "value": "Octet Stream"
-          },
-          {
-            "label": "OpenDocument Chart",
-            "value": "OpenDocument Chart"
-          },
-          {
-            "label": "OpenDocument Database",
-            "value": "OpenDocument Database"
-          },
-          {
-            "label": "OpenDocument Image",
-            "value": "OpenDocument Image"
-          },
-          {
-            "label": "Oracle Dump",
-            "value": "Oracle Dump"
-          },
-          {
-            "label": "PDF",
-            "value": "PDF"
-          },
-          {
-            "label": "PDF/A-1a",
-            "value": "PDF/A-1a"
-          },
-          {
-            "label": "PDF/A-1b",
-            "value": "PDF/A-1b"
-          },
-          {
-            "label": "PDF/A-2a",
-            "value": "PDF/A-2a"
-          },
-          {
-            "label": "PDF/A-2b",
-            "value": "PDF/A-2b"
-          },
-          {
-            "label": "PDF/X",
-            "value": "PDF/X"
-          },
-          {
-            "label": "PDF/X-1a",
-            "value": "PDF/X-1a"
-          },
-          {
-            "label": "PDF/X-2a",
-            "value": "PDF/X-2a"
-          },
-          {
-            "label": "PDF/X-4",
-            "value": "PDF/X-4"
-          },
-          {
-            "label": "PDF1X",
-            "value": "PDF1X"
-          },
-          {
-            "label": "PDFA-3",
-            "value": "PDFA-3"
-          },
-          {
-            "label": "PNG",
-            "value": "PNG"
-          },
-          {
-            "label": "PS",
-            "value": "PS"
-          },
-          {
-            "label": "PSD",
-            "value": "PSD"
-          },
-          {
-            "label": "PWP",
-            "value": "PWP"
-          },
-          {
-            "label": "Perl script",
-            "value": "Perl script"
-          },
-          {
-            "label": "Plain text",
-            "value": "Plain text"
-          },
-          {
-            "label": "PowerPoint PPSX",
-            "value": "PowerPoint PPSX"
-          },
-          {
-            "label": "PowerPoint PPT",
-            "value": "PowerPoint PPT"
-          },
-          {
-            "label": "PowerPoint PPTX",
-            "value": "PowerPoint PPTX"
-          },
-          {
-            "label": "PowerPoint Slide Show",
-            "value": "PowerPoint Slide Show"
-          },
-          {
-            "label": "Provisional data",
-            "value": "Provisional data"
-          },
-          {
-            "label": "QGS",
-            "value": "QGS"
-          },
-          {
-            "label": "RAR",
-            "value": "RAR"
-          },
-          {
-            "label": "RDF",
-            "value": "RDF"
-          },
-          {
-            "label": "RDF N-Quads",
-            "value": "RDF N-Quads"
-          },
-          {
-            "label": "RDF N-Triples",
-            "value": "RDF N-Triples"
-          },
-          {
-            "label": "RDF TriG",
-            "value": "RDF TriG"
-          },
-          {
-            "label": "RDF TriX",
-            "value": "RDF TriX"
-          },
-          {
-            "label": "RDF Turtle",
-            "value": "RDF Turtle"
-          },
-          {
-            "label": "RDF XML",
-            "value": "RDF XML"
-          },
-          {
-            "label": "RDFa",
-            "value": "RDFa"
-          },
-          {
-            "label": "RPM",
-            "value": "RPM"
-          },
-          {
-            "label": "RSS feed",
-            "value": "RSS feed"
-          },
-          {
-            "label": "RTF",
-            "value": "RTF"
-          },
-          {
-            "label": "SDMX",
-            "value": "SDMX"
-          },
-          {
-            "label": "SGML",
-            "value": "SGML"
-          },
-          {
-            "label": "SGML DTD",
-            "value": "SGML DTD"
-          },
-          {
-            "label": "SKOS",
-            "value": "SKOS"
-          },
-          {
-            "label": "SPARQL",
-            "value": "SPARQL"
-          },
-          {
-            "label": "SPARQL results",
-            "value": "SPARQL results"
-          },
-          {
-            "label": "SQL",
-            "value": "SQL"
-          },
-          {
-            "label": "SVG",
-            "value": "SVG"
-          },
-          {
-            "label": "SWM",
-            "value": "SWM"
-          },
-          {
-            "label": "TAR",
-            "value": "TAR"
-          },
-          {
-            "label": "TAR GZ",
-            "value": "TAR GZ"
-          },
-          {
-            "label": "TAR XZ",
-            "value": "TAR XZ"
-          },
-          {
-            "label": "TIFF",
-            "value": "TIFF"
-          },
-          {
-            "label": "TIFF FX",
-            "value": "TIFF FX"
-          },
-          {
-            "label": "TMX",
-            "value": "TMX"
-          },
-          {
-            "label": "TSV",
-            "value": "TSV"
-          },
-          {
-            "label": "WAR",
-            "value": "WAR"
-          },
-          {
-            "label": "WARC",
-            "value": "WARC"
-          },
-          {
-            "label": "WARC GZ",
-            "value": "WARC GZ"
-          },
-          {
-            "label": "WFS",
-            "value": "WFS"
-          },
-          {
-            "label": "WIM",
-            "value": "WIM"
-          },
-          {
-            "label": "WMS",
-            "value": "WMS"
-          },
-          {
-            "label": "Word DOC",
-            "value": "Word DOC"
-          },
-          {
-            "label": "Word DOCX",
-            "value": "Word DOCX"
-          },
-          {
-            "label": "World file",
-            "value": "World file"
-          },
-          {
-            "label": "XHTML",
-            "value": "XHTML"
-          },
-          {
-            "label": "XHTML simplified",
-            "value": "XHTML simplified"
-          },
-          {
-            "label": "XLIFF",
-            "value": "XLIFF"
-          },
-          {
-            "label": "XLSB",
-            "value": "XLSB"
-          },
-          {
-            "label": "XLSM",
-            "value": "XLSM"
-          },
-          {
-            "label": "XML",
-            "value": "XML"
-          },
-          {
-            "label": "XML DTD",
-            "value": "XML DTD"
-          },
-          {
-            "label": "XML schema",
-            "value": "XML schema"
-          },
-          {
-            "label": "XSL-FO",
-            "value": "XSL-FO"
-          },
-          {
-            "label": "XSLT",
-            "value": "XSLT"
-          },
-          {
-            "label": "XYZ Chemical File",
-            "value": "XYZ Chemical File"
-          },
-          {
-            "label": "Z",
-            "value": "Z"
-          },
-          {
-            "label": "ZIP",
-            "value": "ZIP"
-          },
-          {
-            "label": "Zipped GML",
-            "value": "Zipped GML"
-          },
-          {
-            "label": "Zipped ISO image",
-            "value": "Zipped ISO image"
-          },
-          {
-            "label": "bzip2",
-            "value": "bzip2"
-          },
-          {
-            "label": "deb",
-            "value": "deb"
-          },
-          {
-            "label": "lzip",
-            "value": "lzip"
-          },
-          {
-            "label": "lzma",
-            "value": "lzma"
-          },
-          {
-            "label": "lzo",
-            "value": "lzo"
-          },
-          {
-            "label": "sb3",
-            "value": "sb3"
-          },
-          {
-            "label": "xz",
-            "value": "xz"
-          }
-        ]
+        "label": "Format"
       },
       {
         "field_name": "size",
-        "label": "File Size",
-        "form_placeholder": "eg. 1.5 MB",
-        "help_text": "The file size of the resource (eg. 3MB)"
+        "label": "File Size"
       },
       {
         "field_name": "date_published",
-        "label": "Date Published",
-        "preset": "date",
-        "help_text": "The date on which the resource was formally released or made available"
+        "label": "Date Published"
       },
       {
         "field_name": "date_modified",
-        "label": "Date Modified",
-        "preset": "date",
-        "help_text": "The most recent date the resource was changed, updated or modified"
+        "label": "Date Modified"
       },
       {
         "field_name": "license",
-        "label": "License",
-        "preset": "select",
-        "help_text": "Conditions under which the resource is made available",
-        "display_snippet": "link.html",
-        "choices": [
-          {
-            "label": "Attribution",
-            "value": "http://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0"
-          },
-          {
-            "label": "No Derivatives",
-            "value": "http://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0"
-          },
-          {
-            "label": "Share Alike",
-            "value": "http://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0"
-          },
-          {
-            "label": "Restricted",
-            "value": "Restricted"
-          },
-          {
-            "label": "Not Specified",
-            "value": "Not Specified"
-          }
-        ]
+        "label": "License"
       }
     ]
   }

@@ -182,7 +182,6 @@ def datasets_schema_validation(id):
 
         if not data.get('schema') == 'none':
             if data.get('action') == 'validate':
-                breakpoint()
                 extra_vars = helpers.schema_validate(extra_vars, pkg_validated, data)
             elif data.get('action') == 'publish':
                 publish_log = helpers.schema_publish(pkg, data)

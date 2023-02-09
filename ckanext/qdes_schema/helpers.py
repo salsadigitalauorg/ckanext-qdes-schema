@@ -506,7 +506,24 @@ def map_update_schedule(uri, schema):
         },
         # @todo, in case needed, need to map this against external schema in future.
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
-        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA: {
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/annually': 'annually',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/asNeeded': 'ad-hoc',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/biannually': 'six-monthly',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/biennially': '2-yearly',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/continual': 'continous',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/daily': 'daily',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/fortnightly': '',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/irregular': 'irregular',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/monthly': 'monthly',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/notPlanned': 'no-future-updates',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/periodic': '',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/quarterly': 'quarterly',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/semimonthly': '',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/unknown': 'other',
+            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/weekly': 'weekly',
+        },
     }
 
     return frequency_map.get(schema, {}).get(uri, '')
@@ -521,7 +538,13 @@ def map_license(uri, schema):
         },
         # @todo, in case needed, need to map this against external schema in future.
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
-        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA: {
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0': 'cc-by-4',
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0': 'cc-by-nd-4',
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0': 'cc-by-sa-4'
+            
+        }
     }
 
     return license_map.get(schema, {}).get(uri, '')
@@ -558,7 +581,68 @@ def map_formats(format, schema):
         },
         # @todo, in case needed, need to map this against external schema in future.
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
-        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA: {
+            'http://publications.europa.eu/resource/authority/file-type/CSV': 'CSV',
+            'http://publications.europa.eu/resource/authority/file-type/ECW': 'ECW', # Not in Open Data
+            'http://publications.europa.eu/resource/authority/file-type/GRID_ASCII': 'ESRI',
+            'http://publications.europa.eu/resource/authority/file-type/GDB': 'ESRI GEODATABASE',
+            'http://publications.europa.eu/resource/authority/file-type/REST': 'ESRI',
+            'http://publications.europa.eu/resource/authority/file-type/SHP': 'ESRI SHAPE',
+            'http://publications.europa.eu/resource/authority/file-type/GRID': 'ESRI',
+            'http://publications.europa.eu/resource/authority/file-type/XLSX': 'XLSX',
+            'http://publications.europa.eu/resource/authority/file-type/GEOJSON': 'GeoJSON',
+            'http://publications.europa.eu/resource/authority/file-type/HTML_SIMPL': 'HTML',
+            'http://publications.europa.eu/resource/authority/file-type/JPEG': 'JPEG',
+            'http://publications.europa.eu/resource/authority/file-type/JSON': 'JSON',
+            'http://publications.europa.eu/resource/authority/file-type/KML': 'KML',
+            'http://publications.europa.eu/resource/authority/file-type/KMZ': 'KMZ',
+            'http://publications.europa.eu/resource/authority/file-type/MDB': 'MDB', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/NETCDF': 'NetCDF', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/PDF': 'PDF',
+            'http://publications.europa.eu/resource/authority/file-type/TXT': 'TXT',
+            'http://publications.europa.eu/resource/authority/file-type/PPTX': 'PPTX', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/TIFF': 'TIF',
+            'http://publications.europa.eu/resource/authority/file-type/TSV': 'TAB SEPARATED VALUES',
+            'http://publications.europa.eu/resource/authority/file-type/WFS_SRVC': 'WFS', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/WMS_SRVC': 'WMS', # Not in Opend Data
+            'http://publications.europa.eu/resource/authority/file-type/DOCX': 'DOCX',
+            'http://publications.europa.eu/resource/authority/file-type/XML': 'XML',
+            '7z': '7z',
+            'AAC': 'AAC',
+            'APK': 'APK',
+            'ARC': 'ARC',
+            'ARC GZ': 'ARC GZ',
+            'ARJ': 'ARJ',
+            'Amazon Kindle eBook': 'Amazon Kindle eBook',
+            'AppX': 'AppX',
+            'ArcGIS Map Preview': 'ArcGIS Map Preview',
+            'ArcGIS Map Service': 'ArcGIS Map Service',
+            'Atom Feed': 'Atom Feed',
+            'BITS XML': 'BITS XML',
+            'BWF': 'BWF',
+            'Binary Data': 'Binary Data',
+            'Bitmap Image File': 'Bitmap Image File',
+            'CSS': 'CSS',
+            'CSV': 'CSV',
+            'Compressed LAS File': 'Compressed LAS File',
+            'DBF': 'DBF',
+            'DCR File': 'DCR File',
+            'DMG': 'DMG',
+            'E00': 'E00',
+            'EAR': 'EAR',
+            'ECW': 'ECW',
+            'EPUB': 'EPUB',
+            'EXE': 'EXE',
+            'Encapsulated PostScript': 'Encapsulated PostScript',
+            'Esri ASCII Grid': 'Esri ASCII Grid',
+            'Esri File Geodatabase': 'Esri File Geodatabase',
+            'Esri REST': 'Esri REST',
+            'Esri Shape': 'Esri Shape',
+            'Esri binary grid': 'Esri binary grid',
+            'Excel XLSX': 'Excel XLSX',
+            'Excel XLS': 'Excel XLS'
+            }
     }
 
     return formats_map.get(schema, {}).get(format, '')
@@ -867,3 +951,28 @@ def get_json_element(data, subfield, field=None):
             field_name = field
         return json_data.get(subfield.get('field_name')).get(field_name)
     return json_data.get(subfield)
+
+
+def strip_markup(text):
+    return re.sub(r'<[^>]*?>', '', text)
+
+
+def stringify(data):
+    return (
+        ''.join(
+            item.get("dimension") + ":" + item.get("value") + "."
+            for item in data
+        )
+        if data
+        else ''
+    )
+
+def get_topic_term(data):
+    terms = []
+    for item in data:
+        term = get_action('get_vocabulary_service_term')({}, {
+                'vocabulary_service_name': 'topic',
+                'term_uri': item
+            })
+        terms.append(term.get('label'))
+    return terms
