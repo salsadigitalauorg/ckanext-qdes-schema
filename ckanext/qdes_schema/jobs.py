@@ -267,7 +267,10 @@ def _update_external_dataset(publish_log, destination, external_pkg_dict, packag
     if not delete_distribution:
         pkg_dict['resources'] = _get_selected_resource_to_publish(pkg_dict, publish_log)
         # Modify the external_pkg_dict.
-        pkg_dict = _build_and_clean_up_dataqld(pkg_dict, external_pkg_dict, recent_publish_log)
+        if publish_log.destination == 'qld_dataset':
+            pkg_dict = _build_and_clean_up_dataqld(pkg_dict, external_pkg_dict, recent_publish_log)
+        elif publish_log.destination == 'qld_cdp_dataset':
+            pkg_dict = _build_and_clean_up_qld_cdp(pkg_dict, external_pkg_dict, recent_publish_log)
 
     # Send the modified dict to external schema.
     external_package_dict = {}
@@ -404,9 +407,8 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
 
     return qld_pkg_dict
 
-### THIS IS TO BE DONE
-##TODO: Use correct mappings
-def _build_and_clean_up_qld_cdp(qld_cdp_package, external_package_dict=None, recent_publish_log=None):
+
+def _build_and_clean_up_qld_cdp(des_package_dict, external_package_dict=None, recent_publish_log=None):
     # Variable is_update will be true when
     # there is a similar package name on external schema.
     site_user = get_action(u'get_site_user')({u'ignore_auth': True}, {})
@@ -434,8 +436,7 @@ def _build_and_clean_up_qld_cdp(qld_cdp_package, external_package_dict=None, rec
 
     # Get the mandatory fields.
     dataset_fields = [field.get('field_name') for field in schema.get('dataset_fields') if field.get('required', False)]
-    resource_fields = [field.get('field_name') for field in schema.get('resource_fields') if
-                       field.get('required', False)]
+    resource_fields = [field.get('field_name') for field in schema.get('resource_fields') if field.get('required', False)]
 
     # Set default value, use external package data on update.
     qld_cdp_pkg_dict = external_package_dict if is_update else {}
@@ -443,26 +444,32 @@ def _build_and_clean_up_qld_cdp(qld_cdp_package, external_package_dict=None, rec
     qld_cdp_resource_dict = {}
     if is_update and has_recent_log:
         for resource in qld_cdp_resources_dict:
-            # Need to set all resources nature_of_change because they all get sent in package_update
-            resource['nature_of_change'] = 'edit-resource-with-no-new-data'
             if resource.get('id') == updated_external_resource_id:
                 qld_cdp_resource_dict = resource
 
     # Build the package metadata.
     for field in dataset_fields:
-        qld_cdp_pkg_dict[field] = qld_cdp_package.get(field)
+        qld_cdp_pkg_dict[field] = des_package_dict.get(field)
 
     # Build resource.
-    des_resource = qld_cdp_package.get('resources')
+    # It is always index 0, because each job will create/update single distribution.
+    des_resource = des_package_dict.get('resources')[0]
     for field in resource_fields:
-        # It is always index 0, because each job will create/update single distribution.
-        qld_cdp_resource_dict[field] = des_resource[0].get(field)
-        if field == 'format':
-            # Manually map resource format
-            qld_cdp_resource_dict[field] = helpers.map_qld_formats(des_resource[0].get(field),
-                                                           constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
-    qld_cdp_resource_dict['access_url'] = des_resource[0].get('service_api_endpoint')[0]
+        qld_cdp_resource_dict[field] = des_resource.get(field)
 
+    # Manual Mapping for resource fields.
+    service_api_endpoint = toolkit.get_converter('json_or_string')(des_resource.get('service_api_endpoint'))
+    url = service_api_endpoint[0] if isinstance(service_api_endpoint, list) else des_resource.get('url')
+    qld_cdp_resource_dict['url'] = url
+    qld_cdp_resource_dict['description'] = des_resource.get('description')
+    qld_cdp_resource_dict['format'] = helpers.map_formats(des_resource.get('format'),
+                                                          constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
+    qld_cdp_resource_dict['size'] = des_resource.get('size')
+    qld_cdp_resource_dict['date_published'] = des_package_dict.get('dataset_release_date')
+    qld_cdp_resource_dict['date_modified'] = des_package_dict.get('dataset_last_modified_date')
+    qld_cdp_resource_dict['license'] = helpers.map_license(des_resource.get('license'),
+                                                           constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
+    
     if is_update:
         new_resources = []
         if has_recent_log:
@@ -491,35 +498,33 @@ def _build_and_clean_up_qld_cdp(qld_cdp_package, external_package_dict=None, rec
             resource['package_id'] = qld_cdp_pkg_dict.get('id')
 
     # Manual Mapping for dataset field.
-    update_freq = helpers.map_update_schedule(qld_cdp_package['update_schedule'],
+    update_freq = helpers.map_update_schedule(des_package_dict['update_schedule'],
                                               constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
-    qld_cdp_pkg_dict['update_frequency'] = update_freq or 'not-updated'
+    if update_freq:
+        qld_cdp_pkg_dict['update_frequency'] = update_freq
+    else:
+        qld_cdp_pkg_dict.pop('update_frequency', None)
 
-    qld_cdp_pkg_dict['license_id'] = helpers.map_license(qld_cdp_package['license_id'],
-                                                     constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
-
-    qld_cdp_pkg_dict['owner_org'] = os.getenv(
-        constants.get_owner_org(constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA))
-    contact_point = get_action('get_secure_vocabulary_record')({'user': site_user}, {'vocabulary_name': 'point-of-contact', 'query': qld_cdp_package.get('contact_point')})
+    qld_cdp_pkg_dict['license_id'] = helpers.map_license(des_package_dict['license_id'],
+                                                         constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
+    qld_cdp_pkg_dict['owner_org'] = os.getenv(constants.get_owner_org(constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA))
+    qld_cdp_pkg_dict['data_custodian'] = "department-of-environment-and-science"
     qld_cdp_pkg_dict['publisher'] = "Department of Environment and Science"
-    qld_cdp_pkg_dict['point_of_contact'] = contact_point.get("Name", None)
+    contact_point = get_action('get_secure_vocabulary_record')({'user': site_user}, {'vocabulary_name': 'point-of-contact', 'query': des_package_dict.get('contact_point')})
     qld_cdp_pkg_dict.pop('contact_point', None)
+    qld_cdp_pkg_dict['point_of_contact'] = contact_point.get("Name", None)
     qld_cdp_pkg_dict['point_of_contact_email'] = contact_point.get("Email", None)
-    qld_cdp_pkg_dict['temporal_coverage_from'] = qld_cdp_package.get('temporal_coverage_from', None)
     keywords = []
-    for tag in qld_cdp_package.get('tags', []):
+    for tag in des_package_dict.get('tags', []):
         keywords.append(tag.get('name'))
     qld_cdp_pkg_dict['keywords'] = keywords
-    qld_cdp_pkg_dict['temporal_coverage_from'] = qld_cdp_package.get('temporal_start', None)
-    qld_cdp_pkg_dict['temporal_coverage_to'] = qld_cdp_package.get('temporal_end', None)
-    qld_cdp_pkg_dict['access_rights'] = qld_cdp_package.get('rights_statement', None)
-    qld_cdp_pkg_dict.pop("rights_statement", None)
-    qld_cdp_pkg_dict['provenance'] = helpers.strip_markup(qld_cdp_package.get('lineage_description', None))
-    qld_cdp_pkg_dict.pop("lineage_description", None)
-    qld_cdp_pkg_dict['data_quality'] = helpers.stringify(json.loads(qld_cdp_package.get('quality_description', None)))
-    qld_cdp_pkg_dict.pop("quality_description", None)
-    qld_cdp_pkg_dict['themes'] = helpers.get_topic_term(json.loads(qld_cdp_package.get('topic', None)))
-    qld_cdp_pkg_dict.pop("topic", None)
+    qld_cdp_pkg_dict['temporal_coverage_from'] = des_package_dict.get('temporal_start', None)
+    qld_cdp_pkg_dict['temporal_coverage_to'] = des_package_dict.get('temporal_end', None)
+    qld_cdp_pkg_dict['security_classification'] = 'official-public'
+    qld_cdp_pkg_dict['access_rights'] = des_package_dict.get('rights_statement', None)
+    qld_cdp_pkg_dict['provenance'] = helpers.strip_markup(des_package_dict.get('lineage_description', None))
+    qld_cdp_pkg_dict['data_quality'] = helpers.stringify(json.loads(des_package_dict.get('quality_description', None)))
+    qld_cdp_pkg_dict['themes'] = helpers.get_topic_term(json.loads(des_package_dict.get('topic', None)))
 
     return qld_cdp_pkg_dict
 

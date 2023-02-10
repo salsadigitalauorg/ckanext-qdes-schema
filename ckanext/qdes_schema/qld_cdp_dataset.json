@@ -25,14 +25,17 @@
         "required": true
       },
       {
-        "field_name": "contact_publisher",
-        "label": "Data Custodian",
-        "required": true
+        "field_name": "data_custodian",
+        "label": "Data Custodian"
       },
       {
         "field_name": "contact_point",
         "label": "Point of Contact",
         "required": true
+      },
+      {
+        "field_name": "point_of_contact",
+        "label": "Point of Contact"
       },
       {
         "field_name": "point_of_contact_email",
@@ -44,23 +47,19 @@
       },
       {
         "field_name": "location",
-        "label": "Location",
-        "recommended": true
+        "label": "Location"
       },
       {
         "field_name": "temporal_coverage_from",
-        "label": "Temporal Coverage From",
-        "recommended": true
+        "label": "Temporal Coverage From"
       },
       {
         "field_name": "temporal_coverage_to",
-        "label": "Temporal Coverage To",
-        "recommended": true
+        "label": "Temporal Coverage To"
       },
       {
         "field_name": "access_rights",
-        "label": "Access Rights",
-        "recommended": true
+        "label": "Access Rights"
       },
       {
         "field_name": "update_frequency",
@@ -119,13 +118,11 @@
       },
       {
         "field_name": "url",
-        "label": "AccessURL",
-        "recommended": true
+        "label": "AccessURL"
       },
       {
         "field_name": "description",
-        "label": "Description",
-        "recommended": true
+        "label": "Description"
       },
       {
         "field_name": "format",
