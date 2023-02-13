@@ -940,9 +940,7 @@ def map_data_quality(data):
 def map_data_attributes(data):
     return (
         ', '.join(
-            get_term_label("observed-property", item.get("observed-property")) + 
-            ":" + 
-            get_term_label("unit-of-measure", item.get("unit-of-measure"))
+            get_term_label("observed-property", item.get("observed-property"))
             for item in data
         )
         if data
