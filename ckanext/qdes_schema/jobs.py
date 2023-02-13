@@ -514,17 +514,16 @@ def _build_and_clean_up_qld_cdp(des_package_dict, external_package_dict=None, re
     qld_cdp_pkg_dict.pop('contact_point', None)
     qld_cdp_pkg_dict['point_of_contact'] = contact_point.get("Name", None)
     qld_cdp_pkg_dict['point_of_contact_email'] = contact_point.get("Email", None)
-    keywords = []
-    for tag in des_package_dict.get('tags', []):
-        keywords.append(tag.get('name'))
-    qld_cdp_pkg_dict['keywords'] = keywords
+    qld_cdp_pkg_dict['tags'] = des_package_dict.get('tags', [])
     qld_cdp_pkg_dict['temporal_coverage_from'] = des_package_dict.get('temporal_start', None)
     qld_cdp_pkg_dict['temporal_coverage_to'] = des_package_dict.get('temporal_end', None)
     qld_cdp_pkg_dict['security_classification'] = 'official-public'
     qld_cdp_pkg_dict['access_rights'] = des_package_dict.get('rights_statement', None)
-    qld_cdp_pkg_dict['provenance'] = helpers.strip_markup(des_package_dict.get('lineage_description', None))
-    qld_cdp_pkg_dict['data_quality'] = helpers.stringify(json.loads(des_package_dict.get('quality_description', None)))
-    qld_cdp_pkg_dict['themes'] = helpers.get_topic_term(json.loads(des_package_dict.get('topic', None)))
+    qld_cdp_pkg_dict['data_attributes'] = helpers.map_data_attributes(json.loads(des_package_dict.get('quality_description', None)))
+    qld_cdp_pkg_dict['purpose'] = des_package_dict.get('purpose', None)
+    qld_cdp_pkg_dict['provenance'] = des_package_dict.get('lineage_description', None)
+    qld_cdp_pkg_dict['data_quality'] = helpers.map_data_quality(json.loads(des_package_dict.get('quality_description', None)))
+    qld_cdp_pkg_dict['themes'] = helpers.map_themes(json.loads(des_package_dict.get('topic', None)))
 
     return qld_cdp_pkg_dict
 
