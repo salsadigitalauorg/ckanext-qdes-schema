@@ -488,25 +488,42 @@ def load_activity_with_full_data(activity_id):
 def map_update_schedule(uri, schema):
     frequency_map = {
         constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/annually': 'annually',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/asNeeded': 'non-regular',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/biannually': 'half-yearly',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/biennially': 'non-regular',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/continual': 'near-realtime',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/daily': 'daily',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/fortnightly': 'fortnightly',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/irregular': 'non-regular',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/monthly': 'monthly',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/notPlanned': 'not-updated',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/periodic': 'non-regular',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/quarterly': 'quarterly',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/semimonthly': 'fortnightly',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/unknown': 'not-updated',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/weekly': 'weekly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/annually': 'annually',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/asNeeded': 'non-regular',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/biannually': 'half-yearly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/biennially': 'non-regular',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/continual': 'near-realtime',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/daily': 'daily',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/fortnightly': 'fortnightly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/irregular': 'non-regular',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/monthly': 'monthly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/notPlanned': 'not-updated',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/periodic': 'non-regular',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/quarterly': 'quarterly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/semimonthly': 'fortnightly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/unknown': 'not-updated',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/weekly': 'weekly'
         },
         # @todo, in case needed, need to map this against external schema in future.
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
-        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA: {
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/annually': 'annually',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/asNeeded': 'ad-hoc',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/biannually': 'six-monthly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/biennially': '2-yearly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/continual': 'continuous',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/daily': 'daily',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/fortnightly': '',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/irregular': 'irregular',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/monthly': 'monthly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/notPlanned': 'no-future-updates',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/periodic': '',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/quarterly': 'quarterly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/semimonthly': '',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/unknown': 'other',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/weekly': 'weekly'
+        },
     }
 
     return frequency_map.get(schema, {}).get(uri, '')
@@ -517,11 +534,22 @@ def map_license(uri, schema):
         constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {
             'https://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0': 'cc-by-4',
             'https://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0': 'cc-by-nd-4',
-            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0': 'cc-by-sa-4'
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0': 'cc-by-sa-4',
+            'http://linked.data.gov.au/def/licence-document/cc-by-4.0': 'cc-by-4',
+            'http://linked.data.gov.au/def/licence-document/cc-by-nd-4.0': 'cc-by-nd-4',
+            'http://linked.data.gov.au/def/licence-document/cc-by-sa-4.0': 'cc-by-sa-4',
         },
         # @todo, in case needed, need to map this against external schema in future.
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
-        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA: {
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0',
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0',
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0',
+            'http://linked.data.gov.au/def/licence-document/cc-by-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0',
+            'http://linked.data.gov.au/def/licence-document/cc-by-nd-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0',
+            'http://linked.data.gov.au/def/licence-document/cc-by-sa-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0'
+        }
     }
 
     return license_map.get(schema, {}).get(uri, '')
@@ -558,7 +586,34 @@ def map_formats(format, schema):
         },
         # @todo, in case needed, need to map this against external schema in future.
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
-        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA: {
+            'http://publications.europa.eu/resource/authority/file-type/CSV': 'CSV',
+            'http://publications.europa.eu/resource/authority/file-type/ECW': 'ECW',
+            'http://publications.europa.eu/resource/authority/file-type/GRID_ASCII': 'Esri ASCII grid',
+            'http://publications.europa.eu/resource/authority/file-type/GDB': 'Esri File Geodatabase',
+            'http://publications.europa.eu/resource/authority/file-type/REST': 'Esri REST',
+            'http://publications.europa.eu/resource/authority/file-type/SHP': 'Esri Shape',
+            'http://publications.europa.eu/resource/authority/file-type/GRID': 'Esri binary grid',
+            'http://publications.europa.eu/resource/authority/file-type/XLSX': 'Excel XLSX',
+            'http://publications.europa.eu/resource/authority/file-type/GEOJSON': 'GeoJSON',
+            'http://publications.europa.eu/resource/authority/file-type/HTML_SIMPL': 'HTML simplified',
+            'http://publications.europa.eu/resource/authority/file-type/JPEG': 'JPEG',
+            'http://publications.europa.eu/resource/authority/file-type/JSON': 'JSON',
+            'http://publications.europa.eu/resource/authority/file-type/KML': 'KML',
+            'http://publications.europa.eu/resource/authority/file-type/KMZ': 'KMZ',
+            'http://publications.europa.eu/resource/authority/file-type/MDB': 'MDB',
+            'http://publications.europa.eu/resource/authority/file-type/NETCDF': 'NetCDF',
+            'http://publications.europa.eu/resource/authority/file-type/PDF': 'PDF',
+            'http://publications.europa.eu/resource/authority/file-type/TXT': 'Plain text',
+            'http://publications.europa.eu/resource/authority/file-type/PPTX': 'PowerPoint PPTX',
+            'http://publications.europa.eu/resource/authority/file-type/TIFF': 'TIFF',
+            'http://publications.europa.eu/resource/authority/file-type/TSV': 'TSV',
+            'http://publications.europa.eu/resource/authority/file-type/WFS_SRVC': 'WFS',
+            'http://publications.europa.eu/resource/authority/file-type/WMS_SRVC': 'WMS',
+            'http://publications.europa.eu/resource/authority/file-type/DOCX': 'Word DOCX',
+            'http://publications.europa.eu/resource/authority/file-type/XML': 'XML'
+            }
     }
 
     return formats_map.get(schema, {}).get(format, '')
@@ -589,6 +644,8 @@ def get_portal_naming(destination):
         return  'QSpatial'
     elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return  'SIR'
+    elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
+        return  'QLD-CDP'
 
 
 def get_last_success_publish_log(resource):
@@ -865,3 +922,42 @@ def get_json_element(data, subfield, field=None):
             field_name = field
         return json_data.get(subfield.get('field_name')).get(field_name)
     return json_data.get(subfield)
+
+
+def map_data_quality(data):
+    return (
+        ', '.join(
+            get_term_label("dimension", item.get("dimension")) + 
+            ":" +
+            item.get("value")
+            for item in data
+        )
+        if data
+        else ''
+    )
+
+
+def map_data_attributes(data):
+    return (
+        ', '.join(
+            get_term_label("observed-property", item.get("observed-property"))
+            for item in data
+        )
+        if data
+        else ''
+    )
+
+
+def map_themes(data):
+    themes = []
+    for item in data:
+        themes.append(get_term_label('topic', item))
+    return themes
+
+
+def get_term_label(vocabulary_service_name, term_uri):
+    term = get_action('get_vocabulary_service_term')({}, {
+            'vocabulary_service_name': vocabulary_service_name,
+            'term_uri': term_uri
+        })
+    return term.get('label') if term else ''

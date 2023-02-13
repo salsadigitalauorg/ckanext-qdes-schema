@@ -37,7 +37,8 @@ class PublishLog(DomainObject):
     destinations = [
         constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA,
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA,
-        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA,
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA
     ]
 
     def __init__(self, dataset_id=None, resource_id=None, trigger=None, destination=None, destination_identifier=None,

@@ -303,6 +303,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'ckanext.qdes_schema.publishing_portals.opendata': [ignore_missing],
             'ckanext.qdes_schema.publishing_portals.qspatial': [ignore_missing],
             'ckanext.qdes_schema.publishing_portals.sir': [ignore_missing],
+            'ckanext.qdes_schema.publishing_portals.qld_cdp': [ignore_missing],
         })
 
         return schema

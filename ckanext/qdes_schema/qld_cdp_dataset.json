@@ -1,0 +1,148 @@
+{
+    "scheming_version": 2,
+    "dataset_type": "qld_cdp_dataset",
+    "about": "A reimplementation of the default CKAN dataset schema",
+    "about_url": "http://github.com/ckan/ckanext-scheming",
+    "dataset_fields": [
+      {
+        "field_name": "title",
+        "label": "Title",
+        "required": true
+      },
+      {
+        "field_name": "name",
+        "label": "URL",
+        "required": true
+      },
+      {
+        "field_name": "notes",
+        "label": "Description",
+        "required": true
+      },
+      {
+        "field_name": "owner_org",
+        "label": "Organization",
+        "required": true
+      },
+      {
+        "field_name": "data_custodian",
+        "label": "Data Custodian"
+      },
+      {
+        "field_name": "contact_point",
+        "label": "Point of Contact",
+        "required": true
+      },
+      {
+        "field_name": "point_of_contact",
+        "label": "Point of Contact"
+      },
+      {
+        "field_name": "point_of_contact_email",
+        "label": "Point of Contact Email"
+      },
+      {
+        "field_name": "tag_string",
+        "label": "Keywords"
+      },
+      {
+        "field_name": "location",
+        "label": "Location"
+      },
+      {
+        "field_name": "temporal_coverage_from",
+        "label": "Temporal Coverage From"
+      },
+      {
+        "field_name": "temporal_coverage_to",
+        "label": "Temporal Coverage To"
+      },
+      {
+        "field_name": "access_rights",
+        "label": "Access Rights"
+      },
+      {
+        "field_name": "update_frequency",
+        "label": "Update Frequency"
+      },
+      {
+        "field_name": "license_id",
+        "label": "License"
+      },
+      {
+        "field_name": "security_classification",
+        "label": "Security Classification"
+      },
+      {
+        "field_name": "data_attributes",
+        "label": "Data Attributes"
+      },
+      {
+        "field_name": "spatial_resolution",
+        "label": "Spatial Resolution"
+      },
+      {
+        "field_name": "temporal_resolution",
+        "label": "Temporal Resolution"
+      },
+      {
+        "field_name": "version",
+        "label": "Version"
+      },
+      {
+        "field_name": "purpose",
+        "label": "Purpose"
+      },
+      {
+        "field_name": "legal_authority",
+        "label": "Legal Authority"
+      },
+      {
+        "field_name": "provenance",
+        "label": "Provenance"
+      },
+      {
+        "field_name": "data_quality",
+        "label": "Data Quality"
+      },
+      {
+        "field_name": "themes",
+        "label": "Themes"
+      }
+    ],
+    "resource_fields": [
+      {
+        "field_name": "name",
+        "label": "Name",
+        "required": true
+      },
+      {
+        "field_name": "url",
+        "label": "AccessURL"
+      },
+      {
+        "field_name": "description",
+        "label": "Description"
+      },
+      {
+        "field_name": "format",
+        "label": "Format"
+      },
+      {
+        "field_name": "size",
+        "label": "File Size"
+      },
+      {
+        "field_name": "date_published",
+        "label": "Date Published"
+      },
+      {
+        "field_name": "date_modified",
+        "label": "Date Modified"
+      },
+      {
+        "field_name": "license",
+        "label": "License"
+      }
+    ]
+  }
