@@ -59,7 +59,7 @@ class PublishLog(DomainObject):
         return query.first()
 
     @classmethod
-    def get_recent_resource_log(cls, resource_id, status=False, action=[]):
+    def get_recent_resource_log(cls, resource_id, status=False, action=[], destination=None):
         query = meta.Session.query(cls) \
             .filter(cls.resource_id == resource_id) \
             .order_by(desc(cls.date_processed)) \
@@ -70,6 +70,9 @@ class PublishLog(DomainObject):
 
         if action:
             query = query.filter(cls.action.in_(tuple(action)))
+
+        if destination:
+            query = query.filter(cls.destination == destination)
 
         return query.first()
 

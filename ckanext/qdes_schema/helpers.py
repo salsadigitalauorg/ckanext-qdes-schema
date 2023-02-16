@@ -619,6 +619,23 @@ def map_formats(format, schema):
     return formats_map.get(schema, {}).get(format, '')
 
 
+def map_classification_and_access_restrictions(classification_and_access_restrictions, schema):
+    classification_and_access_restrictions_map = {
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {},
+        # @todo, in case needed, need to map this against external schema in future.
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA: {
+            'https://linked.data.gov.au/def/qg-security-classifications/official': 'official',
+            'https://linked.data.gov.au/def/qg-security-classifications/official-public': 'official-public',
+            'https://linked.data.gov.au/def/qg-security-classifications/protected': 'protected',
+            'https://linked.data.gov.au/def/qg-security-classifications/sensitive': 'sensitive'
+            }
+    }
+
+    return classification_and_access_restrictions_map.get(schema, {}).get(classification_and_access_restrictions, '')
+
+
 def dataset_has_published_to_external_schema(package_id, schema=None):
     return PublishLog.has_published(package_id, 'dataset')
 
@@ -639,13 +656,13 @@ def get_distribution_naming(pkg, resource):
 
 def get_portal_naming(destination):
     if destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
-        return 'Opendata'
+        return 'QLD Open Data Portal'
     elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA:
         return  'QSpatial'
     elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return  'SIR'
     elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
-        return  'QLD-CDP'
+        return  'QLD Closed Data Portal'
 
 
 def get_last_success_publish_log(resource):
@@ -768,72 +785,69 @@ def get_publish_activities(pkg):
     resource_publish_logs = []
 
     for resource in pkg.get('resources'):
-        # @todo, for multiple portals, modify below statement
-        # maybe add more parameter called `portal` to get_recent_resource_log(),
-        # and do looping for all available portals.
-        # Currently only returning single portal for each resources.
-        resource_publish_log = PublishLog.get_recent_resource_log(resource.get('id'))
-        if resource_publish_log:
-            # Get last success published date.
-            published_date = ''
-            unpublished_date = ''
-            date_format = '%d/%m/%Y %H:%M:%S'
-            processed_date = ''
-            processed_unpublished_date = ''
-            if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS:
-                processed_date = resource_publish_log.date_processed
-            elif resource_publish_log.status == constants.PUBLISH_STATUS_FAILED or resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
-                # If failed or validation_success, get the last success published date.
-                processed_date = get_last_success_publish_date(resource)
+        for destination in PublishLog.destinations:
+            resource_publish_log = PublishLog.get_recent_resource_log(resource.get('id'), destination=destination)
+            if resource_publish_log:
+                # Get last success published date.
+                published_date = ''
+                unpublished_date = ''
+                date_format = '%d/%m/%Y %H:%M:%S'
+                processed_date = ''
+                processed_unpublished_date = ''
+                if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS:
+                    processed_date = resource_publish_log.date_processed
+                elif resource_publish_log.status == constants.PUBLISH_STATUS_FAILED or resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
+                    # If failed or validation_success, get the last success published date.
+                    processed_date = get_last_success_publish_date(resource)
 
-            # Get detail.
-            try:
-                details = json.loads(resource_publish_log.details)
-            except Exception as e:
-                log.warning('get_publish_activities json.loads error: {0}'.format(e))
-                log.warning('{0}'.format(resource_publish_log))
-                details = {}
+                # Get detail.
+                try:
+                    details = json.loads(resource_publish_log.details)
+                except Exception as e:
+                    log.warning('get_publish_activities json.loads error: {0}'.format(e))
+                    log.warning('{0}'.format(resource_publish_log))
+                    details = {}
 
-            # Get status.
-            status = get_publish_activity_status(resource_publish_log, resource, pkg, details)
+                # Get status.
+                status = get_publish_activity_status(resource_publish_log, resource, pkg, details)
 
-            # If status validation success, keep the last status.
-            if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS and status == constants.PUBLISH_LOG_PENDING and resource_has_published_to_external_schema(resource.get('id'), resource_publish_log.destination):
-                status = constants.PUBLISH_LOG_PUBLISHED
+                # If status validation success, keep the last status.
+                if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS and status == constants.PUBLISH_LOG_PENDING and resource_has_published_to_external_schema(resource.get('id'), resource_publish_log.destination):
+                    status = constants.PUBLISH_LOG_PUBLISHED
 
 
-            # Get published and unpublished date for distribution that unpublished.
-            if status == constants.PUBLISH_LOG_UNPUBLISHED:
-                # Get last published date.
-                processed_date = get_last_success_publish_date(resource)
+                # Get published and unpublished date for distribution that unpublished.
+                if status == constants.PUBLISH_LOG_UNPUBLISHED:
+                    # Get last published date.
+                    processed_date = get_last_success_publish_date(resource)
 
-                # Get unpublished date.
-                processed_unpublished_date = resource_publish_log.date_processed
+                    # Get unpublished date.
+                    processed_unpublished_date = resource_publish_log.date_processed
 
-            # Get portal.
-            portal = get_portal_naming(resource_publish_log.destination)
+                # Get portal.
+                portal = get_portal_naming(resource_publish_log.destination)
 
-            # Process the published date.
-            if processed_date:
-                offset = render_datetime(processed_date, date_format='%z')
-                published_date = render_datetime(processed_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
+                # Process the published date.
+                if processed_date:
+                    offset = render_datetime(processed_date, date_format='%z')
+                    published_date = render_datetime(processed_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
 
-            # Process the unpublished date.
-            if processed_unpublished_date:
-                offset = render_datetime(processed_unpublished_date, date_format='%z')
-                unpublished_date = render_datetime(processed_unpublished_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
+                # Process the unpublished date.
+                if processed_unpublished_date:
+                    offset = render_datetime(processed_unpublished_date, date_format='%z')
+                    unpublished_date = render_datetime(processed_unpublished_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
 
-            data = {
-                'resource': resource,
-                'publish_log': resource_publish_log,
-                'portal': portal,
-                'distribution': get_distribution_naming(pkg, resource),
-                'status': status,
-                'published_date': published_date,
-                'unpublished_date': unpublished_date,
-                'details': details
-            }
-            resource_publish_logs.append(data)
+                data = {
+                    'resource': resource,
+                    'publish_log': resource_publish_log,
+                    'portal': portal,
+                    'distribution': get_distribution_naming(pkg, resource),
+                    'status': status,
+                    'published_date': published_date,
+                    'unpublished_date': unpublished_date,
+                    'details': details
+                }
+                resource_publish_logs.append(data)
 
     return resource_publish_logs
 
@@ -924,7 +938,8 @@ def get_json_element(data, subfield, field=None):
     return json_data.get(subfield)
 
 
-def map_data_quality(data):
+def map_data_quality(quality_descriptions):
+    data = toolkit.get_converter('json_or_string')(quality_descriptions)
     return (
         ', '.join(
             get_term_label("dimension", item.get("dimension")) + 
@@ -932,25 +947,27 @@ def map_data_quality(data):
             item.get("value")
             for item in data
         )
-        if data
-        else ''
+        if isinstance(data, list) and len(data) > 0
+        else None
     )
 
 
-def map_data_attributes(data):
+def map_data_attributes(parameters):
+    data = toolkit.get_converter('json_or_string')(parameters)
     return (
         ', '.join(
             get_term_label("observed-property", item.get("observed-property"))
             for item in data
         )
-        if data
-        else ''
+        if isinstance(data, list) and len(data) > 0
+        else None
     )
 
 
-def map_themes(data):
+def map_themes(topics):
+    data = toolkit.get_converter('json_or_string')(topics)
     themes = []
-    for item in data:
+    for item in data if isinstance(data, list) and len(data) > 0 else []:
         themes.append(get_term_label('topic', item))
     return themes
 
@@ -961,3 +978,13 @@ def get_term_label(vocabulary_service_name, term_uri):
             'term_uri': term_uri
         })
     return term.get('label') if term else ''
+
+
+def map_security_classifications(classification_and_access_restrictions, schema):
+    data = toolkit.get_converter('json_or_string')(classification_and_access_restrictions)
+    security_classification = None
+    if isinstance(data, list) and len(data) > 0:
+        # Get the first item
+        security_classification = map_classification_and_access_restrictions(data[0], schema)
+
+    return security_classification
