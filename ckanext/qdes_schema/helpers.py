@@ -517,7 +517,7 @@ def map_update_schedule(uri, schema):
             'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/fortnightly': '',
             'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/irregular': 'irregular',
             'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/monthly': 'monthly',
-            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/notPlanned': 'no-future-updates',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/notPlanned': 'no-further-updates',
             'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/periodic': '',
             'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/quarterly': 'quarterly',
             'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/semimonthly': '',
