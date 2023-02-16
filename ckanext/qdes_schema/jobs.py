@@ -48,7 +48,7 @@ def publish_to_external_catalogue(publish_log_id, user):
                 status = constants.PUBLISH_STATUS_FAILED
                 detail = {
                     'external_distribution_deleted': True,
-                    'error': 'The distribution cannot be published as it already exists in Data.QLD in a deleted state. The deleted dataset needs to be purged before it can be republished. Please contact the catalogue administrator.'}
+                    'error': f'The distribution cannot be published as it already exists in {helpers.get_portal_naming(publish_log.destination)} in a deleted state. The deleted dataset needs to be purged before it can be republished. Please contact the catalogue administrator.'}
             else:
                 publish_log.action = constants.PUBLISH_ACTION_UPDATE
                 publish_log.destination_identifier = external_pkg_dict.get('id')
@@ -237,7 +237,7 @@ def _create_external_dataset(publish_log, destination, package_dict):
     pkg_dict = package_dict.copy()
     pkg_dict['resources'] = _get_selected_resource_to_publish(package_dict, publish_log)
     # Clean up the package_dict as per destination schema requirement.
-    if publish_log.destination == 'qld_dataset':
+    if publish_log.destination == 'dataqld_dataset':
         pkg_dict = _build_and_clean_up_dataqld(pkg_dict)
     elif publish_log.destination == 'qld_cdp_dataset':
         pkg_dict = _build_and_clean_up_qld_cdp(pkg_dict)
@@ -267,7 +267,7 @@ def _update_external_dataset(publish_log, destination, external_pkg_dict, packag
     if not delete_distribution:
         pkg_dict['resources'] = _get_selected_resource_to_publish(pkg_dict, publish_log)
         # Modify the external_pkg_dict.
-        if publish_log.destination == 'qld_dataset':
+        if publish_log.destination == 'dataqld_dataset':
             pkg_dict = _build_and_clean_up_dataqld(pkg_dict, external_pkg_dict, recent_publish_log)
         elif publish_log.destination == 'qld_cdp_dataset':
             pkg_dict = _build_and_clean_up_qld_cdp(pkg_dict, external_pkg_dict, recent_publish_log)
@@ -459,7 +459,7 @@ def _build_and_clean_up_qld_cdp(des_package_dict, external_package_dict=None, re
 
     # Manual Mapping for resource fields.
     service_api_endpoint = toolkit.get_converter('json_or_string')(des_resource.get('service_api_endpoint'))
-    url = service_api_endpoint[0] if isinstance(service_api_endpoint, list) else des_resource.get('url')
+    url = service_api_endpoint[0] if isinstance(service_api_endpoint, list) and len(service_api_endpoint) > 0 else des_resource.get('url')
     qld_cdp_resource_dict['url'] = url
     qld_cdp_resource_dict['description'] = des_resource.get('description')
     qld_cdp_resource_dict['format'] = helpers.map_formats(des_resource.get('format'),
@@ -510,20 +510,22 @@ def _build_and_clean_up_qld_cdp(des_package_dict, external_package_dict=None, re
     qld_cdp_pkg_dict['owner_org'] = os.getenv(constants.get_owner_org(constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA))
     qld_cdp_pkg_dict['data_custodian'] = "department-of-environment-and-science"
     qld_cdp_pkg_dict['publisher'] = "Department of Environment and Science"
-    contact_point = get_action('get_secure_vocabulary_record')({'user': site_user}, {'vocabulary_name': 'point-of-contact', 'query': des_package_dict.get('contact_point')})
+    contact_point = get_action('get_secure_vocabulary_record')(
+        {'user': site_user}, {'vocabulary_name': 'point-of-contact', 'query': des_package_dict.get('contact_point')})
     qld_cdp_pkg_dict.pop('contact_point', None)
     qld_cdp_pkg_dict['point_of_contact'] = contact_point.get("Name", None)
     qld_cdp_pkg_dict['point_of_contact_email'] = contact_point.get("Email", None)
     qld_cdp_pkg_dict['tags'] = des_package_dict.get('tags', [])
     qld_cdp_pkg_dict['temporal_coverage_from'] = des_package_dict.get('temporal_start', None)
     qld_cdp_pkg_dict['temporal_coverage_to'] = des_package_dict.get('temporal_end', None)
-    qld_cdp_pkg_dict['security_classification'] = 'official-public'
+    qld_cdp_pkg_dict['security_classification'] = helpers.map_security_classifications(des_package_dict.get('classification_and_access_restrictions'),
+                                                                                       constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
     qld_cdp_pkg_dict['access_rights'] = des_package_dict.get('rights_statement', None)
-    qld_cdp_pkg_dict['data_attributes'] = helpers.map_data_attributes(json.loads(des_package_dict.get('parameter', None)))
+    qld_cdp_pkg_dict['data_attributes'] = helpers.map_data_attributes(des_package_dict.get('parameter', None))
     qld_cdp_pkg_dict['purpose'] = des_package_dict.get('purpose', None)
     qld_cdp_pkg_dict['provenance'] = des_package_dict.get('lineage_description', None)
-    qld_cdp_pkg_dict['data_quality'] = helpers.map_data_quality(json.loads(des_package_dict.get('quality_description', None)))
-    qld_cdp_pkg_dict['themes'] = helpers.map_themes(json.loads(des_package_dict.get('topic', None)))
+    qld_cdp_pkg_dict['data_quality'] = helpers.map_data_quality(des_package_dict.get('quality_description', None))
+    qld_cdp_pkg_dict['themes'] = helpers.map_themes(des_package_dict.get('topic', None))
 
     return qld_cdp_pkg_dict
 
@@ -560,7 +562,8 @@ def _update_activity_schema(publish_log, package_dict, status, user, unpublish=F
         'data': {
             'package': package_dict,
             'status': 'successfully' if status == constants.PUBLISH_STATUS_SUCCESS else 'unsuccessfully',
-            'distribution': resource_format + ' - ' + resource_name
+            'distribution': resource_format + ' - ' + resource_name,
+            'destination': helpers.get_portal_naming(publish_log.destination)
         }
     })
 
