@@ -167,7 +167,7 @@
                     $infoEl.show();
 
                     return true;
-                } else if (isOpenDataSelected && !isOfficialPublic) {
+                } else if (!isOfficialPublic) {
                     $infoEl.html('The dataset\'s classification and access restriction does not permit publishing. Only datasets with a classification of "OFFICIAL-PUBLIC" can be published to QLD Open Data Portal.');
                     $infoEl.show();
 
