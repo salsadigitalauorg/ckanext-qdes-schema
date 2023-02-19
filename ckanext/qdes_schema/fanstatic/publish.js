@@ -148,7 +148,7 @@
         var isSeries = $validatePublishEl.attr('data-series') === "1";
         var isSeriesParent = $validatePublishEl.attr('data-series-parent') === "1";
         var isOpenDataSelected = $schemaEl.val() == 'dataqld_dataset';
-        var isValid = $validatePublishEl.attr('data-valid') === "1" && isPublic;
+        var isValid = $validatePublishEl.attr('data-valid') === "1" && isPublic && isOfficialPublic;;
 
         var resourceChecked = function () {
             var checked = false
@@ -220,7 +220,7 @@
                 }
             }
 
-            if (!isPublic || (isOpenDataSelected && !isOfficialPublic) || (isOpenDataSelected && isQspatialHarvested && isSeries)) {
+            if (!isPublic || !isOfficialPublic || (isOpenDataSelected && isQspatialHarvested && isSeries)) {
                 // Disable buttons.
                 $validateBtnEl.attr('disabled', true);
                 $publishBtnEl.attr('disabled', true);
