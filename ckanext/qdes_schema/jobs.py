@@ -465,8 +465,8 @@ def _build_and_clean_up_qld_cdp(des_package_dict, external_package_dict=None, re
     qld_cdp_resource_dict['format'] = helpers.map_formats(des_resource.get('format'),
                                                           constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
     qld_cdp_resource_dict['size'] = des_resource.get('size')
-    qld_cdp_resource_dict['date_published'] = des_package_dict.get('dataset_release_date')
-    qld_cdp_resource_dict['date_modified'] = des_package_dict.get('dataset_last_modified_date')
+    qld_cdp_resource_dict['date_published'] = toolkit.h.render_datetime(des_package_dict.get('dataset_release_date'), date_format='%Y-%m-%d')
+    qld_cdp_resource_dict['date_modified'] =  toolkit.h.render_datetime(des_package_dict.get('dataset_last_modified_date'), date_format='%Y-%m-%d')
     qld_cdp_resource_dict['license'] = helpers.map_license(des_resource.get('license'),
                                                            constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
     
