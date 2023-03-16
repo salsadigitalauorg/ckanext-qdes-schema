@@ -18,6 +18,7 @@ from ckanext.relationships import helpers as ckanext_relationships_helpers
 from ckanext.qdes_schema.logic.helpers import indexing_helpers, relationship_helpers, resource_helpers as res_helpers
 from collections import OrderedDict
 from ckanext.invalid_uris.interfaces import IInvalidURIs
+from ckanext.clone_dataset.interfaces import IClone
 
 h = toolkit.h
 get_action = toolkit.get_action
@@ -36,6 +37,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(IInvalidURIs)
+    plugins.implements(IClone)
 
     # IConfigurable
     def configure(self, config):
@@ -462,3 +464,23 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     def contact_point_data(self, context, contact_point):
         contact_point_data = get_action('get_secure_vocabulary_record')(context, {'vocabulary_name': 'point-of-contact', 'query': contact_point})
         return contact_point_data
+    
+    # IClone
+    def clone_modify_dataset(self, context, dataset_dict):
+        # Remove metadata fields we do not want to clone
+        if 'identifiers' in dataset_dict:
+            dataset_dict['identifiers'] = None
+        
+        if 'metadata_review_date' in dataset_dict:
+            dataset_dict.pop('metadata_review_date')
+
+        # Drop any specific fields that may contain references that trigger relationship creation
+        if 'series_or_collection' in dataset_dict:
+            dataset_dict.pop('series_or_collection')
+        if 'related_resources' in dataset_dict:
+            dataset_dict.pop('related_resources')
+
+        # Drop datasets_available from data services    
+        if 'datasets_available' in dataset_dict:
+            dataset_dict.pop('datasets_available')
+        
