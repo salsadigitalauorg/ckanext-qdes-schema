@@ -81,7 +81,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         has been updated.
         '''
         # Don't run this function when adding or editing a resource
-        if toolkit.g and toolkit.g.controller == 'resource':
+        if toolkit.g and toolkit.g.controller == 'dataset_resource':
             return pkg_dict
 
         # Only reconcile relationships if the request has come from the Web UI form via the dataset controller
