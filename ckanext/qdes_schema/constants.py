@@ -1,6 +1,7 @@
 PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA = 'dataqld_dataset'
 PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA = 'qspatial_dataset'
 PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA = 'sir_dataset'
+PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA = 'qld_cdp_dataset'
 PUBLISH_TRIGGER_MANUAL = 'manual'
 PUBLISH_TRIGGER_AUTOMATED = 'automated'
 PUBLISH_STATUS_PENDING = 'pending'
@@ -26,6 +27,8 @@ def get_key_name(schema):
         return 'QSPATIAL_API_KEY'
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return 'SIR_API_KEY'
+    elif schema == PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
+        return 'DATA_QLD_CDP_API_KEY'
 
     return ''
 
@@ -37,6 +40,8 @@ def get_owner_org(schema):
         return 'QSPATIAL_OWNER_ORG'
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return 'SIR_OWNER_ORG'
+    elif schema == PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
+        return 'DATA_QLD_CDP_OWNER_ORG'
 
     return ''
 
@@ -48,6 +53,8 @@ def get_external_schema_url(schema):
         return 'QSPATIAL_URL'
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return 'SIR_URL'
+    elif schema == PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
+        return 'DATA_QLD_CDP_URL'
 
     return ''
 
@@ -59,5 +66,7 @@ def get_dataservice_id(schema):
         return 'ckanext.qdes_schema.publishing_portals.qspatial'
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return 'ckanext.qdes_schema.publishing_portals.sir'
+    elif schema == PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
+        return 'ckanext.qdes_schema.publishing_portals.qld_cdp'
 
     return ''

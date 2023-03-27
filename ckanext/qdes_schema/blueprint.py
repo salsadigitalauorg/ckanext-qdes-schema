@@ -165,7 +165,8 @@ def datasets_schema_validation(id):
     extra_vars['data'] = []
     extra_vars['options'] = [
         {'text': 'Select publishing portal', 'value': 'none'},
-        {'text': 'Opendata Portal', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA},
+        {'text': 'QLD Open Data Portal', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA},
+        {'text': 'QLD Closed Data Portal', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA},
         # {'text': 'QSpatial', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA},
         # {'text': 'SIR', 'value': constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA}
     ]
