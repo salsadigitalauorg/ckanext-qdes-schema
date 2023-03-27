@@ -9,9 +9,9 @@
     )|safe }}
     <br />
     <span class="date">
-      {{ h.time_ago_from_timestamp(activity.timestamp) }} | The dataset was {{activity_dict.data.status}} published to Data.QLD
+      {{ h.time_ago_from_timestamp(activity.timestamp) }} | The dataset was {{activity_dict.data.status}} published to {{ activity_dict.data.destination if activity_dict.data.destination else "QLD Open Data Portal" }}
       <br/>
-      The following distribution was {{activity_dict.data.status}} published to Data.QLD
+      The following distribution was {{activity_dict.data.status}} published to {{ activity_dict.data.destination if activity_dict.data.destination else "QLD Open Data Portal" }}
       <br/>
       - {{activity_dict.data.distribution}}
     </span>

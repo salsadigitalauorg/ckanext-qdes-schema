@@ -37,7 +37,8 @@ class PublishLog(DomainObject):
     destinations = [
         constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA,
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA,
-        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA,
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA
     ]
 
     def __init__(self, dataset_id=None, resource_id=None, trigger=None, destination=None, destination_identifier=None,
@@ -58,7 +59,7 @@ class PublishLog(DomainObject):
         return query.first()
 
     @classmethod
-    def get_recent_resource_log(cls, resource_id, status=False, action=[]):
+    def get_recent_resource_log(cls, resource_id, status=False, action=[], destination=None):
         query = meta.Session.query(cls) \
             .filter(cls.resource_id == resource_id) \
             .order_by(desc(cls.date_processed)) \
@@ -69,6 +70,9 @@ class PublishLog(DomainObject):
 
         if action:
             query = query.filter(cls.action.in_(tuple(action)))
+
+        if destination:
+            query = query.filter(cls.destination == destination)
 
         return query.first()
 

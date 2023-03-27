@@ -147,8 +147,9 @@
         var isQspatialHarvested = $validatePublishEl.attr('data-qspatial-harvested') === "1";
         var isSeries = $validatePublishEl.attr('data-series') === "1";
         var isSeriesParent = $validatePublishEl.attr('data-series-parent') === "1";
-        var isValid = $validatePublishEl.attr('data-valid') === "1" && isPublic && isOfficialPublic;
-        var isOpenDataSelected = $schemaEl.val() !== 'dataqld_dataset';
+        var isOpenDataSelected = $schemaEl.val() == 'dataqld_dataset';
+        var isValid = $validatePublishEl.attr('data-valid') === "1" && isPublic && isOfficialPublic;;
+
         var resourceChecked = function () {
             var checked = false
             $resourcesEl.each(function () {
@@ -159,7 +160,7 @@
 
             return checked;
         }
-        var showInfoText = function (isPublic, isOfficialPublic) {
+        var showInfoText = function (isPublic, isOfficialPublic, isOpenDataSelected) {
             if ($schemaEl.val() !== 'none') {
                 if (!isPublic) {
                     $infoEl.html('The dataset\'s visibility is currently set to "Private" and cannot be published. Please change the visibility setting to "Public" before publishing.');
@@ -167,20 +168,23 @@
 
                     return true;
                 } else if (!isOfficialPublic) {
-                    $infoEl.html('The dataset\'s classification and access restriction does not permit publishing. Only datasets with a classification of "OFFICIAL-PUBLIC" can be published.');
+                    $infoEl.html('The dataset\'s classification and access restriction does not permit publishing. Only datasets with a classification of "OFFICIAL-PUBLIC" can be published to QLD Open Data Portal.');
                     $infoEl.show();
 
                     return true;
                 } else if (isOpenDataSelected && isQspatialHarvested && isSeries) {
                     if (isSeriesParent) {
-                        $infoEl.html('This series/collection distribution was originally sourced from QSpatial. Please publish any changes to QSpatial. The Data.QLD record will be automatically updated via QSpatial.');
+                        $infoEl.html('This series/collection distribution was originally sourced from QSpatial. Please publish any changes to QSpatial. The QLD Open Data Portal record will be automatically updated via QSpatial.');
                     } else {
-                        $infoEl.html('This distribution is part of a series/collection that was originally sourced from QSpatial. Please publish any changes to QSpatial. The Data.QLD record will be automatically updated via QSpatial.');
+                        $infoEl.html('This distribution is part of a series/collection that was originally sourced from QSpatial. Please publish any changes to QSpatial. The QLD Open Data Portal record will be automatically updated via QSpatial.');
                     }
 
                     $infoEl.show();
 
                     return true;
+                }
+                else{ 
+                    $infoEl.hide();
                 }
             } else {
                 $infoEl.hide();
@@ -188,7 +192,7 @@
 
             return false;
         }
-        var toggleBtnOnOff = function (isPublic, isOfficialPublic, checkValid = false) {
+        var toggleBtnOnOff = function (isPublic, isOfficialPublic, isOpenDataSelected, checkValid = false) {
             if ($schemaEl.val() !== 'none' && resourceChecked()) {
                 // Enable button.
                 $validateBtnEl.attr('disabled', false);
@@ -225,17 +229,19 @@
 
         // Listen on checkbox change event.
         $resourcesEl.on('change', function () {
-            toggleBtnOnOff(isPublic, isOfficialPublic);
+            isOpenDataSelected = $schemaEl.val() == 'dataqld_dataset';
+            toggleBtnOnOff(isPublic, isOfficialPublic, isOpenDataSelected);
         });
 
         // Listen to dropdown change event.
         $schemaEl.on('change', function () {
-            showInfoText(isPublic, isOfficialPublic);
-            toggleBtnOnOff(isPublic, isOfficialPublic);
+            isOpenDataSelected = $schemaEl.val() == 'dataqld_dataset';
+            showInfoText(isPublic, isOfficialPublic, isOpenDataSelected);
+            toggleBtnOnOff(isPublic, isOfficialPublic, isOpenDataSelected);
         });
 
         // Init.
-        toggleBtnOnOff(isPublic, isOfficialPublic, true);
+        toggleBtnOnOff(isPublic, isOfficialPublic, isOpenDataSelected, true);
 
         // Prevent resubmit on refresh,
         // this is not ideal but since the error/success msg
