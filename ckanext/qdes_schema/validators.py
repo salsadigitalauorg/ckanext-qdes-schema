@@ -426,7 +426,7 @@ def qdes_validate_related_resources(field, schema):
 
     def validator(key, data, errors, context):
         # Don't run this validator when adding or editing a resource
-        if toolkit.g and toolkit.g.controller == 'resource':
+        if toolkit.g and toolkit.g.controller == 'dataset_resource':
             return validator
 
         model = context['model']
