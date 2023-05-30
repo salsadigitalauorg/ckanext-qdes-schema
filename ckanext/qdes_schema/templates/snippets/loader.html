@@ -1,7 +1,7 @@
 {% set is_dataset_new = True if g.controller == 'qdes_schema' and g.action == 'new' else False %}
 {% set is_dataset_edit = True if g.controller == 'dataset' and g.action == 'edit' else False %}
 {% set is_dataservice_new_edit = True if g.controller == 'dataservice' and (g.action == 'new' or g.action == 'edit') else False %}
-{% set is_resource_new_edit = True if g.controller == 'resource' and (g.action == 'new' or g.action == 'edit') else False %}
+  {% set is_resource_new_edit = True if g.controller == 'dataset_resource' and (g.action == 'new' or g.action == 'edit') else False %}
 {% set show_loader = is_dataset_new or is_dataset_edit or is_dataservice_new_edit or is_resource_new_edit %}
 {% if show_loader %}
   {% asset 'qdes_schema/spinner' %}
