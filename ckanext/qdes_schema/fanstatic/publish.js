@@ -148,7 +148,7 @@
         var isSeries = $validatePublishEl.attr('data-series') === "1";
         var isSeriesParent = $validatePublishEl.attr('data-series-parent') === "1";
         var isOpenDataSelected = $schemaEl.val() == 'dataqld_dataset';
-        var isValid = $validatePublishEl.attr('data-valid') === "1" && isPublic && isOfficialPublic;;
+        var isValid = $validatePublishEl.attr('data-valid') === "1" && isPublic;
 
         var resourceChecked = function () {
             var checked = false
@@ -167,7 +167,7 @@
                     $infoEl.show();
 
                     return true;
-                } else if (!isOfficialPublic) {
+                } else if (isOpenDataSelected && !isOfficialPublic) {
                     $infoEl.html('The dataset\'s classification and access restriction does not permit publishing. Only datasets with a classification of "OFFICIAL-PUBLIC" can be published to QLD Open Data Portal.');
                     $infoEl.show();
 
@@ -220,7 +220,7 @@
                 }
             }
 
-            if (!isPublic || !isOfficialPublic || (isOpenDataSelected && isQspatialHarvested && isSeries)) {
+            if (!isPublic || (isOpenDataSelected && !isOfficialPublic) || (isOpenDataSelected && isQspatialHarvested && isSeries)) {
                 // Disable buttons.
                 $validateBtnEl.attr('disabled', true);
                 $publishBtnEl.attr('disabled', true);
