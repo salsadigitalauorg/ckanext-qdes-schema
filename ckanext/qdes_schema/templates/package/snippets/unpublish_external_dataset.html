@@ -16,7 +16,7 @@
       </div>
       <div class="col-md-8">
         <div class="form-group">
-          {% if not published_distributions.dataqld_dataset %}
+          {% if not published_distributions %}
             No distributions.
           {% else %}
           <table class="table">
@@ -28,20 +28,22 @@
            </tr>
            </thead>
             <tbody>
-              {% for publish_log in published_distributions.dataqld_dataset %}
-              <tr>
-                {% set ns = namespace() %}
-                {% for resource in pkg.resources %}
-                  {% if resource.id == publish_log.resource_id %}
-                    {% set ns.resource = resource %}
-                  {% endif %}
+              {% for distribution, publish_logs in published_distributions.items() %}
+                {% for publish_log in publish_logs %}
+                <tr>
+                  {% set ns = namespace() %}
+                  {% for resource in pkg.resources %}
+                    {% if resource.id == publish_log.resource_id %}
+                      {% set ns.resource = resource %}
+                    {% endif %}
+                  {% endfor %}
+                  {% set schema_resources = h.dump_json({"resource_id":publish_log.resource_id, "destination": publish_log.destination}) %}
+                  <td><label class="no-colon"> {{ h.get_distribution_naming(pkg, ns.resource) }}</label> </td>
+                  <td><label class="no-colon"> {{ h.get_portal_naming(publish_log.destination) }} </label> </td>
+                  <td> <label class="no-colon"> <input class="resources" id="{{publish_log.id}}" type="checkbox" name="schema_resources" value="{{schema_resources}}"/> </label></td>
+                </tr>
+                </tbody>
                 {% endfor %}
-                {% set schema_resources = h.dump_json({"resource_id":publish_log.resource_id, "destination": publish_log.destination}) %}
-                 <td><label class="no-colon"> {{ h.get_distribution_naming(pkg, ns.resource) }}</label> </td>
-                 <td><label class="no-colon"> {{ h.get_portal_naming(publish_log.destination) }} </label> </td>
-                 <td> <label class="no-colon"> <input class="resources" id="{{publish_log.id}}" type="checkbox" name="schema_resources" value="{{schema_resources}}"/> </label></td>
-              </tr>
-              </tbody>
               {% endfor %}
           </table>
           {% endif %}

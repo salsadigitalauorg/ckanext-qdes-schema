@@ -488,25 +488,42 @@ def load_activity_with_full_data(activity_id):
 def map_update_schedule(uri, schema):
     frequency_map = {
         constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/annually': 'annually',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/asNeeded': 'non-regular',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/biannually': 'half-yearly',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/biennially': 'non-regular',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/continual': 'near-realtime',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/daily': 'daily',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/fortnightly': 'fortnightly',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/irregular': 'non-regular',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/monthly': 'monthly',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/notPlanned': 'not-updated',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/periodic': 'non-regular',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/quarterly': 'quarterly',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/semimonthly': 'fortnightly',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/unknown': 'not-updated',
-            'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/weekly': 'weekly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/annually': 'annually',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/asNeeded': 'non-regular',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/biannually': 'half-yearly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/biennially': 'non-regular',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/continual': 'near-realtime',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/daily': 'daily',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/fortnightly': 'fortnightly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/irregular': 'non-regular',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/monthly': 'monthly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/notPlanned': 'not-updated',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/periodic': 'non-regular',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/quarterly': 'quarterly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/semimonthly': 'fortnightly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/unknown': 'not-updated',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/weekly': 'weekly'
         },
         # @todo, in case needed, need to map this against external schema in future.
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
-        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA: {
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/annually': 'annually',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/asNeeded': 'ad-hoc',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/biannually': 'six-monthly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/biennially': '2-yearly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/continual': 'continuous',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/daily': 'daily',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/fortnightly': '',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/irregular': 'irregular',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/monthly': 'monthly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/notPlanned': 'no-further-updates',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/periodic': '',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/quarterly': 'quarterly',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/semimonthly': '',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/unknown': 'other',
+            'http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/weekly': 'weekly'
+        },
     }
 
     return frequency_map.get(schema, {}).get(uri, '')
@@ -517,11 +534,22 @@ def map_license(uri, schema):
         constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {
             'https://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0': 'cc-by-4',
             'https://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0': 'cc-by-nd-4',
-            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0': 'cc-by-sa-4'
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0': 'cc-by-sa-4',
+            'http://linked.data.gov.au/def/licence-document/cc-by-4.0': 'cc-by-4',
+            'http://linked.data.gov.au/def/licence-document/cc-by-nd-4.0': 'cc-by-nd-4',
+            'http://linked.data.gov.au/def/licence-document/cc-by-sa-4.0': 'cc-by-sa-4',
         },
         # @todo, in case needed, need to map this against external schema in future.
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
-        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA: {
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0',
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0',
+            'https://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0',
+            'http://linked.data.gov.au/def/licence-document/cc-by-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0',
+            'http://linked.data.gov.au/def/licence-document/cc-by-nd-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-nd-4.0',
+            'http://linked.data.gov.au/def/licence-document/cc-by-sa-4.0': 'http://linked.data.gov.au/def/qld-data-licenses/cc-by-sa-4.0'
+        }
     }
 
     return license_map.get(schema, {}).get(uri, '')
@@ -558,10 +586,54 @@ def map_formats(format, schema):
         },
         # @todo, in case needed, need to map this against external schema in future.
         constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
-        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {}
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA: {
+            'http://publications.europa.eu/resource/authority/file-type/CSV': 'CSV',
+            'http://publications.europa.eu/resource/authority/file-type/ECW': 'ECW',
+            'http://publications.europa.eu/resource/authority/file-type/GRID_ASCII': 'Esri ASCII grid',
+            'http://publications.europa.eu/resource/authority/file-type/GDB': 'Esri File Geodatabase',
+            'http://publications.europa.eu/resource/authority/file-type/REST': 'Esri REST',
+            'http://publications.europa.eu/resource/authority/file-type/SHP': 'Esri Shape',
+            'http://publications.europa.eu/resource/authority/file-type/GRID': 'Esri binary grid',
+            'http://publications.europa.eu/resource/authority/file-type/XLSX': 'Excel XLSX',
+            'http://publications.europa.eu/resource/authority/file-type/GEOJSON': 'GeoJSON',
+            'http://publications.europa.eu/resource/authority/file-type/HTML_SIMPL': 'HTML simplified',
+            'http://publications.europa.eu/resource/authority/file-type/JPEG': 'JPEG',
+            'http://publications.europa.eu/resource/authority/file-type/JSON': 'JSON',
+            'http://publications.europa.eu/resource/authority/file-type/KML': 'KML',
+            'http://publications.europa.eu/resource/authority/file-type/KMZ': 'KMZ',
+            'http://publications.europa.eu/resource/authority/file-type/MDB': 'MDB',
+            'http://publications.europa.eu/resource/authority/file-type/NETCDF': 'NetCDF',
+            'http://publications.europa.eu/resource/authority/file-type/PDF': 'PDF',
+            'http://publications.europa.eu/resource/authority/file-type/TXT': 'Plain text',
+            'http://publications.europa.eu/resource/authority/file-type/PPTX': 'PowerPoint PPTX',
+            'http://publications.europa.eu/resource/authority/file-type/TIFF': 'TIFF',
+            'http://publications.europa.eu/resource/authority/file-type/TSV': 'TSV',
+            'http://publications.europa.eu/resource/authority/file-type/WFS_SRVC': 'WFS',
+            'http://publications.europa.eu/resource/authority/file-type/WMS_SRVC': 'WMS',
+            'http://publications.europa.eu/resource/authority/file-type/DOCX': 'Word DOCX',
+            'http://publications.europa.eu/resource/authority/file-type/XML': 'XML'
+            }
     }
 
     return formats_map.get(schema, {}).get(format, '')
+
+
+def map_classification_and_access_restrictions(classification_and_access_restrictions, schema):
+    classification_and_access_restrictions_map = {
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA: {},
+        # @todo, in case needed, need to map this against external schema in future.
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA: {},
+        constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA: {
+            'https://linked.data.gov.au/def/qg-security-classifications/official': 'official',
+            'https://linked.data.gov.au/def/qg-security-classifications/official-public': 'official-public',
+            'https://linked.data.gov.au/def/qg-security-classifications/protected': 'protected',
+            'https://linked.data.gov.au/def/qg-security-classifications/sensitive': 'sensitive'
+            }
+    }
+
+    return classification_and_access_restrictions_map.get(schema, {}).get(classification_and_access_restrictions, '')
 
 
 def dataset_has_published_to_external_schema(package_id, schema=None):
@@ -584,11 +656,13 @@ def get_distribution_naming(pkg, resource):
 
 def get_portal_naming(destination):
     if destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
-        return 'Opendata'
+        return 'QLD Open Data Portal'
     elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_QSPATIAL_SCHEMA:
         return  'QSpatial'
     elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_SIR_SCHEMA:
         return  'SIR'
+    elif destination == constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
+        return  'QLD Closed Data Portal'
 
 
 def get_last_success_publish_log(resource):
@@ -711,72 +785,69 @@ def get_publish_activities(pkg):
     resource_publish_logs = []
 
     for resource in pkg.get('resources'):
-        # @todo, for multiple portals, modify below statement
-        # maybe add more parameter called `portal` to get_recent_resource_log(),
-        # and do looping for all available portals.
-        # Currently only returning single portal for each resources.
-        resource_publish_log = PublishLog.get_recent_resource_log(resource.get('id'))
-        if resource_publish_log:
-            # Get last success published date.
-            published_date = ''
-            unpublished_date = ''
-            date_format = '%d/%m/%Y %H:%M:%S'
-            processed_date = ''
-            processed_unpublished_date = ''
-            if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS:
-                processed_date = resource_publish_log.date_processed
-            elif resource_publish_log.status == constants.PUBLISH_STATUS_FAILED or resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
-                # If failed or validation_success, get the last success published date.
-                processed_date = get_last_success_publish_date(resource)
+        for destination in PublishLog.destinations:
+            resource_publish_log = PublishLog.get_recent_resource_log(resource.get('id'), destination=destination)
+            if resource_publish_log:
+                # Get last success published date.
+                published_date = ''
+                unpublished_date = ''
+                date_format = '%d/%m/%Y %H:%M:%S'
+                processed_date = ''
+                processed_unpublished_date = ''
+                if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS:
+                    processed_date = resource_publish_log.date_processed
+                elif resource_publish_log.status == constants.PUBLISH_STATUS_FAILED or resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
+                    # If failed or validation_success, get the last success published date.
+                    processed_date = get_last_success_publish_date(resource)
 
-            # Get detail.
-            try:
-                details = json.loads(resource_publish_log.details)
-            except Exception as e:
-                log.warning('get_publish_activities json.loads error: {0}'.format(e))
-                log.warning('{0}'.format(resource_publish_log))
-                details = {}
+                # Get detail.
+                try:
+                    details = json.loads(resource_publish_log.details)
+                except Exception as e:
+                    log.warning('get_publish_activities json.loads error: {0}'.format(e))
+                    log.warning('{0}'.format(resource_publish_log))
+                    details = {}
 
-            # Get status.
-            status = get_publish_activity_status(resource_publish_log, resource, pkg, details)
+                # Get status.
+                status = get_publish_activity_status(resource_publish_log, resource, pkg, details)
 
-            # If status validation success, keep the last status.
-            if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS and status == constants.PUBLISH_LOG_PENDING and resource_has_published_to_external_schema(resource.get('id'), resource_publish_log.destination):
-                status = constants.PUBLISH_LOG_PUBLISHED
+                # If status validation success, keep the last status.
+                if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS and status == constants.PUBLISH_LOG_PENDING and resource_has_published_to_external_schema(resource.get('id'), resource_publish_log.destination):
+                    status = constants.PUBLISH_LOG_PUBLISHED
 
 
-            # Get published and unpublished date for distribution that unpublished.
-            if status == constants.PUBLISH_LOG_UNPUBLISHED:
-                # Get last published date.
-                processed_date = get_last_success_publish_date(resource)
+                # Get published and unpublished date for distribution that unpublished.
+                if status == constants.PUBLISH_LOG_UNPUBLISHED:
+                    # Get last published date.
+                    processed_date = get_last_success_publish_date(resource)
 
-                # Get unpublished date.
-                processed_unpublished_date = resource_publish_log.date_processed
+                    # Get unpublished date.
+                    processed_unpublished_date = resource_publish_log.date_processed
 
-            # Get portal.
-            portal = get_portal_naming(resource_publish_log.destination)
+                # Get portal.
+                portal = get_portal_naming(resource_publish_log.destination)
 
-            # Process the published date.
-            if processed_date:
-                offset = render_datetime(processed_date, date_format='%z')
-                published_date = render_datetime(processed_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
+                # Process the published date.
+                if processed_date:
+                    offset = render_datetime(processed_date, date_format='%z')
+                    published_date = render_datetime(processed_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
 
-            # Process the unpublished date.
-            if processed_unpublished_date:
-                offset = render_datetime(processed_unpublished_date, date_format='%z')
-                unpublished_date = render_datetime(processed_unpublished_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
+                # Process the unpublished date.
+                if processed_unpublished_date:
+                    offset = render_datetime(processed_unpublished_date, date_format='%z')
+                    unpublished_date = render_datetime(processed_unpublished_date, date_format=date_format) + offset[:3] + ':' + offset[-2:]
 
-            data = {
-                'resource': resource,
-                'publish_log': resource_publish_log,
-                'portal': portal,
-                'distribution': get_distribution_naming(pkg, resource),
-                'status': status,
-                'published_date': published_date,
-                'unpublished_date': unpublished_date,
-                'details': details
-            }
-            resource_publish_logs.append(data)
+                data = {
+                    'resource': resource,
+                    'publish_log': resource_publish_log,
+                    'portal': portal,
+                    'distribution': get_distribution_naming(pkg, resource),
+                    'status': status,
+                    'published_date': published_date,
+                    'unpublished_date': unpublished_date,
+                    'details': details
+                }
+                resource_publish_logs.append(data)
 
     return resource_publish_logs
 
@@ -865,3 +936,55 @@ def get_json_element(data, subfield, field=None):
             field_name = field
         return json_data.get(subfield.get('field_name')).get(field_name)
     return json_data.get(subfield)
+
+
+def map_data_quality(quality_descriptions):
+    data = toolkit.get_converter('json_or_string')(quality_descriptions)
+    return (
+        ', '.join(
+            get_term_label("dimension", item.get("dimension")) + 
+            ":" +
+            item.get("value")
+            for item in data
+        )
+        if isinstance(data, list) and len(data) > 0
+        else None
+    )
+
+
+def map_data_attributes(parameters):
+    data = toolkit.get_converter('json_or_string')(parameters)
+    return (
+        ', '.join(
+            get_term_label("observed-property", item.get("observed-property"))
+            for item in data
+        )
+        if isinstance(data, list) and len(data) > 0
+        else None
+    )
+
+
+def map_themes(topics):
+    data = toolkit.get_converter('json_or_string')(topics)
+    themes = []
+    for item in data if isinstance(data, list) and len(data) > 0 else []:
+        themes.append(get_term_label('topic', item))
+    return themes
+
+
+def get_term_label(vocabulary_service_name, term_uri):
+    term = get_action('get_vocabulary_service_term')({}, {
+            'vocabulary_service_name': vocabulary_service_name,
+            'term_uri': term_uri
+        })
+    return term.get('label') if term else ''
+
+
+def map_security_classifications(classification_and_access_restrictions, schema):
+    data = toolkit.get_converter('json_or_string')(classification_and_access_restrictions)
+    security_classification = None
+    if isinstance(data, list) and len(data) > 0:
+        # Get the first item
+        security_classification = map_classification_and_access_restrictions(data[0], schema)
+
+    return security_classification
