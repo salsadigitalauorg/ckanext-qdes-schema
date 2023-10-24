@@ -109,12 +109,10 @@ spatial_map_input_js:
     - spatial/spatial_map_input.js
 
 spatial_map_input_css:
-  filters: cssrewrite
   contents:
     - js/vendor/leaflet/1.9.3/leaflet.css
     - js/vendor/leaflet.draw/0.4.14/leaflet.draw.css
     - spatial/spatial_map_input.css
-
 
 spatial_query_js:
   filter: rjsmin
@@ -128,7 +126,6 @@ spatial_query_js:
     - spatial/spatial_query.js
 
 spatial_query_css:
-  filters: cssrewrite
   contents:
     - js/vendor/leaflet/1.9.3/leaflet.css
     - js/vendor/leaflet.draw/0.4.14/leaflet.draw.css
