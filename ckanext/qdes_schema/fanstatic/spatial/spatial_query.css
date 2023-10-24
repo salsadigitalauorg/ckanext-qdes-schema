@@ -1,0 +1,286 @@
+.module-narrow #dataset-map-container {
+  height: 290px;
+}
+.module-content #dataset-map-container {
+  height: 250px;
+}
+#dataset-map-attribution {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.module-heading .action {
+  float: right;
+  color: #888888;
+  font-size: 12px;
+  line-height: 20px;
+  text-decoration: underline;
+}
+.module-narrow #dataset-map-attribution {
+  margin: 5px 8px;
+  color: #666;
+}
+.leaflet-draw-label-single {
+  display: none;
+}
+.leaflet-draw-label-subtext {
+  display: none;
+}
+#field-location {
+  width: 190px;
+}
+.select2-results .select2-no-results {
+  padding: 3px 6px;
+}
+#dataset-map-edit {
+  margin: 5px 8px;
+}
+.module-narrow #dataset-map-container{
+  position: relative;
+}
+.extended-map-form,
+.module-narrow #dataset-map-attribution,
+.module-narrow #dataset-map-clear,
+#dataset-map-edit-buttons,
+#extended-map-panel{
+  display: none;
+}
+.extended-map-show-form{
+  text-align: center;
+  padding-bottom: 10px;
+}
+.leaflet-control-draw-rectangle {
+  background-image: url("../img/pencil.png");
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 12px 12px;
+  border-radius: 4px;
+}
+.leaflet-draw-actions li {
+  display: none;
+}
+div[style*="crosshair"] .leaflet-clickable{
+  cursor: crosshair;
+}
+.dataset-map-expanded .secondary {
+  position: static;
+}
+.dataset-map-expanded #dataset-map {
+  position: absolute;
+  width: 100%;
+  height: 467px;
+  top: -469px;
+  left: 0;
+  background-color: white;
+  border: 1px solid #CCC;
+  box-sizing: content-box;
+  margin: 0;
+}
+.dataset-map-expanded #dataset-map #dataset-map-container {
+  height: 467px;
+}
+.dataset-map-expanded #dataset-map #dataset-map-attribution {
+  *zoom: 1;
+}
+.dataset-map-expanded #dataset-map #dataset-map-attribution:before,
+.dataset-map-expanded #dataset-map #dataset-map-attribution:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.dataset-map-expanded #dataset-map #dataset-map-attribution:after {
+  clear: both;
+}
+.dataset-map-expanded #dataset-map #dataset-map-attribution div {
+  float: left;
+  margin-right: 10px;
+}
+.dataset-map-layer-drawn #dataset-map-container,
+.dataset-map-expanded #dataset-map-container{
+  position: relative;
+}
+.dataset-map-expanded #dataset-map-container{
+  display: inline-block;
+  width: 40%;
+}
+.dataset-map-expanded #extended-map-panel{
+  display: inline-block;
+  width: 60%;
+  float: right;
+  box-sizing: border-box;
+  padding: 65px 15px 0;
+}
+.dataset-map-expanded .dataset-map{
+ height: 467px;
+}
+.extended-map-help li{
+  margin-left: 15px;
+}
+#dataset-map .module-footer{
+  border-top: none;
+}
+.dataset-map-expanded #dataset-map,
+.dataset-map-expanded #dataset-map-clear,
+.dataset-map-layer-drawn #dataset-map #dataset-map-attribution,
+.dataset-map-expanded #dataset-map #dataset-map-attribution,
+.dataset-map-expanded #dataset-map #dataset-map-edit-buttons {
+  display: block;
+}
+.dataset-map-expanded #dataset-map #dataset-map-edit-buttons {
+  float: right;
+  padding: 15px;
+  margin-top: -68px;
+}
+.dataset-map-expanded #dataset-map #dataset-map-edit {
+  display: none;
+}
+.dataset-map-expanded #dataset-map .module-heading {
+  border-top-color: #000;
+  position: absolute;
+  top: 0;
+  left: 40%;
+  right: 0;
+}
+.dataset-map-expanded .wrapper {
+  margin-top: 470px;
+}
+.extended-map-help ul{
+  margin: 10px 0;
+}
+/* .dataset-map-layer-drawn .extended-map-help, */
+.active ~ .extended-map-help{
+  display: none;
+}
+.dataset-map-layer-drawn .extended-map-form,
+.active ~ .extended-map-form{
+  display: block;
+}
+.dataset-map-layer-drawn .extended-map-control{
+  display: none;
+}
+.dataset-map-layer-drawn .extended-map-form input{
+  display: none;
+}
+.active ~ .extended-map-form input{
+  display: inline;
+}
+.active ~ .extended-map-form .span-input{
+  display: none;
+}
+.active ~ .extended-map-form .extended-map-control{
+  display: block;
+}
+.extended-map-form .coord-field{
+  display: inline-block;
+  width: 47.5%;
+}
+.coord-field .span-input{
+  margin-left: 0;
+}
+.coord-field .span-input:after{
+  content: "\00b0";
+}
+.extended-map-form .coord-field input{
+  max-width: 100%;
+  width: 315px;
+  box-sizing: border-box;
+  height: 2em;
+  padding-right: 0;
+}
+.active .show-map-link i{
+  display: inline-block;
+}
+.show-map-link i{
+  position: absolute;
+  right: 2px;
+  padding-top: 3px;
+  font-size: 16px;
+  display: none;
+}
+.nav-facet .nav-item.active .show-map-link:after{
+  display: none;
+}
+
+.extended-map-control .btn{
+  margin-top: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.leaflet-control {
+  display: none;
+}
+.dataset-map-expanded .leaflet-control {
+    display: block;
+}
+.leaflet-control-arrow{
+  border: none;
+  box-shadow: none;
+  padding: 3px;
+}
+.leaflet-control-arrow-left,
+.leaflet-control-arrow-right,
+.leaflet-control-arrow-up,
+.leaflet-control-arrow-down{
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: block;
+  border: 1px solid #aaa;
+  font-size: 15px;
+  text-align: center;
+  position: relative;
+}
+.leaflet-control-arrow-left{
+  left: -12px;
+  float: left;
+}
+.leaflet-control-arrow-right{
+  right: 12px;
+  float: right;
+}
+.leaflet-control-arrow-down{
+  clear: both;
+}
+.leaflet-control-arrow-left:before,
+.leaflet-control-arrow-right:before,
+.leaflet-control-arrow-up:before,
+.leaflet-control-arrow-down:before{
+  color: #000;
+  font-family: "FontAwesome";
+}
+.leaflet-control-arrow-left:hover:before,
+.leaflet-control-arrow-right:hover:before,
+.leaflet-control-arrow-up:hover:before,
+.leaflet-control-arrow-down:hover:before{
+  color: #777;
+}
+.leaflet-control-arrow-left:hover,
+.leaflet-control-arrow-right:hover,
+.leaflet-control-arrow-up:hover,
+.leaflet-control-arrow-down:hover,
+.leaflet-control-arrow-left:focus,
+.leaflet-control-arrow-right:focus,
+.leaflet-control-arrow-up:focus,
+.leaflet-control-arrow-down:focus{
+  background: #fff;
+  text-decoration: none;
+}
+.leaflet-control-arrow-left:before{
+  content: "\f060";
+}
+.leaflet-control-arrow-right:before{
+  content: "\f061";
+}
+.leaflet-control-arrow-up:before{
+  content: "\f062";
+}
+.leaflet-control-arrow-down:before{
+  content: "\f063";
+}
+@media (max-width: 768px){
+  .dataset-map-expanded #dataset-map-container{
+    width: 100%;
+  }
+  .dataset-map-expanded #extended-map-panel{
+    display: none;
+  }
+}
