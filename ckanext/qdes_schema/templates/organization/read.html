@@ -2,7 +2,7 @@
 
 {% block organization_facets %}
   {% set default_extent = h.get_qld_bounding_box_config() %}
-  {% snippet "snippets/spatial_query.html", default_extent=default_extent, extras={'id':group_dict.id} %}
+  {% snippet "spatial/snippets/spatial_query.html", default_extent=default_extent, extras={'id':group_dict.id} %}
 
   <div class="filters">
     <div>
