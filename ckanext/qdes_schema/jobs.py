@@ -136,9 +136,13 @@ def unpublish_external_distribution(publish_log_id, user):
                     status = constants.PUBLISH_STATUS_SUCCESS
                     # Remove dataset identifier.
                     identifiers = json.loads(package_dict['identifiers']) if package_dict.get('identifiers') else []
-                    identifiers.remove(destination.address + '/dataset/' + external_dataset_id)
-                    identifiers = list(set(identifiers))
-                    package_dict['identifiers'] = json.dumps(identifiers)
+                    identifier = f"{destination.address}/dataset/{external_dataset_id}"
+                    if identifier in identifiers:
+                        identifiers.remove(identifier)
+                        identifiers = list(set(identifiers))
+                        package_dict['identifiers'] = json.dumps(identifiers)
+                    else:
+                        log.warning(f"unpublish_external_distribution: Identifier {identifier} not found in dataset {package_dict.get('name')}")
                     
             elif resources:
                 # Remove the resource.

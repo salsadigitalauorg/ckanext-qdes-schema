@@ -53,7 +53,7 @@
           {%- if field.field_name in spatial_coverage and field.display_snippet is not none and pkg_dict[field.field_name]|length > 0  -%}
             {% if spatial_coverage_has_value.show_label %}
               {% do spatial_coverage_has_value.update({'show_label': 0}) %}
-              {% snippet "snippets/dataset_spatial_table.html", pkg_dict=pkg_dict, schema=schema %}
+              {% snippet "spatial/snippets/dataset_spatial_table.html", pkg_dict=pkg_dict, schema=schema %}
             {% endif %}
           {%- endif -%}
         {%- endfor -%}
