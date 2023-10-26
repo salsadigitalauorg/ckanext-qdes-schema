@@ -40,7 +40,7 @@
     </td>
     <td>
 
-      {% snippet "snippets/dataset_map_qdes.html", extent=pkg_dict['spatial_geometry'] if geometry else h.dump_json(pkg_dict['spatial']) %}
+      {% snippet "spatial/snippets/dataset_map_qdes.html", extent=pkg_dict['spatial_geometry'] if geometry else h.dump_json(pkg_dict['spatial']) %}
 
     </td>
   </tr>

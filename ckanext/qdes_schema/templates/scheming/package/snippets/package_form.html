@@ -107,8 +107,8 @@
 
     <!-- Render spatial input. -->
     {%- if field.field_name == 'spatial_lower_left' -%}
-      {% asset 'ckanext-spatial/spatial_map_input_js' %}
-      {% asset 'ckanext-spatial/spatial_map_input_css' %}
+      {% asset 'qdes_schema/spatial_map_input_js' %}
+      {% asset 'qdes_schema/spatial_map_input_css' %}
       {% set map_config = h.get_common_map_config() %}
       {% do map_config.update({'padding': [2, 2]}) %}
       <div id="spatial-map-input" data-module="spatial-map-input"
