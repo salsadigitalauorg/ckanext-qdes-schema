@@ -96,3 +96,37 @@ spinner:
 calculated_quality_measure:
   contents:
     - calculated_quality_measure.js
+
+spatial_map_input_js:
+  filter: rjsmin
+  extra:
+    preload:
+      - base/main
+  contents:
+    - js/vendor/leaflet/1.9.3/leaflet.js
+    - js/vendor/leaflet.draw/0.4.14/leaflet.draw.js
+    - js/common_map.js
+    - spatial/spatial_map_input.js
+
+spatial_map_input_css:
+  contents:
+    - js/vendor/leaflet/1.9.3/leaflet.css
+    - js/vendor/leaflet.draw/0.4.14/leaflet.draw.css
+    - spatial/spatial_map_input.css
+
+spatial_query_js:
+  filter: rjsmin
+  extra:
+    preload:
+      - base/main
+  contents:
+    - js/vendor/leaflet/1.9.3/leaflet.js
+    - js/vendor/leaflet.draw/0.4.14/leaflet.draw.js
+    - js/common_map.js
+    - spatial/spatial_query.js
+
+spatial_query_css:
+  contents:
+    - js/vendor/leaflet/1.9.3/leaflet.css
+    - js/vendor/leaflet.draw/0.4.14/leaflet.draw.css
+    - spatial/spatial_query.css
