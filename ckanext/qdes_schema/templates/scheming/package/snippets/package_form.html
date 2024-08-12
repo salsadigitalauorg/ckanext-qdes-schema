@@ -118,7 +118,7 @@
            data-module-geometry="#field-spatial_geometry"
            data-module-extent="{{ h.get_qld_bounding_box_config() }}"
            data-module-max-bounds="{{ h.get_au_bounding_box_config() }}"
-           data-module-site_url="{{ h.dump_json(h.url('/', locale='default', qualified=true)) }}"
+           data-module-site_url="{{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }}"
            data-module-map_config="{{ h.dump_json(map_config) }}">
         <div id="spatial-map-input-container"></div>
       </div>
@@ -170,11 +170,9 @@
           <button class="btn btn-primary" type="submit" name="save_record">{{ _('Finish: Save record') }}</button>
           <button class="btn btn-default" type="submit" name="save">{{ _('Next: Add Data Resource') }}</button>
 
-          {% if h.ckan_version() > '2.9' %}
-            {% asset 'qdes_schema/dataset_no_resource' %}
-          {% else %}
-            {% resource 'qdes_schema/dataset_no_resource.js' %}
-          {% endif %}
+         
+        {% asset 'qdes_schema/dataset_no_resource' %}
+        
         {% else %}
           {{ super() }}
         {% endif %}

@@ -6,6 +6,7 @@ import logging
 
 from ckan.common import request
 from ckan.logic import validators as core_validator
+from ckanext.activity.logic import validators as activity_validators
 from ckanext.qdes_schema.cli import get_commands
 from ckanext.qdes_schema import blueprint, helpers, validators, auth
 from ckanext.qdes_schema.logic.action import (
@@ -41,8 +42,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
     # IConfigurable
     def configure(self, config):
-        core_validator.object_id_validators['publish external schema'] = core_validator.package_id_exists
-        core_validator.object_id_validators['unpublish external schema'] = core_validator.package_id_exists
+        activity_validators.object_id_validators['publish external schema'] = core_validator.package_id_exists
+        activity_validators.object_id_validators['unpublish external schema'] = core_validator.package_id_exists
 
     # IClick
     def get_commands(self):
@@ -53,7 +54,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         return blueprint.qdes_schema
 
     # IPackageController
-    def after_create(self, context, pkg_dict):
+    def after_dataset_create(self, context, pkg_dict):
         u'''
         Extensions will receive the validated data dict after the dataset
         has been created (Note that the create method will return a dataset
@@ -75,13 +76,13 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         return pkg_dict
 
-    def after_update(self, context, pkg_dict):
+    def after_dataset_update(self, context, pkg_dict):
         u'''
         Extensions will receive the validated data dict after the dataset
         has been updated.
         '''
         # Don't run this function when adding or editing a resource
-        if toolkit.g and toolkit.g.controller == 'dataset_resource':
+        if toolkit.g and toolkit.g.blueprint == 'dataset_resource':
             return pkg_dict
 
         # Only reconcile relationships if the request has come from the Web UI form via the dataset controller
@@ -107,7 +108,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         return pkg_dict
 
-    def before_index(self, pkg_dict):
+    def before_dataset_index(self, pkg_dict):
         # Remove the relationship type fields from the pkg_dict to prevent indexing from breaking
         # because we removed the relationship type fields from solr schema.xml
         relationship_types = ckanext_relationships_helpers.get_relationship_types()
@@ -228,7 +229,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         return pkg_dict
 
-    def before_search(self, search_params):
+    def before_dataset_search(self, search_params):
         temporal_coverage_from = request.params.get('temporal_coverage_from', '') or ''
         temporal_coverage_to = request.params.get('temporal_coverage_to', '') or ''
 
