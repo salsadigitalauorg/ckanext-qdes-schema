@@ -59,6 +59,7 @@
                         action: this.el.attr('href'),
                         method: 'POST'
                     });
+                
 
                     // use parent to el form if data-module-with-data == true
                     if (this.options.withData) {
