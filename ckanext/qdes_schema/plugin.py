@@ -7,7 +7,6 @@ import logging
 from ckan.common import request
 from ckan.logic import validators as core_validator
 from ckanext.activity.logic import validators as activity_validators
-from ckanext.qdes_schema.cli import get_commands
 from ckanext.qdes_schema import blueprint, helpers, validators, auth
 from ckanext.qdes_schema.logic.action import (
     get,
