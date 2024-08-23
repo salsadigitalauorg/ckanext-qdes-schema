@@ -28,7 +28,6 @@ log = logging.getLogger(__name__)
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurable, inherit=True)
-    plugins.implements(plugins.IClick)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
@@ -44,10 +43,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     def configure(self, config):
         activity_validators.object_id_validators['publish external schema'] = core_validator.package_id_exists
         activity_validators.object_id_validators['unpublish external schema'] = core_validator.package_id_exists
-
-    # IClick
-    def get_commands(self):
-        return get_commands()
 
     # IBlueprint
     def get_blueprint(self):
