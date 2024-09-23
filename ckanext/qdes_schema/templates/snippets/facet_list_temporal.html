@@ -11,26 +11,22 @@
     <form method="get" class="temporal-coverage form-inline" action="{{ h.add_url_param(extras=extras) }}">
 
 
-      <div class="form-group">
+      <div class="temporal-coverage-form-group form-group">
         <label for="from">From</label>
         <div class="input-group">
           <input id="from" name="temporal_coverage_from" value="{{ request.args.get('temporal_coverage_from', '') }}"
                  type="text" class="form-control" placeholder="2020-01" autocomplete="off" data-default-month="01">
-          <span class="input-group-btn">
-                <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
-              </span>
+          <button class="btn btn-dark calendar-trigger" type="button"><i class="fa fa-calendar-days"></i></button>
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="temporal-coverage-form-group form-group">
         <label for="to">To</label>
         <div class="input-group">
           <input id="to" name="temporal_coverage_to" value="{{ request.args.get('temporal_coverage_to', '') }}"
                  type="text" class="form-control" placeholder="2020-02" disabled="disabled" autocomplete="off"
                  data-default-month="12">
-          <span class="input-group-btn">
-                <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
-              </span>
+          <button class="btn btn-dark calendar-trigger" type="button"><i class="fa fa-calendar-days"></i></button>
         </div>
       </div>
 
@@ -40,9 +36,9 @@
     </form>
 
     <div class="monthyear-picker">
-      <form class="form-inline">
-        <div class="form-group">
-          <select class="month-picker form-control">
+      <form class="row g-1 align-items-center">
+        <div class="col">
+          <select class="month-picker form-select">
             <option value="00">None</option>
             <option value="01">Jan</option>
             <option value="02">Feb</option>
@@ -59,8 +55,8 @@
           </select>
         </div>
 
-        <div class="form-group">
-          <select class="year-picker form-control">
+        <div class="col">
+          <select class="year-picker form-select">
             {% set years = h.render_datetime(h.get_current_datetime(), '%Y') | int + 10 %}
             {% for n in range(1900, years) %}
             <option value="{{ n }}">{{ n }}</option>
@@ -68,7 +64,7 @@
           </select>
         </div>
 
-        <button class="btn btn-default monthyear-picker-action" type="button">Done</button>
+        <button class="btn btn-dark monthyear-picker-action col-auto" type="button">Done</button>
       </form>
     </div>
 
