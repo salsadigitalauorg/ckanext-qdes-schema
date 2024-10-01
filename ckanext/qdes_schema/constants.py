@@ -20,6 +20,7 @@ PUBLISH_LOG_PUBLISH_ERROR = 'Publish error'
 PUBLISH_LOG_VALIDATION_ERROR = 'Validation error'
 PUBLISH_LOG_NEED_REPUBLISH = 'Needs republishing'
 
+
 def get_key_name(schema):
     if schema == PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA:
         return 'DATA_QLD_API_KEY'
@@ -68,5 +69,12 @@ def get_dataservice_id(schema):
         return 'ckanext.qdes_schema.publishing_portals.sir'
     elif schema == PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
         return 'ckanext.qdes_schema.publishing_portals.qld_cdp'
+
+    return ''
+
+
+def get_data_custodian(schema):
+    if schema == PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA:
+        return 'DATA_QLD_DATA_CUSTODIAN'
 
     return ''

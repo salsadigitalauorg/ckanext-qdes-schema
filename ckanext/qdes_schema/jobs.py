@@ -512,8 +512,8 @@ def _build_and_clean_up_qld_cdp(des_package_dict, external_package_dict=None, re
     qld_cdp_pkg_dict['license_id'] = helpers.map_license(des_package_dict['license_id'],
                                                          constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
     qld_cdp_pkg_dict['owner_org'] = os.getenv(constants.get_owner_org(constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA))
-    qld_cdp_pkg_dict['data_custodian'] = "environment-science-and-innovation"
-    qld_cdp_pkg_dict['publisher'] = "Department of Environment and Science"
+    qld_cdp_pkg_dict['data_custodian'] = os.getenv(constants.get_data_custodian(constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA))
+    qld_cdp_pkg_dict['publisher'] = des_package_dict.get('organization', {}).get('title')
     contact_point = get_action('get_secure_vocabulary_record')(
         {'user': site_user}, {'vocabulary_name': 'point-of-contact', 'query': des_package_dict.get('contact_point')})
     qld_cdp_pkg_dict.pop('contact_point', None)
