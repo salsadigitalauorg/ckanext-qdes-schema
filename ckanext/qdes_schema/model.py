@@ -4,7 +4,7 @@ import logging
 
 from ckan.model import meta
 from ckan.model import types as _types
-from sqlalchemy import types, Column, Table
+from sqlalchemy import types, Column
 from ckan.model.domain_object import DomainObject
 from sqlalchemy import desc
 try:
