@@ -5,7 +5,6 @@ import json
 import logging
 
 from ckan.common import request
-from ckan.logic import validators as core_validator
 from ckanext.activity.logic import validators as activity_validators
 from ckanext.qdes_schema import blueprint, helpers, validators, auth
 from ckanext.qdes_schema.logic.action import (
@@ -40,8 +39,8 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
     # IConfigurable
     def configure(self, config):
-        activity_validators.object_id_validators['publish external schema'] = core_validator.package_id_exists
-        activity_validators.object_id_validators['unpublish external schema'] = core_validator.package_id_exists
+        activity_validators.object_id_validators['publish external schema'] = "package_id_exists"
+        activity_validators.object_id_validators['unpublish external schema'] = "package_id_exists"
 
     # IBlueprint
     def get_blueprint(self):
@@ -76,12 +75,13 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         has been updated.
         '''
         # Don't run this function when adding or editing a resource
-        if toolkit.g and toolkit.g.blueprint == 'dataset_resource':
+        endpoint = toolkit.get_endpoint()
+        if endpoint[0] == 'resource' and endpoint[1] == 'edit':
             return pkg_dict
 
         # Only reconcile relationships if the request has come from the Web UI form via the dataset controller
         # We do not want to reconcile relationships from the API
-        reconcile_relationships = True if '/dataset' in request.path else False
+        reconcile_relationships = True if endpoint[0] == 'dataset' else False
         helpers.update_related_resources(context, pkg_dict, reconcile_relationships)
 
         # Remove `ignore_auth` from the context - in case it was set
@@ -94,7 +94,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         for resource in pkg_dict.get('resources', []):
             res_helpers.after_create_and_update(context, resource)
 
-        if request and request.endpoint == 'dataset.edit':
+        if endpoint[0] == 'dataset' and endpoint[1] == 'edit':
             if h.dataset_has_published_to_external_schema(pkg_dict.get('id')):
                 url = h.url_for('qdes_schema.datasets_schema_validation', id=pkg_dict.get('id'))
                 h.flash_success('You have updated a dataset that is publicly available. Please go to the <a href="' + url +
