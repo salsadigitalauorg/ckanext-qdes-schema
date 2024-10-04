@@ -138,7 +138,7 @@
 
 
   {%- endfor -%}
-  {%- if 'resource_fields' not in schema -%}
+  {%- if schema.get('resource_fields', []) | length == 0  -%}
     <!-- force controller to skip resource-editing step for this type -->
     <input type="hidden" name="_ckan_phase" value="" />
     {# Javscript to remove `_ckan_phase` inputs... #}
