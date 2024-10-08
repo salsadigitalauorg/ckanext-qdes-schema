@@ -7,6 +7,10 @@
     overflow: hidden;
 }
 
+.temporal-coverage-form-group {
+    display: flex;
+}
+
 .temporal-coverage .form-group {
     margin-bottom: 10px;
 }
@@ -16,7 +20,8 @@
 }
 
 .temporal-coverage label {
-    width: 40px;
+    flex: 0 0 40px;
+    line-height: 38px;
 }
 
 .temporal-coverage .btn {
