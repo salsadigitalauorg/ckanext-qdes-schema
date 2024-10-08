@@ -1,5 +1,5 @@
 jQuery(document).ready(function () {
-    data_quality_standard = jQuery('#data_quality_standard').val()
+    data_quality_standard = jQuery('#data_quality_standard').val() || '{}'
     data_quality_standard = data_quality_standard == '{}' ? {calculated_quality_measure: 0} : JSON.parse(data_quality_standard)
 
     // Set on click event for checkboxes
