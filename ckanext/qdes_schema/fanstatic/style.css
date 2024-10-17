@@ -39,3 +39,7 @@
 .show-clear-btn .clear-btn {
     display: block;
 }
+
+.version-list {
+    margin-top: 20px;
+}
