@@ -157,7 +157,7 @@
     {% endblock %}
     {% block delete_button %}
       {% if is_published_to_external %}
-        <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#delete-modal">
+        <button type="button" class="btn btn-danger pull-left" data-bs-toggle="modal" data-bs-target="#delete-modal">
           {{ _('Delete') }}
         </button>
       {% else %}
@@ -189,12 +189,12 @@
   </div>
 
   {% if is_published_to_external %}
-    <div class="modal fade in" id="delete-modal">
+    <div class="modal fade" id="delete-modal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-body">WARNING : You are attempting to delete a dataset with distributions published on external systems. Please unpublish from external systems before deleting.</div>
           <div class="modal-footer">
-            <button class="btn btn-primary" data-dismiss="modal">OK</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
           </div>
         </div>
       </div>
