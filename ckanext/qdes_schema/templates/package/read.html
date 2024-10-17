@@ -36,6 +36,7 @@
     {% snippet "/snippets/collection.html", pkg=pkg %}
 
     {% if versions %}
+        {% asset 'qdes_schema/style' %}
         {% snippet "/package/snippets/dataset_versions.html", versions=versions, pkg=pkg %}
     {% endif %}
 {% endblock %}
