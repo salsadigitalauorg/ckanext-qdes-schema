@@ -8,7 +8,7 @@
 
         {% for value in values %}
         <div data-repeater-item class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
-            <div class="col-lg-11">
+            <div class="col">
                 {% call form.textarea(
                     label=h.scheming_language_text(field.label),
                     placeholder=h.scheming_language_text(field.form_placeholder),
@@ -19,16 +19,14 @@
                 %}
                 {% endcall %}
             </div>
-            <div class="col-lg-1">
+            <div class="col-1">
                 <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
             </div>
         </div>
         {% endfor %}
 
     </div>
-    <div class="row form-group" align="center">
-        <input data-repeater-create type="button" class="btn" value="+" />
-    </div>
+    {% snippet 'scheming/form_snippets/qdes_multi_add_repeater_button.html' %}
 </div>
 
 {% set visibility = [] if g.debug else ['hidden'] %}

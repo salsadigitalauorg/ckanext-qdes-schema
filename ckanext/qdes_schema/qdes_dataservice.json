@@ -11,7 +11,7 @@
       "form_placeholder": "eg. A descriptive title",
       "display_group": "general",
       "required": true,
-      "validators": "scheming_required if_empty_same_as(name) unicode"
+      "validators": "scheming_required if_empty_same_as(name) unicode_safe"
     },
     {
       "field_name": "name",
@@ -367,5 +367,6 @@
       "form_snippet": "state_select.html",
       "form_restrict_choices_to": ["active", "deleted"]
     }
-  ]
+  ],
+  "resource_fields": []
 }
