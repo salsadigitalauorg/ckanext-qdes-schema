@@ -12,9 +12,8 @@ extent
 
 {% set map_config = h.get_common_map_config() %}
 {% do map_config.update({'padding': [2, 2]}) %}
-<div class="dataset-map" data-module-default-map-zoom="10" data-module="dataset-map" data-extent="{{ extent }}" data-module-site_url="{{ h.dump_json(h.url('/', locale='default', qualified=true)) }}" data-module-map_config="{{ h.dump_json(map_config) }}">
+<div class="dataset-map" data-module-default-map-zoom="10" data-module="dataset-map" data-extent="{{ extent }}" data-module-site_url="{{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }}" data-module-map_config="{{ h.dump_json(map_config) }}">
   <div id="dataset-map-container"></div>
 </div>
 
-{% set type = 'asset' if h.ckan_version() > '2.9' else 'resource' %}
-{% include 'spatial/snippets/dataset_map_' ~ type ~ '.html' %}
+{% include 'spatial/snippets/dataset_map_asset.html' %}
