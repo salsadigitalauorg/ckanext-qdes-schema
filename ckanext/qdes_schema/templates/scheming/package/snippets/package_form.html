@@ -118,7 +118,7 @@
            data-module-geometry="#field-spatial_geometry"
            data-module-extent="{{ h.get_qld_bounding_box_config() }}"
            data-module-max-bounds="{{ h.get_au_bounding_box_config() }}"
-           data-module-site_url="{{ h.dump_json(h.url('/', locale='default', qualified=true)) }}"
+           data-module-site_url="{{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }}"
            data-module-map_config="{{ h.dump_json(map_config) }}">
         <div id="spatial-map-input-container"></div>
       </div>
@@ -138,7 +138,7 @@
 
 
   {%- endfor -%}
-  {%- if 'resource_fields' not in schema -%}
+  {%- if schema.get('resource_fields', []) | length == 0  -%}
     <!-- force controller to skip resource-editing step for this type -->
     <input type="hidden" name="_ckan_phase" value="" />
     {# Javscript to remove `_ckan_phase` inputs... #}
@@ -157,7 +157,7 @@
     {% endblock %}
     {% block delete_button %}
       {% if is_published_to_external %}
-        <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#delete-modal">
+        <button type="button" class="btn btn-danger pull-left" data-bs-toggle="modal" data-bs-target="#delete-modal">
           {{ _('Delete') }}
         </button>
       {% else %}
@@ -170,11 +170,9 @@
           <button class="btn btn-primary" type="submit" name="save_record">{{ _('Finish: Save record') }}</button>
           <button class="btn btn-default" type="submit" name="save">{{ _('Next: Add Data Resource') }}</button>
 
-          {% if h.ckan_version() > '2.9' %}
-            {% asset 'qdes_schema/dataset_no_resource' %}
-          {% else %}
-            {% resource 'qdes_schema/dataset_no_resource.js' %}
-          {% endif %}
+         
+        {% asset 'qdes_schema/dataset_no_resource' %}
+        
         {% else %}
           {{ super() }}
         {% endif %}
@@ -191,12 +189,12 @@
   </div>
 
   {% if is_published_to_external %}
-    <div class="modal fade in" id="delete-modal">
+    <div class="modal fade" id="delete-modal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-body">WARNING : You are attempting to delete a dataset with distributions published on external systems. Please unpublish from external systems before deleting.</div>
           <div class="modal-footer">
-            <button class="btn btn-primary" data-dismiss="modal">OK</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
           </div>
         </div>
       </div>

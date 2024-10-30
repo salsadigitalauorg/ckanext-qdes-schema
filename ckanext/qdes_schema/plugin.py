@@ -5,8 +5,7 @@ import json
 import logging
 
 from ckan.common import request
-from ckan.logic import validators as core_validator
-from ckanext.qdes_schema.cli import get_commands
+from ckanext.activity.logic import validators as activity_validators
 from ckanext.qdes_schema import blueprint, helpers, validators, auth
 from ckanext.qdes_schema.logic.action import (
     get,
@@ -27,7 +26,6 @@ log = logging.getLogger(__name__)
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurable, inherit=True)
-    plugins.implements(plugins.IClick)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
@@ -41,19 +39,15 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
     # IConfigurable
     def configure(self, config):
-        core_validator.object_id_validators['publish external schema'] = core_validator.package_id_exists
-        core_validator.object_id_validators['unpublish external schema'] = core_validator.package_id_exists
-
-    # IClick
-    def get_commands(self):
-        return get_commands()
+        activity_validators.object_id_validators['publish external schema'] = "package_id_exists"
+        activity_validators.object_id_validators['unpublish external schema'] = "package_id_exists"
 
     # IBlueprint
     def get_blueprint(self):
         return blueprint.qdes_schema
 
     # IPackageController
-    def after_create(self, context, pkg_dict):
+    def after_dataset_create(self, context, pkg_dict):
         u'''
         Extensions will receive the validated data dict after the dataset
         has been created (Note that the create method will return a dataset
@@ -75,18 +69,19 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         return pkg_dict
 
-    def after_update(self, context, pkg_dict):
+    def after_dataset_update(self, context, pkg_dict):
         u'''
         Extensions will receive the validated data dict after the dataset
         has been updated.
         '''
         # Don't run this function when adding or editing a resource
-        if toolkit.g and toolkit.g.controller == 'dataset_resource':
+        endpoint = toolkit.get_endpoint()
+        if endpoint[0] == 'resource' and endpoint[1] == 'edit':
             return pkg_dict
 
         # Only reconcile relationships if the request has come from the Web UI form via the dataset controller
         # We do not want to reconcile relationships from the API
-        reconcile_relationships = True if toolkit.g and toolkit.g.controller == 'dataset' else False
+        reconcile_relationships = True if endpoint[0] == 'dataset' else False
         helpers.update_related_resources(context, pkg_dict, reconcile_relationships)
 
         # Remove `ignore_auth` from the context - in case it was set
@@ -99,7 +94,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         for resource in pkg_dict.get('resources', []):
             res_helpers.after_create_and_update(context, resource)
 
-        if request and request.endpoint == 'dataset.edit':
+        if endpoint[0] == 'dataset' and endpoint[1] == 'edit':
             if h.dataset_has_published_to_external_schema(pkg_dict.get('id')):
                 url = h.url_for('qdes_schema.datasets_schema_validation', id=pkg_dict.get('id'))
                 h.flash_success('You have updated a dataset that is publicly available. Please go to the <a href="' + url +
@@ -107,7 +102,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         return pkg_dict
 
-    def before_index(self, pkg_dict):
+    def before_dataset_index(self, pkg_dict):
         # Remove the relationship type fields from the pkg_dict to prevent indexing from breaking
         # because we removed the relationship type fields from solr schema.xml
         relationship_types = ckanext_relationships_helpers.get_relationship_types()
@@ -228,7 +223,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
 
         return pkg_dict
 
-    def before_search(self, search_params):
+    def before_dataset_search(self, search_params):
         temporal_coverage_from = request.params.get('temporal_coverage_from', '') or ''
         temporal_coverage_to = request.params.get('temporal_coverage_to', '') or ''
 

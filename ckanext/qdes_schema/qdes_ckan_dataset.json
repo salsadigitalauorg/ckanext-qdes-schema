@@ -11,7 +11,7 @@
       "form_placeholder": "A descriptive title of the dataset",
       "display_group": "general",
       "required": true,
-      "validators": "scheming_required if_empty_same_as(name) unicode"
+      "validators": "scheming_required if_empty_same_as(name) unicode_safe"
     },
     {
       "field_name": "name",
