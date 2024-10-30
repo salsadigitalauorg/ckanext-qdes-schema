@@ -12,7 +12,7 @@
         {% for value in values %}
                 
             <div data-repeater-item class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
-                <div class="col-lg-11">              
+                <div class="col">              
                     {%- set options=[] -%}
                     {%- set form_restrict_choices_to=field.get('form_restrict_choices_to') -%}
                     {%- if not h.scheming_field_required(field) or
@@ -52,16 +52,14 @@
                         {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
                     {% endcall %}
                 </div>
-                <div class="col-lg-1">
+                <div class="col-1">
                     <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
                 </div>
             </div>
         {% endfor %}
 
     </div>
-    <div class="row form-group" align="center">
-        <input data-repeater-create type="button" class="btn" value="+" />
-    </div>
+    {% snippet 'scheming/form_snippets/qdes_multi_add_repeater_button.html' %}
 </div>
 
 {% set visibility = [] if g.debug else ['hidden'] %}

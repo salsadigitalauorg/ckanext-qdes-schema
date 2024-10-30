@@ -4,34 +4,37 @@ import logging
 
 from ckan.model import meta
 from ckan.model import types as _types
-from sqlalchemy import types, Column, Table
+from sqlalchemy import types, Column
 from ckan.model.domain_object import DomainObject
 from sqlalchemy import desc
-from pprint import pformat
+try:
+    from ckan.plugins.toolkit import BaseModel
+except ImportError:
+    # CKAN <= 2.9
+    from ckan.model.meta import metadata
+    from sqlalchemy.ext.declarative import declarative_base
+    BaseModel = declarative_base(metadata=metadata)
+
 
 log = logging.getLogger(__name__)
 
-# Define publish_log table structure.
-publish_log_table = Table(
-    'publish_log', meta.metadata,
-    Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
-    Column('dataset_id', types.UnicodeText, nullable=False),
-    Column('resource_id', types.UnicodeText),
-    Column('trigger', types.UnicodeText, nullable=False),
-    Column('destination', types.UnicodeText),
-    Column('destination_identifier', types.UnicodeText),
-    Column('action', types.UnicodeText),
-    Column('date_created', types.DateTime, default=datetime.datetime.utcnow()),
-    Column('date_processed', types.DateTime),
-    Column('status', types.UnicodeText, nullable=False),
-    Column('details', types.UnicodeText),
-)
 
-
-class PublishLog(DomainObject):
+class PublishLog(DomainObject, BaseModel):
     u"""
     An PublishLog object.
     """
+    __tablename__ = 'publish_log'
+    id = Column(types.UnicodeText, primary_key=True, default=_types.make_uuid)
+    dataset_id = Column(types.UnicodeText, nullable=False)
+    resource_id = Column(types.UnicodeText)
+    trigger = Column(types.UnicodeText, nullable=False)
+    destination = Column(types.UnicodeText)
+    destination_identifier = Column(types.UnicodeText)
+    action = Column(types.UnicodeText)
+    date_created = Column(types.DateTime, default=datetime.datetime.utcnow())
+    date_processed = Column(types.DateTime)
+    status = Column(types.UnicodeText, nullable=False)
+    details = Column(types.UnicodeText)
 
     # Available destination.
     destinations = [
@@ -123,8 +126,4 @@ class PublishLog(DomainObject):
             for destination in published_distributions:
                 published_log[destination].append(published_distributions[destination])
 
-
         return published_log
-
-
-meta.mapper(PublishLog, publish_log_table)

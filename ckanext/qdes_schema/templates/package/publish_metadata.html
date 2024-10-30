@@ -2,11 +2,8 @@
 {% import 'macros/form.html' as form %}
 
 {% block primary_content_inner %}
-  {% if h.ckan_version() > '2.9' %}
-    {% asset 'qdes_schema/publish' %}
-  {% else %}
-    {% resource 'qdes_schema/publish.js' %}
-  {% endif %}
+{% asset 'qdes_schema/publish' %}
+
 
   <div class="row">
     <section class="qg-accordion qg-dark-accordion" aria-label="Accordion Label">

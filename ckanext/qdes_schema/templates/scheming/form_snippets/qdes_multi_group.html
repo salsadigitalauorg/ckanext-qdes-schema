@@ -46,7 +46,7 @@
             <div data-repeater-item class="repeater-wrapper">
                 <div class="row vertical-align{{ ' recommended-field' if field.recommended else '' }}">
                     {% for field_group in field.get('field_group') or [] %}
-                        <div class="col-lg-{{ 12 // field.get('field_group')|length }}">
+                        <div class="col">
                             {% if field_group.form_snippet %}
                                 {% if 'field_groups' in errors[field.field_name]|last %}
                                     {{ errors[field.field_name].field_groups }}
@@ -55,7 +55,7 @@
                             {% endif %}
                         </div>
                     {% endfor %}
-                    <div class="col-lg-1">
+                    <div class="col-1">
                         <input data-repeater-delete type="button" class="btn btn-sm btn-danger" value="-" title="Remove item" />
                     </div>
                 </div>
@@ -69,9 +69,7 @@
 
         {% endfor %}
     </div>
-    <div class="row form-group" align="center">
-        <input data-repeater-create type="button" class="btn" value="+" />
-    </div>
+    {% snippet 'scheming/form_snippets/qdes_multi_add_repeater_button.html' %}
 </div>
 
 {% set visibility = [] if g.debug else ['hidden'] %}

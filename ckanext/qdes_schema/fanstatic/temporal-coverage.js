@@ -108,10 +108,10 @@
         $elDateInput.change();
 
         // Calendar click handler.
-        $('.temporal-coverage .input-group-btn button').on('click', function () {
-            var $dateEl = $(this).parent().parent().find('input');
+        $('.temporal-coverage button.calendar-trigger').on('click', function () {
+            var $dateEl = $(this).parent().find('input');
             if (!$dateEl.is(':disabled')) {
-                $(this).parent().parent().find('input').focus();
+                $(this).parent().find('input').focus();
             }
         });
 
@@ -123,6 +123,3 @@
         });
     });
 })($);
-
-
-
