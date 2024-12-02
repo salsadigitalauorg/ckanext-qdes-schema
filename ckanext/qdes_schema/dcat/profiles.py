@@ -3,8 +3,8 @@ import ckan.model as model
 import logging
 
 from rdflib import URIRef, BNode, Literal
-from rdflib.namespace import Namespace, RDF, XSD, SKOS, RDFS
-from ckanext.dcat.profiles import RDFProfile, URIRefOrLiteral, CleanedURIRef, SCHEMA
+from rdflib.namespace import Namespace, RDF, XSD, RDFS
+from ckanext.dcat.profiles import RDFProfile, CleanedURIRef, SCHEMA
 from ckanext.dcat.utils import resource_uri
 from ckanext.relationships import constants
 from urllib.parse import urlparse, unquote, parse_qs
