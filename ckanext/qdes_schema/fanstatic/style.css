@@ -43,3 +43,8 @@
 .version-list {
     margin-top: 20px;
 }
+
+.date .line {
+    margin-left: 80px;
+    display: block;
+  }
