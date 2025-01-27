@@ -308,7 +308,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     def update_config(self, config_):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
-        toolkit.add_resource('fanstatic', 'qdes_schema')
+        toolkit.add_resource('assets', 'qdes_schema')
 
     # ITemplateHelpers
     def get_helpers(self):

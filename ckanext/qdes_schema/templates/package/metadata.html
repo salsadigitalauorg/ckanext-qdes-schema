@@ -12,8 +12,8 @@
   {% endif %}
 
   <section class="additional-info">
-    <h3 class="pull-left">{{ _('Metadata') }}</h3>
-    <div class="dropdown pull-right">
+    <h3 class="float-start">{{ _('Metadata') }}</h3>
+    <div class="dropdown float-end mb-3">
       <a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="#">
         <i class="fa fa-download"></i>
         {{ _('Export') }}
@@ -22,12 +22,12 @@
       <ul class="dropdown-menu">
         {% if not pkg_dict.get('type') == 'dataservice'%}
         <li>
-         <a href="{{ h.url_for('qdes_schema.dataset_export', id=pkg_dict['id'], format='XML (ISO-19139)') }}"
+         <a class="dropdown-item" href="{{ h.url_for('qdes_schema.dataset_export', id=pkg_dict['id'], format='XML (ISO-19139)') }}"
              target="_blank" download><span>XML (ISO-19139)</span></a>
         </li>
         {% endif %}
         <li>
-          <a href="{{ h.url_for('dataset.read', id=pkg_dict['name']) }}.ttl"
+          <a class="dropdown-item" href="{{ h.url_for('dataset.read', id=pkg_dict['name']) }}.ttl"
              target="_blank" download><span>RDF / TTL</span></a>
         </li>
       </ul>
