@@ -3,3 +3,4 @@ include LICENSE
 include requirements.txt
 recursive-include ckanext/qdes_schema *.html *.json *.js *.less *.css *.mo
 recursive-include ckanext/qdes_schema/migration *.ini *.py *.mako
+recursive-include ckanext/qdes_schema/public *.*
