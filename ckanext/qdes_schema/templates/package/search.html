@@ -29,9 +29,9 @@
     <div>
       {% for facet in facet_titles %}
         {% if facet == 'temporal_start' or facet == 'temporal_end' %}
-          {{ h.snippet('snippets/facet_list_temporal.html', title=facet_titles[facet], name=facet, search_facets=search_facets) }}
+          {% snippet'snippets/facet_list_temporal.html', title=facet_titles[facet], name=facet, search_facets=search_facets %}
         {% elif not facet in ['collection_package_id', 'temporal_coverage_from', 'temporal_coverage_to'] %}
-          {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets) }}
+          {% snippet'snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets %}
         {% endif %}
       {% endfor %}
     </div>
