@@ -41,7 +41,7 @@ def publish_to_external_catalogue(publish_log_id, user):
         destination = _get_external_destination_ckan(publish_log.destination, api_key)
 
         # Get the dataset by name on external schema.
-        detail, external_pkg_dict = _get_external_dataset(package_dict.get('name'), destination)
+        detail, external_pkg_dict = _get_external_dataset(publish_log.destination_identifier or package_dict.get('name'), destination)
 
         if external_pkg_dict:
             if external_pkg_dict.get('state') == 'deleted':
