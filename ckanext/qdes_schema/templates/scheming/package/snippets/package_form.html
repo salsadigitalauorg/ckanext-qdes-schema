@@ -4,7 +4,7 @@
 
 {% block stages %}
   {% if dataset_type != 'dataservice' and form_style == 'new' %}
-    {{ h.snippet('package/snippets/stages.html', stages=stage) }}
+    {% snippet 'package/snippets/stages.html', stages=stage %}
   {% endif %}
 {% endblock %}
 
