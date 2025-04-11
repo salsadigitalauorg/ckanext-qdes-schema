@@ -33,7 +33,7 @@ options     - A list/tuple of fields to be used as <options>.
     ], selected=data.the_data_type if data.the_data_type else '0', is_required=true) }}
 
     #}
-{% macro select(name, id='', label='', options='', selected='', error='', classes=[], attrs={'class': 'form-control'}, is_required=false) %}
+{% macro select(name, id='', label='', options='', selected='', error='', classes=[], attrs={'class': 'form-select'}, is_required=false) %}
     {% set classes = (classes|list) %}
     {% do classes.append('control-select') %}
 
