@@ -61,7 +61,7 @@
         </div>
         <div class="col-md-8">
           <div class="form-group">
-            <select id="schema" name="schema" class="form-control">
+            <select id="schema" name="schema" class="form-select">
               {% for option in options %}
                 <option value="{{ option.value }}" {{ 'selected="selected"' if data['schema'] == option.value else '' }}>{{ option.text }}</option>
               {% endfor %}

@@ -8,6 +8,9 @@
     {%- snippet 'scheming/snippets/errors.html',
       errors=errors, fields=schema.resource_fields,
       entity_type='dataset', object_type=dataset_type -%}
+  {%- else -%}
+      {# Resource CreateView You must add at least one data resource #}
+      {{ super() }}
   {%- endif -%}
 {% endblock %}
 
@@ -52,8 +55,13 @@
 
     {%- if field.form_snippet is not none -%}
       {%- snippet 'scheming/snippets/form_field.html',
-        field=field, data=data, errors=errors,
-	entity_type='dataset', object_type=dataset_type, invalid_uris=invalid_uris -%}
+        field=field, 
+        data=data, 
+        errors=errors,
+	      entity_type='dataset', 
+        object_type=dataset_type,
+        package_id=pkg_name,
+        invalid_uris=invalid_uris -%}
     {%- endif -%}
   {%- endfor -%}
 {% endblock %}
