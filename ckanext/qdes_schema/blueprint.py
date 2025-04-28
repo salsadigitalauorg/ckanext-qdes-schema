@@ -443,7 +443,7 @@ def dataset_export(id, format):
 
             return send_file(six.BytesIO(pretty_xml.encode('utf8')),
                              as_attachment=True,
-                             attachment_filename=f'{dataset.get("title")}.xml')
+                             download_name=f'{dataset.get("title")}.xml')
     except (NotFound, NotAuthorized):
         abort(404, _('Dataset not found'))
 
