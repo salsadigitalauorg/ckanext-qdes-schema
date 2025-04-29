@@ -4,7 +4,7 @@
 
 {% block stages %}
   {% if dataset_type != 'dataservice' and form_style == 'new' %}
-    {{ h.snippet('package/snippets/stages.html', stages=stage) }}
+    {% snippet 'package/snippets/stages.html', stages=stage %}
   {% endif %}
 {% endblock %}
 
@@ -66,7 +66,7 @@
         {%- if field.display_group not in ['general'] -%}
           {%- if section_element_created == False -%}
             {%- set section_element_created = True -%}
-            <section class="qg-accordion qg-dark-accordion" aria-label="Accordion Label">
+            <section class="qg-accordion qg-dark-accordion" aria-label="{{ _('Accordion Label') }}">
           {%- endif -%}
           {% set checked = "" %}
           {% if errors %}
