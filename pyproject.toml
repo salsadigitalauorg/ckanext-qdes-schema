@@ -40,3 +40,6 @@ build-backend = "setuptools.build_meta"
 [project.entry-points."ckan.plugins"]
 qdes_schema="ckanext.qdes_schema.plugin:QDESSchemaPlugin"
 qdes_schema_resources="ckanext.qdes_schema.plugin_resources:QDESSchemaResourcesPlugin"
+
+[project.entry-points."ckan.rdf.profiles"]
+qdes_dcat="ckanext.qdes_schema.dcat.profiles:QDESDCATProfile"
