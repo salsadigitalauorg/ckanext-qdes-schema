@@ -1,16 +1,14 @@
 import ckan.lib.navl.dictization_functions as df
 import ckan.plugins.toolkit as toolkit
 import ckan.logic as logic
-import ckanext.qdes.logic.helpers.report_helpers as qdes_report_helpers
 import geojson
-import json
 import logging
 import re
 
 from datetime import datetime as dt
 from ckan.common import config
 from ckanext.scheming.validation import scheming_validator, scheming_choices
-from pprint import pformat
+
 
 log = logging.getLogger(__name__)
 get_action = logic.get_action
@@ -620,11 +618,13 @@ def qdes_validate_circular_replaces_relationships(current_dataset_id, relationsh
     return True
 
 
-def qdes_validate_point_of_contact(value, context):
+def qdes_validate_point_of_contact(key, flattened_data, errors, context):
     """
     Validates whether position id is in secure vocab or not.
     """
-    point_of_contact = qdes_report_helpers.get_point_of_contact(context, value)
+    value = flattened_data.get(key)
+    org_id = flattened_data.get(('owner_org',))
+    point_of_contact = get_action('get_secure_vocabulary_record')(context, {'vocabulary_name': 'point-of-contact', 'query': value, 'org_id': org_id})
     if not point_of_contact:
         raise toolkit.Invalid('Position ID is not found in secure vocabulary.')
 
