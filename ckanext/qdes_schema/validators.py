@@ -305,10 +305,10 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
     # Validate the positive number of each value.
     try:
         result_period = re.split(
-            "(-)?P(?:([-.,\d]+)Y)?(?:([-.,\d]+)M)?(?:([-.,\d]+)W)?(?:([-.,\d]+)D)?",
+            r"(-)?P(?:([-.,\d]+)Y)?(?:([-.,\d]+)M)?(?:([-.,\d]+)W)?(?:([-.,\d]+)D)?",
             flattened_data[key])
 
-        result_time = re.split("T(?:([-.,\d]+)H)?(?:([-.,\d]+)M)?(?:([-.,\d]+)S)?", flattened_data[key])
+        result_time = re.split(r"T(?:([-.,\d]+)H)?(?:([-.,\d]+)M)?(?:([-.,\d]+)S)?", flattened_data[key])
 
         result = result_period + result_time
 
@@ -331,7 +331,7 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
         raise toolkit.Invalid('The value in each field needs to be positive number.')
 
     # Validate the pattern.
-    result_pattern = re.split("^P(?=\d+[YMWD])(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$", flattened_data[key])
+    result_pattern = re.split(r"^P(?=\d+[YMWD])(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$", flattened_data[key])
     if len(result_pattern) <= 1:
         log.error(f'Invalid result_pattern: {result_pattern}')
         raise toolkit.Invalid('Incorrect ISO 8601 duration format')
