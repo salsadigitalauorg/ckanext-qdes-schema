@@ -4,7 +4,6 @@ import calendar
 import json
 import logging
 
-from ckan.common import request
 from ckanext.activity.logic import validators as activity_validators
 from ckanext.qdes_schema import blueprint, helpers, validators, auth
 from ckanext.qdes_schema.logic.action import (
@@ -22,6 +21,7 @@ from ckanext.clone_dataset.interfaces import IClone
 h = toolkit.h
 get_action = toolkit.get_action
 log = logging.getLogger(__name__)
+request = toolkit.request
 
 
 class QDESSchemaPlugin(plugins.SingletonPlugin):
@@ -224,8 +224,13 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         return pkg_dict
 
     def before_dataset_search(self, search_params):
-        temporal_coverage_from = request.params.get('temporal_coverage_from', '') or ''
-        temporal_coverage_to = request.params.get('temporal_coverage_to', '') or ''
+        # Extract temporal coverage parameters from request
+        temporal_coverage_from = ''
+        temporal_coverage_to = ''
+
+        if request:
+            temporal_coverage_from = request.args.get('temporal_coverage_from') or ''
+            temporal_coverage_to = request.args.get('temporal_coverage_to') or ''
 
         if 'fq' in search_params:
             # Clean up fq params from temporal start end.
@@ -350,7 +355,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'has_display_group_required_fields': helpers.has_display_group_required_fields,
             'field_has_errors': helpers.field_has_errors,
             'convert_term_uri_to_label': indexing_helpers.convert_term_uri_to_label,
-            'get_json_element': helpers.get_json_element,  
+            'get_json_element': helpers.get_json_element,
         }
 
     def get_multi_textarea_values(self, value):
@@ -458,13 +463,13 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     def contact_point_data(self, context, contact_point):
         contact_point_data = get_action('get_secure_vocabulary_record')(context, {'vocabulary_name': 'point-of-contact', 'query': contact_point})
         return contact_point_data
-    
+
     # IClone
     def clone_modify_dataset(self, context, dataset_dict):
         # Remove metadata fields we do not want to clone
         if 'identifiers' in dataset_dict:
             dataset_dict['identifiers'] = None
-        
+
         if 'metadata_review_date' in dataset_dict:
             dataset_dict.pop('metadata_review_date')
 
@@ -474,7 +479,6 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         if 'related_resources' in dataset_dict:
             dataset_dict.pop('related_resources')
 
-        # Drop datasets_available from data services    
+        # Drop datasets_available from data services
         if 'datasets_available' in dataset_dict:
             dataset_dict.pop('datasets_available')
-        
