@@ -1,7 +1,7 @@
 {% ckan_extends %}
 
   {% block info_module %}
-    {% if g.controller == 'dataservice' %}
+    {% if g.blueprint == 'dataservice' %}
         <section class="module module-narrow module-shallow">
           <h2 class="module-heading"><i class="fa fa-info-circle"></i> {{ _('What are data services?') }}</h2>
           <div class="module-content">
