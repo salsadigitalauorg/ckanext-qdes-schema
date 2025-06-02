@@ -523,7 +523,7 @@ def qdes_validate_related_dataset(value, context):
         for dataset in datasets:
             dataset_id = dataset.get('id', '')
             try:
-                toolkit.get_validator('package_id_exists')(dataset_id, context)
+                toolkit.get_validator('package_name_exists')(dataset_id, context)
             except toolkit.Invalid:
                 # Package does not exists so lets check to see if there is a valid URI entereds
                 data = {'url': dataset_id}

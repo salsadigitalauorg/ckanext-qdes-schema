@@ -11,7 +11,7 @@
 {% block basic_fields %}
   {%- set invalid_uris = [] -%}
 
-  {% if g.action not in ['new'] %}
+  {% if g.view not in ['new'] %}
     {% set invalid_uris = h.get_invalid_uris(data.id) %}
     {% snippet "/snippets/invalid_uris_error.html", invalid_uris=invalid_uris, is_edit=True %}
   {% endif %}
