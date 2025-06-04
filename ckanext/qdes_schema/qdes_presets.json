@@ -146,7 +146,7 @@
         "display_snippet": "qdes_multi_text.html",
         "form_attrs": {
           "data-module": "qdes_autocomplete",
-          "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+          "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?&org_id={orgId}",
           "data-module-key": "value",
           "data-module-label": "name",
           "data-module-minimum-input-length": 3
@@ -160,7 +160,7 @@
         "display_snippet": "qdes_secure_vocabulary_text.html",
         "form_attrs": {
           "data-module": "qdes_autocomplete",
-          "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?",
+          "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?incomplete=?&org_id={orgId}",
           "data-module-key": "value",
           "data-module-label": "name",
           "data-module-minimum-input-length": 3

@@ -156,6 +156,9 @@ jQuery(document).ready(function () {
         if (source.indexOf('{vocabularyServiceName}') >= 0 && this.options.vocabularyServiceName.length > 0) {
           source = source.replace("{vocabularyServiceName}", this.options.vocabularyServiceName);
         }
+        if (source.indexOf('{orgId}') >= 0) {
+          source = source.replace("{orgId}", $("#field-organizations").val());
+        }
         var client = this.sandbox.client;
         var parseCompletions = this.parseCompletions;
         var options = {

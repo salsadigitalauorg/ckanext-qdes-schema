@@ -20,6 +20,13 @@
       "display_group": "general"
     },
     {
+      "field_name": "owner_org",
+      "label": "Organisation",
+      "preset": "dataset_organization",
+      "display_group": "general",
+      "form_placeholder": "Department of Environment and Science"
+    },
+    {
       "field_name": "identifiers",
       "label": "Identifier",
       "display_property": "dcterms:identifier",
@@ -672,7 +679,7 @@
       "form_placeholder": " ",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
-        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
+        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?&org_id={orgId}",
         "data-module-key": "value",
         "data-module-label": "name",
         "data-module-minimum-input-length": 3,
@@ -727,7 +734,7 @@
       "form_placeholder": " ",
       "form_attrs": {
         "data-module": "qdes_autocomplete",
-        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
+        "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?&org_id={orgId}",
         "data-module-key": "value",
         "data-module-label": "name",
         "data-module-minimum-input-length": 3,
@@ -754,7 +761,7 @@
           "form_placeholder": " ",
           "form_attrs": {
             "data-module": "qdes_autocomplete",
-            "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?",
+            "data-module-source": "/ckan-admin/vocabulary-services/secure-autocomplete/{vocabularyServiceName}?alt=1&incomplete=?&org_id={orgId}",
             "data-module-key": "value",
             "data-module-label": "name",
             "data-module-minimum-input-length": 3,
@@ -916,13 +923,6 @@
       "display_group": "meta data life cycle",
       "validators": "ignore_missing url_validator qdes_uri_validator",
       "help_text": "If the metadata record was generated outside of the catalogue add the source where it originated from"
-    },
-    {
-      "field_name": "owner_org",
-      "label": "Organization",
-      "preset": "dataset_organization",
-      "display_group": "meta data life cycle",
-      "form_placeholder": "Department of Environment and Science"
     },
     {
       "field_name": "state",

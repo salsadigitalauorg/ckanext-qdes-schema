@@ -2,6 +2,7 @@
 
 {% block breadcrumb_content %}
   {% if pkg %}
+    {% snippet "snippets/loader.html" %}
     {% set dataset = h.dataset_display_name(pkg) %}
     {% if pkg.organization %}
       {% set organization = h.get_translated(pkg.organization, 'title') or pkg.organization.name %}
@@ -13,7 +14,7 @@
     {% endif %}
     <li{{ self.breadcrumb_content_selected() }}>{% link_for dataset|truncate(30), named_route=pkg.type ~ '.read', id=pkg.id if is_activity_archive else pkg.name, title=dataset %}</li>
   {% else %}
-    {% if g.controller == 'dataservice' %}
+    {% if g.blueprint == 'dataservice' %}
         <li>{% link_for _('Data Service'), named_route=dataset_type ~ '.search' %}</li>
         <li class="active"><a href="">{{ _('Create Data Service') }}</a></li>
     {% else %}
