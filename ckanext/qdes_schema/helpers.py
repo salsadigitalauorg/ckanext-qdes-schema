@@ -193,7 +193,7 @@ def get_related_object_or_url(context, resource):
     url = None
     resource_id = resource.get('id', '')
     try:
-        get_validator('package_id_exists')(resource_id, context)
+        get_validator('package_name_exists')(resource_id, context)
         object_package_id = resource_id
     except Exception as e:
         # Dataset does not exist so must be an external dataset URL

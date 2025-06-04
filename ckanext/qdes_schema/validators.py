@@ -1,16 +1,14 @@
 import ckan.lib.navl.dictization_functions as df
 import ckan.plugins.toolkit as toolkit
 import ckan.logic as logic
-import ckanext.qdes.logic.helpers.report_helpers as qdes_report_helpers
 import geojson
-import json
 import logging
 import re
 
 from datetime import datetime as dt
 from ckan.common import config
 from ckanext.scheming.validation import scheming_validator, scheming_choices
-from pprint import pformat
+
 
 log = logging.getLogger(__name__)
 get_action = logic.get_action
@@ -307,10 +305,10 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
     # Validate the positive number of each value.
     try:
         result_period = re.split(
-            "(-)?P(?:([-.,\d]+)Y)?(?:([-.,\d]+)M)?(?:([-.,\d]+)W)?(?:([-.,\d]+)D)?",
+            r"(-)?P(?:([-.,\d]+)Y)?(?:([-.,\d]+)M)?(?:([-.,\d]+)W)?(?:([-.,\d]+)D)?",
             flattened_data[key])
 
-        result_time = re.split("T(?:([-.,\d]+)H)?(?:([-.,\d]+)M)?(?:([-.,\d]+)S)?", flattened_data[key])
+        result_time = re.split(r"T(?:([-.,\d]+)H)?(?:([-.,\d]+)M)?(?:([-.,\d]+)S)?", flattened_data[key])
 
         result = result_period + result_time
 
@@ -333,7 +331,7 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
         raise toolkit.Invalid('The value in each field needs to be positive number.')
 
     # Validate the pattern.
-    result_pattern = re.split("^P(?=\d+[YMWD])(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$", flattened_data[key])
+    result_pattern = re.split(r"^P(?=\d+[YMWD])(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$", flattened_data[key])
     if len(result_pattern) <= 1:
         log.error(f'Invalid result_pattern: {result_pattern}')
         raise toolkit.Invalid('Incorrect ISO 8601 duration format')
@@ -525,7 +523,7 @@ def qdes_validate_related_dataset(value, context):
         for dataset in datasets:
             dataset_id = dataset.get('id', '')
             try:
-                toolkit.get_validator('package_id_exists')(dataset_id, context)
+                toolkit.get_validator('package_name_exists')(dataset_id, context)
             except toolkit.Invalid:
                 # Package does not exists so lets check to see if there is a valid URI entereds
                 data = {'url': dataset_id}
@@ -620,11 +618,13 @@ def qdes_validate_circular_replaces_relationships(current_dataset_id, relationsh
     return True
 
 
-def qdes_validate_point_of_contact(value, context):
+def qdes_validate_point_of_contact(key, flattened_data, errors, context):
     """
     Validates whether position id is in secure vocab or not.
     """
-    point_of_contact = qdes_report_helpers.get_point_of_contact(context, value)
+    value = flattened_data.get(key)
+    org_id = flattened_data.get(('owner_org',))
+    point_of_contact = get_action('get_secure_vocabulary_record')(context, {'vocabulary_name': 'point-of-contact', 'query': value, 'org_id': org_id})
     if not point_of_contact:
         raise toolkit.Invalid('Position ID is not found in secure vocabulary.')
 

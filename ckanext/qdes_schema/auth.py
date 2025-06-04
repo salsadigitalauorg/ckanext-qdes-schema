@@ -21,7 +21,7 @@ def user_can_manage_dataservices(next_auth, context, data_dict=None):
     package_type = data_dict.get('type')
 
     if 'dataservice' in [toolkit.get_endpoint()[0], package_type] \
-            and not authz.has_user_permission_for_some_org(user, 'admin'):
+            and not authz.is_sysadmin(user):
         return {'success': False, 'msg': _('User not authorized to perform action')}
 
     return next_auth(context, data_dict)
@@ -70,6 +70,6 @@ def dataservice_index(context, data_dict):
     # Use the context['user'] as per CKAN core logic/auth/create.py -> package_create
     user = context['user']
 
-    if not authz.has_user_permission_for_some_org(user, 'admin'):
+    if not authz.is_sysadmin(user):
         return {'success': False, 'msg': _('User not authorized to perform action')}
     return {'success': True}
