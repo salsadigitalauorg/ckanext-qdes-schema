@@ -637,11 +637,19 @@ def map_classification_and_access_restrictions(classification_and_access_restric
 
 
 def dataset_has_published_to_external_schema(package_id, schema=None):
-    return PublishLog.has_published(package_id, 'dataset')
+    has_published = PublishLog.has_published(package_id, 'dataset')
+    if schema:
+        return has_published.get(schema)
+    else:
+        return has_published
 
 
 def resource_has_published_to_external_schema(resource_id, schema=None):
-    return PublishLog.has_published(resource_id, 'resource')
+    has_published = PublishLog.has_published(resource_id, 'resource')
+    if schema:
+        return has_published.get(schema)
+    else:
+        return has_published
 
 
 def get_distribution_naming(pkg, resource):
@@ -665,21 +673,22 @@ def get_portal_naming(destination):
         return  'QLD Internal Data Catalogue'
 
 
-def get_last_success_publish_log(resource):
+def get_last_success_publish_log(resource, destination):
     last_success_log = PublishLog.get_recent_resource_log(
         resource.get('id'),
         constants.PUBLISH_STATUS_SUCCESS,
         [
             constants.PUBLISH_ACTION_UPDATE,
             constants.PUBLISH_ACTION_CREATE
-        ]
+        ],
+        destination
     )
 
     return last_success_log
 
 
-def get_last_success_publish_date(resource):
-    last_success_log = get_last_success_publish_log(resource)
+def get_last_success_publish_date(resource, destination):
+    last_success_log = get_last_success_publish_log(resource, destination)
 
     processed_date = None
     if last_success_log:
@@ -702,7 +711,7 @@ def resource_needs_republish(resource, pkg, publish_log):
 
     if publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
         # Load last published log and determine if this resource updated since then.
-        last_success_publish_date = get_last_success_publish_date(resource)
+        last_success_publish_date = get_last_success_publish_date(resource, publish_log.destination)
         if last_success_publish_date:
             return res_metadata_modified_date > last_success_publish_date
 
@@ -712,7 +721,7 @@ def resource_needs_republish(resource, pkg, publish_log):
     return False
 
 
-def dataset_need_republish(pkg):
+def dataset_need_republish(pkg, destination=None):
     pkg_metadata_modified = pkg.get('metadata_modified', None)
     if not pkg_metadata_modified:
         return False
@@ -723,12 +732,12 @@ def dataset_need_republish(pkg):
     has_updated_resource = False
     most_recent_updated_resource = None
     for resource in pkg.get('resources', []):
-        res_publish_log = PublishLog.get_recent_resource_log(resource.get('id'))
+        res_publish_log = PublishLog.get_recent_resource_log(resource.get('id'), destination=destination)
         if not res_publish_log:
             continue
 
         if res_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
-            res_publish_log = get_last_success_publish_log(resource)
+            res_publish_log = get_last_success_publish_log(resource, res_publish_log.destination)
         if not res_publish_log:
             continue
 
@@ -746,7 +755,7 @@ def dataset_need_republish(pkg):
             if not most_recent_updated_resource or most_recent_updated_resource < res_publish_log.date_created:
                 most_recent_updated_resource = res_publish_log.date_created
 
-    if not has_updated_resource and not has_pending and pkg_metadata_modified_date > most_recent_updated_resource:
+    if not has_updated_resource and not has_pending and most_recent_updated_resource and pkg_metadata_modified_date > most_recent_updated_resource:
         return True
 
     return False
@@ -771,7 +780,7 @@ def get_publish_activity_status(publish_logs, resource, pkg, details):
 
     if not publish_logs.status == constants.PUBLISH_STATUS_PENDING \
             and not publish_logs.action == constants.PUBLISH_ACTION_DELETE \
-            and (resource_needs_republish(resource, pkg, publish_logs) or dataset_need_republish(pkg)):
+            and (resource_needs_republish(resource, pkg, publish_logs) or dataset_need_republish(pkg, publish_logs.destination)):
         # For publish error that cause by the external dataset is deleted (in trash),
         # don't change the status.
         # When the status is validation_success, the details will be empty
@@ -798,7 +807,7 @@ def get_publish_activities(pkg):
                     processed_date = resource_publish_log.date_processed
                 elif resource_publish_log.status == constants.PUBLISH_STATUS_FAILED or resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
                     # If failed or validation_success, get the last success published date.
-                    processed_date = get_last_success_publish_date(resource)
+                    processed_date = get_last_success_publish_date(resource, destination)
 
                 # Get detail.
                 try:
@@ -819,7 +828,7 @@ def get_publish_activities(pkg):
                 # Get published and unpublished date for distribution that unpublished.
                 if status == constants.PUBLISH_LOG_UNPUBLISHED:
                     # Get last published date.
-                    processed_date = get_last_success_publish_date(resource)
+                    processed_date = get_last_success_publish_date(resource, destination)
 
                     # Get unpublished date.
                     processed_unpublished_date = resource_publish_log.date_processed
