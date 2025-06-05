@@ -55,7 +55,8 @@ def publish_to_external_catalogue(publish_log_id, user):
 
                 # Load recent publish log for this dataset.
                 recent_publish_log = PublishLog.get_recent_resource_log(publish_log.resource_id,
-                                                                        constants.PUBLISH_STATUS_SUCCESS)
+                                                                        constants.PUBLISH_STATUS_SUCCESS,
+                                                                        destination=publish_log.destination)
 
                 # Update external dataset.
                 status, detail, external_pkg_dict = _update_external_dataset(
@@ -151,7 +152,8 @@ def unpublish_external_distribution(publish_log_id, user):
 
                 # Load recent publish log for this distribution.
                 recent_publish_log = PublishLog.get_recent_resource_log(publish_log.resource_id,
-                                                                        constants.PUBLISH_STATUS_SUCCESS)
+                                                                        constants.PUBLISH_STATUS_SUCCESS,
+                                                                        destination=publish_log.destination)
 
                 external_resource_id = ''
                 if recent_publish_log:
