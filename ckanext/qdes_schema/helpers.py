@@ -920,9 +920,6 @@ def get_external_distribution_url(schema, external_dataset_id, external_distribu
 
 
 def has_display_group_required_fields(fields, display_group):
-    if display_group == 'meta data life cycle':
-        return True
-
     # Iterate each field and return true if there is a required field.
     for field in fields:
         if field.get('display_group', None) == display_group and field.get('required', False):
