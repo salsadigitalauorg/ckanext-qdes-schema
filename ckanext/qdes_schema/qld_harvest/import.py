@@ -49,19 +49,19 @@ def generate_api_token():
 
 # Generate new API token or use environment variable/fallback
 site_url = 'http://localhost:8800'  # os.environ.get('LAGOON_ROUTE')
-destination_apiKey = os.environ.get('HARVEST_API_KEY')
+destination_api_key = os.environ.get('DESTINATION_API_KEY')
 
-if not destination_apiKey:
+if not destination_api_key:
     print("No HARVEST_API_KEY environment variable found. Generating new API token...")
-    destination_apiKey = generate_api_token()
-    if destination_apiKey:
-        print(f"Generated new API token: {destination_apiKey}")
+    destination_api_key = generate_api_token()
+    if destination_api_key:
+        print(f"Generated new API token: {destination_api_key}")
     else:
         print("Failed to generate API token. Using fallback token.")
 else:
-    print(f"Using HARVEST_API_KEY from environment: {destination_apiKey}")
+    print(f"Using DESTINATION_API_KEY from environment: {destination_api_key}")
 
-source_apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJEbkRDcURDQXBhTEJQaDVHQ2k4TEgwRFJaM1dzT3c4Skx0eXVtZzlBQllNIiwiaWF0IjoxNzQyMTY0OTMzfQ.T7EvvrAlkh-z8kodgWilswGYevuC01YDh4w0CisYj6A'
+source_api_key = os.environ.get('SOURCE_API_KEY')
 dataservice_name = 'data-qld'
 directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -556,8 +556,8 @@ def check_for_existing_package(dataset_name, package_dict):
 
 
 # Set the import source and destination.
-source = RemoteCKAN('https://www.data.qld.gov.au', apikey=source_apiKey)
-destination = RemoteCKAN(site_url, apikey=destination_apiKey)
+source = RemoteCKAN('https://www.data.qld.gov.au', apikey=source_api_key)
+destination = RemoteCKAN(site_url, apikey=destination_api_key)
 data_service = destination.action.package_show(id=dataservice_name)
 error_log = []
 success_log = []
