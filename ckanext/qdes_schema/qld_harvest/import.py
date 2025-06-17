@@ -1,32 +1,79 @@
 import csv
 import os
 import json
+import subprocess
 import re
-import urllib as urllib
-import pdb
 
-from ckan.model import Session
 import ckan.lib.munge as munge
+import ckanext.qdes_schema.constants as constants
+
 from ckanext.qdes_schema.logic.helpers import harvest_helpers as helpers
-from datetime import datetime
+from datetime import datetime, UTC, timedelta
 from ckanapi import RemoteCKAN, NotFound
 from pprint import pformat
-from sqlalchemy import create_engine
 from six import string_types
 
-owner_org = os.environ['OWNER_ORG']
-apiKey = os.environ['HARVEST_API_KEY']
+
+def generate_api_token():
+    """
+    Generate a new API token using CKAN CLI command.
+    Returns the token string or None if failed.
+    """
+    try:
+        # Run CKAN CLI command to create API token
+        result = subprocess.run(
+            ['ckan', 'user', 'token', 'add', 'des_sysadmin', 'import'],
+            capture_output=True,
+            text=True,
+            cwd='/app'
+        )
+
+        if result.returncode == 0:
+            # Parse the output to extract the token
+            output = result.stdout
+            # Look for the token pattern in the output
+            token_match = re.search(r'API Token created:\s*([A-Za-z0-9._-]+)', output)
+            if token_match:
+                return token_match.group(1).strip()
+            else:
+                print("Could not find API token in CLI output")
+                print("CLI output:", output)
+                return None
+        else:
+            print(f"Error creating API token: {result.stderr}")
+            return None
+    except Exception as e:
+        print(f"Exception while generating API token: {str(e)}")
+        return None
+
+
+# Generate new API token or use environment variable/fallback
+site_url = 'http://localhost:8800'  # os.environ.get('LAGOON_ROUTE')
+destination_apiKey = os.environ.get('HARVEST_API_KEY')
+
+if not destination_apiKey:
+    print("No HARVEST_API_KEY environment variable found. Generating new API token...")
+    destination_apiKey = generate_api_token()
+    if destination_apiKey:
+        print(f"Generated new API token: {destination_apiKey}")
+    else:
+        print("Failed to generate API token. Using fallback token.")
+else:
+    print(f"Using HARVEST_API_KEY from environment: {destination_apiKey}")
+
+source_apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJEbkRDcURDQXBhTEJQaDVHQ2k4TEgwRFJaM1dzT3c4Skx0eXVtZzlBQllNIiwiaWF0IjoxNzQyMTY0OTMzfQ.T7EvvrAlkh-z8kodgWilswGYevuC01YDh4w0CisYj6A'
 dataservice_name = 'data-qld'
+directory = os.path.dirname(os.path.abspath(__file__))
 
 DEBUG = False
-SOURCE_FILENAME = 'DES_Datasets_Open_data_v2.csv'
+SOURCE_FILENAME = os.path.join(directory, 'Harvest List FINAL.csv')
 
 
 def get_dataset_schema_fields():
     """
     Get all fields available on QDES dataset.
     """
-    with open('../qdes_ckan_dataset.json') as f:
+    with open(os.path.join(os.path.dirname(directory), 'qdes_ckan_dataset.json')) as f:
         return json.load(f)
 
 
@@ -59,8 +106,7 @@ def dataset_mapping(dataset, source_dict):
             'dataset_release_date',
             'metadata_review_date',
             'type',
-            'dataset_last_modified_date',
-            'metadata_review_date'
+            'dataset_last_modified_date'
         ]
 
         # Keeping track of license_id and license_url values
@@ -72,30 +118,27 @@ def dataset_mapping(dataset, source_dict):
             unique_license_urls.append(license_url)
 
         # Mandatory field default values from CSV
-        mapped_dataset['identifiers'] = json.dumps([source_dict.get('URL')])
-        mapped_dataset['url'] = source_dict.get('URL')
-        mapped_dataset['lineage_description'] = source_dict.get('Description')
-        creation_date_str = source_dict.get('Created date')
-        creation_date = datetime.strptime(creation_date_str, '%d/%m/%Y').strftime('%Y-%m-%dT%H:%M:%S')
-        mapped_dataset['dataset_creation_date'] = creation_date
-        mapped_dataset['dataset_release_date'] = creation_date
-        # Map keyword (tag_string).
-        tags = source_dict.get('Tags', '')
-        tag_strings = []
-        if tags.count(';') > 1:
-            tag_strings.extend([tag.strip() for tag in tags.split(';')])
-        else:
-            tag_strings.append(tags.strip())
-        tag_string = ','.join([re.sub('[^\w \-.]', '', str(tag)) for tag in tag_strings])
-        mapped_dataset['tag_string'] = tag_string
+        mapped_dataset['identifiers'] = json.dumps(
+            [f"https://www.data.qld.gov.au/dataset/{dataset.get('id')}",
+             f"https://www.data.qld.gov.au/dataset/{dataset.get('name')}"]
+        )
+        mapped_dataset['lineage_description'] = dataset.get('Description')
+        mapped_dataset['dataset_creation_date'] = dataset.get('metadata_created').split('.')[0]
+        mapped_dataset['dataset_release_date'] = dataset.get('metadata_created').split('.')[0]
 
         # Mandatory field default values hardcoded
         mapped_dataset['type'] = 'dataset'
-        mapped_dataset['license_id'] = 'https://linked.data.gov.au/def/licence-document/cc-by-4.0'
-        mapped_dataset['owner_org'] = owner_org
-        today = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
-        mapped_dataset['dataset_last_modified_date'] = today
-        mapped_dataset['metadata_review_date'] = today
+        mapped_dataset['license_id'] = 'https://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0'
+        organisation_name = source_dict.get('Organisation')
+        organisation = destination.action.organization_show(id=organisation_name)
+        if organisation:
+            mapped_dataset['owner_org'] = organisation.get('id')
+
+        if not mapped_dataset['owner_org']:
+            print(f'>>> No matching organisation found for: {organisation_name}')
+
+        mapped_dataset['dataset_last_modified_date'] = dataset.get('metadata_modified').split('.')[0]
+        mapped_dataset['metadata_review_date'] = (datetime.now(UTC) + timedelta(days=365)).strftime('%Y-%m-%dT%H:%M:%S')
 
         # TODO: Reinstate this and update mappings
         # mapped_dataset['update_schedule'] = helpers.get_mapped_update_frequency(dataset.get('update_frequency'))
@@ -139,11 +182,14 @@ def dataset_mapping(dataset, source_dict):
         # Point of Contact "secure" vocabulary look-up
         point_of_contact = helpers.get_secure_vocabulary_record(
             destination,
-            source_dict.get('Point of contact'),
-            'point-of-contact')
+            source_dict.get('Point of Contact'),
+            'point-of-contact',
+            mapped_dataset['owner_org'])
 
         if point_of_contact:
             mapped_dataset['contact_point'] = point_of_contact
+        else:
+            print('>>> No matching point of contact found for: {}'.format(source_dict.get('Point of Contact')))
 
         # Publication status vocabulary service lookup
         publication_status = helpers.get_vocabulary_service_term(
@@ -160,7 +206,7 @@ def dataset_mapping(dataset, source_dict):
             'contact_publisher')
 
         # @TODO: Should this be set in here??? i.e. Dataset schema does not have a `format` field
-        #mapped_dataset['format'] = 'https://www.iana.org/assignments/media-types/application/1d-interleaved-parityfec'
+        # mapped_dataset['format'] = 'https://www.iana.org/assignments/media-types/application/1d-interleaved-parityfec'
 
         # Build the rest of the values.
         for field in schema.get('dataset_fields'):
@@ -193,11 +239,20 @@ def resource_mapping(res, source_dict):
             'format': helpers.get_mapped_format(res.get('format', '')),
             # TODO: Should url be service_api_endpoint
         }
-        # Manually map zip formats for resources
-        if res.get('name', '') == 'Springs database':
-            mapped_resource['format'] = helpers.get_mapped_format('csv')
-        if res.get('name', '') == 'Ground lidar scans and ancillary data directory':
-            mapped_resource['format'] = helpers.get_mapped_format('tiff')
+        if not mapped_resource['format']:
+            print('>>> No matching format found for: {}'.format(res.get('format', '')))
+            if res.get('format', '').lower() == 'zip':
+                print(f'Setting format to ZIP for: {source_dict.get("Dataset URL")} - {res.get("name")}')
+                if res.get('name') == 'Climatic regions for stormwater management design objectives - Queensland':
+                    mapped_resource['format'] = 'http://publications.europa.eu/resource/authority/file-type/SHP'
+                elif res.get('name') == 'Botanical Dictionary for Queensland 2022':
+                    mapped_resource['format'] = 'http://publications.europa.eu/resource/authority/file-type/TXT'
+                elif res.get('name') == 'Ground lidar scans and ancillary data directory':
+                    mapped_resource['format'] = 'http://publications.europa.eu/resource/authority/file-type/SHP'
+
+        if int(mapped_resource['size']) < 1:
+            print(f'Setting size to 0 for: {source_dict.get("Dataset URL")} - {res.get("name")}')
+            mapped_resource['size'] = 1
 
         # Manual field mapping.
         manual_fields = [
@@ -220,6 +275,9 @@ def resource_mapping(res, source_dict):
         # Encode url if exist.
         if mapped_resource['url']:
             mapped_resource['url'] = helpers.fix_url(mapped_resource['url'])
+
+        if not mapped_resource['format']:
+            print('>>> No matching format found for: {}'.format(res.get('format', '')))
 
         if DEBUG:
             print('Got mapped_resource: {}'.format(pformat(mapped_resource)))
@@ -268,14 +326,14 @@ def resource_to_dataset_mapping(res, parent_dataset, source_dict):
         mapped_dataset['title'] = res.get('name')
 
         # Set organisation.
-        mapped_dataset['owner_org'] = owner_org
+        mapped_dataset['owner_org'] = parent_dataset.get('owner_org')
 
         # Set the new dataset's notes (description) field to the resource description
         resource_description = res.get('description', None) or None
         mapped_dataset['notes'] = resource_description if resource_description else parent_dataset.get('notes', '')
 
         # Set isPartOf relationship.
-        mapped_dataset['series_or_collection'] = json.dumps([{"id": parent_dataset.get('id'), "text": parent_dataset.get('title')}])
+        mapped_dataset['series_or_collection'] = json.dumps([{"id": parent_dataset.get('name'), "text": parent_dataset.get('title')}])
 
         # Create a resource for the dataset based on the resource we are working with
         # AND connect it to the data service
@@ -303,6 +361,50 @@ def append_error(dataset_name, errors, source_url):
 
 def append_migration_log(dataset, resource, action):
     migration_log.append(f'{dataset},"{resource}",{action}')
+
+
+def create_publish_logs(new_package_dict, package_dict):
+    """
+    Create publish logs for all resources in a package.
+
+    Args:
+        new_package_dict: The newly created package dictionary
+        package_dict: The original package dictionary from source
+
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        # Create a published log
+        for resource in new_package_dict.get('resources', []):
+            # Get the external resource
+            external_resource = next((r for r in package_dict.get('resources', []) if r.get('id') ==
+                                      resource.get('id') or r.get('name') == resource.get('name')), None)
+            details = {
+                'external_package_dict': package_dict,
+                'external_resource_id': external_resource.get('id') if external_resource else None,
+            }
+
+            destination.action.create_publish_log(**{
+                'dataset_id': new_package_dict.get('id'),
+                'resource_id': resource.get('id'),
+                'destination_identifier': package_dict.get('id'),
+                'trigger': constants.PUBLISH_TRIGGER_MANUAL,
+                'destination': constants.PUBLISH_EXTERNAL_IDENTIFIER_DATA_QLD_SCHEMA,
+                'status': constants.PUBLISH_STATUS_SUCCESS,
+                'action': constants.PUBLISH_ACTION_CREATE,
+                'date_processed': datetime.now(UTC),
+                'details': json.dumps(details)
+            })
+
+        success_log.append({
+            'package_id': dataset_name,
+            'message': 'Published log created.'
+        })
+        return True
+    except Exception as e:
+        print(f'Error creating publish logs for {dataset_name}: {str(e)}')
+        return False
 
 
 def add_dataservice(resource_match):
@@ -338,8 +440,8 @@ def check_for_existing_package(dataset_name, package_dict):
         existing_package = destination.action.package_show(id=dataset_name)
         # Package already exists so lets update it
         existing_identifiers = json.loads(existing_package.get('identifiers', [])) or []
-        if row.get('URL') not in existing_identifiers:
-            existing_identifiers.append(row.get('URL'))
+        if row.get('Dataset URL') not in existing_identifiers:
+            existing_identifiers.append(row.get('Dataset URL'))
             existing_package['identifiers'] = json.dumps(existing_identifiers)
             update_existing_package = True
 
@@ -362,23 +464,25 @@ def check_for_existing_package(dataset_name, package_dict):
                         if resource_match:
                             if 'qldspatial.information.qld.gov.au' in resource.get('url', None):
                                 result = add_dataservice(resource_match)
-                                if result == True and update_existing_series_package == False:
+                                if result and not update_existing_series_package:
                                     update_existing_series_package = True
                             elif resource_match.get('url', None) != resource.get('url', None):
                                 result = add_new_resource_to_existing_package(dataset_name, existing_series_package, resource, row)
-                                if result == True and update_existing_series_package == False:
+                                if result and not update_existing_series_package:
                                     update_existing_series_package = True
                         else:
-                            #  If resource has 'metadata' in the name and a qspatial rest API url, do not create it
-                            if 'metadata' in resource.get('name').lower() and 'qldspatial.information.qld.gov.au/catalogueadmin/rest/document?id=' in resource.get('url'):
+                            # If resource has 'metadata' in the name and a qspatial rest API url, do not create it
+                            metadata_url_check = ('qldspatial.information.qld.gov.au/catalogueadmin/'
+                                                  'rest/document?id=' in resource.get('url', ''))
+                            if 'metadata' in resource.get('name').lower() and metadata_url_check:
                                 append_migration_log(dataset_name, resource.get('name', None),
                                                      'Resource is a metadata XML of existing QSpatial record. Resource not created.')
                             else:
                                 result = add_new_resource_to_existing_package(dataset_name, existing_series_package, resource, row)
-                                if result == True and update_existing_series_package == False:
+                                if result and not update_existing_series_package:
                                     update_existing_series_package = True
 
-                        if update_existing_series_package == True:
+                        if update_existing_series_package:
                             destination.action.package_update(**existing_series_package)
                             success_log.append({
                                 'package_id': dataset_name,
@@ -398,7 +502,7 @@ def check_for_existing_package(dataset_name, package_dict):
                         # Create new package from series resource
                         new_series_package_dict = resource_to_dataset_mapping(resource, existing_package, row)
                         try:
-                            new_series_package_dict_id = destination.action.package_create(**new_series_package_dict)
+                            new_series_package_dict = destination.action.package_create(**new_series_package_dict)
                             append_migration_log(dataset_name, resource.get('name', None), 'New dataset created for QSpatial series')
                             success_log.append({
                                 'package_id': dataset_name,
@@ -421,20 +525,22 @@ def check_for_existing_package(dataset_name, package_dict):
                 if resource_match:
                     if 'qldspatial.information.qld.gov.au' in resource.get('url', None):
                         result = add_dataservice(resource_match)
-                        if result == True and update_existing_package == False:
+                        if result and not update_existing_package:
                             update_existing_package = True
                     elif resource_match.get('url', None) != resource.get('url', None):
                         result = add_new_resource_to_existing_package(dataset_name, existing_package, resource, row)
-                        if result == True and update_existing_package == False:
+                        if result and not update_existing_package:
                             update_existing_package = True
                 else:
-                    #  If resource has 'metadata' in the name and a qspatial rest API url, do not create it
-                    if 'metadata' in resource.get('name').lower() and 'qldspatial.information.qld.gov.au/catalogueadmin/rest/document?id=' in resource.get('url'):
+                    # If resource has 'metadata' in the name and a qspatial rest API url, do not create it
+                    metadata_url_check2 = ('qldspatial.information.qld.gov.au/catalogueadmin/'
+                                           'rest/document?id=' in resource.get('url', ''))
+                    if 'metadata' in resource.get('name').lower() and metadata_url_check2:
                         append_migration_log(dataset_name, resource.get('name', None),
                                              'Resource is a metadata XML of existing QSpatial record. Resource not created.')
                     else:
                         result = add_new_resource_to_existing_package(dataset_name, existing_package, resource, row)
-                        if result == True and update_existing_package == False:
+                        if result and not update_existing_package:
                             update_existing_package = True
 
         if update_existing_package:
@@ -450,8 +556,8 @@ def check_for_existing_package(dataset_name, package_dict):
 
 
 # Set the import source and destination.
-source = RemoteCKAN('https://www.data.qld.gov.au')
-destination = RemoteCKAN(os.environ['LAGOON_ROUTE'], apikey=apiKey)
+source = RemoteCKAN('https://www.data.qld.gov.au', apikey=source_apiKey)
+destination = RemoteCKAN(site_url, apikey=destination_apiKey)
 data_service = destination.action.package_show(id=dataservice_name)
 error_log = []
 success_log = []
@@ -470,9 +576,8 @@ csv_reader = csv.DictReader(data)
 count = 0
 limit = 5
 
-# Configure session.
-engine = create_engine('postgresql://ckan:ckan@postgres/ckan?sslmode=disable')
-Session.configure(bind=engine)
+if not os.path.exists(os.path.join(directory, 'json_files')):
+    os.makedirs(os.path.join(directory, 'json_files'))
 
 for row in csv_reader:
     count += 1
@@ -481,7 +586,7 @@ for row in csv_reader:
         break
 
     # Get dataset name.
-    source_url = row.get('URL', None)
+    source_url = row.get('Dataset URL', None)
 
     if not source_url:
         append_error('Row {}'.format(count), 'URL not set (URL is case sensitive)', None)
@@ -493,12 +598,13 @@ for row in csv_reader:
     package_dict = []
     existing_package_found = False
     try:
-        package_dict = source.action.package_show(id=dataset_name)
-        if not os.path.exists('json_files'):
-            os.makedirs('json_files')
-        with open(f'json_files/{dataset_name}.json', 'w') as json_csv:
-            json_csv.write(json.dumps(package_dict, indent=2))
-        # package_dict = json.load(open(f'json_files/{dataset_name}.json', 'r'))
+        json_file_path = os.path.join(directory, 'json_files', f'{dataset_name}.json')
+        if os.path.exists(json_file_path):
+            package_dict = json.load(open(json_file_path, 'r'))
+        else:
+            package_dict = source.action.package_show(id=dataset_name)
+            with open(json_file_path, 'w') as json_file:
+                json_file.write(json.dumps(package_dict, indent=2))
 
         existing_package_found = check_for_existing_package(dataset_name, package_dict)
     except Exception as e:
@@ -560,35 +666,37 @@ for row in csv_reader:
                 for resource in [resource for resource in package_dict.get('resources') if 'meta' not in resource.get('name').lower()]:
                     new_package_dict['resources'].append(resource_mapping(resource, row))
 
-            new_package_dict_id = destination.action.package_create(**new_package_dict)
-            append_migration_log(dataset_name, new_package_dict.get('name', None), f'New DataQLD dataset created')
+            new_package_dict = destination.action.package_create(**new_package_dict)
+            append_migration_log(dataset_name, new_package_dict.get('name', None), 'New DataQLD dataset created')
             success_log.append({
                 'package_id': dataset_name,
                 'message': 'Successfully migrated.'
             })
+            # Create a published log
+            create_publish_logs(new_package_dict, package_dict)
         except Exception as e:
             append_error(dataset_name, str(e), source_url)
 
 if success_log:
     # print(pformat(success_log))
-    if not os.path.exists('logs'):
-        os.makedirs('logs')
-    with open('logs/success-{0}.csv'.format(datetime.now().strftime("%Y%m%d-%H%M%S")), 'w') as log_csv:
+    if not os.path.exists(os.path.join(directory, 'logs')):
+        os.makedirs(os.path.join(directory, 'logs'))
+    with open(os.path.join(directory, 'logs', f'success-{datetime.now().strftime("%Y%m%d-%H%M%S")}.csv'), 'w') as log_csv:
         for log in success_log:
             log_csv.write(f'{log}\n')
 
 if error_log:
     print(pformat(error_log))
-    if not os.path.exists('logs'):
-        os.makedirs('logs')
-    with open('logs/errors-{0}.csv'.format(datetime.now().strftime("%Y%m%d-%H%M%S")), 'w') as log_csv:
+    if not os.path.exists(os.path.join(directory, 'logs')):
+        os.makedirs(os.path.join(directory, 'logs'))
+    with open(os.path.join(directory, 'logs', f'errors-{datetime.now().strftime("%Y%m%d-%H%M%S")}.csv'), 'w') as log_csv:
         for log in error_log:
             log_csv.write(f'{log}\n')
 
 if migration_log:
-    if not os.path.exists('logs'):
-        os.makedirs('logs')
-    with open('logs/migration-{0}.csv'.format(datetime.now().strftime("%Y%m%d-%H%M%S")), 'w') as log_csv:
+    if not os.path.exists(os.path.join(directory, 'logs')):
+        os.makedirs(os.path.join(directory, 'logs'))
+    with open(os.path.join(directory, 'logs', f'migration-{datetime.now().strftime("%Y%m%d-%H%M%S")}.csv'), 'w') as log_csv:
         for log in migration_log:
             log_csv.write(f'{log}\n')
 

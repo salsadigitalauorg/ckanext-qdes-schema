@@ -24,11 +24,12 @@ def get_mapped_update_frequency(update_frequency):
     return frequency_map.get(update_frequency, '')
 
 
-def get_secure_vocabulary_record(destination, query, vocabulary_name, debug=False):
+def get_secure_vocabulary_record(destination, query, vocabulary_name, org_id, debug=False):
     try:
         data_dict = {
             'query': query,
-            'vocabulary_name': vocabulary_name
+            'vocabulary_name': vocabulary_name,
+            'org_id': org_id
         }
         result = destination.action.get_secure_vocabulary_search(**data_dict)
 
@@ -98,7 +99,9 @@ def convert_size_to_bytes(size_str):
 
     # Some Nones observed during migration
     if not size_str:
-        return 0
+        return 1
+    if hasattr(size_str, 'strip') and not size_str.strip():
+        return 1
 
     # Some Int values observed for size
     if isinstance(size_str, int):
@@ -120,7 +123,8 @@ def convert_size_to_bytes(size_str):
         print('Exception raised in convert_size_to_bytes')
         print(f'>>> Input: {size_str}')
         print('Exception: {}'.format(str(e)))
-        raise e
+        return 1
+
 
 def get_mapped_format(format):
     format_map = {
@@ -130,23 +134,24 @@ def get_mapped_format(format):
         'txt': 'http://publications.europa.eu/resource/authority/file-type/TXT',
         'json': 'http://publications.europa.eu/resource/authority/file-type/JSON',
         'pdf': 'http://publications.europa.eu/resource/authority/file-type/PDF',
-        'xls': 'http://publications.europa.eu/resource/authority/file-type/XLSX', #XLS
+        'xls': 'http://publications.europa.eu/resource/authority/file-type/XLSX',  # XLS
         'xlsx': 'http://publications.europa.eu/resource/authority/file-type/XLSX',
         'docx': 'http://publications.europa.eu/resource/authority/file-type/DOCX',
         'kmz': 'http://publications.europa.eu/resource/authority/file-type/KMZ',
         'kml': 'http://publications.europa.eu/resource/authority/file-type/KML',
         'shp': 'http://publications.europa.eu/resource/authority/file-type/SHP',
-        'geotiff': 'http://publications.europa.eu/resource/authority/file-type/TIFF', #geotiff
+        'geotiff': 'http://publications.europa.eu/resource/authority/file-type/TIFF',  # geotiff
         'tiff': 'http://publications.europa.eu/resource/authority/file-type/TIFF',
         'tif': 'http://publications.europa.eu/resource/authority/file-type/TIFF',
         'rest': 'http://publications.europa.eu/resource/authority/file-type/REST',
         'geojson': 'http://publications.europa.eu/resource/authority/file-type/GEOJSON',
         'html': 'http://publications.europa.eu/resource/authority/file-type/HTML_SIMPL',
         'spatial data format': 'http://publications.europa.eu/resource/authority/file-type/GDB',
-        'shp, tab, fgdb, kmz, gpkg': 'http://publications.europa.eu/resource/authority/file-type/GDB'
+        'shp, tab, fgdb, kmz, gpkg': 'http://publications.europa.eu/resource/authority/file-type/GDB',
+        'parquet': 'http://linked.data.gov.au/def/qg-file-types/PARQUET',
+        'wms': 'http://publications.europa.eu/resource/authority/file-type/WMS_SRVC',
+        "tab separated values": 'http://publications.europa.eu/resource/authority/file-type/TSV',
+        'fgdb': 'http://publications.europa.eu/resource/authority/file-type/GDB'
     }
     # ZIP needs to be handled manually
     return format_map.get(format.lower(), '')
-
-
-	
