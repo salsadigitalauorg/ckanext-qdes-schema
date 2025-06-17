@@ -32,6 +32,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
+    plugins.implements(plugins.IResourceController, inherit=True)
     plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(IInvalidURIs)
@@ -114,6 +115,13 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         dataset_type = pkg_dict.get('dataset_type', None)
 
         if dataset_type:
+            if dataset_type == 'dataservice':
+                # Remove datasets_available field to prevent Solr indexing errors when field is too large
+                if pkg_dict.get('extras_datasets_available'):
+                    pkg_dict.pop('extras_datasets_available')
+                if pkg_dict.get('datasets_available'):
+                    pkg_dict.pop('datasets_available')
+
             # Get collection_package_id for each dataset that part of collection.
             collection_package_id = indexing_helpers.get_collection_ids(pkg_dict)
             if collection_package_id:
@@ -263,6 +271,25 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
             'entity_type': 'resource',
             'parent_entity_id': pkg_dict.id,
         })
+
+    # IResourceController
+    def after_resource_create(self, context, resource):
+        res_helpers.after_create_and_update(context, resource)
+
+    def after_resource_update(self, context, resource):
+        res_helpers.after_create_and_update(context, resource)
+
+        if request and request.endpoint == 'resource.edit':
+            if h.resource_has_published_to_external_schema(resource.get('id')):
+                url = h.url_for('qdes_schema.datasets_schema_validation', id=resource.get('package_id'))
+                h.flash_success('You have updated a dataset resource that is publicly available. Please go to the <a href="' + url +
+                                '">Publish tab</a> to validate the changes and publish to the relevant data service(s). This will ensure the metadata in updated in all systems.', True)
+
+    def before_resource_update(self, context, current, resource):
+        res_helpers.before_update(context, current, resource)
+
+    def before_resource_delete(self, context, resource, resources):
+        res_helpers.before_delete(context, resource, resources)
 
     # IValidators
     def get_validators(self):
