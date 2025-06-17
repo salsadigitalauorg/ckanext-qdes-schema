@@ -4,35 +4,14 @@ import json
 import subprocess
 import re
 
-import ckan.model as model
 import ckan.lib.munge as munge
 import ckanext.qdes_schema.constants as constants
-import ckan.plugins.toolkit as toolkit
 
 from ckanext.qdes_schema.logic.helpers import harvest_helpers as helpers
 from datetime import datetime, UTC, timedelta
 from ckanapi import RemoteCKAN, NotFound
 from pprint import pformat
 from six import string_types
-
-from ckan.config.middleware import make_app
-from ckan.cli import CKANConfigLoader
-from logging.config import fileConfig as loggingFileConfig
-
-
-if os.environ.get(u'CKAN_INI'):
-    config_path = os.environ[u'CKAN_INI']
-else:
-    config_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), u'ckan.ini')
-
-if not os.path.exists(config_path):
-    raise RuntimeError(u'CKAN config option not found: {}'.format(config_path))
-
-loggingFileConfig(config_path)
-config = CKANConfigLoader(config_path).get_config()
-
-application = make_app(config)
 
 
 def generate_api_token():
@@ -85,14 +64,6 @@ else:
 source_apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJEbkRDcURDQXBhTEJQaDVHQ2k4TEgwRFJaM1dzT3c4Skx0eXVtZzlBQllNIiwiaWF0IjoxNzQyMTY0OTMzfQ.T7EvvrAlkh-z8kodgWilswGYevuC01YDh4w0CisYj6A'
 dataservice_name = 'data-qld'
 directory = os.path.dirname(os.path.abspath(__file__))
-
-# Get site default user
-user = toolkit.get_action('get_site_user')({'ignore_auth': True})
-
-context = {
-    'user': user.get('name'),
-    'ignore_auth': True,
-}
 
 DEBUG = False
 SOURCE_FILENAME = os.path.join(directory, 'Harvest List FINAL.csv')
@@ -159,9 +130,9 @@ def dataset_mapping(dataset, source_dict):
         mapped_dataset['type'] = 'dataset'
         mapped_dataset['license_id'] = 'https://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0'
         organisation_name = source_dict.get('Organisation')
-        organisation = model.Group.get(organisation_name)
+        organisation = destination.action.organization_show(id=organisation_name)
         if organisation:
-            mapped_dataset['owner_org'] = organisation.id
+            mapped_dataset['owner_org'] = organisation.get('id')
 
         if not mapped_dataset['owner_org']:
             print(f'>>> No matching organisation found for: {organisation_name}')
@@ -414,7 +385,7 @@ def create_publish_logs(new_package_dict, package_dict):
                 'external_resource_id': external_resource.get('id') if external_resource else None,
             }
 
-            toolkit.get_action('create_publish_log')(context, {
+            destination.action.create_publish_log(**{
                 'dataset_id': new_package_dict.get('id'),
                 'resource_id': resource.get('id'),
                 'destination_identifier': package_dict.get('id'),
