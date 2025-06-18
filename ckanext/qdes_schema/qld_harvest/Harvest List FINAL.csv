@@ -1,0 +1,515 @@
+Dataset URL,Organisation,General classification of dataset type,Topic or theme,Point of Contact
+https://www.data.qld.gov.au/dataset/headline-waste-disposal-in-queensland-by-region,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/headline-waste-disposal-in-queensland-by-sector,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/headline-waste-generation-in-queensland-from-2012-onwards,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/litter-and-illegally-disposed-waste-2021-to-2023,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/litter-and-illegally-disposed-waste-reported-by-local-governments,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/local-government-bin-services-in-queensland-2011-12-onwards,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/material-sent-overseas-2016-23,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/material-sent-overseas-for-recovery-from-queensland-from-2016-onwards,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/resources-recovered-by-destination-2022-23,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/waste-disposal-by-sector-2023,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/waste-disposed-at-levyable-waste-disposal-sites,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/waste-received-from-interstate-sources-from-2013-14-onwards,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/brisbane-river-colmslie-site-water-quality-monitoring-buoy,science,dataset,WATER QUALITY,Katie Hillyer
+https://www.data.qld.gov.au/dataset/wq-monitoring-pumicestone-passage,science,dataset,WATER QUALITY,Katie Hillyer
+https://www.data.qld.gov.au/dataset/overseas-travel-department-of-national-parks-recreation-sport-and-racing,corporate-services,dataset,HUMAN DIMENSIONS,Michael Kirton
+https://www.data.qld.gov.au/dataset/overseas-travel-department-of-national-parks-sport-and-racing,corporate-services,dataset,HUMAN DIMENSIONS,Michael Kirton
+https://www.data.qld.gov.au/dataset/overseas-travel-environment-and-heritage-protection,corporate-services,dataset,HUMAN DIMENSIONS,Michael Kirton
+https://www.data.qld.gov.au/dataset/queensland-cultural-diversity-policy,corporate-services,dataset,HUMAN DIMENSIONS,Michael Kirton
+https://www.data.qld.gov.au/dataset/queensland-cultural-diversity-policy-nprsr,corporate-services,dataset,HUMAN DIMENSIONS,Michael Kirton
+https://www.data.qld.gov.au/dataset/queensland-language-services-policy-department-of-environment-and-heritage-protection,corporate-services,dataset,HUMAN DIMENSIONS,Michael Kirton
+https://www.data.qld.gov.au/dataset/queensland-language-services-policy-department-of-national-parks-sport-and-racing,corporate-services,dataset,HUMAN DIMENSIONS,Michael Kirton
+https://www.data.qld.gov.au/dataset/queensland-multicultural-action-plan-2011-2014-core-outcomes-environment-and-heritage-protection,corporate-services,dataset,HUMAN DIMENSIONS,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-cape-york-peninsula-regional-advisory-committee,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-cape-york-peninsula-regional-protected-area-management-committee,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-cape-york-peninsula-regional-scientific-and-cultural-advisory-committee,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-fraser-island-community-advisory-committee,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-fraser-island-world-heritage-indigenous-advisory-committee,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-fraser-island-world-heritage-scientific-advisory-committee,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-gondwana-rainforests-of-australia-community-advisory-committee,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-gondwana-rainforests-technical-and-scientific-advisory-committee,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-national-parks-tourism-reference-group,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-newstead-house-board-of-trustees,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-qld-heritage-council,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-riversleigh-community-and-scientific-advisory-committee,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-wet-tropics-community-consultative-committee,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-wet-tropics-management-authority,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-wet-tropics-scientific-advisory-committee,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/remuneration-information-for-govt-bodies-dsiti,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/board-of-the-queensland-museum-annual-report-consultancies-2019-2020,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/board-of-the-queensland-museum-annual-report-overseas-travel-2016-2017,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/board-of-the-queensland-museum-annual-report-overseas-travel-2019-2020,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/consultancy-spending-environment-and-heritage-protection,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Bradley Lang
+https://www.data.qld.gov.au/dataset/consultancy-spending-national-parks-recreation-sport-and-racing,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Bradley Lang
+https://www.data.qld.gov.au/dataset/consultancy-spending-national-parks-sport-and-racing,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Bradley Lang
+https://www.data.qld.gov.au/dataset/dehp-queensland-government-investment-portal-qgip,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Bradley Lang
+https://www.data.qld.gov.au/dataset/department-of-environment-and-heritage-protection-annual-report-data-2015-16,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/department-of-environment-and-heritage-protection-annual-report-data-2016-17,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/department-of-environment-and-science-annual-report-data-2017-18,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/des-annual-report-data-2018-19,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/department-of-environment-and-science-annual-report-data-2019-20,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/department-of-environment-and-science-annual-report-data-2020-21,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/department-of-environment-and-science-annual-report-data-2021-22,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/department-of-environment-and-science-annual-report-data-2022-23,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/department-of-environment-and-science-contract-disclosure-report,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/department-of-national-parks-sport-and-racing-annual-report-data-2015-16,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/department-of-national-parks-sport-and-racing-annual-report-data-2016-17,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/department-of-national-parks-sport-and-racing-annual-report-data-2017-18,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/des-on-time-payment-report,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Bradley Lang
+https://www.data.qld.gov.au/dataset/late-payments-des,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Bradley Lang
+https://www.data.qld.gov.au/dataset/late-payments-ehp,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Bradley Lang
+https://www.data.qld.gov.au/dataset/late-payments-npsr,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Bradley Lang
+https://www.data.qld.gov.au/dataset/soe2015-agriculture-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-average-rainfall,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-broad-vegetation-groups-within-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-carbon-monoxide-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-commercial-and-industrial-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-commercial-and-industrial-waste-recovered-or-recycled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-condition-of-aquatic-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-condition-of-ecological-processes,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-condition-of-estuarine-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-condition-of-marine-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-condition-of-riverine-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-construction-and-demolition-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-construction-and-demolition-waste-recovered-or-recycled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-cultural-heritage-management-plans,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-cultural-heritage-places,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-cultural-heritage-search-requests,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-cultural-heritage-site-locations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-erosion-prone-area,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-estuarine-wetlands-within-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-evaporation-rate,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-extent-and-rate-of-change-in-estuarine-wetlands,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-extent-and-rate-of-change-of-freshwater-wetland-systems,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-extent-and-rate-of-change-of-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-extent-and-rate-of-change-of-remnant-native-vegetation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-extent-of-endangered-of-concern-and-no-concern-at-present-regional-ecosystems,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-fragmentation-of-remnant-vegetation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-fraser-island-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-freshwater-wetland-systems-within-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-fugitive-emissions-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-gondwana-rainforests-of-australia-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-great-barrier-reef-world-heritage-condition,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-great-barrier-reef-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-historic-shipwrecks-and-aircraft-wrecks,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-household-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-household-waste-recovered-or-recycled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-industrial-processes-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-interstate-commercial-and-industrial-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-interstate-construction-and-demolition-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-interstate-household-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-interstate-trackable-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-key-fish-stocks,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-land-clearing-impact-on-threatened-fauna-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-land-clearing-impact-on-threatened-flora-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-land-clearing-impact-on-woody-native-vegetation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-land-use-land-use-change-and-forestry-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-lead-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-local-heritage-places-and-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-main-material-types-littered,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-major-air-pollutants,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-major-threats-to-fauna-species,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-major-threats-to-flora-species,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-marine-parks-and-fish-habitat-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-minimum-mean-and-maximum-temperatures,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-nitrogen-dioxide-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-number-of-litter-items-for-different-site-types,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-number-of-litter-items-in-queensland,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-number-of-registered-vehicles,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-ozone-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-particulate-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-per-capita-waste-generation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-pressures-affecting-queenslands-aquatic-ecosystems,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-pressures-affecting-riverine-ecosystems,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-queensland-heritage-places,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-queensland-heritage-places-destroyed,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-queensland-open-house-events,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-riversleigh-section-of-the-australian-fossil-mammal-sites-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-sea-level,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-sea-surface-temperature,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-southern-oscillation-index,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-stationary-energy-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-storm-tide-inundation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-sulphur-dioxide-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-threatened-fauna-species-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-threatened-fauna-species-numbers,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-threatened-flora-species-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-threatened-flora-species-numbers,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-total-annual-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-trackable-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-trackable-waste-recovered,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-transport-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-vehicle-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-vehicle-kilometres-travelled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-visibility-reducing-particles,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-volume-and-load-of-sewage-treatment-plants,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-waste-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2015-wet-tropics-of-queensland-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-agriculture-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-annual-rainfall,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-broad-vegetation-groups-within-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-carbon-monoxide-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-change-in-density-in-residential-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-commercial-and-industrial-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-commercial-and-industrial-waste-recovered-or-recycled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-condition-of-aquatic-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-condition-of-ecological-processes,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-condition-of-estuarine-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-condition-of-marine-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-condition-of-riverine-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-construction-and-demolition-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-construction-and-demolition-waste-recovered-or-recycled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-cultural-heritage-management-plans,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-cultural-heritage-places,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-cultural-heritage-search-requests,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-cultural-heritage-site-locations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-cyclone-activity,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-efficiency-of-the-daily-commute,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-erosion-prone-area,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-estuarine-wetlands-within-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-evaporation-rate,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-extent-and-rate-of-change-in-estuarine-wetlands,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-extent-and-rate-of-change-of-freshwater-wetland-systems,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-extent-and-rate-of-change-of-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-extent-and-rate-of-change-of-remnant-native-vegetation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-extent-of-endangered-of-concern-and-no-concern-at-present-regional-ecosystems,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-extreme-weather-events-days-with-very-heavy-rainfall,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-extreme-weather-events-hot-days,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-fragmentation-of-remnant-vegetation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-fraser-island-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-freshwater-wetland-systems-within-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-fugitive-emissions-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-gondwana-rainforests-of-australia-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-great-barrier-reef-world-heritage-condition,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-great-barrier-reef-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-historic-shipwrecks-and-aircraft-wrecks,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-household-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-household-waste-recovered-or-recycled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-housing-diversity-proportion-of-new-approved-residential-dwellings,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-increase-in-heavy-vehicles,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-industrial-processes-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-interstate-commercial-and-industrial-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-interstate-construction-and-demolition-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-interstate-household-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-interstate-trackable-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-key-fish-stocks,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-land-clearing-impact-on-threatened-fauna-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-land-clearing-impact-on-threatened-flora-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-land-clearing-impact-on-woody-native-vegetation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-land-use-land-use-change-and-forestry-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-lead-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-local-heritage-places-and-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-main-material-types-littered,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-major-air-pollutants,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-major-threats-to-fauna-species,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-major-threats-to-flora-species,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-marine-parks-and-fish-habitat-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-mean-annual-temperature,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-nitrogen-dioxide-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-number-of-litter-items-for-different-site-types,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-number-of-litter-items-in-queensland,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-number-of-registered-vehicles,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-ozone-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-particulate-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-per-capita-waste-generation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-percentage-of-the-network-with-reliable-travel-times,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-pressures-affecting-queenslands-aquatic-ecosystems,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-pressures-affecting-riverine-ecosystems,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-queensland-heritage-places,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-queensland-heritage-places-destroyed,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-queensland-open-house-events,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-queensland-places-in-the-national-heritage-list,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-riversleigh-section-of-the-australian-fossil-mammal-sites-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-sea-level,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-sea-surface-temperature,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-southern-oscillation-index,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-stationary-energy-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-storm-tide-inundation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-sulphur-dioxide-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-threatened-fauna-species-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-threatened-fauna-species-numbers,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-threatened-flora-species-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-threatened-flora-species-numbers,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-total-annual-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-trackable-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-trackable-waste-recovered,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-transport-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-use-of-bikeways-in-seq,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-vehicle-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-vehicle-kilometres-travelled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-visibility-reducing-particles,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-volume-and-load-of-sewage-treatment-plants,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-waste-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2017-wet-tropics-of-queensland-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-agriculture-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-annual-rainfall,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-broad-vegetation-groups-within-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-broadacre-agriculture-production,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-carbon-monoxide-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-change-available-soil-land-resources,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-change-in-density-in-residential-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-change-in-ground-cover-levels,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-change-rural-land-use-extent,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-change-in-urban-land-use-extent,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-erosion-prone-area,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-commercial-and-industrial-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-commercial-and-industrial-waste-recovered-or-recycled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-condition-of-aquatic-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-condition-of-ecological-processes,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-condition-of-estuarine-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-condition-of-marine-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-condition-of-riverine-ecosystem-health,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-construction-and-demolition-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-construction-and-demolition-waste-recovered-or-recycled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-cultural-heritage-management-plans,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-cultural-heritage-places,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-cultural-heritage-search-requests,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-cultural-heritage-site-locations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-cyclone-activity,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-efficiency-of-the-daily-commute,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-estuarine-wetlands-within-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-evaporation-rate,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-extent-and-rate-of-change-of-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-extent-rate-change-riparian-vegetation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-extent-of-cropping,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-extent-of-endangered-of-concern-and-no-concern-at-present-regional-ecosystems,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-extreme-weather-events-hot-days,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-extreme-weather-events-days-with-very-heavy-rainfall,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-fragmentation-of-remnant-vegetation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-fraser-island-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-freshwater-wetland-systems-within-protected-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-fugitive-emissions-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-gondwana-rainforests-of-australia-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-great-barrier-reef-world-heritage-condition,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-great-barrier-reef-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-horticulture-production,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-household-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-household-waste-recovered-or-recycled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-housing-diversity-in-queensland,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-increase-in-heavy-vehicles,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-industrial-processes-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-interstate-commercial-and-industrial-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-interstate-construction-and-demolition-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-interstate-household-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-interstate-trackable-waste-received,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-key-fish-stocks,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-land-clearing-impact-on-threatened-fauna-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-land-clearing-impact-on-threatened-flora-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-land-clearing-impact-on-woody-native-vegetation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-land-use-land-use-change-and-forestry-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-lead-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-livestock-meat-production,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-local-heritage-places-and-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-main-material-types-littered,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-major-air-pollutants-from-industry,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-major-threats-to-fauna-species,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-major-threats-to-flora-species,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-marine-parks-and-fish-habitat-areas,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-mean-annual-temperature,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-nitrogen-dioxide-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-number-of-litter-items-for-different-site-types,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-number-of-litter-items-in-queensland,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-number-of-registered-vehicles,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-ozone-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-particulate-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-per-capita-waste-generation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-percentage-of-the-network-with-reliable-travel-times,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-pressures-affecting-queenslands-aquatic-ecosystems,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-pressures-affecting-riverine-ecosystems,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-queensland-heritage-places,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-queensland-heritage-places-destroyed,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-queensland-open-house-events,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-queensland-places-national-heritage-list,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-riversleigh-section-of-the-australian-fossil-mammal-sites-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-sea-level,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-sea-surface-temperature,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-soil-land-resources-availability-capability,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-southern-oscillation-index,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-stationary-energy-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-storm-tide-inundation,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-sulphur-dioxide-concentrations,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-threatened-fauna-species-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-threatened-fauna-species-numbers,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-threatened-flora-species-habitat,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-threatened-flora-species-numbers,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-total-annual-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-trackable-waste-landfilled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-trackable-waste-recovered,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-transport-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-historic-shipwrecks-aircraft-wrecks,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-use-of-bikeways-in-seq,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-vehicle-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-vehicle-kilometres-travelled,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-visibility-reducing-particles,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-volume-and-load-of-sewage-treatment-plants,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-waste-sector-greenhouse-gas-emissions,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/soe2020-wet-tropics-of-queensland-world-heritage-natural-criteria,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL IMPACTS,Kenneth HORRIGAN
+https://www.data.qld.gov.au/dataset/amount-local-government-paper-packaging-recycled,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/green-waste-disposed-vs-recovered-2007-2014,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/headline-waste-disposal-by-region,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/headline-waste-generation-trend,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/headline-wastes-by-region,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/headline-wastes-by-zone,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/headline-wastes-disposed-vs-recovered-in-queensland-during-2013-14,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/headline-wastes-disposed-vs-recovered-in-queensland-in-2015,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/historical-ash-trends-by-financial-year-since-2007,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/litter-auditing-data-from-south-west-queensland-litter-prevention-project,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/local-government-bin-services-in-queensland,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/local-government-recycling-trends-glass,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/local-government-waste-and-recycling-collection-services-2013,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/local-government-waste-and-recycling-collection-services-2014,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/glass-and-paper-cardboard-trends-2004-2014,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/materials-recovered-2013,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/materials-recovered-2014,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/materials-recovered-2015,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/public-waste-and-recycling-facilities-in-queensland,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/resource-activities-environmental-protection-act-1994,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/resources-recovered-by-destination-2021-22,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/waste-collection-services-provided-by-queensland-councils-in-2022-23,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/waste-disposed-at-levyable-waste-disposal-sites-2023,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/waste-levy-zone-queensland,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/waste-received-from-interstate-sources,environment-and-heritage-policy-programs,dataset,RECYCLING,Dylan Walker
+https://www.data.qld.gov.au/dataset/directory-of-important-wetlands-queensland,environment-and-heritage-policy-programs,dataset,WETLANDS,Michael RONAN
+https://www.data.qld.gov.au/dataset/matters-of-state-environmental-significance-queensland-series,environment-and-heritage-policy-programs,dataset,BOUNDARIES,Christina Cork
+https://www.data.qld.gov.au/dataset/ehp-suitable-operator-register-sor-for-environmentally-relevant-activities-eras,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/queensland-heritage-register-additions-2014,heritage,dataset,CULTURAL FEATURES,Xanthe O'Donnell
+https://www.data.qld.gov.au/dataset/queensland-heritage-register-additions-august-2014-june-2015,heritage,dataset,CULTURAL FEATURES,Xanthe O'Donnell
+https://www.data.qld.gov.au/dataset/the-queensland-heritage-register,heritage,dataset,CULTURAL FEATURES,Xanthe O'Donnell
+https://www.data.qld.gov.au/dataset/war-memorial-sites-in-queensland,heritage,dataset,CULTURAL FEATURES,Xanthe O'Donnell
+https://www.data.qld.gov.au/dataset/world-war-ii-historic-places-in-queensland,heritage,dataset,CULTURAL FEATURES,Xanthe O'Donnell
+https://www.data.qld.gov.au/dataset/annual-returns,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/designated-environmental-areas-agricultural-research-facilities-queensland,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/great-barrier-reef-coast-marine-park-zoning,environmental-services-and-regulation,dataset,BOUNDARIES,Peter Thomas
+https://www.data.qld.gov.au/dataset/prescribed-environmental-activities-environmental-protection-act-1994,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/prc-plans,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/queensland-environmental-offsets-series,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/environmental-authorities,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/environmental-authority-applications,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/environmental-authority-locations-queensland,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/erc-notices,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/questionnaire-environmental-protection-act-1994,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/ehp-issued-penalty-infringement-notices-pins,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/ehp-issued-penalty-infringement-notices-environmental-protection-act-2014,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/ehp-issued-penalty-infringement-notices-environmental-protection-act-2015,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/ehp-issued-penalty-infringement-notices-nature-conservation-act-2014,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/ehp-issued-penalty-infringement-notices-nature-conservation-act-2015,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/ehp-issued-penalty-infringement-notices-other-legislation-2014,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/ehp-issued-penalty-infringement-notices-other-legislation-2015,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/ehp-issued-penalty-infringement-notices-vehicle-related-littering-and-illegal-dumping-2014,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/ehp-issued-penalty-infringement-notices-vehicle-related-littering-and-illegal-dumping-2015,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-and-waste-transfers-from-industrial-facilities-in-queensland-2009,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-and-waste-transfers-from-industrial-facilities-in-queensland-2010,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-and-waste-transfers-from-industrial-facilities-in-queensland-2011,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-and-waste-transfers-from-industrial-facilities-in-queensland-2012,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-and-waste-transfers-from-industrial-facilities-in-queensland-2013,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-and-waste-transfers-from-industrial-facilities-in-queensland-2014,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-and-waste-transfers-from-industrial-facilities-in-queensland-2015,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-from-industrial-facilities-in-queensland-1999,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-from-industrial-facilities-in-queensland-2000,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-from-industrial-facilities-in-queensland-2001,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-from-industrial-facilities-in-queensland-2002,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-from-industrial-facilities-in-queensland-2003,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-from-industrial-facilities-in-queensland-2004,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-from-industrial-facilities-in-queensland-2005,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-from-industrial-facilities-in-queensland-2006,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-from-industrial-facilities-in-queensland-2007,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/emissions-from-industrial-facilities-in-queensland-2008,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/enforcement-actions-register,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/enforcement-register-queensland,environmental-services-and-regulation,dataset,ENVIRONMENTAL REGULATIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/camping-and-vehicle-permits,queensland-parks-and-wildlife-services-and-partnerships,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Gemma BLAKE
+https://www.data.qld.gov.au/dataset/queensland-parks-and-wildlife-service-access,queensland-parks-and-wildlife-services-and-partnerships,dataset,INFRASTRUCTURE,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/queensland-parks-and-wildlife-service-areas-series,queensland-parks-and-wildlife-services-and-partnerships,dataset,INFRASTRUCTURE,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/queensland-parks-and-wildlife-service-fire-advisories,queensland-parks-and-wildlife-services-and-partnerships,dataset,FIRE ADVISORIES,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/queensland-parks-and-wildlife-service-fire-management-zones,queensland-parks-and-wildlife-services-and-partnerships,dataset,FIRE MANAGEMENT,Gemma BLAKE
+https://www.data.qld.gov.au/dataset/queensland-parks-and-wildlife-service-lines,queensland-parks-and-wildlife-services-and-partnerships,dataset,INFRASTRUCTURE,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/queensland-parks-and-wildlife-service-points,queensland-parks-and-wildlife-services-and-partnerships,dataset,INFRASTRUCTURE,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/regional-boundaries-queensland-parks-and-wildlife-service,queensland-parks-and-wildlife-services-and-partnerships,dataset,BOUNDARIES,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/agile-wallaby-sightings-in-mission-beach-region,queensland-parks-and-wildlife-services-and-partnerships,dataset,COMMUNITY DYNAMICS,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/former-koala-policy-layers-2010-2019-superseded,queensland-parks-and-wildlife-services-and-partnerships,dataset,BOUNDARIES,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/great-sandy-marine-park-shorebird-roost-sites,queensland-parks-and-wildlife-services-and-partnerships,dataset,COMMUNITY DYNAMICS,Sylvie Garner
+https://www.data.qld.gov.au/dataset/koala-hospital-data,queensland-parks-and-wildlife-services-and-partnerships,dataset,BOUNDARIES,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/sea-turtle-nesting-areas,queensland-parks-and-wildlife-services-and-partnerships,dataset,BOUNDARIES,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/habitat-suitability-models-queensland,queensland-parks-and-wildlife-services-and-partnerships,dataset,BOUNDARIES,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/special-wildlife-reserves-queensland,queensland-parks-and-wildlife-services-and-partnerships,dataset,BOUNDARIES,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/fire-extent-and-severity-2019-2020-south-east-queensland,queensland-parks-and-wildlife-services-and-partnerships,dataset,FIRE OCCURRENCE,Gemma BLAKE
+https://www.data.qld.gov.au/dataset/fire-history-queensland-parks-and-wildlife-service,queensland-parks-and-wildlife-services-and-partnerships,dataset,FIRE HISTORY,Gemma BLAKE
+https://www.data.qld.gov.au/dataset/fire-regime-queensland-series,queensland-parks-and-wildlife-services-and-partnerships,dataset,FIRE MANAGEMENT,Gemma BLAKE
+https://www.data.qld.gov.au/dataset/nature-refuges-queensland,queensland-parks-and-wildlife-services-and-partnerships,dataset,BOUNDARIES,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/nprsr-issued-penalty-infringement-notices-pins,queensland-parks-and-wildlife-services-and-partnerships,dataset,ENVIRONMENTAL REGULATIONS,Sylvie Garner
+https://www.data.qld.gov.au/dataset/nprsr-issued-penalty-infringement-notices-forestry-act-2014,queensland-parks-and-wildlife-services-and-partnerships,dataset,ENVIRONMENTAL REGULATIONS,Sylvie Garner
+https://www.data.qld.gov.au/dataset/nprsr-issued-penalty-infringement-notices-marine-parks-act-2014,queensland-parks-and-wildlife-services-and-partnerships,dataset,ENVIRONMENTAL REGULATIONS,Sylvie Garner
+https://www.data.qld.gov.au/dataset/nprsr-issued-penalty-infringement-notices-nature-conservation-pam-regulation-2014,queensland-parks-and-wildlife-services-and-partnerships,dataset,ENVIRONMENTAL REGULATIONS,Sylvie Garner
+https://www.data.qld.gov.au/dataset/nprsr-issued-penalty-infringement-notices-recreation-areas-management-act-2014,queensland-parks-and-wildlife-services-and-partnerships,dataset,ENVIRONMENTAL REGULATIONS,Sylvie Garner
+https://www.data.qld.gov.au/dataset/nprsr-issued-penalty-infringement-notices-forestry-act-2015,queensland-parks-and-wildlife-services-and-partnerships,dataset,ENVIRONMENTAL REGULATIONS,Sylvie Garner
+https://www.data.qld.gov.au/dataset/nprsr-issued-penalty-infringement-notices-marine-parks-act-2015,queensland-parks-and-wildlife-services-and-partnerships,dataset,ENVIRONMENTAL REGULATIONS,Sylvie Garner
+https://www.data.qld.gov.au/dataset/nprsr-issued-penalty-infringement-notices-nature-conservation-pam-regulation-2015,queensland-parks-and-wildlife-services-and-partnerships,dataset,ENVIRONMENTAL REGULATIONS,Sylvie Garner
+https://www.data.qld.gov.au/dataset/npsr-issued-penalty-infringement-notices-recreation-areas-management-act-2015,queensland-parks-and-wildlife-services-and-partnerships,dataset,ENVIRONMENTAL REGULATIONS,Sylvie Garner
+https://www.data.qld.gov.au/dataset/protected-areas-of-queensland-series,queensland-parks-and-wildlife-services-and-partnerships,dataset,BOUNDARIES,Shaun KOLOMEITZ
+https://www.data.qld.gov.au/dataset/coastal-data-system-waves-brisbane-offshore,science,dataset,WAVE PERIOD,Daryl Metters
+https://www.data.qld.gov.au/dataset/coastal-data-system-waves-eojls-cairns-deepwater,science,dataset,WAVE PERIOD,Daryl Metters
+https://www.data.qld.gov.au/dataset/coastal-data-system-waves-skardon-river-inner,science,dataset,WAVE PERIOD,Daryl Metters
+https://www.data.qld.gov.au/dataset/coastal-plan-series,environment-and-heritage-policy-programs,dataset,BOUNDARIES,Paul ROFF
+https://www.data.qld.gov.au/dataset/moreton-bay-coral-2004,queensland-parks-and-wildlife-services-and-partnerships,dataset,BENTHIC,Nicola UDY
+https://www.data.qld.gov.au/dataset/moreton-bay-marine-park-series,queensland-parks-and-wildlife-services-and-partnerships,dataset,BOUNDARIES,Nicola UDY
+https://www.data.qld.gov.au/dataset/moreton-bay-orthophotos-1955-json,queensland-parks-and-wildlife-services-and-partnerships,dataset,MARINE ENVIRONMENT MONITORING,Nicola UDY
+https://www.data.qld.gov.au/dataset/moreton-bay-orthophotos-1997-json,queensland-parks-and-wildlife-services-and-partnerships,dataset,MARINE ENVIRONMENT MONITORING,Nicola UDY
+https://www.data.qld.gov.au/dataset/moreton-bay-orthophotos-2012-json,queensland-parks-and-wildlife-services-and-partnerships,dataset,MARINE ENVIRONMENT MONITORING,Nicola UDY
+https://www.data.qld.gov.au/dataset/ndrp-storm-tide-hazard-interpolation-series,science,dataset,STORM SURGE,Paul BOSWOOD
+https://www.data.qld.gov.au/dataset/slats-2018-baseline,science,dataset,VEGETATION,Daniel TINDALL
+https://www.data.qld.gov.au/dataset/slats-2018-19-clearing,science,dataset,VEGETATION,Daniel TINDALL
+https://www.data.qld.gov.au/dataset/active-crop-groups-1987-to-2019,science,dataset,LAND USE/LAND COVER CLASSIFICATION,Daniel TINDALL
+https://www.data.qld.gov.au/dataset/active-crop-groups-1988-ongoing,science,dataset,LAND USE/LAND COVER CLASSIFICATION,Daniel TINDALL
+https://www.data.qld.gov.au/dataset/air-quality-monitoring-2009,science,dataset,AIR QUALITY,Gavin SHAW
+https://www.data.qld.gov.au/dataset/air-quality-monitoring-2009-grouped-by-pollutant,science,dataset,AIR QUALITY,Gavin SHAW
+https://www.data.qld.gov.au/dataset/air-quality-monitoring-2010-grouped-by-pollutant,science,dataset,AIR QUALITY,Gavin SHAW
+https://www.data.qld.gov.au/dataset/air-quality-monitoring-2020,science,dataset,AIR QUALITY,Gavin SHAW
+https://www.data.qld.gov.au/dataset/air-quality-monitoring-2020-grouped-by-pollutant,science,dataset,AIR QUALITY,Gavin SHAW
+https://www.data.qld.gov.au/dataset/air-quality-monitoring-2021,science,dataset,AIR QUALITY,Gavin SHAW
+https://www.data.qld.gov.au/dataset/air-quality-monitoring-2021-grouped-by-pollutant,science,dataset,AIR QUALITY,Gavin SHAW
+https://www.data.qld.gov.au/dataset/air-quality-monitoring-2022,science,dataset,AIR QUALITY,Gavin SHAW
+https://www.data.qld.gov.au/dataset/air-quality-monitoring-2022-grouped-by-pollutant,science,dataset,AIR QUALITY,Gavin SHAW
+https://www.data.qld.gov.au/dataset/artificial-reef-sites-queensland,environmental-services-and-regulation,dataset,CORAL REEF EXTENT,Peter Thomas
+https://www.data.qld.gov.au/dataset/baffle-creek-water-quality-monitoring-data-historical,science,dataset,WATER QUALITY,Katie Hillyer
+https://www.data.qld.gov.au/dataset/biodiversity-planning-assessment-series,science,dataset,BOUNDARIES,Steven Howell
+https://www.data.qld.gov.au/dataset/biodiversity-status-of-pre-clearing-and-2021-remnant-regional-ecosystems-queensland-series,science,dataset,VEGETATION,Dale RICHTER
+https://www.data.qld.gov.au/dataset/botanical-dictionary-queensland-2022,science,dataset,VEGETATION,Melinda LAIDLAW
+https://www.data.qld.gov.au/dataset/bramble-bay-water-quality-monitoring-data-historical,science,dataset,WATER QUALITY,Katie Hillyer
+https://www.data.qld.gov.au/dataset/brisbane-river-moggill-reach-site-water-quality-monitoring-buoy,science,dataset,WATER QUALITY,Katie Hillyer
+https://www.data.qld.gov.au/dataset/burnett-river-monitoring-data-historical,science,dataset,WATER QUALITY,Katie Hillyer
+https://www.data.qld.gov.au/dataset/census-of-the-queensland-flora-2020,science,dataset,VEGETATION,Melinda LAIDLAW
+https://www.data.qld.gov.au/dataset/census-of-the-queensland-flora-2021,science,dataset,VEGETATION,Melinda LAIDLAW
+https://www.data.qld.gov.au/dataset/census-of-the-queensland-flora-and-fungi-2022,science,dataset,VEGETATION,Melinda LAIDLAW
+https://www.data.qld.gov.au/dataset/census-of-the-queensland-flora-and-fungi-2023,science,dataset,VEGETATION,Melinda LAIDLAW
+https://www.data.qld.gov.au/dataset/climatic-regions-for-stormwater-management-design-objectives-queensland,environment-and-heritage-policy-programs,dataset,BOUNDARIES,Paul ROFF
+https://www.data.qld.gov.au/dataset/consistent-climate-scenarios,science,dataset,REGIONAL CLIMATE LEVELS,Grant FRASER
+https://www.data.qld.gov.au/dataset/coordinated-conservation-areas-queensland,environment-and-heritage-policy-programs,dataset,BOUNDARIES,Paul ROFF
+https://www.data.qld.gov.au/dataset/environmental-protection-act-1994-high-value-regrowth,science,dataset,VEGETATION,Dale RICHTER
+https://www.data.qld.gov.au/dataset/environmental-protection-act-1994-mature-regrowth,science,dataset,VEGETATION,Dale RICHTER
+https://www.data.qld.gov.au/dataset/environmental-protection-water-policy-queensland-series,environment-and-heritage-policy-programs,dataset,ENVIRONMENTAL REGULATIONS,Paul ROFF
+https://www.data.qld.gov.au/dataset/environmentally-sensitive-area-to-seaward-of-highest-astronomical-tide-queensland,environment-and-heritage-policy-programs,dataset,COASTAL AREAS,Paul ROFF
+https://www.data.qld.gov.au/dataset/erosion-prone-area-series,environment-and-heritage-policy-programs,dataset,COASTAL PROCESSES,Paul ROFF
+https://www.data.qld.gov.au/dataset/flora-survey-trigger-map-for-clearing-protected-plants-in-queensland-version-10-0,science,dataset,BOUNDARIES,Steven Howell
+https://www.data.qld.gov.au/dataset/gregory-water-quality-monitoring-data-historical,science,dataset,WATER QUALITY,Katie Hillyer
+https://www.data.qld.gov.au/dataset/high-value-regrowth-2021-queensland,science,dataset,VEGETATION,Dale RICHTER
+https://www.data.qld.gov.au/dataset/land-use-mapping-current-web-service-json,science,dataset,LAND USE CLASSES,Daniel TINDALL
+https://www.data.qld.gov.au/dataset/map-of-queensland-wetland-environmental-values-series,environment-and-heritage-policy-programs,dataset,WETLANDS,Michael RONAN
+https://www.data.qld.gov.au/dataset/modelled-potential-habitat-for-selected-threatened-species-v1-queensland,science,dataset,SPECIES DISTRIBUTION MODELS,Steven Howell
+https://www.data.qld.gov.au/dataset/occurrence-records-for-queensland-flora,science,dataset,VEGETATION,Melinda LAIDLAW
+https://www.data.qld.gov.au/dataset/potential-habitat-models-2022-queensland-series,science,dataset,VEGETATION,Dale RICHTER
+https://www.data.qld.gov.au/dataset/queensland-biodiversity-and-ecology-information-system,science,dataset,VEGETATION,Dale RICHTER
+https://www.data.qld.gov.au/dataset/queensland-fish-habitat-area-instream-structure-inventory-data-extract,environment-and-heritage-policy-programs,dataset,RIVERS/STREAMS,Michael RONAN
+https://www.data.qld.gov.au/dataset/queensland-soil-and-land-resource-data-web-map-service,science,dataset,SOILS,Evan THOMAS
+https://www.data.qld.gov.au/dataset/queensland-statewide-corridors,science,dataset,BOUNDARIES,Steven Howell
+https://www.data.qld.gov.au/dataset/regional-nature-conservation-values-series,science,dataset,CONSERVATION,Steven Howell
+https://www.data.qld.gov.au/dataset/remnant-vegetation-cover-2021-queensland,science,dataset,VEGETATION,Dale RICHTER
+https://www.data.qld.gov.au/dataset/sandgate-water-quality-monitoring-data-historical,science,dataset,WATER QUALITY,Katie Hillyer
+https://www.data.qld.gov.au/dataset/temporary-emissions-licences-tel,environmental-services-and-regulation,dataset,INDUSTRIAL EMISSIONS,Peter Thomas
+https://www.data.qld.gov.au/dataset/wetland-protection-series,environment-and-heritage-policy-programs,dataset,WETLANDS,Michael RONAN
+https://www.data.qld.gov.au/dataset/fish-habitat-areas-queensland,queensland-parks-and-wildlife-services-and-partnerships,dataset,BOUNDARIES,Nicola UDY
+https://www.data.qld.gov.au/dataset/queensland-government-research-and-development-expenditure-data,science,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Lauren Stephenson
+https://www.data.qld.gov.au/dataset/detsi-queensland-government-investment-portal-qgip,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/dnpsr-queensland-government-investment-portal-qgip,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/everyones-environment-grants-recipients,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/queensland-multicultural-2011-2014-core-outcomes-national-parks-recreation-sport-and-racing,corporate-services,dataset,ENVIRONMENTAL GOVERNANCE/MANAGEMENT,Michael Kirton
+https://www.data.qld.gov.au/dataset/wet-tropics-of-queensland-world-heritage-area,queensland-parks-and-wildlife-services-and-partnerships,dataset,BOUNDARIES,Shaun KOLOMEITZ

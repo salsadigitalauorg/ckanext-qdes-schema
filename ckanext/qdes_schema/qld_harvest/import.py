@@ -13,6 +13,25 @@ from ckanapi import RemoteCKAN, NotFound
 from pprint import pformat
 from six import string_types
 
+from ckan.config.middleware import make_app
+from ckan.cli import CKANConfigLoader
+from logging.config import fileConfig as loggingFileConfig
+from ckan.plugins.toolkit import get_action
+
+if os.environ.get(u'CKAN_INI'):
+    config_path = os.environ[u'CKAN_INI']
+else:
+    config_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), u'ckan.ini')
+
+if not os.path.exists(config_path):
+    raise RuntimeError(u'CKAN config option not found: {}'.format(config_path))
+
+loggingFileConfig(config_path)
+config = CKANConfigLoader(config_path).get_config()
+
+application = make_app(config)
+
 
 def generate_api_token():
     """
@@ -385,7 +404,7 @@ def create_publish_logs(new_package_dict, package_dict):
                 'external_resource_id': external_resource.get('id') if external_resource else None,
             }
 
-            destination.action.create_publish_log(**{
+            get_action('create_publish_log')({"ignore_auth": True, "user": "des_sysadmin"}, {
                 'dataset_id': new_package_dict.get('id'),
                 'resource_id': resource.get('id'),
                 'destination_identifier': package_dict.get('id'),
