@@ -68,19 +68,19 @@ def generate_api_token():
 
 # Generate new API token or use environment variable/fallback
 site_url = 'http://localhost:8800'  # os.environ.get('LAGOON_ROUTE')
-destination_api_key = os.environ.get('DESTINATION_API_KEY')
+source_api_key = os.environ.get('SOURCE_API_KEY')
+if not source_api_key:
+    print("No SOURCE_API_KEY environment variable found")
+    exit(1)
 
+destination_api_key = os.environ.get('DESTINATION_API_KEY')
 if not destination_api_key:
     print("No HARVEST_API_KEY environment variable found. Generating new API token...")
     destination_api_key = generate_api_token()
-    if destination_api_key:
-        print(f"Generated new API token: {destination_api_key}")
-    else:
-        print("Failed to generate API token. Using fallback token.")
-else:
-    print(f"Using DESTINATION_API_KEY from environment: {destination_api_key}")
+    if not destination_api_key:
+        print("Failed to generate API token")
+        exit(1)
 
-source_api_key = os.environ.get('SOURCE_API_KEY')
 dataservice_name = 'data-qld'
 directory = os.path.dirname(os.path.abspath(__file__))
 
