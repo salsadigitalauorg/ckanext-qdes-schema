@@ -209,7 +209,7 @@ def _get_external_destination_ckan(schema, api_key):
 def _get_external_dataset(dataset_name, destination):
     detail = {}
     try:
-        package_dict = destination.action.package_show(name_or_id=dataset_name)
+        package_dict = destination.action.package_show(id=dataset_name)
     except Exception as e:
         detail = {'error': str(e)}
         package_dict = {}
