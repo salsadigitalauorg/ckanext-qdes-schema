@@ -100,14 +100,21 @@ def publish_to_external_catalogue(publish_log_id, user):
         status = constants.PUBLISH_STATUS_FAILED
         detail = {'type': 'system_error', 'error': str(e)}
 
-    # Update publish_log processed time.
-    publish_log.date_processed = datetime.utcnow()
-
-    # Update activity stream.
-    _update_activity_schema(publish_log, package_dict, status, user)
-
-    # Update publish log.
-    _update_publish_log(publish_log, status, detail, external_pkg_dict)
+    try:
+        publish_log.date_processed = datetime.utcnow()
+        _update_activity_schema(publish_log, package_dict, status, user)
+        _update_publish_log(publish_log, status, detail, external_pkg_dict)
+    except Exception as e:
+        log.error(f'Failed to finalise publish log {publish_log_id}: {e}')
+        log.error(''.join(traceback.format_tb(e.__traceback__)))
+        try:
+            publish_log.date_processed = datetime.utcnow()
+            _update_publish_log(
+                publish_log, constants.PUBLISH_STATUS_FAILED,
+                {'type': 'finalisation_error', 'error': str(e)}, {}
+            )
+        except Exception as inner_e:
+            log.error(f'Failed to mark publish log {publish_log_id} as failed: {inner_e}')
 
 
 def unpublish_external_distribution(publish_log_id, user):
@@ -196,14 +203,21 @@ def unpublish_external_distribution(publish_log_id, user):
         status = constants.PUBLISH_STATUS_FAILED
         detail = {'type': 'system_error', 'error': str(e)}
 
-    # Update publish_log processed time.
-    publish_log.date_processed = datetime.utcnow()
-
-    # Update activity stream.
-    _update_activity_schema(publish_log, package_dict, status, user, True)
-
-    # Update publish log.
-    _update_publish_log(publish_log, status, detail, external_pkg_dict)
+    try:
+        publish_log.date_processed = datetime.utcnow()
+        _update_activity_schema(publish_log, package_dict, status, user, True)
+        _update_publish_log(publish_log, status, detail, external_pkg_dict)
+    except Exception as e:
+        log.error(f'Failed to finalise unpublish log {publish_log_id}: {e}')
+        log.error(''.join(traceback.format_tb(e.__traceback__)))
+        try:
+            publish_log.date_processed = datetime.utcnow()
+            _update_publish_log(
+                publish_log, constants.PUBLISH_STATUS_FAILED,
+                {'type': 'finalisation_error', 'error': str(e)}, {}
+            )
+        except Exception as inner_e:
+            log.error(f'Failed to mark unpublish log {publish_log_id} as failed: {inner_e}')
 
 
 def _get_external_destination_ckan(schema, api_key):

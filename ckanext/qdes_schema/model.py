@@ -6,7 +6,7 @@ from ckan.model import meta
 from ckan.model import types as _types
 from sqlalchemy import types, Column
 from ckan.model.domain_object import DomainObject
-from sqlalchemy import desc
+from sqlalchemy import desc, nullslast
 try:
     from ckan.plugins.toolkit import BaseModel
 except ImportError:
@@ -31,7 +31,7 @@ class PublishLog(DomainObject, BaseModel):
     destination = Column(types.UnicodeText)
     destination_identifier = Column(types.UnicodeText)
     action = Column(types.UnicodeText)
-    date_created = Column(types.DateTime, default=datetime.datetime.utcnow())
+    date_created = Column(types.DateTime, default=datetime.datetime.utcnow)
     date_processed = Column(types.DateTime)
     status = Column(types.UnicodeText, nullable=False)
     details = Column(types.UnicodeText)
@@ -65,7 +65,7 @@ class PublishLog(DomainObject, BaseModel):
     def get_recent_resource_log(cls, resource_id, status=False, action=[], destination=None):
         query = meta.Session.query(cls) \
             .filter(cls.resource_id == resource_id) \
-            .order_by(desc(cls.date_processed)) \
+            .order_by(nullslast(desc(cls.date_processed))) \
             .order_by(desc(cls.date_created))
 
         if status:
@@ -104,14 +104,15 @@ class PublishLog(DomainObject, BaseModel):
 
     @classmethod
     def has_unpublished(cls, publish_log, destination):
+        if not publish_log.date_processed:
+            return None
+
         query = meta.Session.query(cls) \
             .filter(cls.resource_id == publish_log.resource_id) \
             .filter(cls.action == constants.PUBLISH_ACTION_DELETE) \
             .filter(cls.status == constants.PUBLISH_STATUS_SUCCESS) \
-            .filter(cls.destination == destination)
-
-        if publish_log.date_processed:
-            query = query.filter(cls.date_processed > publish_log.date_processed)
+            .filter(cls.destination == destination) \
+            .filter(cls.date_processed > publish_log.date_processed)
 
         return query.first()
 
@@ -127,3 +128,11 @@ class PublishLog(DomainObject, BaseModel):
                 published_log[destination].append(published_distributions[destination])
 
         return published_log
+
+    @classmethod
+    def get_stale_pending_logs(cls, stale_hours=48):
+        threshold = datetime.datetime.utcnow() - datetime.timedelta(hours=stale_hours)
+        query = meta.Session.query(cls) \
+            .filter(cls.status == constants.PUBLISH_STATUS_PENDING) \
+            .filter(cls.date_created < threshold)
+        return query.all()

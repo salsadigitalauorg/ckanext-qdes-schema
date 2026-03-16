@@ -2,7 +2,6 @@ import ckan.logic as logic
 import ckan.plugins.toolkit as toolkit
 import ckanext.qdes_schema.constants as constants
 import ckanext.qdes_schema.jobs as jobs
-import ast
 import json
 import re
 import datetime
@@ -12,13 +11,11 @@ import os
 from ckan import model
 from ckan.common import c
 from ckan.model.package_relationship import PackageRelationship
-from ckan.lib import helpers as core_helper
 from ckan.lib.helpers import render_datetime
-from ckan.plugins.toolkit import config, h, get_action, get_converter, get_validator, Invalid, request, _
+from ckan.plugins.toolkit import config, get_action, get_converter, get_validator, request, _
 from ckanext.qdes_schema.model import PublishLog
 from ckanext.qdes_schema.logic.helpers import relationship_helpers
 from ckanext.scheming.plugins import SchemingDatasetsPlugin
-from pprint import pformat
 
 Session = model.Session
 log = logging.getLogger(__name__)
@@ -423,7 +420,16 @@ def schema_validate(extra_vars, pkg_validated, data):
 
                 # Only add validation error/success if the dataset is published.
                 if resource_has_published_to_external_schema(res.get('id'), data.get('schema')):
-                    if resource_errors.get('resources', None):
+                    has_errors = bool(resource_errors.get('resources', None))
+                    new_status = constants.PUBLISH_STATUS_VALIDATION_ERROR if has_errors else constants.PUBLISH_STATUS_VALIDATION_SUCCESS
+                    validation_dedup_cutoff = datetime.datetime.utcnow() - datetime.timedelta(minutes=constants.VALIDATION_DEDUP_WINDOW_MINUTES)
+                    recent_validation = PublishLog.get_recent_resource_log(res.get('id'), status=new_status, destination=data.get('schema'))
+                    if recent_validation and recent_validation.date_created > validation_dedup_cutoff:
+                        log.info(
+                            f'Skipping duplicate {new_status} validation record for resource {res.get("id")} '
+                            f'to {data.get("schema")} - record {recent_validation.id} created {recent_validation.date_created}'
+                        )
+                    elif has_errors:
                         get_action('create_publish_log')({}, {
                             'dataset_id': res.get('package_id'),
                             'resource_id': res.get('id'),
@@ -459,6 +465,26 @@ def schema_publish(pkg, data):
     # Add to publish log.
     try:
         for resource in resources_to_publish:
+            existing_pending = PublishLog.get_recent_resource_log(
+                resource.get('id'),
+                status=constants.PUBLISH_STATUS_PENDING,
+                destination=data.get('schema')
+            )
+            if existing_pending and existing_pending.action != constants.PUBLISH_ACTION_DELETE:
+                dedup_cutoff = datetime.datetime.utcnow() - datetime.timedelta(hours=constants.PUBLISH_DEDUP_WINDOW_HOURS)
+                if existing_pending.date_created > dedup_cutoff:
+                    log.warning(
+                        f'Skipping duplicate publish for resource {resource.get("id")} '
+                        f'to {data.get("schema")} - pending record {existing_pending.id} already exists '
+                        f'(created {existing_pending.date_created})'
+                    )
+                    continue
+                log.warning(
+                    f'Orphaned pending publish record {existing_pending.id} found '
+                    f'(>{constants.PUBLISH_DEDUP_WINDOW_HOURS}h old, created {existing_pending.date_created}) '
+                    f'- allowing new publish for resource {resource.get("id")}'
+                )
+
             publish_log = get_action('create_publish_log')({}, {
                 'dataset_id': pkg.get('id'),
                 'resource_id': resource.get('id'),
@@ -467,10 +493,11 @@ def schema_publish(pkg, data):
                 'status': constants.PUBLISH_STATUS_PENDING
             })
 
-            # Add to job worker queue.
             if publish_log:
-                # Improvements for job worker visibility when troubleshooting via logs
-                job_title = f'Publish external dataset resource: dataset_id={publish_log.dataset_id}, resource_id={publish_log.resource_id}, destination={publish_log.destination}'
+                job_title = (
+                    f'Publish external dataset resource: dataset_id={publish_log.dataset_id}, '
+                    f'resource_id={publish_log.resource_id}, destination={publish_log.destination}'
+                )
                 toolkit.enqueue_job(jobs.publish_to_external_catalogue, [publish_log.id, c.user], title=job_title)
 
         return True
@@ -763,34 +790,49 @@ def dataset_need_republish(pkg, destination=None):
 
 def get_publish_activity_status(publish_logs, resource, pkg, details):
     status = constants.PUBLISH_LOG_PENDING
-    if publish_logs.status == constants.PUBLISH_STATUS_SUCCESS and not publish_logs.action == constants.PUBLISH_ACTION_DELETE:
+
+    if publish_logs.status == constants.PUBLISH_STATUS_SUCCESS and publish_logs.action != constants.PUBLISH_ACTION_DELETE:
         status = constants.PUBLISH_LOG_PUBLISHED
-
-    if publish_logs.status == constants.PUBLISH_STATUS_SUCCESS and publish_logs.action == constants.PUBLISH_ACTION_DELETE:
+    elif publish_logs.status == constants.PUBLISH_STATUS_SUCCESS and publish_logs.action == constants.PUBLISH_ACTION_DELETE:
         status = constants.PUBLISH_LOG_UNPUBLISHED
-
-    if publish_logs.status == constants.PUBLISH_STATUS_FAILED:
+    elif publish_logs.status == constants.PUBLISH_STATUS_FAILED:
         if publish_logs.action == constants.PUBLISH_ACTION_DELETE:
             status = constants.PUBLISH_LOG_UNPUBLISH_ERROR
         else:
             status = constants.PUBLISH_LOG_PUBLISH_ERROR
-
-    if publish_logs.status == constants.PUBLISH_STATUS_VALIDATION_ERROR:
+    elif publish_logs.status == constants.PUBLISH_STATUS_VALIDATION_ERROR:
         status = constants.PUBLISH_LOG_VALIDATION_ERROR
 
-    if not publish_logs.status == constants.PUBLISH_STATUS_PENDING \
-            and not publish_logs.action == constants.PUBLISH_ACTION_DELETE \
+    if publish_logs.status != constants.PUBLISH_STATUS_PENDING \
+            and publish_logs.action != constants.PUBLISH_ACTION_DELETE \
             and (resource_needs_republish(resource, pkg, publish_logs) or dataset_need_republish(pkg, publish_logs.destination)):
-        # For publish error that cause by the external dataset is deleted (in trash),
-        # don't change the status.
-        # When the status is validation_success, the details will be empty
-        # but we need to detect if the current distribution need republish.
         if not details or (details and not details.get('external_distribution_deleted', False)):
             status = constants.PUBLISH_LOG_NEED_REPUBLISH
 
     return status
 
+def cleanup_stale_pending_logs(stale_hours=48):
+    stale_logs = PublishLog.get_stale_pending_logs(stale_hours)
+    for stale_log in stale_logs:
+        log.warning(
+            f'Marking stale pending publish log {stale_log.id} as failed '
+            f'(resource={stale_log.resource_id}, destination={stale_log.destination})'
+        )
+        get_action('update_publish_log')({}, {
+            'id': stale_log.id,
+            'status': constants.PUBLISH_STATUS_FAILED,
+            'date_processed': datetime.datetime.utcnow(),
+            'details': json.dumps({
+                'type': 'stale_pending',
+                'error': f'Pending record exceeded {stale_hours} hour processing threshold'
+            })
+        })
+    return len(stale_logs)
+
+
 def get_publish_activities(pkg):
+    cleanup_stale_pending_logs()
+
     resource_publish_logs = []
 
     for resource in pkg.get('resources'):
@@ -805,8 +847,12 @@ def get_publish_activities(pkg):
                 processed_unpublished_date = ''
                 if resource_publish_log.status == constants.PUBLISH_STATUS_SUCCESS:
                     processed_date = resource_publish_log.date_processed
-                elif resource_publish_log.status == constants.PUBLISH_STATUS_FAILED or resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS:
-                    # If failed or validation_success, get the last success published date.
+                elif resource_publish_log.status in (
+                    constants.PUBLISH_STATUS_FAILED,
+                    constants.PUBLISH_STATUS_VALIDATION_SUCCESS,
+                    constants.PUBLISH_STATUS_VALIDATION_ERROR,
+                    constants.PUBLISH_STATUS_PENDING,
+                ):
                     processed_date = get_last_success_publish_date(resource, destination)
 
                 # Get detail.
@@ -820,9 +866,15 @@ def get_publish_activities(pkg):
                 # Get status.
                 status = get_publish_activity_status(resource_publish_log, resource, pkg, details)
 
-                # If status validation success, keep the last status.
-                if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS and status == constants.PUBLISH_LOG_PENDING and resource_has_published_to_external_schema(resource.get('id'), resource_publish_log.destination):
-                    status = constants.PUBLISH_LOG_PUBLISHED
+                # If status validation success, derive display status from the most recent action record.
+                if resource_publish_log.status == constants.PUBLISH_STATUS_VALIDATION_SUCCESS and status == constants.PUBLISH_LOG_PENDING:
+                    last_action_log = PublishLog.get_recent_resource_log(
+                        resource.get('id'),
+                        action=[constants.PUBLISH_ACTION_CREATE, constants.PUBLISH_ACTION_UPDATE, constants.PUBLISH_ACTION_DELETE],
+                        destination=destination
+                    )
+                    if last_action_log:
+                        status = get_publish_activity_status(last_action_log, resource, pkg, details)
 
 
                 # Get published and unpublished date for distribution that unpublished.
@@ -906,7 +958,7 @@ def get_pkg_title(name_or_id, pkg_dict=[]):
             return pkg_name + ' [DELETED]'
 
         return pkg_name
-    except Exception as e:
+    except Exception:
         return ''
 
 

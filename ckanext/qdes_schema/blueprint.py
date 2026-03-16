@@ -1,4 +1,5 @@
 import ckan.lib.base as base
+import datetime
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
 import ckan.plugins.toolkit as toolkit
@@ -10,13 +11,11 @@ import six
 import json
 import xml.dom.minidom
 import os
-import ckan.lib.navl.dictization_functions as dict_fns
-import ckan.logic as logic
 
 from ckan.common import _, c, request
 from ckanext.qdes_schema import helpers
+from ckanext.qdes_schema.model import PublishLog
 from flask import Blueprint
-from pprint import pformat
 from ckanext.qdes_schema.logic.helpers import dataservice_helpers as dataservice_helpers
 from flask import send_file
 from ckan.views import dataset as dataset_view
@@ -266,6 +265,27 @@ def unpublish_external_dataset_resource(id):
 def _unpublish_resource(resource, pkg, schema):
         unpublish = 0
         try:
+            existing_pending = PublishLog.get_recent_resource_log(
+                resource.get('id'),
+                status=constants.PUBLISH_STATUS_PENDING,
+                action=[constants.PUBLISH_ACTION_DELETE],
+                destination=schema
+            )
+            if existing_pending:
+                dedup_cutoff = datetime.datetime.utcnow() - datetime.timedelta(hours=constants.PUBLISH_DEDUP_WINDOW_HOURS)
+                if existing_pending.date_created > dedup_cutoff:
+                    log.warning(
+                        f'Skipping duplicate unpublish for resource {resource.get("id")} '
+                        f'to {schema} - pending record {existing_pending.id} already exists '
+                        f'(created {existing_pending.date_created})'
+                    )
+                    return 0
+                log.warning(
+                    f'Orphaned pending unpublish record {existing_pending.id} found '
+                    f'(>{constants.PUBLISH_DEDUP_WINDOW_HOURS}h old, created {existing_pending.date_created}) '
+                    f'- allowing new unpublish for resource {resource.get("id")}'
+                )
+
             publish_log = get_action('create_publish_log')({}, {
                 'dataset_id': pkg.get('id'),
                 'resource_id': resource.get('id'),
@@ -275,11 +295,11 @@ def _unpublish_resource(resource, pkg, schema):
                 'action': constants.PUBLISH_ACTION_DELETE
             })
 
-            # Add to job worker queue.
-
             if publish_log:
-                # Improvements for job worker visibility when troubleshooting via logs
-                job_title = f'Unpublish external dataset resource: dataset_id={publish_log.dataset_id}, resource_id={publish_log.resource_id}, destination={publish_log.destination}'
+                job_title = (
+                    f'Unpublish external dataset resource: dataset_id={publish_log.dataset_id}, '
+                    f'resource_id={publish_log.resource_id}, destination={publish_log.destination}'
+                )
                 toolkit.enqueue_job(jobs.unpublish_external_distribution, [publish_log.id, c.user], title=job_title)
                 unpublish = publish_log.id
 
@@ -493,7 +513,7 @@ class CreateView(dataset_view.CreateView):
                     # QDES modification ends
             except NotAuthorized:
                 return base.abort(403, _(u'Unauthorized to read package'))
-            except NotFound as e:
+            except NotFound:
                 return base.abort(404, _(u'Dataset not found'))
             except SearchIndexError as e:
                 try:
