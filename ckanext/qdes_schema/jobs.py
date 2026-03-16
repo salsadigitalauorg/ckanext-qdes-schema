@@ -48,7 +48,13 @@ def publish_to_external_catalogue(publish_log_id, user):
                 status = constants.PUBLISH_STATUS_FAILED
                 detail = {
                     'external_distribution_deleted': True,
-                    'error': f'The distribution cannot be published as it already exists in {helpers.get_portal_naming(publish_log.destination)} in a deleted state. The deleted dataset needs to be purged before it can be republished. Please contact the catalogue administrator.'}
+                    'error': (
+                        'The distribution cannot be published as it already exists in '
+                        f"{helpers.get_portal_naming(publish_log.destination)} in a deleted state. "
+                        'The deleted dataset needs to be purged before it can be republished. '
+                        'Please contact the catalogue administrator.'
+                    )
+                }
             else:
                 publish_log.action = constants.PUBLISH_ACTION_UPDATE
                 publish_log.destination_identifier = external_pkg_dict.get('id')
@@ -144,7 +150,6 @@ def unpublish_external_distribution(publish_log_id, user):
                         package_dict['identifiers'] = json.dumps(identifiers)
                     else:
                         log.warning(f"unpublish_external_distribution: Identifier {identifier} not found in dataset {package_dict.get('name')}")
-                    
             elif resources:
                 # Remove the resource.
                 new_resources = []
@@ -377,12 +382,21 @@ def _build_and_clean_up_dataqld(des_package_dict, external_package_dict=None, re
                 else:
                     new_resources.append(resource)
         else:
-            # Example case, when user add new resource
-            # and the dataset already published,
-            # that case we need to carry the other resource
-            # that coming from external_package_dict.
-            new_resources = qld_resources_dict
-            new_resources.append(qld_resource_dict)
+            # Example case, when user add new resource and the dataset already published.
+            # Attempt to avoid duplicates by replacing an existing resource that appears to match
+            # the incoming one (by URL or Name). If no match found, append as new.
+            replaced = False
+            for resource in qld_resources_dict:
+                same_url = resource.get('url') == qld_resource_dict.get('url') if resource.get('url') and qld_resource_dict.get('url') else False
+                same_name = resource.get('name') == qld_resource_dict.get('name') if resource.get('name') and qld_resource_dict.get('name') else False
+                if same_url or same_name:
+                    new_resources.append(qld_resource_dict)
+                    replaced = True
+                else:
+                    new_resources.append(resource)
+
+            if not replaced:
+                new_resources.append(qld_resource_dict)
 
         qld_pkg_dict['resources'] = new_resources
     else:
@@ -472,10 +486,11 @@ def _build_and_clean_up_qld_cdp(des_package_dict, external_package_dict=None, re
                                                           constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
     qld_cdp_resource_dict['size'] = des_resource.get('size')
     qld_cdp_resource_dict['date_published'] = toolkit.h.render_datetime(des_package_dict.get('dataset_release_date'), date_format='%Y-%m-%d')
-    qld_cdp_resource_dict['date_modified'] =  toolkit.h.render_datetime(des_package_dict.get('dataset_last_modified_date'), date_format='%Y-%m-%d')
+    qld_cdp_resource_dict['date_modified'] = toolkit.h.render_datetime(
+        des_package_dict.get('dataset_last_modified_date'), date_format='%Y-%m-%d'
+    )
     qld_cdp_resource_dict['license'] = helpers.map_license(des_resource.get('license'),
                                                            constants.PUBLISH_EXTERNAL_IDENTIFIER_QLD_CDP_SCHEMA)
-    
     if is_update:
         new_resources = []
         if has_recent_log:
@@ -486,12 +501,21 @@ def _build_and_clean_up_qld_cdp(des_package_dict, external_package_dict=None, re
                 else:
                     new_resources.append(resource)
         else:
-            # Example case, when user add new resource
-            # and the dataset already published,
-            # that case we need to carry the other resource
-            # that coming from external_package_dict.
-            new_resources = qld_cdp_resources_dict
-            new_resources.append(qld_cdp_resource_dict)
+            # Example case, when user add new resource and the dataset already published.
+            # Attempt to avoid duplicates by replacing an existing resource that appears to match
+            # the incoming one (by URL or Name). If no match found, append as new.
+            replaced = False
+            for resource in qld_cdp_resources_dict:
+                same_url = resource.get('url') == qld_cdp_resource_dict.get('url') if resource.get('url') and qld_cdp_resource_dict.get('url') else False
+                same_name = resource.get('name') == qld_cdp_resource_dict.get('name') if resource.get('name') and qld_cdp_resource_dict.get('name') else False
+                if same_url or same_name:
+                    new_resources.append(qld_cdp_resource_dict)
+                    replaced = True
+                else:
+                    new_resources.append(resource)
+
+            if not replaced:
+                new_resources.append(qld_cdp_resource_dict)
 
         qld_cdp_pkg_dict['resources'] = new_resources
     else:
