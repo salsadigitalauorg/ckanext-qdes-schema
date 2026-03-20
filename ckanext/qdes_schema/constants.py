@@ -80,3 +80,6 @@ def get_data_custodian(schema):
         return 'DATA_QLD_DATA_CUSTODIAN'
 
     return ''
+
+
+DATA_QLD_AUTHOR_EMAIL = 'ckanext.qdes_schema.data_qld.author_email'
