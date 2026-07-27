@@ -1,8 +1,6 @@
 import logging
 import json
 
-from ckan.logic import NotFound
-from ckan.plugins.toolkit import get_action
 
 log = logging.getLogger(__name__)
 

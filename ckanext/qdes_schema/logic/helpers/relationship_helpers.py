@@ -1,5 +1,4 @@
 import ckan.plugins.toolkit as toolkit
-import json
 import logging
 
 from ckan.model import Package, PackageRelationship, Session

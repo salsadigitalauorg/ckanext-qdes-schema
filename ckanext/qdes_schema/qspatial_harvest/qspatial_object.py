@@ -2,7 +2,6 @@ import json
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from pprint import pformat, pprint
 
 import ckan.lib.munge as munge
 from ckanext.qdes_schema.logic.helpers import harvest_helpers as helpers

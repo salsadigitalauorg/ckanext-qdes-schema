@@ -2,7 +2,6 @@ import glob
 import json
 import os
 import csv
-import pdb
 
 from ckanapi import RemoteCKAN
 from qspatial_object import QSpatialObject

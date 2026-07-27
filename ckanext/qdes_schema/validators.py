@@ -154,7 +154,7 @@ def qdes_validate_geojson(value):
         except:
             raise toolkit.Invalid('GeoJSON is not valid.')
 
-        if (not 'is_valid' in dir(geojson_obj)) or (not geojson_obj.is_valid):
+        if ('is_valid' not in dir(geojson_obj)) or (not geojson_obj.is_valid):
             raise toolkit.Invalid('GeoJSON is not valid.')
 
     return value
@@ -474,7 +474,7 @@ def qdes_validate_related_resources(field, schema):
 
                     # Only forward relationship accepted.
                     try:
-                        if related_dataset and isinstance(related_dataset, dict) and not relationship_type in model.PackageRelationship.get_forward_types():
+                        if related_dataset and isinstance(related_dataset, dict) and relationship_type not in model.PackageRelationship.get_forward_types():
                             raise toolkit.Invalid(toolkit._('Only forward relationship is accepted'))
                     except toolkit.Invalid as e:
                         if field_group_error.get('group', None) or None is None:

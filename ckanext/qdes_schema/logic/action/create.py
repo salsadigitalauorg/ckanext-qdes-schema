@@ -1,9 +1,6 @@
 import logging
-import ckan.plugins.toolkit as toolkit
 
-from datetime import datetime
 from ckanext.qdes_schema.model import PublishLog
-from pprint import pformat
 
 log = logging.getLogger(__name__)
 

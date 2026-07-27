@@ -1,14 +1,9 @@
 import logging
 import ckan.plugins.toolkit as toolkit
-import ckan.logic as logic
-import ckan.authz as authz
-import ckan.lib.plugins as lib_plugins
-import ckan.lib.search as search
 import psycopg2
 
 from ckan.plugins.toolkit import get_action
 from ckanext.relationships import constants
-from pprint import pformat
 
 log = logging.getLogger(__name__)
 _check_access = toolkit.check_access
