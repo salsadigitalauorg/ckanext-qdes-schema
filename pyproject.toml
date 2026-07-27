@@ -42,3 +42,14 @@ qdes_schema="ckanext.qdes_schema.plugin:QDESSchemaPlugin"
 
 [project.entry-points."ckan.rdf.profiles"]
 qdes_dcat="ckanext.qdes_schema.dcat.profiles:QDESDCATProfile"
+
+# Mirrors CKAN core's use of ruff (see ckan/pyproject.toml [tool.ruff]).
+# Correctness-only: E501/W are deliberately omitted. Enabling CKAN's
+# line-length of 88 would report 1118 E501 violations across the QDES
+# extensions, and reformatting is out of scope.
+[tool.ruff]
+target-version = "py312"  # Python version in the CKAN 2.11 base image
+exclude = [".*", "node_modules"]
+
+[tool.ruff.lint]
+select = ["F", "E7", "E9", "E722"]
