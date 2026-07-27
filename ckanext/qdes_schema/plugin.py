@@ -389,7 +389,7 @@ class QDESSchemaPlugin(plugins.SingletonPlugin):
         try:
             if len(value) > 0:
                 return json.loads(value)
-        except:
+        except (TypeError, ValueError):
             pass
 
         return ['']

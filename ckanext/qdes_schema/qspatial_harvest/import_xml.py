@@ -122,8 +122,8 @@ def main():
         for check_field in resource_fields:
             distinct_resource_fields[check_field] = []
 
-        parent_packages = [package for package in packages if package.get('parent_identifier', None) == None]
-        child_packages = [package for package in packages if package.get('parent_identifier', None) != None]
+        parent_packages = [package for package in packages if package.get('parent_identifier', None) is None]
+        child_packages = [package for package in packages if package.get('parent_identifier', None) is not None]
         # Create parent packages first to get package id
         for package in parent_packages:
             for field in package:

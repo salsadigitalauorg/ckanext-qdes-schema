@@ -19,8 +19,6 @@ def gather_remote_packages(remote_url, csv_reader):
             print(row)
             title = row.get('Title')
 
-            url = row.get('URL')
-            fid = url
             print('>>> Gathering remote packages {}'.format(title))
 
             response = requests.get(remote_url.format(title=title))
