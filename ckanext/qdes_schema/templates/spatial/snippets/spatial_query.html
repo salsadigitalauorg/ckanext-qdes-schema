@@ -37,5 +37,5 @@ e.g.
     <div class="module-footer"></div>
 </section>
 
-{% set type = 'asset' if h.ckan_version().split('.')[1] | int >= 9 else 'resource' %}
-{% include 'spatial/snippets/spatial_query_' ~ type ~ '.html' %}
+{% asset 'qdes_schema/spatial_query_js' %}
+{% asset 'qdes_schema/spatial_query_css' %}
