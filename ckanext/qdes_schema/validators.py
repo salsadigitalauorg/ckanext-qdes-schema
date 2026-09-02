@@ -113,7 +113,7 @@ def qdes_validate_decimal(value):
     if len(value) > 0:
         try:
             float(value)
-        except:
+        except ValueError:
             raise toolkit.Invalid('Not a valid decimal value.')
 
     return value
@@ -126,7 +126,7 @@ def qdes_validate_decimal_positive(value):
     if len(value) > 0:
         try:
             val = float(value)
-        except:
+        except ValueError:
             raise toolkit.Invalid('Not a valid decimal value.')
 
         if val < 0:
@@ -151,10 +151,10 @@ def qdes_validate_geojson(value):
         try:
             # Load JSON string to geojson object.
             geojson_obj = geojson.loads(value)
-        except:
+        except ValueError:
             raise toolkit.Invalid('GeoJSON is not valid.')
 
-        if (not 'is_valid' in dir(geojson_obj)) or (not geojson_obj.is_valid):
+        if ('is_valid' not in dir(geojson_obj)) or (not geojson_obj.is_valid):
             raise toolkit.Invalid('GeoJSON is not valid.')
 
     return value
@@ -168,7 +168,7 @@ def qdes_validate_geojson_point(value):
         try:
             # Load JSON string to geojson object.
             geojson_obj = geojson.loads(value)
-        except:
+        except ValueError:
             raise toolkit.Invalid('Not a valid JSON string.')
 
         if geojson_obj.__class__.__name__ != 'Point':
@@ -185,7 +185,7 @@ def qdes_validate_geojson_polygon(value):
         try:
             # Load JSON string to geojson object.
             geojson_obj = geojson.loads(value)
-        except:
+        except ValueError:
             raise toolkit.Invalid('Not a valid JSON string.')
 
         if geojson_obj.__class__.__name__ != 'Polygon':
@@ -221,7 +221,7 @@ def qdes_within_au_bounding_box(value):
                 # Load JSON string to geojson object.
                 geojson_obj = geojson.loads(value)
                 aubb_geojson_obj = geojson.loads(aubb)
-            except:
+            except ValueError:
                 raise toolkit.Invalid('Not a valid JSON string.')
 
             if (aubb_geojson_obj.__class__.__name__ == 'Polygon') and (geojson_obj.__class__.__name__ == 'Point'):
@@ -322,7 +322,7 @@ def qdes_iso_8601_durations(key, flattened_data, errors, context):
 
                     if float_value < 0:
                         has_error = True
-                except:
+                except (ValueError, TypeError):
                     has_error = True
     except Exception as e:
         log.error(str(e), exc_info=True)
@@ -353,7 +353,7 @@ def qdes_validate_multi_groups(field, schema):
                     for field_group in field_groups:
                         field_value = value.get(field_group.get('field_name', ''))
                         # Check if there are any missing empty values in the group
-                        if field_value == None:
+                        if field_value is None:
                             errors[key].append(toolkit._('{0} field should not be empty'.format(field_group.get('label'))))
 
     return validator
@@ -474,7 +474,7 @@ def qdes_validate_related_resources(field, schema):
 
                     # Only forward relationship accepted.
                     try:
-                        if related_dataset and isinstance(related_dataset, dict) and not relationship_type in model.PackageRelationship.get_forward_types():
+                        if related_dataset and isinstance(related_dataset, dict) and relationship_type not in model.PackageRelationship.get_forward_types():
                             raise toolkit.Invalid(toolkit._('Only forward relationship is accepted'))
                     except toolkit.Invalid as e:
                         if field_group_error.get('group', None) or None is None:

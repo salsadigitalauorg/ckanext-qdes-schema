@@ -42,3 +42,22 @@ qdes_schema="ckanext.qdes_schema.plugin:QDESSchemaPlugin"
 
 [project.entry-points."ckan.rdf.profiles"]
 qdes_dcat="ckanext.qdes_schema.dcat.profiles:QDESDCATProfile"
+
+# Ruff config mirrors CKAN core (ckan/pyproject.toml [tool.ruff]).
+# Lint is correctness-only (E501/W omitted - not enforced yet).
+# line-length = 120 diverges from core's 88 deliberately (PEP 8's
+# sanctioned alternate ceiling).
+[tool.ruff]
+target-version = "py312"  # Python version in the CKAN 2.11 base image
+line-length = 120
+exclude = [".*", "node_modules"]
+
+[tool.ruff.lint]
+select = ["F", "E7", "E9", "E722"]
+
+# quote-style = "preserve": core has no formatter of its own, but its
+# written style guide (doc/contributing/python.rst) requires context-
+# dependent quoting no formatter setting can express - "preserve" is the
+# only option that doesn't fight it.
+[tool.ruff.format]
+quote-style = "preserve"

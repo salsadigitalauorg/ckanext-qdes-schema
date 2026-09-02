@@ -3,7 +3,6 @@ import os
 
 from ckanapi import RemoteCKAN
 from qspatial_object import QSpatialObject
-from pprint import pformat
 from datetime import datetime as dt
 
 

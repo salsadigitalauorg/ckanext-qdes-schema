@@ -1,9 +1,7 @@
 import logging
-import json
 
 from ckan.plugins import toolkit
 from ckanext.qdes_schema.logic.helpers import dataservice_helpers, resource_helpers
-from pprint import pformat
 
 log = logging.getLogger(__name__)
 

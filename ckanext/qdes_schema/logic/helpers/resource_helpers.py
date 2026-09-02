@@ -35,7 +35,7 @@ def before_update(context, current, resource):
     new_data_services = data_services_as_list(resource)
     data_services_removed = []
     for current_dt in data_services_as_list(current):
-        if not current_dt in new_data_services:
+        if current_dt not in new_data_services:
             data_services_removed.append(current_dt)
 
     if data_services_removed:

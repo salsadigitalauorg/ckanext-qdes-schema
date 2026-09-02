@@ -1,12 +1,11 @@
 import logging
 import json
 
-from ckan.plugins.toolkit import get_action, h, check_access, get_converter
+from ckan.plugins.toolkit import get_action, check_access
 from ckanext.qdes_schema.model import PublishLog
 from ckanext.qdes_schema.logic.helpers import (
     dataservice_helpers as ds_helpers,
     resource_helpers as res_helpers)
-from pprint import pformat
 
 log = logging.getLogger(__name__)
 

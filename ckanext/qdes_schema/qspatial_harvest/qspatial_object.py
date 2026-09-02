@@ -2,7 +2,6 @@ import json
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from pprint import pformat, pprint
 
 import ckan.lib.munge as munge
 from ckanext.qdes_schema.logic.helpers import harvest_helpers as helpers
@@ -116,7 +115,7 @@ class QSpatialObject:
         parent_identifier = None
         # /MD_Metadata/fileIdentifier/gco:CharacterString
         parentIdentifier = self.root.find('gmd:parentIdentifier/gco:CharacterString', self.ns)
-        if parentIdentifier != None:
+        if parentIdentifier is not None:
             parent_identifier = parentIdentifier.text
 
         # if parent_identifier == None:
@@ -130,7 +129,7 @@ class QSpatialObject:
         file_identifier = None
         # /MD_Metadata/fileIdentifier/gco:CharacterString
         fileIdentifier = self.root.find('gmd:fileIdentifier/gco:CharacterString', self.ns)
-        if fileIdentifier != None:
+        if fileIdentifier is not None:
             file_identifier = fileIdentifier.text
 
         # if file_identifier == None:
@@ -143,7 +142,7 @@ class QSpatialObject:
     def get_identifiers(self):
         identifiers = self.csv_row.get('URL', None)
         
-        if identifiers == None:
+        if identifiers is None:
             self.log('identifiers: {0}'.format("No value"))
         
         # self.log('identifiers: {}'.format(identifiers))
@@ -154,12 +153,12 @@ class QSpatialObject:
         title = None
         # /MD_Metadata/identificationInfo/MD_DataIdentification/citation/CI_Citation/title/gco:CharacterString
         titleElement = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString', self.ns)
-        if titleElement != None:
+        if titleElement is not None:
             title = titleElement.text or None
 
-        if title == None:
+        if title is None:
             # Set default value
-            self.log('title: {0}'.format(titleElement.text if titleElement != None else "No value"))
+            self.log('title: {0}'.format(titleElement.text if titleElement is not None else "No value"))
             # title = 'Default title - {}'.format(self.xml_filename)
 
         # self.log('title: {}'.format(title))
@@ -168,12 +167,12 @@ class QSpatialObject:
     def get_name(self):
         name = None
         title = self.get_title().get('title')
-        if title != None:
+        if title is not None:
             name = munge.munge_title_to_name(title) or None
 
-        if name == None:
+        if name is None:
             # Set default value
-            self.log('name: {0}'.format(title if title != None else "No value"))
+            self.log('name: {0}'.format(title if title is not None else "No value"))
             # title = 'Default name - {}'.format(self.xml_filename)
 
         # self.log('name: {}'.format(name))
@@ -182,12 +181,12 @@ class QSpatialObject:
     def get_classification(self):
         classification = self.csv_row.get('General classification of dataset type', None)
         classification_term = None
-        if classification != None:
+        if classification is not None:
             classification_term = helpers.get_vocabulary_service_term(self.remoteCKAN, classification, 'classification')
 
-        if classification_term == None:
+        if classification_term is None:
             # Set default value
-            self.log('classification: {0}'.format(classification if classification != None else "No value"))
+            self.log('classification: {0}'.format(classification if classification is not None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/940c52b1-bb97-47d7-a515-2d42c068ab53
             # classification_term = 'http://registry.it.csiro.au/def/datacite/resourceType/Workflow'
 
@@ -199,10 +198,10 @@ class QSpatialObject:
         notes = None
         # /MD_Metadata/identificationInfo/MD_DataIdentification/abstract/gco:CharacterString
         abstract = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:abstract/gco:CharacterString', self.ns)
-        if abstract != None:
+        if abstract is not None:
             notes = abstract.text
 
-        if notes == None:
+        if notes is None:
             # Set default value
             self.log('notes: {0}'.format(abstract.text if abstract else "No value"))
             # notes = 'Default notes - {}'.format(self.get_title().get('title'))
@@ -213,12 +212,12 @@ class QSpatialObject:
     def get_topic(self):
         topic = self.csv_row.get('Topic or theme', None)
         topic_term = None
-        if topic != None:
+        if topic is not None:
             topic_term = helpers.get_vocabulary_service_term(self.remoteCKAN, topic, 'topic')
 
-        if topic_term == None:
+        if topic_term is None:
             # Set default value
-            self.log('topic_term: {0}'.format(topic if topic != None else "No value"))
+            self.log('topic_term: {0}'.format(topic if topic is not None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/67cb4107-9b8b-4dfd-a688-6c3e76e02239
             # topic_term = 'https://gcmdservices.gsfc.nasa.gov/kms/concept/14625f2a-4186-4377-a0d9-88998bb6b775'
 
@@ -229,12 +228,12 @@ class QSpatialObject:
     def get_contact_point(self):
         contact_point = self.csv_row.get('Point of contact', None)
         contact_point_term = None
-        if contact_point != None:
+        if contact_point is not None:
             contact_point_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, contact_point, 'point-of-contact')
 
-        if contact_point_term == None:
+        if contact_point_term is None:
             # Set default value
-            self.log('contact_point: {0}'.format(contact_point if contact_point != None else "No value"))
+            self.log('contact_point: {0}'.format(contact_point if contact_point is not None else "No value"))
             # Get 'Kelly Bryant' as the default
             # contact_point_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, 'Kelly Bryant', 'point-of-contact')
 
@@ -246,9 +245,9 @@ class QSpatialObject:
         contact_publisher = 'Department of Environment and Science'
         contact_publisher_term = helpers.get_vocabulary_service_term(self.remoteCKAN, contact_publisher, 'contact_publisher')
 
-        if contact_publisher_term == None:
+        if contact_publisher_term is None:
             # Set default value
-            self.log('contact_publisher: {0}'.format(contact_publisher if contact_publisher != None else "No value"))
+            self.log('contact_publisher: {0}'.format(contact_publisher if contact_publisher is not None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/e763c23d-2fd9-4e73-b186-ce121ea75791
             # contact_publisher_term = 'http://linked.data.gov.au/def/organisation-type/trust-regarded-as-corporations'
 
@@ -280,12 +279,12 @@ class QSpatialObject:
         URL = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:citedResponsibleParty/gmd:CI_ResponsibleParty[@id="resourceCustodian"]/gmd:positionName/gco:CharacterString', self.ns)
         # /MD_Metadata/identificationInfo/MD_DataIdentification/citation/CI_Citation/citedResponsibleParty[4]/CI_ResponsibleParty/role/CI_RoleCode/@codeListValue
         # URL = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:citedResponsibleParty/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode[@codeListValue="custodian"]', self.ns)
-        if URL != None:
+        if URL is not None:
             the_party_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, URL.text, 'point-of-contact')
 
-        if the_party_term == None:
+        if the_party_term is None:
             # Set default value
-            self.log('contact_other_party: {0}'.format(URL.text if URL != None else "No value"))
+            self.log('contact_other_party: {0}'.format(URL.text if URL is not None else "No value"))
             # Get 'Kelly Bryant' as the default
             # the_party_term = helpers.get_secure_vocabulary_record(self.remoteCKAN, 'Kelly Bryant', 'the-party')
 
@@ -298,7 +297,7 @@ class QSpatialObject:
         publication_status = 'Completed'
         publication_status_term = helpers.get_vocabulary_service_term(self.remoteCKAN, publication_status, 'publication_status')
 
-        if publication_status_term == None:
+        if publication_status_term is None:
             # Set default value
             self.log('publication_status: {0}'.format("No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/462ae48e-9509-46e7-b001-857f78c1a7ab
@@ -312,7 +311,7 @@ class QSpatialObject:
         classification_and_access_restrictions = 'OFFICIAL'
         classification_and_access_restrictions_term = helpers.get_vocabulary_service_term(self.remoteCKAN, classification_and_access_restrictions, 'classification_and_access_restrictions')
 
-        if classification_and_access_restrictions_term == None:
+        if classification_and_access_restrictions_term is None:
             # Set default value
             self.log('classification_and_access_restrictions: {0}'.format("No value"))
             # Grabbed the send to last   value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/940c52b1-bb97-47d7-a515-2d42c068ab53
@@ -337,12 +336,12 @@ class QSpatialObject:
     def get_additional_info(self):
         additional_info = None
         supplementalInformation = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:supplementalInformation/gco:CharacterString', self.ns)
-        if supplementalInformation != None:
+        if supplementalInformation is not None:
             additional_info = supplementalInformation.text
 
-        if additional_info == None:
+        if additional_info is None:
             # Set default value?
-            self.log('additional_info: {0}'.format(supplementalInformation.text if supplementalInformation != None else "No value"))
+            self.log('additional_info: {0}'.format(supplementalInformation.text if supplementalInformation is not None else "No value"))
 
         # self.log('additional_info: {}'.format(additional_info))
         # Multi value
@@ -351,12 +350,12 @@ class QSpatialObject:
     def get_dataset_language(self):
         dataset_language = None
         language = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:language/gco:CharacterString', self.ns)
-        if language != None:
+        if language is not None:
             dataset_language = helpers.get_vocabulary_service_term(self.remoteCKAN, language.text, 'dataset_language')
 
-        if dataset_language == None:
+        if dataset_language is None:
             # Set default value
-            self.log('dataset_language: {0}'.format(language.text if language != None else "No value"))
+            self.log('dataset_language: {0}'.format(language.text if language is not None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/79209863-6432-4810-b614-d95e048affe5
             # dataset_language = 'http://id.loc.gov/vocabulary/iso639-1/zu'
 
@@ -368,7 +367,7 @@ class QSpatialObject:
         tag_string = None
         tag_strings = []
         keywords = self.root.findall('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gco:CharacterString', self.ns)
-        if keywords != None:
+        if keywords is not None:
             for keyword in keywords:
                 # There is 1 record with a list of keywords seperated by a ';' Lets split these out as individual keywords to stop the tag validation error 'length is more than maximum 100'
                 if keyword.text.count(';') > 1:
@@ -378,7 +377,7 @@ class QSpatialObject:
 
         if len(tag_strings) == 0:
             # Set default value?
-            self.log('tag_string: {0}'.format(keywords.text if keywords != None else "No value"))
+            self.log('tag_string: {0}'.format(keywords.text if keywords is not None else "No value"))
         else:
             # Strip out invalid characters
             # Remove any character that is not alphanumeric, underscore, space, hyphen, fullstop
@@ -391,12 +390,12 @@ class QSpatialObject:
         temporal_start = None
         beginPosition = self.root.find(
             'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:beginPosition', self.ns)
-        if beginPosition != None:
+        if beginPosition is not None:
             temporal_start = beginPosition.text
 
-        if temporal_start == None:
+        if temporal_start is None:
             # Set default value?
-            self.log('temporal_start: {0}'.format(beginPosition.text if beginPosition != None else "No value"))
+            self.log('temporal_start: {0}'.format(beginPosition.text if beginPosition is not None else "No value"))
 
         # self.log('temporal_start: {}'.format(temporal_start))
         return {'temporal_start': temporal_start}
@@ -405,12 +404,12 @@ class QSpatialObject:
         temporal_end = None
         endPosition = self.root.find(
             'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:endPosition', self.ns)
-        if endPosition != None:
+        if endPosition is not None:
             temporal_end = endPosition.text
 
-        if temporal_end == None:
+        if temporal_end is None:
             # Set default value?
-            self.log('temporal_end: {0}'.format(endPosition.text if endPosition != None else "No value"))
+            self.log('temporal_end: {0}'.format(endPosition.text if endPosition is not None else "No value"))
 
         # self.log('temporal_end: {}'.format(temporal_end))
         return {'temporal_end': temporal_end}
@@ -420,7 +419,7 @@ class QSpatialObject:
 
         westBoundLongitude = self.root.find(
             'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:westBoundLongitude/gco:Decimal', self.ns)
-        if westBoundLongitude != None:
+        if westBoundLongitude is not None:
             coordinates.append(float(westBoundLongitude.text))
         else:
             # Set default value?
@@ -428,7 +427,7 @@ class QSpatialObject:
 
         southBoundLatitude = self.root.find(
             'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:southBoundLatitude/gco:Decimal', self.ns)
-        if southBoundLatitude != None:
+        if southBoundLatitude is not None:
             coordinates.append(float(southBoundLatitude.text))
         else:
             # Set default value?
@@ -442,7 +441,7 @@ class QSpatialObject:
         coordinates = []
         eastBoundLongitude = self.root.find(
             'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:eastBoundLongitude/gco:Decimal', self.ns)
-        if eastBoundLongitude != None:
+        if eastBoundLongitude is not None:
             coordinates.append(float(eastBoundLongitude.text))
         else:
             # Set default value?
@@ -450,7 +449,7 @@ class QSpatialObject:
 
         northBoundLatitude = self.root.find(
             'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:northBoundLatitude/gco:Decimal', self.ns)
-        if northBoundLatitude != None:
+        if northBoundLatitude is not None:
             coordinates.append(float(northBoundLatitude.text))
         else:
             # Set default value?
@@ -463,7 +462,7 @@ class QSpatialObject:
     def get_spatial_content_resolution(self):
         spatial_content_resolution = None
         distance = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution/gmd:distance/gco:Distance', self.ns)
-        if distance != None:
+        if distance is not None:
             spatial_content_resolution = distance.text
         else:
             # Set default value?
@@ -475,12 +474,12 @@ class QSpatialObject:
     def get_spatial_representation(self):
         spatial_representation = None
         spatialRepresentationTypeCode = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode', self.ns)
-        if spatialRepresentationTypeCode != None:
+        if spatialRepresentationTypeCode is not None:
             spatial_representation = helpers.get_vocabulary_service_term(self.remoteCKAN, spatialRepresentationTypeCode.text, 'spatial_representation')
 
-        if spatial_representation == None:
+        if spatial_representation is None:
             # Set default value
-            self.log('spatial_representation: {0}'.format(spatialRepresentationTypeCode.text if spatialRepresentationTypeCode != None else "No value"))
+            self.log('spatial_representation: {0}'.format(spatialRepresentationTypeCode.text if spatialRepresentationTypeCode is not None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/1a4a638c-b6c0-43cd-aef1-413a1d99bd4b
             # spatial_representation = 'http://registry.it.csiro.au/def/isotc211/MD_SpatialRepresentationTypeCode/video'
 
@@ -491,13 +490,13 @@ class QSpatialObject:
         spatial_datum_crs = None
         # /MD_Metadata/referenceSystemInfo/MD_ReferenceSystem/referenceSystemIdentifier/RS_Identifier/code/gco:CharacterString
         code = self.root.find('gmd:referenceSystemInfo/gmd:MD_ReferenceSystem[@id="coordRefSystem"]/gmd:referenceSystemIdentifier/gmd:RS_Identifier/gmd:code/gco:CharacterString', self.ns)
-        if code != None:
+        if code is not None:
             spatial_datum_crs = helpers.get_vocabulary_service_term(self.remoteCKAN, code.text, 'spatial_datum_crs')
             # TODO: Map to  vocab service manually eg. EPSG:4283 = ?
 
-        if spatial_datum_crs == None:
+        if spatial_datum_crs is None:
             # Set default value
-            self.log('spatial_datum_crs: {0}'.format(code.text if code != None else "No value"))
+            self.log('spatial_datum_crs: {0}'.format(code.text if code is not None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/d112d2c1-9f93-40f3-9ac0-0a829aaf4090
             # spatial_datum_crs = 'http://linked.data.gov.au/def/queensland-crs/wgs1984'
 
@@ -508,7 +507,7 @@ class QSpatialObject:
 
         pub_date = self.csv_row.get('Pub_Date', None)
         dataset_release_date = None
-        if pub_date != None:
+        if pub_date is not None:
             # pub_date is in format 21/03/2013
             dataset_release_date = datetime.strptime(pub_date, '%d/%m/%Y').strftime('%Y-%m-%dT%H:%M:%S')
         else:
@@ -523,14 +522,14 @@ class QSpatialObject:
         update_schedule = None
         maintenanceFrequencyCode = self.root.find(
             'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceMaintenance/gmd:MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode', self.ns)
-        if maintenanceFrequencyCode != None:
+        if maintenanceFrequencyCode is not None:
             # update_schedule = helpers.get_mapped_update_frequency(maintenanceFrequencyCode.get('codeListValue', None))
             update_schedule = helpers.get_vocabulary_service_term(self.remoteCKAN, maintenanceFrequencyCode.get('codeListValue', None), 'update_schedule')
             # TODO: Map to vocab service manually eg notPlanned = ?
 
-        if update_schedule == None:
+        if update_schedule is None:
             # Set default value
-            self.log('update_schedule: {0}'.format(maintenanceFrequencyCode.get('codeListValue', None) if maintenanceFrequencyCode != None else "No value"))
+            self.log('update_schedule: {0}'.format(maintenanceFrequencyCode.get('codeListValue', None) if maintenanceFrequencyCode is not None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/54ca21ca-fa3b-4574-b2de-86d9986f18ab
             # update_schedule = 'http://registry.it.csiro.au/def/isotc211/MD_MaintenanceFrequencyCode/unknown'
 
@@ -577,7 +576,7 @@ class QSpatialObject:
 
     def get_url(self):
         url = self.csv_row.get('URL', None)
-        if url == None:
+        if url is None:
             self.log('url: No value')
 
         # self.log('url: {}'.format(url))
@@ -586,7 +585,7 @@ class QSpatialObject:
     def get_lineage_description(self):
         lineage_description = None
         statement = self.root.find('gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:statement/gco:CharacterString', self.ns)
-        if statement != None:
+        if statement is not None:
             lineage_description = statement.text
         else:
             # Set default value?
@@ -599,7 +598,7 @@ class QSpatialObject:
         rights_statement = None
         useLimitation = self.root.find(
             'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:useConstraints/gmd:MD_RestrictionCode/../../gmd:useLimitation/gco:CharacterString', self.ns)
-        if useLimitation != None:
+        if useLimitation is not None:
             rights_statement = useLimitation.text
             # Rights statement is not displayed in a HTML markup textbox so the below copyright statement '&copy;' needs to be replaced with '©'
             rights_statement = rights_statement.replace('&copy;', '©').replace('&copy', '©')
@@ -614,7 +613,7 @@ class QSpatialObject:
         resource_name = None
         # TODO: Confirm XPath, it is the same as the title
         title = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString', self.ns)
-        if title != None:
+        if title is not None:
             resource_name = title.text
         else:
             # Set default value?
@@ -626,12 +625,12 @@ class QSpatialObject:
     def get_resource_format(self):        
         format = self.csv_row.get('Format', None)
         format_term = None
-        if format != None:
+        if format is not None:
             format_term = helpers.get_vocabulary_service_term(self.remoteCKAN, format, 'format')
 
-        if format_term == None:
+        if format_term is None:
             # Set default value
-            self.log('resource_format: {0}'.format(format if format != None else "No value"))
+            self.log('resource_format: {0}'.format(format if format is not None else "No value"))
             # Grabbed the last value from https://ckan-qdes-ckan-develop.au.amazee.io/ckan-admin/vocabulary-service/terms/035d3c4b-f503-496e-ab4b-820deee6c5cd
             # format_term = 'https://www.iana.org/assignments/media-types/application/zstd'
 
@@ -642,7 +641,7 @@ class QSpatialObject:
         resource_size = None
         transferSize = self.root.find(
             'gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:transferSize/gco:Real', self.ns)
-        if transferSize != None:
+        if transferSize is not None:
             resource_size = int(float(transferSize.text)) * 1024  # convert megabytes into bytes
         else:
             self.log('resource_size: No value')
@@ -652,7 +651,7 @@ class QSpatialObject:
 
     def get_resource_url(self):
         resource_url = self.csv_row.get('URL', None)
-        if resource_url == None:
+        if resource_url is None:
             self.log('resource_url: No value')
 
         # self.log('resource_url: {}'.format(resource_url))
@@ -662,7 +661,7 @@ class QSpatialObject:
         resource_service_api_endpoint = None
         url = self.root.find(
             'gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL', self.ns)
-        if url != None:
+        if url is not None:
             resource_service_api_endpoint = helpers.fix_url(url.text)
         else:
             self.log('resource_service_api_endpoint: No value')
@@ -674,7 +673,7 @@ class QSpatialObject:
     def get_resource_rights_statement(self):
         resource_rights_statement = None
         useLimitation = self.root.find('gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:useLimitation/gco:CharacterString', self.ns)
-        if useLimitation != None:
+        if useLimitation is not None:
             resource_rights_statement = useLimitation.text
             # Rights statement is not displayed in a HTML markup textbox so the below copyright statement '&copy;' needs to be replaced with '©'
             resource_rights_statement = resource_rights_statement.replace('&copy;', '©').replace('&copy', '©')
