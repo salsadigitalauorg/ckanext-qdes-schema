@@ -8,6 +8,7 @@ mandatory fields and secure vocabularies aren't needed to exercise relationships
 
 import contextlib
 import json
+import re
 import signal
 
 import pytest
@@ -15,9 +16,10 @@ import pytest
 import ckan.model as model
 import ckan.tests.factories as factories
 
-from ckan.plugins.toolkit import get_action
-from ckanext.qdes_schema import helpers
+from ckan.plugins.toolkit import g, get_action
+from ckanext.qdes_schema import helpers, validators
 from ckanext.relationships.helpers import get_subject_package_relationship_objects
+from ckanext.scheming.helpers import scheming_field_by_name, scheming_get_dataset_schema
 
 # This distribution enforces a stricter password policy than CKAN core's test
 # factories generate.
@@ -238,3 +240,51 @@ class TestSaveRelatedDatasets(object):
         self.save(new=[related(self.target.id, 'Replaces')], existing='')
 
         assert relationships(self.subject) == []
+
+
+@pytest.mark.usefixtures('clean_db', 'with_plugins', 'with_request_context', 'without_search_indexing')
+class TestValidateRelatedDatasets(object):
+    """The related dataset field's validator, which produces the errors editors see on the form."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self, clean_db, with_request_context):
+        user = factories.Sysadmin(password=TEST_PASSWORD)
+        self.context = {
+            'model': model,
+            'session': model.Session,
+            'user': user['name'],
+            'auth_user_obj': model.User.get(user['name']),
+        }
+        self.subject = make_dataset('subject-dataset')
+        self.target = make_dataset('target-dataset')
+        # Set by CKAN's request dispatch; the validator skips resource form saves.
+        g.blueprint = 'dataset'
+
+    def validate(self, related_resources):
+        field = scheming_field_by_name(scheming_get_dataset_schema('dataset')['dataset_fields'], 'related_resources')
+        key = ('related_resources',)
+        data = {key: json.dumps(related_resources), ('id',): self.subject.id, ('title',): self.subject.title}
+        errors = {key: []}
+        validators.qdes_validate_related_resources(field, None)(key, data, errors, self.context)
+        return [error for error in errors[key] if isinstance(error, str)]
+
+    def test_related_dataset_given_by_id_is_accepted(self):
+        assert self.validate([related(self.target.id, 'Is Part Of')]) == []
+
+    def test_related_dataset_given_by_name_is_rejected(self):
+        assert self.validate([related(self.target.name, 'Is Part Of')]) == ['Please provide a valid URL']
+
+    def test_circular_replaces_is_rejected_naming_the_chain(self):
+        middle = make_dataset('middle-dataset')
+        add_relationship(self.target, middle, 'Replaces')
+        add_relationship(middle, self.subject, 'Replaces')
+
+        [error] = self.validate([related(self.target.id, 'Replaces')])
+
+        assert 'Subject Dataset cannot replace Target Dataset' in error
+        assert re.findall(r'>([^<]+)</a>', error) == [
+            'Subject Dataset',
+            'Target Dataset',
+            'Middle Dataset',
+            'Subject Dataset',
+        ]
