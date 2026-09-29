@@ -84,65 +84,38 @@ def save_dataset(test_request_context, user, dataset, existing, new=None, series
         helpers.update_related_resources(context, pkg_dict, reconcile_relationships=True)
 
 
-class FakeSolrQuery(object):
-    """Stands in for Solr, which the test ini shares with the development site.
-
-    Applies CKAN's default permission labels the way Solr's filter does.
-    """
-
-    def __init__(self, results):
-        self.results = results
-
-    def run(self, data_dict, permission_labels=None):
-        def label(dataset):
-            return 'member-{0}'.format(dataset.owner_org) if dataset.private else 'public'
-
-        return {
-            'results': [
-                {'name': d.name, 'title': d.title}
-                for d in self.results
-                if permission_labels is None or label(d) in permission_labels
-            ]
-        }
-
-
-@pytest.mark.usefixtures('clean_db', 'with_plugins', 'with_request_context', 'without_search_indexing')
+@pytest.mark.usefixtures('clean_db', 'with_plugins', 'with_request_context', 'clean_index')
 class TestDatasetAutocomplete(object):
-    def test_results_include_the_dataset_id(self, monkeypatch):
-        from ckan.lib import search
-
+    def test_results_include_the_dataset_id(self):
         first = make_dataset('first-dataset')
         second = make_dataset('second-dataset')
-        monkeypatch.setattr(search, 'query_for', lambda _type: FakeSolrQuery([first, second]))
         sysadmin = factories.Sysadmin(password=TEST_PASSWORD)
 
         results = get_action('package_autocomplete')({'user': sysadmin['name']}, {'q': 'dataset'})
 
-        assert [(r['id'], r['name']) for r in results] == [
-            (first.id, 'first-dataset'),
-            (second.id, 'second-dataset'),
+        assert sorted((r['name'], r['id']) for r in results) == [
+            ('first-dataset', first.id),
+            ('second-dataset', second.id),
         ]
 
-    def test_private_datasets_stay_hidden_from_users_outside_their_organisation(self, monkeypatch):
-        from ckan.lib import search
-
+    def test_private_datasets_stay_hidden_from_users_outside_their_organisation(self):
         organisation = factories.Organization()
-        public = make_dataset('public-dataset', owner_org=organisation['id'])
-        private = make_dataset('private-dataset', owner_org=organisation['id'], private=True)
-        monkeypatch.setattr(search, 'query_for', lambda _type: FakeSolrQuery([public, private]))
+        make_dataset('public-dataset', owner_org=organisation['id'])
+        make_dataset('private-dataset', owner_org=organisation['id'], private=True)
         outsider = factories.User(password=TEST_PASSWORD)
 
         results = get_action('package_autocomplete')({'user': outsider['name']}, {'q': 'dataset'})
 
         assert [r['name'] for r in results] == ['public-dataset']
 
-    def test_results_for_datasets_missing_from_the_database_are_dropped(self, monkeypatch):
-        from ckan.lib import search
-
-        current = make_dataset('current-dataset')
-        # A stale index entry: renamed or purged without a reindex.
-        stale = model.Package(name='renamed-dataset', title='Renamed Dataset', private=False)
-        monkeypatch.setattr(search, 'query_for', lambda _type: FakeSolrQuery([current, stale]))
+    def test_results_for_datasets_missing_from_the_database_are_dropped(self):
+        make_dataset('current-dataset')
+        renamed = make_dataset('original-dataset')
+        # Rename without reindexing, leaving a stale search result behind.
+        model.Session.execute(
+            model.package_table.update().where(model.package_table.c.id == renamed.id).values(name='renamed-dataset')
+        )
+        model.Session.commit()
         sysadmin = factories.Sysadmin(password=TEST_PASSWORD)
 
         results = get_action('package_autocomplete')({'user': sysadmin['name']}, {'q': 'dataset'})
@@ -150,7 +123,7 @@ class TestDatasetAutocomplete(object):
         assert [r['name'] for r in results] == ['current-dataset']
 
 
-@pytest.mark.usefixtures('clean_db', 'with_plugins', 'with_request_context', 'without_search_indexing')
+@pytest.mark.usefixtures('clean_db', 'with_plugins', 'with_request_context', 'clean_index')
 class TestSaveRelatedDatasets(object):
     @pytest.fixture(autouse=True)
     def setup(self, clean_db, test_request_context):
@@ -242,7 +215,7 @@ class TestSaveRelatedDatasets(object):
         assert relationships(self.subject) == []
 
 
-@pytest.mark.usefixtures('clean_db', 'with_plugins', 'with_request_context', 'without_search_indexing')
+@pytest.mark.usefixtures('clean_db', 'with_plugins', 'with_request_context', 'clean_index')
 class TestValidateRelatedDatasets(object):
     """The related dataset field's validator, which produces the errors editors see on the form."""
 
