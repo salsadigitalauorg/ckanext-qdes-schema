@@ -25,6 +25,24 @@ def dataservice(context, name):
     return data
 
 
+@toolkit.chained_action
+@toolkit.side_effect_free
+def package_autocomplete(original_action, context, data_dict):
+    """Add each dataset's `id` to core's autocomplete results.
+
+    The related dataset fields are keyed on `id`, and core only returns `name`
+    and `title`, so without it the form submits dataset names. Results a stale
+    search index still holds, but the database doesn't, are dropped.
+    """
+    results = original_action(context, data_dict)
+    if not results:
+        return results
+    model = context['model']
+    names = [result['name'] for result in results]
+    ids_by_name = dict(model.Session.query(model.Package.name, model.Package.id).filter(model.Package.name.in_(names)))
+    return [dict(result, id=ids_by_name[result['name']]) for result in results if result['name'] in ids_by_name]
+
+
 def build_versions(tree):
     versions = []
     for version in tree:

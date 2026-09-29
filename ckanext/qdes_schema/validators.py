@@ -419,7 +419,7 @@ def qdes_validate_related_resources(field, schema):
     """
     Validates each multi group for related_resources
     Must not have empty values in group
-    Must be either a valid CKAN dataset name or valid URL to external dataset
+    Must be either a valid CKAN dataset id or valid URL to external dataset
     """
 
     def validator(key, data, errors, context):
@@ -450,7 +450,7 @@ def qdes_validate_related_resources(field, schema):
                         if field_value is None:
                             field_group_error[field_name] = [toolkit._('{0} field should not be empty'.format(field_group.get('label')))]
                         elif field_name == 'resource':
-                            # Check if dataset name exists or is a valid URL
+                            # Check if dataset id exists or is a valid URL
                             try:
                                 qdes_validate_related_dataset([field_value], context)
                             except toolkit.Invalid as e:
@@ -516,14 +516,14 @@ def qdes_validate_related_resources(field, schema):
 
 def qdes_validate_related_dataset(value, context):
     """
-    Validates each dataset name exists in CKAN or is a valid URL to external dataset
+    Validates each dataset id exists in CKAN or is a valid URL to external dataset
     """
     datasets = toolkit.get_converter('json_or_string')(value)
     if datasets and isinstance(datasets, list):
         for dataset in datasets:
             dataset_id = dataset.get('id', '')
             try:
-                toolkit.get_validator('package_name_exists')(dataset_id, context)
+                toolkit.get_validator('package_id_exists')(dataset_id, context)
             except toolkit.Invalid:
                 # Package does not exists so lets check to see if there is a valid URI entereds
                 data = {'url': dataset_id}
@@ -582,26 +582,33 @@ def qdes_validate_circular_replaces_relationships(current_dataset_id, relationsh
         # We need to check if there is a relationship where DatasetC replaces DatasetB and DatasetB replaces DatasetA
         #
         model = context['model']
-        dataset_chain = [relationship_dataset_id]
-        # Lets go down the chain and see if DatasetC replaces any datasets
-        for dataset_id in dataset_chain:
+        # Walk every dataset DatasetC replaces, directly or indirectly, remembering how each was reached.
+        # A dataset can replace several others, and existing data may already contain cycles elsewhere,
+        # so each branch is followed and no dataset is walked twice.
+        reached_from = {relationship_dataset_id: None}
+        datasets_to_walk = [relationship_dataset_id]
+        for dataset_id in datasets_to_walk:
             query = model.Session.query(model.PackageRelationship)
             query = query.filter(model.PackageRelationship.subject_package_id == dataset_id)
             query = query.filter(model.PackageRelationship.type == relationship_type)
-            relationship = query.first()
-            if relationship:
-                # Dataset replace relationship found eg. DatasetC replaces DatasetB or DatasetC replaces DatasetA or DatasetB replaces DatasetA
+            query = query.filter(model.PackageRelationship.object_package_id.isnot(None))
+            for relationship in query.all():
                 if relationship.object_package_id == current_dataset_id:
                     # Dataset replaces current dataset eg. DatasetC replaces DatasetA or Dataset B replaces DatasetA
                     # This is a circular reference!!!
                     # Create message showing circular reference
+                    chain = [dataset_id]
+                    while reached_from[chain[-1]]:
+                        chain.append(reached_from[chain[-1]])
+                    chain.reverse()
+
                     current_dataset = get_action('package_show')(context, {'id': current_dataset_id})
                     current_dataset_url = h.url_for('dataset.read', id=current_dataset.get('name'))
                     current_dataset_title = current_dataset.get('title', None)
                     circular_references = [f'<a href="{current_dataset_url}">{current_dataset_title}</a>']
 
-                    for dataset_id in dataset_chain:
-                        subject_package = get_action('package_show')(context, {'id': dataset_id})
+                    for chain_dataset_id in chain:
+                        subject_package = get_action('package_show')(context, {'id': chain_dataset_id})
                         subject_package_url = h.url_for('dataset.read', id=subject_package.get('name'))
                         circular_references.append(f'<a href="{subject_package_url}">{subject_package.get("title", None)}</a>')
 
@@ -611,9 +618,9 @@ def qdes_validate_circular_replaces_relationships(current_dataset_id, relationsh
                     raise toolkit.Invalid(
                         f'{current_dataset_title} cannot replace {relationship_dataset_title}, '
                         f'because this will create a circular relationship {circular_references_str}')
-                else:
-                    # Move down the chain and check if this dataset replaces another dataset eg. Does DatasetB or DatasetA have a replace relationship
-                    dataset_chain.append(relationship.object_package_id)
+                elif relationship.object_package_id not in reached_from:
+                    reached_from[relationship.object_package_id] = dataset_id
+                    datasets_to_walk.append(relationship.object_package_id)
 
     return True
 

@@ -12,7 +12,7 @@ from ckan import model
 from ckan.common import c
 from ckan.model.package_relationship import PackageRelationship
 from ckan.lib.helpers import render_datetime
-from ckan.plugins.toolkit import config, get_action, get_converter, get_validator, request, _
+from ckan.plugins.toolkit import config, get_action, get_converter, get_validator, request, Invalid, _
 from ckanext.qdes_schema.model import PublishLog
 from ckanext.qdes_schema.logic.helpers import relationship_helpers
 from ckanext.scheming.plugins import SchemingDatasetsPlugin
@@ -186,22 +186,25 @@ def create_package_relationship_records(context, pkg_id, pkg_related_resources):
 
 
 def get_related_object_or_url(context, resource):
-    object_package_id = None
-    url = None
+    """Return `(dataset_id, None)` for a dataset, `(None, url)` for an external URI, else `(None, None)`.
+
+    `existing_related_resources` is posted back unvalidated, so a value that is neither is skipped rather than
+    stored as an external URI relationship pointing at nothing.
+    """
     resource_id = resource.get('id', '')
     try:
-        # When the resource is added at the first time it will use name,
-        # and then on subsequent updates it will use id, so we need to check both.
-        get_validator('package_id_or_name_exists')(resource_id, context)
-        object_package_id = resource_id
-    except Exception as e:
-        # Dataset does not exist so must be an external dataset URL
-        # Validation should have already happened in validator 'qdes_validate_related_dataset'
-        # so the `resource` should be a URL to external dataset
-        url = resource_id
-        log.error(str(e))
+        get_validator('package_id_exists')(resource_id, context)
+        return resource_id, None
+    except Invalid:
+        pass
 
-    return object_package_id, url
+    errors = {'url': []}
+    get_validator('url_validator')('url', {'url': resource_id}, errors, context)
+    if errors['url']:
+        log.warning('Skipping related resource {0}: not a dataset id or URL'.format(resource_id))
+        return None, None
+
+    return None, resource_id
 
 
 def reconcile_package_relationships(context, pkg_id, related_resources):
