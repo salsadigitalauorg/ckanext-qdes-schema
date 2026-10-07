@@ -98,6 +98,16 @@ class TestDatasetAutocomplete(object):
             ('second-dataset', second.id),
         ]
 
+    def test_the_dataset_being_edited_is_left_out(self, test_request_context):
+        first = make_dataset('first-dataset')
+        make_dataset('second-dataset')
+        sysadmin = factories.Sysadmin(password=TEST_PASSWORD)
+
+        with test_request_context(query_string={'dataset_id': first.id}):
+            results = get_action('package_autocomplete')({'user': sysadmin['name']}, {'q': 'dataset'})
+
+        assert [r['name'] for r in results] == ['second-dataset']
+
     def test_private_datasets_stay_hidden_from_users_outside_their_organisation(self):
         organisation = factories.Organization()
         make_dataset('public-dataset', owner_org=organisation['id'])
@@ -246,6 +256,11 @@ class TestValidateRelatedDatasets(object):
 
     def test_related_dataset_given_by_name_is_rejected(self):
         assert self.validate([related(self.target.name, 'Is Part Of')]) == ['Please provide a valid URL']
+
+    def test_relating_a_dataset_to_itself_is_rejected(self):
+        self.context['package'] = self.subject
+
+        assert self.validate([related(self.subject.id, 'References')]) == ['A dataset cannot be related to itself']
 
     def test_circular_replaces_is_rejected_naming_the_chain(self):
         middle = make_dataset('middle-dataset')

@@ -516,12 +516,16 @@ def qdes_validate_related_resources(field, schema):
 
 def qdes_validate_related_dataset(value, context):
     """
-    Validates each dataset id exists in CKAN or is a valid URL to external dataset
+    Validates each dataset id exists in CKAN or is a valid URL to external dataset,
+    and is not the dataset being saved.
     """
+    package = context.get('package')
     datasets = toolkit.get_converter('json_or_string')(value)
     if datasets and isinstance(datasets, list):
         for dataset in datasets:
             dataset_id = dataset.get('id', '')
+            if package and dataset_id == package.id:
+                raise toolkit.Invalid('A dataset cannot be related to itself')
             try:
                 toolkit.get_validator('package_id_exists')(dataset_id, context)
             except toolkit.Invalid:
