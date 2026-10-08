@@ -2,6 +2,7 @@ import logging
 import ckan.plugins.toolkit as toolkit
 import psycopg2
 
+from flask import has_request_context
 from ckan.plugins.toolkit import get_action
 from ckanext.relationships import constants
 
@@ -23,6 +24,33 @@ def dataservice(context, name):
         log.error(str(e))
 
     return data
+
+
+@toolkit.chained_action
+@toolkit.side_effect_free
+def package_autocomplete(original_action, context, data_dict):
+    """Add each dataset's `id` to core's autocomplete results.
+
+    The related dataset fields are keyed on `id`, and core only returns `name`
+    and `title`, so without it the form submits dataset names. Results a stale
+    search index still holds, but the database doesn't, are dropped.
+
+    The form sends the dataset being edited as a `dataset_id` query argument,
+    which core's view doesn't pass on. That dataset is left out so it can't be
+    related to itself.
+    """
+    results = original_action(context, data_dict)
+    if not results:
+        return results
+    model = context['model']
+    names = [result['name'] for result in results]
+    ids_by_name = dict(model.Session.query(model.Package.name, model.Package.id).filter(model.Package.name.in_(names)))
+    exclude_id = toolkit.request.args.get('dataset_id') if has_request_context() else None
+    return [
+        dict(result, id=ids_by_name[result['name']])
+        for result in results
+        if result['name'] in ids_by_name and ids_by_name[result['name']] != exclude_id
+    ]
 
 
 def build_versions(tree):
