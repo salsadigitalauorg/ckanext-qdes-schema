@@ -16,7 +16,7 @@ import pytest
 import ckan.model as model
 import ckan.tests.factories as factories
 
-from ckan.plugins.toolkit import g, get_action
+from ckan.plugins.toolkit import ValidationError, g, get_action
 from ckanext.qdes_schema import helpers, validators
 from ckanext.relationships.helpers import get_subject_package_relationship_objects
 from ckanext.scheming.helpers import scheming_field_by_name, scheming_get_dataset_schema
@@ -97,6 +97,27 @@ class TestDatasetAutocomplete(object):
             ('first-dataset', first.id),
             ('second-dataset', second.id),
         ]
+
+    def test_the_dataset_being_edited_is_left_out(self, test_request_context):
+        first = make_dataset('first-dataset')
+        make_dataset('second-dataset')
+        sysadmin = factories.Sysadmin(password=TEST_PASSWORD)
+
+        with test_request_context(query_string={'dataset_id': first.id}):
+            results = get_action('package_autocomplete')({'user': sysadmin['name']}, {'q': 'dataset'})
+
+        assert [r['name'] for r in results] == ['second-dataset']
+
+    def test_the_dataset_being_edited_is_left_out_for_an_organisation_editor(self, test_request_context):
+        editor = factories.User(password=TEST_PASSWORD)
+        organisation = factories.Organization(users=[{'name': editor['name'], 'capacity': 'editor'}])
+        edited = make_dataset('first-dataset', owner_org=organisation['id'], private=True)
+        make_dataset('second-dataset', owner_org=organisation['id'], private=True)
+
+        with test_request_context(query_string={'dataset_id': edited.id}):
+            results = get_action('package_autocomplete')({'user': editor['name']}, {'q': 'dataset'})
+
+        assert [r['name'] for r in results] == ['second-dataset']
 
     def test_private_datasets_stay_hidden_from_users_outside_their_organisation(self):
         organisation = factories.Organization()
@@ -246,6 +267,23 @@ class TestValidateRelatedDatasets(object):
 
     def test_related_dataset_given_by_name_is_rejected(self):
         assert self.validate([related(self.target.name, 'Is Part Of')]) == ['Please provide a valid URL']
+
+    def test_relating_a_dataset_to_itself_is_rejected(self):
+        self.context['package'] = self.subject
+
+        assert self.validate([related(self.subject.id, 'References')]) == ['A dataset cannot be related to itself']
+
+    def test_relating_a_dataset_to_itself_is_rejected_on_save_by_an_organisation_editor(self):
+        editor = factories.User(password=TEST_PASSWORD)
+        organisation = factories.Organization(users=[{'name': editor['name'], 'capacity': 'editor'}])
+        dataset = make_dataset('editors-dataset', owner_org=organisation['id'], private=True)
+        # The blank title guarantees the save fails, so nothing is written either way.
+        data_dict = {'id': dataset.id, 'title': '', 'series_or_collection': json.dumps([{'id': dataset.id}])}
+
+        with pytest.raises(ValidationError) as excinfo:
+            get_action('package_patch')({'user': editor['name']}, data_dict)
+
+        assert excinfo.value.error_dict['series_or_collection'] == ['A dataset cannot be related to itself']
 
     def test_circular_replaces_is_rejected_naming_the_chain(self):
         middle = make_dataset('middle-dataset')
