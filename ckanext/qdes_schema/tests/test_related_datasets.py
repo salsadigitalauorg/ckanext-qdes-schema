@@ -299,3 +299,42 @@ class TestValidateRelatedDatasets(object):
             'Middle Dataset',
             'Subject Dataset',
         ]
+
+
+@pytest.mark.usefixtures('clean_db', 'with_plugins', 'with_request_context', 'clean_index')
+class TestDisplayedRelationships(object):
+    @pytest.fixture(autouse=True)
+    def setup(self, clean_db):
+        self.old = make_dataset('old-dataset')
+        self.new = make_dataset('new-dataset')
+
+    def add_broken_relationship(self, **fields):
+        model.Session.add(model.PackageRelationship(object=self.old, type='Replaces', **fields))
+        model.Session.commit()
+
+    def shown_on(self, dataset):
+        return [(r['type'], r['pkg_id']) for r in get_action('get_all_relationships')({}, dataset.id)]
+
+    def test_deleted_relationship_is_not_shown(self):
+        add_relationship(self.new, self.old, 'Replaces')
+        model.Session.add(model.PackageRelationship(subject=self.new, object=self.old, type='Replaces', state='deleted'))
+        model.Session.commit()
+
+        assert self.shown_on(self.old) == [('Is Replaced By', self.new.id)]
+        assert self.shown_on(self.new) == [('Replaces', self.old.id)]
+
+    def test_relationship_without_a_subject_is_not_shown(self):
+        self.add_broken_relationship(subject=None)
+        add_relationship(self.new, self.old, 'Replaces')
+
+        assert self.shown_on(self.old) == [('Is Replaced By', self.new.id)]
+
+    def test_relationship_without_a_subject_does_not_hide_the_successor(self):
+        # Stored first so it is the first relationship the version walk meets.
+        self.add_broken_relationship(subject=None)
+        add_relationship(self.new, self.old, 'Replaces')
+        context = {'ignore_auth': True}
+
+        successors = get_action('get_all_successor_versions')(context, {'id': self.old.id})
+
+        assert [v['id'] for v in successors] == [self.new.id]
