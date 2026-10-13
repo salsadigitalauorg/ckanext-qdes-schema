@@ -81,7 +81,10 @@ def all_successor_versions(context, id):
             return []
 
         # Load successor, this can be multiple items, let's use the index 0.
-        successor_version = list(item for item in relationships if item.get('type') == 'Is Replaced By')
+        # A relationship whose other end was lost has no object and can't be followed.
+        successor_version = list(
+            item for item in relationships if item.get('type') == 'Is Replaced By' and item.get('object')
+        )
         if successor_version:
             return load_successor_versions([successor_version[0]] + data, successor_version[0].get('object'))
         else:
@@ -108,7 +111,9 @@ def all_predecessor_versions(context, id):
             return []
 
         # Load predecessor, this can be multiple items, let's use the index 0.
-        predecessor_version = list(item for item in relationships if item.get('type') == 'Replaces')
+        predecessor_version = list(
+            item for item in relationships if item.get('type') == 'Replaces' and item.get('object')
+        )
         if predecessor_version:
             return load_predecessor_versions(data + [predecessor_version[0]], predecessor_version[0].get('object'))
         else:
@@ -223,8 +228,10 @@ def all_relationships(context, id):
             ON pe.package_id = pkg.id AND pe."key" = 'dataset_creation_date'
         
         WHERE
-            pr.subject_package_id = '{1}' OR pr.object_package_id =  '{1}'
-        
+            (pr.subject_package_id = '{1}' OR pr.object_package_id =  '{1}')
+            AND pr.state = 'active'
+            AND pr.subject_package_id IS NOT NULL
+
         ORDER BY "type" ASC, dataset_creation_date ASC;
         """
     query_select = query_select.format(query_select_type, id)
