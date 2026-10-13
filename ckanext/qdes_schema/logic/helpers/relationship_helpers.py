@@ -95,9 +95,32 @@ def get_existing_relationship(subject_package_id, object_package_id, type):
             .filter(PackageRelationship.subject_package_id == subject_package_id) \
             .filter(PackageRelationship.object_package_id == object_package_id) \
             .filter(PackageRelationship.type == type) \
+            .filter(PackageRelationship.state == 'active') \
             .first()
     except Exception as e:
         log.error(str(e))
+
+
+def reactivate_deleted_relationship(subject_package_id, object_package_id, type):
+    """Undelete a soft-deleted relationship; return True if one was reactivated.
+
+    Core's `package_relationship_create` also undeletes, but then fails serialising the
+    detached relationship, so a re-added relationship is reactivated here instead.
+    """
+    try:
+        relationship = Session.query(PackageRelationship) \
+            .filter(PackageRelationship.subject_package_id == subject_package_id) \
+            .filter(PackageRelationship.object_package_id == object_package_id) \
+            .filter(PackageRelationship.type == type) \
+            .filter(PackageRelationship.state == 'deleted') \
+            .first()
+        if relationship:
+            relationship.undelete()
+            Session.commit()
+            return True
+    except Exception as e:
+        log.error(str(e))
+    return False
 
 
 def get_collection_parent_title(pkg_id):

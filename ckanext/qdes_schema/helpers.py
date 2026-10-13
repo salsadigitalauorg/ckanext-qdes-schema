@@ -173,6 +173,10 @@ def create_package_relationship_records(context, pkg_id, pkg_related_resources):
                         relationship_helpers.get_existing_relationship(pkg_id, object_package_id, relationship_type):
                     continue
 
+                if object_package_id and \
+                        relationship_helpers.reactivate_deleted_relationship(pkg_id, object_package_id, relationship_type):
+                    continue
+
                 # Upsert the `package_relationship`
                 get_action('package_relationship_create')(context, {
                     'subject': pkg_id,

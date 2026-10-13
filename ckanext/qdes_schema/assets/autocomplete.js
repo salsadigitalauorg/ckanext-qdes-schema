@@ -88,7 +88,15 @@ jQuery(document).ready(function () {
             settings.query = this._onQuery;
             // If there is no match from search results, allow user to create new choice option
             if (this.options.createSearchChoice) {
-              settings.createSearchChoice = this.formatTerm;
+              var formatTerm = this.formatTerm;
+              if ((this.options.source || '').indexOf('/api/2/util/dataset/autocomplete') >= 0) {
+                // Dataset fields only accept a dataset or an external URL, so offer free text only for URLs.
+                settings.createSearchChoice = function (term) {
+                  return /^https?:\/\//i.test(jQuery.trim(term || '')) ? formatTerm(term) : undefined;
+                };
+              } else {
+                settings.createSearchChoice = formatTerm;
+              }
             }
             else {
               // Search needs to find a match to be selected
