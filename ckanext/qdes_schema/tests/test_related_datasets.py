@@ -181,6 +181,16 @@ class TestSaveRelatedDatasets(object):
 
         assert relationships(self.subject) == [('Is Part Of', self.target.id, None)]
 
+    def test_readding_over_a_deleted_relationship_reactivates_it(self):
+        add_relationship(self.subject, self.target, 'Is Part Of')
+        model.Session.query(model.PackageRelationship).update({'state': 'deleted'})
+        model.Session.commit()
+        assert relationships(self.subject) == []
+
+        self.save(new=[related(self.target.id, 'Is Part Of')], existing='')
+
+        assert relationships(self.subject) == [('Is Part Of', self.target.id, None)]
+
     def test_external_uri_relationship_survives_resave(self):
         uri = 'https://example.com/dataset/external'
         self.save(new=[related(uri, 'References')], existing='')
