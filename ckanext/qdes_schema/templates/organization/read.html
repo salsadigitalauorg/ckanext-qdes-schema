@@ -10,7 +10,7 @@
         {% if facet == 'temporal_start' or facet == 'temporal_end' %}
           {% snippet 'snippets/facet_list_temporal.html', title=facet_titles[facet], name=facet, search_facets=search_facets, extras={'id':group_dict.id} %}
         {% elif not facet in ['collection_package_id', 'temporal_coverage_from', 'temporal_coverage_to'] %}
-         {% snippet'snippets/facet_list.html', title=facet_titles[facet], name=facet, extras={'id':group_dict.id} %}
+         {% snippet'snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets, extras={'id':group_dict.id} %}
         {% endif %}
       {% endfor %}
     </div>
