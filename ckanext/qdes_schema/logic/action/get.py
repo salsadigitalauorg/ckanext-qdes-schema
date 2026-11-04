@@ -3,6 +3,7 @@ import ckan.plugins.toolkit as toolkit
 import psycopg2
 
 from flask import has_request_context
+from ckan.model import ensure_engine
 from ckan.plugins.toolkit import get_action
 from ckanext.relationships import constants
 
@@ -128,22 +129,6 @@ def all_relationships(context, id):
     """
     Return all relationships with correct order and its nature.
     """
-    def get_connection():
-        from ckan.model import parse_db_config
-
-        db_config = parse_db_config()
-
-        try:
-            return psycopg2.connect(
-                user=db_config.get('db_user', None),
-                password=db_config.get('db_pass', None),
-                host=db_config.get('db_host', None),
-                port=db_config.get('db_port', "5432") or "5432",
-                database=db_config.get('db_name', None),
-            )
-        except (Exception, psycopg2.Error) as e:
-            log.error(str(e))
-
     connection = None
     cursor = None
     result = []
@@ -237,7 +222,8 @@ def all_relationships(context, id):
     query_select = query_select.format(query_select_type, id)
 
     try:
-        connection = get_connection()
+        # CKAN's engine decodes the URL-encoded password in sqlalchemy.url; parsing the URL here would not.
+        connection = ensure_engine().raw_connection()
         cursor = connection.cursor()
         cursor.execute(query_select)
         rows = cursor.fetchall()
